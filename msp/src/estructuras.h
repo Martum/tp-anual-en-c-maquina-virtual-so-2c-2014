@@ -23,9 +23,6 @@ typedef struct segmento {
 	uint16_t id;
 	uint32_t tamanio;
 	t_list* paginas;
-	bool acceso_usuario; /* true si es accesible por un usuario,
-						false si es accesible en modo kernel*/
-
 } segmento_t;
 
 typedef struct proceso_msp{
