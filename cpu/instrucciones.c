@@ -1,9 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <commons/collections/dictionary.h>
 #include "estructuras.h"
 #include "instrucciones.h"
+#include "sockets.h"
 
 int load(tcb_t* tcb) {
+
+	char* registro = malloc(sizeof(char));
+	leer_de_memoria(tcb->pc, sizeof(char), registro);
+	tcb->pc = tcb->pc + 1;
+
+	int* numero = malloc(sizeof(int));
+	leer_de_memoria(tcb->pc, sizeof(int), numero);
+	tcb->pc = tcb->pc + 4;
+
+	if (strcmp(registro, "a") == 0) {
+		tcb->a = (int) &numero;
+	}
+	if (strcmp(registro, "b") == 0) {
+		tcb->b = (int) &numero;
+	}
+	if (strcmp(registro, "c") == 0) {
+		tcb->c = (int) &numero;
+	}
+	if (strcmp(registro, "d") == 0) {
+		tcb->d = (int) &numero;
+	}
+	if (strcmp(registro, "e") == 0) {
+		tcb->e = (int) &numero;
+	}
+
 	return 0;
 }
 
