@@ -17,12 +17,17 @@ int conectar_con_kernel() {
 	return 0;
 }
 
-int pedir_tcb(tcb_t tcb, int* quantum) {
+int pedir_tcb(tcb_t* tcb, int* quantum) {
 	printf("Mientras no me de un tcb devuelvo -1");
 	return 0;
 }
 
 int leer_de_memoria(direccion pc, int bytes, char* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
+	return 0;
+}
+
+int informar_a_kernel_de_finalizacion(tcb_t* tcb, int res) {
+	// deberia mandar al Kernel el tcb modificado y porque finalizo
 	return 0;
 }
