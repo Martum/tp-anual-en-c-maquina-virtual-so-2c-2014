@@ -1,13 +1,75 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <commons/collections/dictionary.h>
 #include "estructuras.h"
 #include "instrucciones.h"
+#include "sockets.h"
+
+void copiar_numero_en_registro(tcb_t* tcb, char* registro, int* numero) {
+	if (strcmp(registro, "a") == 0) {
+		tcb->a = (int) &numero;
+	}
+	if (strcmp(registro, "b") == 0) {
+		tcb->b = (int) &numero;
+	}
+	if (strcmp(registro, "c") == 0) {
+		tcb->c = (int) &numero;
+	}
+	if (strcmp(registro, "d") == 0) {
+		tcb->d = (int) &numero;
+	}
+	if (strcmp(registro, "e") == 0) {
+		tcb->e = (int) &numero;
+	}
+}
+
+int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
+	if (strcmp(registro, "a") == 0) {
+		return tcb->a;
+	}
+	if (strcmp(registro, "b") == 0) {
+		return tcb->b;
+	}
+	if (strcmp(registro, "c") == 0) {
+		return tcb->c;
+	}
+	if (strcmp(registro, "d") == 0) {
+		return tcb->d;
+	}
+	if (strcmp(registro, "e") == 0) {
+		return tcb->e;
+	}
+	return -1;
+}
 
 int load(tcb_t* tcb) {
+
+	char* registro = obtener_registro(tcb);
+	int* numero = obtener_numero(tcb);
+
+	copiar_numero_en_registro(tcb, registro, numero);
+
+	free(registro);
+	free(numero);
+
 	return 0;
 }
 
 int getm(tcb_t* tcb) {
+
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	int* numero = malloc(sizeof(int));
+	*numero = obtener_valor_de_registro(tcb, registro2);
+
+	copiar_numero_en_registro(tcb, registro1, numero);
+
+	free(registro1);
+	free(registro2);
+	free(numero);
+
 	return 0;
 }
 
