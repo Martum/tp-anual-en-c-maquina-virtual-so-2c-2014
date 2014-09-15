@@ -6,17 +6,22 @@
 #include "instrucciones.h"
 #include "sockets.h"
 
-int load(tcb_t* tcb) {
-
-	char* registro = obtener_registro(tcb);
-	int* numero = obtener_numero(tcb);
-
-	copiar_numero_en_registro(tcb, registro, numero);
-
-	free(registro);
-	free(numero);
-
-	return 0;
+void copiar_numero_en_registro(tcb_t* tcb, char* registro, int* numero) {
+	if (strcmp(registro, "a") == 0) {
+		tcb->a = (int) &numero;
+	}
+	if (strcmp(registro, "b") == 0) {
+		tcb->b = (int) &numero;
+	}
+	if (strcmp(registro, "c") == 0) {
+		tcb->c = (int) &numero;
+	}
+	if (strcmp(registro, "d") == 0) {
+		tcb->d = (int) &numero;
+	}
+	if (strcmp(registro, "e") == 0) {
+		tcb->e = (int) &numero;
+	}
 }
 
 int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
@@ -36,6 +41,19 @@ int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
 		return tcb->e;
 	}
 	return -1;
+}
+
+int load(tcb_t* tcb) {
+
+	char* registro = obtener_registro(tcb);
+	int* numero = obtener_numero(tcb);
+
+	copiar_numero_en_registro(tcb, registro, numero);
+
+	free(registro);
+	free(numero);
+
+	return 0;
 }
 
 int getm(tcb_t* tcb) {
