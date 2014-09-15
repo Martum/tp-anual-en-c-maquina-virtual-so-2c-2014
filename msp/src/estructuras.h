@@ -9,6 +9,7 @@
 #define ESTRUCTURAS_H_
 
 #include <stdint.h>
+#include <commons/collections/list.h>
 
 typedef uint32_t direccion;
 
