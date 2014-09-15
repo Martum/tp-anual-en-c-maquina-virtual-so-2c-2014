@@ -8,12 +8,24 @@
 #ifndef LSTESTADOS_H_
 #define LSTESTADOS_H_
 
-#include <commons/collections/list.h>
+#include <commons/collections/queue.h>
+#include "estructuras.h"
 
-t_list* ready;
-t_list* exec;
-t_list* block;
-t_list* exit;
+/**
+ * Inicializa las colas del Planificador
+ */
+void inicializar_listas();
+
+/**
+ * Agrega un TCB a la cola de Ready
+ */
+void agregar_a_ready(tcb_t* tcb);
+
+void agregar_a_block(tcb_t* tcb);
+
+void agregar_a_exec(tcb_t* tcb);
+
+void agregar_a_exit(tcb_t* tcb);
 
 
 #endif /* LSTESTADOS_H_ */

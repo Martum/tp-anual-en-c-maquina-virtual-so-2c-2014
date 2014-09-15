@@ -16,7 +16,8 @@
 void cargar_configuraciones(void);
 
 /**
- * Devuelve TAMANIO_STACK del archivo de Configuraciones
+ * @NAME: tamanio_stack
+ * @DESC: Devuelve TAMANIO_STACK del archivo de Configuraciones
  */
 uint32_t tamanio_stack();
 
