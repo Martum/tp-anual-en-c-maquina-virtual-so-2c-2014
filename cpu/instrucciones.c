@@ -1,5 +1,11 @@
 #include <stdio.h>
+#include <commons/collections/dictionary.h>
 #include "estructuras.h"
+
+
+void cargar_diccionario_de_instrucciones(t_dictionary* dic) {
+	dictionary_put(dic, "LOAD", load);
+}
 
 int load(tcb_t tcb) {
 	/*
