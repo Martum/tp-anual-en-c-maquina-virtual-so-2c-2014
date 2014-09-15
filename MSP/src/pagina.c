@@ -34,7 +34,7 @@ void crear_pagina(segmento_t segmento)
 
 
 	agregar_pagina_a_segmento(segmento,pagina);
-	pagina.id = list_size(segmento.paginas);
+	pagina.id = list_size(segmento.paginas)-1;
 
 
 }
