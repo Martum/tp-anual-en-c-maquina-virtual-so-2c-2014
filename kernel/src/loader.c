@@ -6,10 +6,12 @@
  */
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "loader.h"
 #include "memoria.h"
 #include "configuraciones.h"
+
 
 tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 {
@@ -17,10 +19,31 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 
 	tcb->pid = pid;
 	tcb->tid = tid;
+	tcb->km = false;
 
 	return tcb;
 }
 
+int cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
+{
+	tcb_hijo->tamanio_codigo = tcb_padre->tamanio_codigo;
+
+	direccion stack = crear_segmento(tcb_padre->pid, tamanio_stack());
+
+	if(stack != -1)
+	{
+		tcb_hijo->base_codigo = tcb_padre->base_codigo;
+		tcb_hijo->pc = tcb_padre->pc;
+
+		tcb_hijo->base_stack = stack;
+		tcb_hijo->cursor_stack = stack;
+
+		return 0;
+	}
+
+	return -1;
+
+}
 
 int cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo)
 {
