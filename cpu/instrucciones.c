@@ -102,7 +102,6 @@ int divr(tcb_t* tcb) {
 }
 
 int incr(tcb_t* tcb) {
-
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor++;
@@ -111,6 +110,10 @@ int incr(tcb_t* tcb) {
 }
 
 int decr(tcb_t* tcb) {
+	char* registro = obtener_registro(tcb);
+	int valor = obtener_valor_de_registro(tcb, registro);
+	valor--;
+	copiar_numero_en_registro(tcb, registro, &valor);
 	return 0;
 }
 
