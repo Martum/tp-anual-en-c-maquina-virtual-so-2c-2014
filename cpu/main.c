@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sockets.h"
+#include "instrucciones.c"
 #include <commons/collections/dictionary.h>
 
 int main(int argc, char** argv) {
@@ -10,7 +11,7 @@ int main(int argc, char** argv) {
 	char buffer[4];
 	int quantum, res = 0;
 
-	printf("Cargo el diccionario de instrucciones (normales y protegidas)\n");
+	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	int memoria = conectar_con_memoria();
 	int kernel = conectar_con_kernel();
