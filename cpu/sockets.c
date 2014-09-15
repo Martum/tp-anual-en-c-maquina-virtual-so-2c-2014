@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "estructuras.h"
 
 int conectar_con_memoria() {
@@ -30,4 +31,18 @@ int leer_de_memoria(direccion pc, int bytes, void* buffer) {
 int informar_a_kernel_de_finalizacion(tcb_t* tcb, int res) {
 	// deberia mandar al Kernel el tcb modificado y porque finalizo
 	return 0;
+}
+
+char* obtener_registro(tcb_t* tcb) {
+	char* registro = malloc(sizeof(char));
+	leer_de_memoria(tcb->pc, sizeof(char), registro);
+	tcb->pc = tcb->pc + 1;
+	return registro;
+}
+
+int* obtener_numero(tcb_t* tcb) {
+	int* numero = malloc(sizeof(int));
+	leer_de_memoria(tcb->pc, sizeof(int), numero);
+	tcb->pc = tcb->pc + 4;
+	return numero;
 }

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <commons/collections/dictionary.h>
 #include "estructuras.h"
@@ -8,13 +7,8 @@
 
 int load(tcb_t* tcb) {
 
-	char* registro = malloc(sizeof(char));
-	leer_de_memoria(tcb->pc, sizeof(char), registro);
-	tcb->pc = tcb->pc + 1;
-
-	int* numero = malloc(sizeof(int));
-	leer_de_memoria(tcb->pc, sizeof(int), numero);
-	tcb->pc = tcb->pc + 4;
+	char* registro = obtener_registro(tcb);
+	int* numero = obtener_numero(tcb);
 
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = (int) &numero;
@@ -31,6 +25,9 @@ int load(tcb_t* tcb) {
 	if (strcmp(registro, "e") == 0) {
 		tcb->e = (int) &numero;
 	}
+
+	free(registro);
+	free(numero);
 
 	return 0;
 }
