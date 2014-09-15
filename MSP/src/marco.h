@@ -10,10 +10,7 @@
 
 #include <stdbool.h>
 #include "direccion.h"
+#include "estructuras.h"
 
-typedef struct marco{
-	bool ocupado;
-	direccion base;
-}marco_t;
 
 #endif /* MARCO_H_ */
