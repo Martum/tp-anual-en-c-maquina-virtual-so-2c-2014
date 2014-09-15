@@ -19,9 +19,9 @@ int main(void){
 
 	proceso_msp_t *proceso1 = crear_proceso_msp();
 
-	segmento_t *segmento1 = crear_segmento(proceso1, 4, false);
-	crear_segmento(proceso1, 2, false);
-	crear_segmento(proceso1, 12, true);
+	segmento_t *segmento1 = crear_segmento(proceso1, 4);
+	crear_segmento(proceso1, 2);
+	crear_segmento(proceso1, 12);
 
 	listar_segmentos(proceso1);
 	listar_paginas(segmento1);
@@ -30,10 +30,9 @@ int main(void){
 }
 
 
-segmento_t *crear_segmento(proceso_msp_t *proceso, uint32_t tamanio, bool acceso_usuario) {
+segmento_t *crear_segmento(proceso_msp_t *proceso, uint32_t tamanio) {
 	segmento_t *segmento = malloc(sizeof(segmento_t));
 	segmento->tamanio = tamanio;
-	segmento->acceso_usuario = acceso_usuario;
 	segmento->paginas = list_create();
 
 	// creo las paginas en el segmento
