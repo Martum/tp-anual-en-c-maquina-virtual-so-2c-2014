@@ -27,5 +27,4 @@ void agregar_a_exec(tcb_t* tcb);
 
 void agregar_a_exit(tcb_t* tcb);
 
-
 #endif /* LSTESTADOS_H_ */

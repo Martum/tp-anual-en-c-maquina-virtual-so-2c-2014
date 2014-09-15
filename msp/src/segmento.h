@@ -17,6 +17,6 @@
 segmento_t *crear_segmento(proceso_msp_t*, uint32_t);
 void agregar_segmento_a_proceso(segmento_t*, proceso_msp_t*);
 void listar_paginas(segmento_t*);
-
+uint32_t cantidad_paginas(uint32_t);
 
 #endif /* SEGMENTO_H_ */
