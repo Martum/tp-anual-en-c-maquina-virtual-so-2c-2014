@@ -30,7 +30,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1118739421" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.235022791" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
-								<option id="gnu.c.link.option.libs.709919492" superClass="gnu.c.link.option.libs" valueType="libs">
+								<option id="gnu.c.link.option.libs.709919492" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="commons"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1367385040" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
@@ -96,15 +96,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="MSP.cdt.managedbuild.target.gnu.exe.571514239" name="Executable" projectType="cdt.managedbuild.target.gnu.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.186548109;cdt.managedbuild.config.gnu.exe.release.186548109.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.201984371;cdt.managedbuild.tool.gnu.c.compiler.input.443691117">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.194529616;cdt.managedbuild.config.gnu.exe.debug.194529616.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.811478386;cdt.managedbuild.tool.gnu.c.compiler.input.1118739421">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Release">
@@ -113,5 +104,14 @@
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/MSP"/>
 		</configuration>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.194529616;cdt.managedbuild.config.gnu.exe.debug.194529616.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.811478386;cdt.managedbuild.tool.gnu.c.compiler.input.1118739421">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.186548109;cdt.managedbuild.config.gnu.exe.release.186548109.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.201984371;cdt.managedbuild.tool.gnu.c.compiler.input.443691117">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>

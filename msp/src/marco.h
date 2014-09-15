@@ -8,12 +8,11 @@
 #ifndef MARCO_H_
 #define MARCO_H_
 
+#include <stdint.h>
 #include <stdbool.h>
-#include "direccion.h"
+#include "estructuras.h"
+#include <commons/collections/list.h>
 
-typedef struct marco{
-	bool ocupado;
-	direccion base;
-}marco_t;
+void crear_marco_en_lista_de_marcos(t_list *, uint32_t);
 
 #endif /* MARCO_H_ */
