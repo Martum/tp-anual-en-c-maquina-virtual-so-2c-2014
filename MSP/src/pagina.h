@@ -11,6 +11,8 @@
 #include <commons/collections/list.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "segmento.h"
+#include "pagina.h"
 
 typedef struct pagina {
 	uint16_t id;
@@ -18,5 +20,10 @@ typedef struct pagina {
 	bool en_disco;
 	uint32_t marco;
 } pagina_t;
+
+
+void crear_pagina(segmento_t);
+
+void agregar_pagina_a_segmento(segmento_t, pagina_t);
 
 #endif /* PAGINA_H_ */
