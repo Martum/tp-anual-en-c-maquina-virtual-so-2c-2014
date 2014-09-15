@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <commons/collections/dictionary.h>
 #include "estructuras.h"
@@ -10,21 +11,7 @@ int load(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int* numero = obtener_numero(tcb);
 
-	if (strcmp(registro, "a") == 0) {
-		tcb->a = (int) &numero;
-	}
-	if (strcmp(registro, "b") == 0) {
-		tcb->b = (int) &numero;
-	}
-	if (strcmp(registro, "c") == 0) {
-		tcb->c = (int) &numero;
-	}
-	if (strcmp(registro, "d") == 0) {
-		tcb->d = (int) &numero;
-	}
-	if (strcmp(registro, "e") == 0) {
-		tcb->e = (int) &numero;
-	}
+	copiar_numero_en_registro(tcb, registro, numero);
 
 	free(registro);
 	free(numero);
