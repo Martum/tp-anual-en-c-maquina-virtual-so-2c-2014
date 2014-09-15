@@ -3,9 +3,20 @@
 int main(int argc, char** argv) {
 
 	printf("Cargo el diccionario de instrucciones (normales y protegidas)\n");
-	printf("Me conecto con la memoria MSP. Si falla la conexion aborto toda la ejecucion, informo por pantalla y loggeo\n");
-	printf("Me conecto con el Kernel. Si falla la conexion aborto toda la ejecucion, informo por pantalla y loggeo\n");
-	printf("Le pido al Kernel un TCB y me quedo esperando a que me lo de\n\n\n");
+
+	int memoria = conectar_con_memoria();
+	int kernel = conectar_con_kernel();
+
+	if (memoria == -1 || kernel == -1) { // fallo la conexion
+		// informo por pantalla y loggeo
+		return 0;
+	}
+
+	tcb_t *tcb = malloc(sizeof(tcb_t));
+	int quantum;
+	while (pedir_tcb(tcb, &quantum)); // pide hasta que se lo da
+
+
 	printf("Me llego un TCB junto con su quantum\n\n");
 	printf("Cargo en un TCBi (interno) el TCB que me pasaron")
 	printf("Me fijo que el quantum no sea igual a 0, o que KM este activado\n");
