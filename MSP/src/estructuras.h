@@ -8,6 +8,8 @@
 #ifndef ESTRUCTURAS_H_
 #define ESTRUCTURAS_H_
 
+#include <stdint.h>
+
 typedef uint32_t direccion;
 
 typedef struct pagina {
@@ -33,6 +35,7 @@ typedef struct proceso_msp{
 }proceso_msp_t;
 
 typedef struct marco{
+	uint32_t id;
 	bool ocupado;
 	direccion base;
 }marco_t;
