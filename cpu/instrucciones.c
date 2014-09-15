@@ -19,7 +19,39 @@ int load(tcb_t* tcb) {
 	return 0;
 }
 
+int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
+	if (strcmp(registro, "a") == 0) {
+		return tcb->a;
+	}
+	if (strcmp(registro, "b") == 0) {
+		return tcb->b;
+	}
+	if (strcmp(registro, "c") == 0) {
+		return tcb->c;
+	}
+	if (strcmp(registro, "d") == 0) {
+		return tcb->d;
+	}
+	if (strcmp(registro, "e") == 0) {
+		return tcb->e;
+	}
+	return -1;
+}
+
 int getm(tcb_t* tcb) {
+
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	int* numero = malloc(sizeof(int));
+	*numero = obtener_valor_de_registro(tcb, registro2);
+
+	copiar_numero_en_registro(tcb, registro1, numero);
+
+	free(registro1);
+	free(registro2);
+	free(numero);
+
 	return 0;
 }
 
