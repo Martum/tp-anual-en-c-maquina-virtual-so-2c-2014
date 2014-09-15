@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
 	tcb_t *tcb = malloc(sizeof(tcb_t));
 	int quantum;
-	while (pedir_tcb(*tcb, &quantum)); // pide hasta que se lo da
+	while (pedir_tcb(tcb, &quantum)); // pide hasta que se lo da
 
 	if (quantum <= 0) {
 		// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
@@ -29,12 +29,12 @@ int main(int argc, char** argv) {
 
 	do {
 		leer_de_memoria(tcb->pc, sizeof(buffer), buffer);
-		int (*funcion)(tcb_t) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
-		res = funcion(*tcb); // si todo fue como deberia  ser devuelve 0
+		int (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
+		res = funcion(tcb); // si todo fue como deberia  ser devuelve 0
 		quantum--;
 	} while (quantum > 0 && res == 0); // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso
 
-	printf("El quantum fue igual a 0, o termino el proceso\n");
+	informar_a_kernel_de_finalizacion(tcb, res);
 	printf("Le mando un mensaje al Kernel pasandole el TCBi y la indicacion de porque termine de ejecutar el TCB\n");
 	printf("Me quedo esperando a que el Kernel me mande otro TCB\n");
 
