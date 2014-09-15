@@ -14,4 +14,7 @@ typedef struct proceso_msp{
 	t_list* segmentos;
 }proceso_msp_t;
 
+void listar_segmentos(proceso_msp_t*);
+proceso_msp_t* crear_proceso_msp();
+
 #endif /* PROCESO_MSP_H_ */
