@@ -1,8 +1,8 @@
 #include <stdio.h>
+#include "estructuras.h"
 
 int load(tcb_t tcb) {
-	int res;
-
+	/*
 	// Pido a memoria 1 byte del registro a partir de tcb->pc y lo guardo en registro
 	char* registro = malloc(sizeof(char));
 	registro = leer_memoria(tcb->pc, sizeof(char));
@@ -30,7 +30,7 @@ int load(tcb_t tcb) {
 		break;
 	default:
 		return -1;
-	}
+	}*/
 	return 0;
 }
 
