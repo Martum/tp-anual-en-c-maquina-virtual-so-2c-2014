@@ -160,6 +160,15 @@ int cgeq(tcb_t* tcb) {
 }
 
 int cleq(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	if (valor1 <= valor2) {
+		tcb->a = 1;
+	} else {
+		tcb->a = 0;
+	}
 	return 0;
 }
 
