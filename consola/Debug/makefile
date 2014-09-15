@@ -8,7 +8,6 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include src/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -23,19 +22,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: MSP
+all: consola
 
 # Tool invocations
-MSP: $(OBJS) $(USER_OBJS)
+consola: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "MSP" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc  -o "consola" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) MSP
+	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) consola
 	-@echo ' '
 
 .PHONY: all clean dependents
