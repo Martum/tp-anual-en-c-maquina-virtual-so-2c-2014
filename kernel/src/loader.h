@@ -24,7 +24,7 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid);
  * @DESC: Carga un TCB con la base del segmento de codigo y stack.
  * 		Devuelve 0 en caso de exito y -1 en caso de no poder alocar la memoria necesaria.
  */
-int cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo, uint32_t tamanio_stack);
+int cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo);
 
 
 
