@@ -82,6 +82,11 @@ int movr(tcb_t* tcb) {
 }
 
 int addr(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	tcb->a = valor1 + valor2;
 	return 0;
 }
 
