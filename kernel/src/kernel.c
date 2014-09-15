@@ -17,11 +17,6 @@
 
 int jose = 5;
 
-t_list* ready;
-t_list* block;
-t_list* exec;
-
-
 
 int main(void) {
 	// Levanta las configuraciones del archivo
