@@ -22,7 +22,7 @@ int pedir_tcb(tcb_t* tcb, int* quantum) {
 	return 0;
 }
 
-int leer_de_memoria(direccion pc, int bytes, char* buffer) {
+int leer_de_memoria(direccion pc, int bytes, void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
 }
