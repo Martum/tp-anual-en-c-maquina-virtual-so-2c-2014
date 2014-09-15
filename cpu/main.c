@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 	while (1) {
 		while (pedir_tcb(tcb, &quantum)); // pide hasta que se lo da
 
-		if (quantum <= 0) {
+		if (quantum < -1 || quantum == 0) {
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 		}
 
@@ -33,10 +33,12 @@ int main(int argc, char** argv) {
 			int (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
 			res = funcion(tcb); // si _todo fue como deberia  ser devuelve 0
 			quantum--;
-		} while (quantum > 0 && res == 0); // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso
+		} while ((quantum > 0 || quantum == -1) && res == 0); // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso. Quantum -1 significa que es el kernel
 
 		informar_a_kernel_de_finalizacion(tcb, res);
 	}
+
+	dictionary_destroy(dic_instrucciones);
 
 	return 0;
 }
