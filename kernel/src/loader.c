@@ -27,13 +27,13 @@ int cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo, uint32_t 
 	tcb->tamanio_codigo = tamanio_codigo;
 
 	// Pedimos segmento a la MSP
-	direccion dir = crear_segmento(tcb->pid, tcb->tamanio_codigo);
+	direccion codigo = crear_segmento(tcb->pid, tcb->tamanio_codigo);
 	direccion stack = crear_segmento(tcb->pid, tamanio_stack);
 
-	if(dir != -1 && stack != -1)
+	if(codigo != -1 && stack != -1)
 	{// Hay memoria
-		tcb->base_codigo = dir;
-		tcb->pc = dir;
+		tcb->base_codigo = codigo;
+		tcb->pc = codigo;
 
 		tcb->base_stack = stack;
 		tcb->cursor_stack = stack;

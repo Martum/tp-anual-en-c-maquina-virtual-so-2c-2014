@@ -8,6 +8,7 @@
 #ifndef ESTRUCTURAS_H_
 #define ESTRUCTURAS_H_
 
+#include <stdint.h>
 #include <stdbool.h>
 
 typedef uint32_t direccion;
