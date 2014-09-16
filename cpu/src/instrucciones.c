@@ -5,6 +5,7 @@
 #include "estructuras.h"
 #include "instrucciones.h"
 #include "sockets.h"
+#include "tcb-funciones.h"
 
 int load(tcb_t* tcb) {
 

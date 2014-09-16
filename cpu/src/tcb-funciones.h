@@ -5,6 +5,8 @@
  *      Author: utnso
  */
 
+#include "estructuras.h"
+
 #ifndef TCB_FUNCIONES_H_
 #define TCB_FUNCIONES_H_
 
