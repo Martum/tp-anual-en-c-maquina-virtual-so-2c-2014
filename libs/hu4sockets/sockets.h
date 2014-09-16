@@ -13,11 +13,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+
 #define CANTIDAD_CONEXIONES_LISTEN 20
 
 typedef struct sock {
 	int32_t fd;
-	struct sockaddr_in datos_conexion;
+	struct sockaddr_in* datos_conexion;
 
 } sock_t;
 
@@ -49,7 +50,7 @@ int32_t _conectar(sock_t* socket);
 int32_t _escuchar(sock_t* socket);
 
 /**
- * Acepta una conexion entrante y devuelve el FD
+ * Acepta una conexion entrante y devuelve el nuevo FD
  */
 sock_t* _aceptar_conexion(sock_t* socket);
 
