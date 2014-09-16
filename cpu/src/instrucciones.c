@@ -5,43 +5,7 @@
 #include "estructuras.h"
 #include "instrucciones.h"
 #include "sockets.h"
-
-void copiar_numero_en_registro(tcb_t* tcb, char* registro, int* numero) {
-	if (strcmp(registro, "a") == 0) {
-		tcb->a = (int) &numero;
-	}
-	if (strcmp(registro, "b") == 0) {
-		tcb->b = (int) &numero;
-	}
-	if (strcmp(registro, "c") == 0) {
-		tcb->c = (int) &numero;
-	}
-	if (strcmp(registro, "d") == 0) {
-		tcb->d = (int) &numero;
-	}
-	if (strcmp(registro, "e") == 0) {
-		tcb->e = (int) &numero;
-	}
-}
-
-int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
-	if (strcmp(registro, "a") == 0) {
-		return tcb->a;
-	}
-	if (strcmp(registro, "b") == 0) {
-		return tcb->b;
-	}
-	if (strcmp(registro, "c") == 0) {
-		return tcb->c;
-	}
-	if (strcmp(registro, "d") == 0) {
-		return tcb->d;
-	}
-	if (strcmp(registro, "e") == 0) {
-		return tcb->e;
-	}
-	return -1;
-}
+#include "tcb-funciones.h"
 
 int load(tcb_t* tcb) {
 
@@ -82,14 +46,29 @@ int movr(tcb_t* tcb) {
 }
 
 int addr(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	tcb->a = valor1 + valor2;
 	return 0;
 }
 
 int subr(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	tcb->a = valor1 - valor2;
 	return 0;
 }
 
 int mulr(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	tcb->a = valor1 * valor2;
 	return 0;
 }
 
@@ -102,22 +81,58 @@ int divr(tcb_t* tcb) {
 }
 
 int incr(tcb_t* tcb) {
+	char* registro = obtener_registro(tcb);
+	int valor = obtener_valor_de_registro(tcb, registro);
+	valor++;
+	copiar_numero_en_registro(tcb, registro, &valor);
 	return 0;
 }
 
 int decr(tcb_t* tcb) {
+	char* registro = obtener_registro(tcb);
+	int valor = obtener_valor_de_registro(tcb, registro);
+	valor--;
+	copiar_numero_en_registro(tcb, registro, &valor);
+	free(registro);
 	return 0;
 }
 
 int comp(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	if (valor1 == valor2) {
+		tcb->a = 1;
+	} else {
+		tcb->a = 0;
+	}
 	return 0;
 }
 
 int cgeq(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	if (valor1 >= valor2) {
+		tcb->a = 1;
+	} else {
+		tcb->a = 0;
+	}
 	return 0;
 }
 
 int cleq(tcb_t* tcb) {
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	if (valor1 <= valor2) {
+		tcb->a = 1;
+	} else {
+		tcb->a = 0;
+	}
 	return 0;
 }
 

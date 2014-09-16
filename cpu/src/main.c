@@ -3,8 +3,12 @@
 #include "sockets.h"
 #include "instrucciones.h"
 #include <commons/collections/dictionary.h>
+#include "seatest.h"
+#include "tests.h"
 
 int main(int argc, char** argv) {
+
+	run_tests(all_tests);
 
 	t_dictionary* dic_instrucciones = dictionary_create();
 	tcb_t* tcb = malloc(sizeof(tcb_t));
