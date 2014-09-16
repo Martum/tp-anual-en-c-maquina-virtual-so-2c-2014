@@ -6,6 +6,7 @@
  */
 
 #include <commons/collections/dictionary.h>
+#include "estructuras.h"
 
 #ifndef INSTRUCCIONES_H_
 #define INSTRUCCIONES_H_
