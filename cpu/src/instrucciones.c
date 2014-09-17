@@ -65,6 +65,9 @@ int addr(tcb_t* tcb) {
 		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 + valor2);
 	}
 
+	free(registro1);
+	free(registro2);
+
 	return resultado;
 }
 
@@ -82,6 +85,9 @@ int subr(tcb_t* tcb) {
 	} else {
 		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
 	}
+
+	free(registro1);
+	free(registro2);
 
 	return resultado;
 }
@@ -101,6 +107,9 @@ int mulr(tcb_t* tcb) {
 		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 * valor2);
 	}
 
+	free(registro1);
+	free(registro2);
+
 	return resultado;
 }
 
@@ -114,20 +123,40 @@ int divr(tcb_t* tcb) {
 
 int incr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
+
 	int valor = obtener_valor_de_registro(tcb, registro);
-	valor++;
-	int resultado = actualizar_valor_en_registro(tcb, registro, valor);
+
+	int resultado;
+
+	if (valor == FALLO) {
+		resultado = FALLO;
+	} else {
+		valor++;
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
+	}
+
 	free(registro);
+
 	return resultado;
 }
 
 int decr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
-	int valor = obtener_valor_de_registro(tcb, registro);
-	valor--;
-	int resultado = actualizar_valor_en_registro(tcb, registro, valor);
-	free(registro);
-	return resultado;
+
+		int valor = obtener_valor_de_registro(tcb, registro);
+
+		int resultado;
+
+		if (valor == FALLO) {
+			resultado = FALLO;
+		} else {
+			valor--;
+			resultado = actualizar_valor_en_registro(tcb, 'a', valor);
+		}
+
+		free(registro);
+
+		return resultado;
 }
 
 int comp(tcb_t* tcb) {
