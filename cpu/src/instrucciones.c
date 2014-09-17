@@ -143,59 +143,95 @@ int incr(tcb_t* tcb) {
 int decr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 
-		int valor = obtener_valor_de_registro(tcb, registro);
+	int valor = obtener_valor_de_registro(tcb, registro);
 
-		int resultado;
+	int resultado;
 
-		if (valor == FALLO) {
-			resultado = FALLO;
-		} else {
-			valor--;
-			resultado = actualizar_valor_en_registro(tcb, 'a', valor);
-		}
+	if (valor == FALLO) {
+		resultado = FALLO;
+	} else {
+		valor--;
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
+	}
 
-		free(registro);
+	free(registro);
 
-		return resultado;
+	return resultado;
 }
 
 int comp(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	if (valor1 == valor2) {
-		tcb->a = 1;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
 	} else {
-		tcb->a = 0;
+		if (valor1 == valor2) {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
+		} else {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
+		}
 	}
-	return OK;
+
+	free(registro1);
+	free(registro2);
+
+	return resultado;
 }
 
 int cgeq(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	if (valor1 >= valor2) {
-		tcb->a = 1;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
 	} else {
-		tcb->a = 0;
+		if (valor1 >= valor2) {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
+		} else {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
+		}
 	}
-	return OK;
+
+	free(registro1);
+	free(registro2);
+
+	return resultado;
 }
 
 int cleq(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	if (valor1 <= valor2) {
-		tcb->a = 1;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
 	} else {
-		tcb->a = 0;
+		if (valor1 <= valor2) {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
+		} else {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
+		}
 	}
-	return OK;
+
+	free(registro1);
+	free(registro2);
+
+	return resultado;
 }
 
 int _goto(tcb_t* tcb) {
