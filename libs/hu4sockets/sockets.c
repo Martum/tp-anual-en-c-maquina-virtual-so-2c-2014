@@ -71,3 +71,51 @@ sock_t* _aceptar_conexion(sock_t* socket)
 
 	return sock_nuevo;
 }
+
+
+uint32_t _enviar(sock_t* socket, char* msg, uint32_t len)
+{
+	return send(socket->fd, msg, len, 0);
+}
+
+uint32_t _enviar_todo(sock_t* socket, char* msg, uint32_t* len)
+{
+	int32_t total = 0;        // cuantos bytes hemos enviado
+	int32_t bytesleft = *len; // cuantos se han quedado pendientes
+	int32_t n;
+	while(total < *len) {
+		n = send(socket->fd, msg+total, bytesleft, 0);
+		if (n == -1) { break; }
+		total += n;
+		bytesleft -= n;
+	}
+
+	*len = total; // devuelve aqui la cantidad enviada en realidad
+	return n==-1?-1:0; // devuelve -1 si hay fallo, 0 en otro caso
+}
+
+
+uint32_t _recibir(sock_t* socket, char* buff, uint32_t buf_max_size)
+{
+	return recv(socket->fd, buff, buf_max_size, 0);
+}
+
+
+void _cerrame_esto_nestor(sock_t* socket)
+{
+	shutdown(socket->fd, 2);
+}
+
+
+void _liberar_memoria(sock_t* socket)
+{
+	free(socket->datos_conexion);
+	free(socket);
+}
+
+
+void cerrar_liberar(sock_t* socket)
+{
+	_cerrame_esto_nestor(socket);
+	_liberar_memoria(socket);
+}
