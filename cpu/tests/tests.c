@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "seatest.h"
 #include "tcb-funciones.h"
+#include "resultados.h"
 
 //
 // create a test...
@@ -33,7 +34,7 @@ void test_poner_1_en_registro_a()
 	*registro = 'a';
 	resultado = copiar_numero_en_registro(tcb, registro, numero);
 	assert_int_equal(1, tcb->a);
-	assert_int_equal(0, resultado);
+	assert_int_equal(OK, resultado);
 	free(tcb);
 	free(registro);
 }
@@ -45,7 +46,7 @@ void test_fail_poner_1_en_registro_h()
 	int numero = 1, resultado = 1;
 	*registro = 'h';
 	resultado = copiar_numero_en_registro(tcb, registro, numero);
-	assert_int_equal(-1, resultado);
+	assert_int_equal(FALLO, resultado);
 	free(tcb);
 	free(registro);
 }
