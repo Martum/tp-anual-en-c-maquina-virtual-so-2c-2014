@@ -1,7 +1,7 @@
 /*
- * main.c
+ * consola_msp.c
  *
- *  Created on: 15/09/2014
+ *  Created on: 17/09/2014
  *      Author: utnso
  */
 
@@ -17,7 +17,7 @@
 #include "pagina.h"
 #include "segmento.h"
 #include "proceso_msp.h"
-#include "main.h"
+#include "interfaz.c"
 
 int main(void){
 
@@ -26,7 +26,7 @@ int main(void){
 
 	return 0;
 }
-/* Prueba para saber que anda
+/* Prueba de main para saber que anda
 proceso_msp_t *proceso1 = crear_proceso_msp();
 
 	segmento_t *segmento1 = crear_segmento(proceso1, 400);

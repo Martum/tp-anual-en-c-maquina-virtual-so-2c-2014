@@ -12,9 +12,9 @@
 #ifndef SWAPPING_H_
 #define SWAPPING_H_
 
-
+/*
 void swap(pagina_t*);
 
 marco_t* liberar_un_marco();
-
+*/
 #endif /* SWAPPING_H_ */

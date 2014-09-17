@@ -6,9 +6,10 @@
  */
 
 #include "swapping.h"
+#include "estructuras.h"
+#include "marco.h"
 
-
-
+/*
 
 void swap(pagina_t* pagina)
 {
@@ -21,7 +22,9 @@ void swap(pagina_t* pagina)
 
 }
 
-marco_t* liberar_un_marco()
+
+ marco_t* liberar_un_marco()
 {
 
-}
+
+}*/
