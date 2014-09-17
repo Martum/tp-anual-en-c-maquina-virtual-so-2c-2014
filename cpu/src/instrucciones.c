@@ -13,12 +13,12 @@ int load(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int* numero = obtener_numero(tcb);
 
-	if (copiar_numero_en_registro(tcb, registro, *numero) == -1) return FALLO;
+	int resultado = copiar_numero_en_registro(tcb, registro, *numero);
 
 	free(registro);
 	free(numero);
 
-	return OK;
+	return resultado;
 }
 
 int getm(tcb_t* tcb) {
@@ -29,13 +29,13 @@ int getm(tcb_t* tcb) {
 	int* numero = malloc(sizeof(int));
 	*numero = obtener_valor_de_registro(tcb, registro2);
 
-	if (copiar_numero_en_registro(tcb, registro1, *numero) == -1) return FALLO;
+	int resultado = copiar_numero_en_registro(tcb, registro1, *numero);
 
 	free(registro1);
 	free(registro2);
 	free(numero);
 
-	return OK;
+	return resultado;
 }
 
 int setm(tcb_t* tcb) {
@@ -85,17 +85,18 @@ int incr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor++;
-	if (copiar_numero_en_registro(tcb, registro, valor) == -1) return FALLO;
-	return OK;
+	int resultado = copiar_numero_en_registro(tcb, registro, valor);
+	free(registro);
+	return resultado;
 }
 
 int decr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor--;
-	if (copiar_numero_en_registro(tcb, registro, valor) == -1) return FALLO;
+	int resultado = copiar_numero_en_registro(tcb, registro, valor);
 	free(registro);
-	return OK;
+	return resultado;
 }
 
 int comp(tcb_t* tcb) {
