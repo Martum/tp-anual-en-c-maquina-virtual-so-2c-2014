@@ -43,7 +43,25 @@ int getm(tcb_t* tcb) {
 }
 
 int setm(tcb_t* tcb) {
-	return OK;
+	int* valor = obtener_numero(tcb);
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	direccion direccion1 = obtener_valor_de_registro(tcb, registro1);
+	direccion direccion2 = obtener_valor_de_registro(tcb, registro2);
+
+	int resultado = 0;
+
+	char* buffer = malloc(*valor);
+
+	leer_de_memoria(direccion1, *valor, buffer);
+	escribir_en_memoria(direccion2, *valor, buffer);
+
+	free(registro1);
+	free(registro2);
+	free(buffer);
+
+	return resultado;
 }
 
 int movr(tcb_t* tcb) {
@@ -81,7 +99,8 @@ int addr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA, valor1 - valor2);
+		resultado = actualizar_valor_en_registro(tcb, registroA,
+				valor1 - valor2);
 	}
 
 	free(registro1);
@@ -106,7 +125,8 @@ int subr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA, valor1 - valor2);
+		resultado = actualizar_valor_en_registro(tcb, registroA,
+				valor1 - valor2);
 	}
 
 	free(registro1);
@@ -131,7 +151,8 @@ int mulr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA, valor1 * valor2);
+		resultado = actualizar_valor_en_registro(tcb, registroA,
+				valor1 * valor2);
 	}
 
 	free(registro1);
@@ -142,7 +163,29 @@ int mulr(tcb_t* tcb) {
 }
 
 int modr(tcb_t* tcb) {
-	return OK;
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	char* registroA = malloc(sizeof(char) + 1);
+	*registroA = 'a';
+
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, registroA,
+				valor1 % valor2);
+	}
+
+	free(registro1);
+	free(registro2);
+	free(registroA);
+
+	return resultado;
 }
 
 int divr(tcb_t* tcb) {
