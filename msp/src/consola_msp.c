@@ -18,6 +18,7 @@
 #include "segmento.h"
 #include "proceso_msp.h"
 #include "interfaz.c"
+#include "consola_msp.h"
 
 int main(void){
 

@@ -12,8 +12,6 @@
  * 		- tabla de procesos (lista de procesos)
  * 		- cantidad de memoria fisica total pedida
  */
-t_list * lista_procesos;
-uint32_t * memoria_fisica_total;
 
 
 
