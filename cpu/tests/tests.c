@@ -32,7 +32,7 @@ void test_poner_1_en_registro_a()
 	char* registro = malloc(sizeof(char) + 1);
 	int numero = 1, resultado = 1;
 	*registro = 'a';
-	resultado = copiar_numero_en_registro(tcb, registro, numero);
+	resultado = actualizar_valor_en_registro(tcb, registro, numero);
 	assert_int_equal(1, tcb->a);
 	assert_int_equal(OK, resultado);
 	free(tcb);
@@ -45,7 +45,7 @@ void test_fail_poner_1_en_registro_h()
 	char* registro = malloc(sizeof(char) + 1);
 	int numero = 1, resultado = 1;
 	*registro = 'h';
-	resultado = copiar_numero_en_registro(tcb, registro, numero);
+	resultado = actualizar_valor_en_registro(tcb, registro, numero);
 	assert_int_equal(FALLO, resultado);
 	free(tcb);
 	free(registro);

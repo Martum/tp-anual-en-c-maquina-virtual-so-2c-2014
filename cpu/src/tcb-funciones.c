@@ -11,7 +11,7 @@
 #include "estructuras.h"
 #include "resultados.h"
 
-int copiar_numero_en_registro(tcb_t* tcb, char* registro, int numero) {
+int actualizar_valor_en_registro(tcb_t* tcb, char* registro, int numero) {
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = numero;
 		return OK;
