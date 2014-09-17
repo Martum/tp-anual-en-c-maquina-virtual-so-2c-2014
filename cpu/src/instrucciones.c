@@ -47,7 +47,23 @@ int setm(tcb_t* tcb) {
 }
 
 int movr(tcb_t* tcb) {
-	return OK;
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	int valor = obtener_valor_de_registro(tcb, registro2);
+
+	int resultado;
+
+	if (valor == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, registro1, valor);
+	}
+
+	free(registro1);
+	free(registro2);
+
+	return resultado;
 }
 
 int addr(tcb_t* tcb) {

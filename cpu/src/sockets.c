@@ -28,6 +28,11 @@ int leer_de_memoria(direccion dir, int bytes, void* buffer) {
 	return 0;
 }
 
+int escribir_en_memoria(direccion dir, int byes, void* buffer) {
+	// tendria que devolver la cantidad de byes que leyo o algo asi
+	return 0;
+}
+
 int informar_a_kernel_de_finalizacion(tcb_t* tcb, int res) {
 	// deberia mandar al Kernel el tcb modificado y porque finalizo
 	return 0;
