@@ -189,7 +189,34 @@ int modr(tcb_t* tcb) {
 }
 
 int divr(tcb_t* tcb) {
-	return OK;
+	char* registro1 = obtener_registro(tcb);
+	char* registro2 = obtener_registro(tcb);
+
+	char* registroA = malloc(sizeof(char) + 1);
+	*registroA = 'a';
+
+	int valor1 = obtener_valor_de_registro(tcb, registro1);
+	int valor2 = obtener_valor_de_registro(tcb, registro2);
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else if (valor2 == 0) {
+		char* registroF = malloc(sizeof(char) + 1);
+		*registroF = 'f';
+		resultado = actualizar_valor_en_registro(tcb, registroF, ZERO_DIV);
+		free(registroF);
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, registroA,
+				valor1 / valor2);
+	}
+
+	free(registro1);
+	free(registro2);
+	free(registroA);
+
+	return resultado;
 }
 
 int incr(tcb_t* tcb) {
