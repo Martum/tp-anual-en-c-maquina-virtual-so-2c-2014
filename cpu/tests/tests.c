@@ -51,11 +51,38 @@ void test_fail_poner_1_en_registro_h()
 	free(registro);
 }
 
+void test_obtener_valor_20_de_registro_a()
+{
+	tcb_t* tcb = malloc(sizeof(tcb_t));
+	tcb->a = 20;
+	char* registro = malloc(sizeof(char) + 1);
+	int resultado;
+	*registro = 'a';
+	resultado = obtener_valor_de_registro(tcb, registro);
+	assert_int_equal(20, resultado);
+	free(tcb);
+	free(registro);
+}
+
+void test_fail_obtener_valor_20_de_registro_h()
+{
+	tcb_t* tcb = malloc(sizeof(tcb_t));
+	char* registro = malloc(sizeof(char) + 1);
+	int resultado = 1;
+	*registro = 'h';
+	resultado = obtener_valor_de_registro(tcb, registro);
+	assert_int_equal(FALLO, resultado);
+	free(tcb);
+	free(registro);
+}
+
 void test_fixture_copiar_numero_en_registro( void )
 {
         test_fixture_start();
         run_test(test_poner_1_en_registro_a);
+        run_test(test_obtener_valor_20_de_registro_a);
         run_test(test_fail_poner_1_en_registro_h);
+        run_test(test_fail_obtener_valor_20_de_registro_h);
         test_fixture_end();
 }
 
