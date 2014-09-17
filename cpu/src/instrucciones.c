@@ -6,18 +6,19 @@
 #include "instrucciones.h"
 #include "sockets.h"
 #include "tcb-funciones.h"
+#include "resultados.h"
 
 int load(tcb_t* tcb) {
 
 	char* registro = obtener_registro(tcb);
 	int* numero = obtener_numero(tcb);
 
-	copiar_numero_en_registro(tcb, registro, *numero);
+	if (copiar_numero_en_registro(tcb, registro, *numero) == -1) return FALLO;
 
 	free(registro);
 	free(numero);
 
-	return 0;
+	return OK;
 }
 
 int getm(tcb_t* tcb) {
@@ -28,21 +29,21 @@ int getm(tcb_t* tcb) {
 	int* numero = malloc(sizeof(int));
 	*numero = obtener_valor_de_registro(tcb, registro2);
 
-	copiar_numero_en_registro(tcb, registro1, *numero);
+	if (copiar_numero_en_registro(tcb, registro1, *numero) == -1) return FALLO;
 
 	free(registro1);
 	free(registro2);
 	free(numero);
 
-	return 0;
+	return OK;
 }
 
 int setm(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int movr(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int addr(tcb_t* tcb) {
@@ -51,7 +52,7 @@ int addr(tcb_t* tcb) {
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
 	tcb->a = valor1 + valor2;
-	return 0;
+	return OK;
 }
 
 int subr(tcb_t* tcb) {
@@ -60,7 +61,7 @@ int subr(tcb_t* tcb) {
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
 	tcb->a = valor1 - valor2;
-	return 0;
+	return OK;
 }
 
 int mulr(tcb_t* tcb) {
@@ -69,32 +70,32 @@ int mulr(tcb_t* tcb) {
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
 	tcb->a = valor1 * valor2;
-	return 0;
+	return OK;
 }
 
 int modr(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int divr(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int incr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor++;
-	copiar_numero_en_registro(tcb, registro, valor);
-	return 0;
+	if (copiar_numero_en_registro(tcb, registro, valor) == -1) return FALLO;
+	return OK;
 }
 
 int decr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor--;
-	copiar_numero_en_registro(tcb, registro, valor);
+	if (copiar_numero_en_registro(tcb, registro, valor) == -1) return FALLO;
 	free(registro);
-	return 0;
+	return OK;
 }
 
 int comp(tcb_t* tcb) {
@@ -107,7 +108,7 @@ int comp(tcb_t* tcb) {
 	} else {
 		tcb->a = 0;
 	}
-	return 0;
+	return OK;
 }
 
 int cgeq(tcb_t* tcb) {
@@ -120,7 +121,7 @@ int cgeq(tcb_t* tcb) {
 	} else {
 		tcb->a = 0;
 	}
-	return 0;
+	return OK;
 }
 
 int cleq(tcb_t* tcb) {
@@ -133,87 +134,87 @@ int cleq(tcb_t* tcb) {
 	} else {
 		tcb->a = 0;
 	}
-	return 0;
+	return OK;
 }
 
 int _goto(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int jmpz(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int jpnz(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int inte(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int flcl(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int shif(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int nopp(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int push(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int take(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int xxxx(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int malc(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int _free(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int innn(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int innc(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int outn(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int outc(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int crea(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int join(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int blok(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 int wake(tcb_t* tcb) {
-	return 0;
+	return OK;
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic) {
