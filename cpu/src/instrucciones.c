@@ -12,7 +12,7 @@ int load(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int* numero = obtener_numero(tcb);
 
-	copiar_numero_en_registro(tcb, registro, numero);
+	copiar_numero_en_registro(tcb, registro, *numero);
 
 	free(registro);
 	free(numero);
@@ -28,7 +28,7 @@ int getm(tcb_t* tcb) {
 	int* numero = malloc(sizeof(int));
 	*numero = obtener_valor_de_registro(tcb, registro2);
 
-	copiar_numero_en_registro(tcb, registro1, numero);
+	copiar_numero_en_registro(tcb, registro1, *numero);
 
 	free(registro1);
 	free(registro2);
@@ -84,7 +84,7 @@ int incr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor++;
-	copiar_numero_en_registro(tcb, registro, &valor);
+	copiar_numero_en_registro(tcb, registro, valor);
 	return 0;
 }
 
@@ -92,7 +92,7 @@ int decr(tcb_t* tcb) {
 	char* registro = obtener_registro(tcb);
 	int valor = obtener_valor_de_registro(tcb, registro);
 	valor--;
-	copiar_numero_en_registro(tcb, registro, &valor);
+	copiar_numero_en_registro(tcb, registro, valor);
 	free(registro);
 	return 0;
 }
