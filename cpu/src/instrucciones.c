@@ -11,12 +11,12 @@
 int load(tcb_t* tcb) {
 
 	char* registro = obtener_registro(tcb);
-	int* numero = obtener_numero(tcb);
+	int* valor = obtener_numero(tcb);
 
-	int resultado = actualizar_valor_en_registro(tcb, registro, *numero);
+	int resultado = actualizar_valor_en_registro(tcb, registro, *valor);
 
 	free(registro);
-	free(numero);
+	free(valor);
 
 	return resultado;
 }
@@ -26,14 +26,14 @@ int getm(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
 
-	int numero = obtener_valor_de_registro(tcb, registro2);
+	int valor = obtener_valor_de_registro(tcb, registro2);
 
 	int resultado;
 
-	if (numero == FALLO) {
+	if (valor == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registro1, numero);
+		resultado = actualizar_valor_en_registro(tcb, registro1, valor);
 	}
 
 	free(registro1);
@@ -53,28 +53,55 @@ int movr(tcb_t* tcb) {
 int addr(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	tcb->a = valor1 + valor2;
-	return OK;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 + valor2);
+	}
+
+	return resultado;
 }
 
 int subr(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	tcb->a = valor1 - valor2;
-	return OK;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
+	}
+
+	return resultado;
 }
 
 int mulr(tcb_t* tcb) {
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
+
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
-	tcb->a = valor1 * valor2;
-	return OK;
+
+	int resultado;
+
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 * valor2);
+	}
+
+	return resultado;
 }
 
 int modr(tcb_t* tcb) {
