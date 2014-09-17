@@ -28,7 +28,13 @@ int getm(tcb_t* tcb) {
 
 	int numero = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado = actualizar_valor_en_registro(tcb, registro1, numero);
+	int resultado;
+
+	if (numero == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, registro1, numero);
+	}
 
 	free(registro1);
 	free(registro2);
