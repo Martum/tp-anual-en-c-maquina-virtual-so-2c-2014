@@ -10,22 +10,28 @@
 #include <string.h>
 #include "estructuras.h"
 
-void copiar_numero_en_registro(tcb_t* tcb, char* registro, int* numero) {
+int copiar_numero_en_registro(tcb_t* tcb, char* registro, int* numero) {
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = *numero;
+		return 0;
 	}
 	if (strcmp(registro, "b") == 0) {
 		tcb->b = *numero;
+		return 0;
 	}
 	if (strcmp(registro, "c") == 0) {
 		tcb->c = *numero;
+		return 0;
 	}
 	if (strcmp(registro, "d") == 0) {
 		tcb->d = *numero;
+		return 0;
 	}
 	if (strcmp(registro, "e") == 0) {
 		tcb->e = *numero;
+		return 0;
 	}
+	return -1;
 }
 
 int obtener_valor_de_registro(tcb_t* tcb, char* registro) {

@@ -28,19 +28,33 @@ void test_fixture_hello( void )
 void test_poner_1_en_registro_a()
 {
 	tcb_t* tcb = malloc(sizeof(tcb_t));
-	tcb->a = 0;
 	char* registro = malloc(sizeof(char) + 1);
+	int numero = 1, resultado = 1;
 	*registro = 'a';
-	int numero = 1;
-	copiar_numero_en_registro(tcb, registro, &numero);
+	resultado = copiar_numero_en_registro(tcb, registro, &numero);
 	assert_int_equal(1, tcb->a);
+	assert_int_equal(0, resultado);
 	free(tcb);
+	free(registro);
+}
+
+void test_fail_poner_1_en_registro_h()
+{
+	tcb_t* tcb = malloc(sizeof(tcb_t));
+	char* registro = malloc(sizeof(char) + 1);
+	int numero = 1, resultado = 1;
+	*registro = 'h';
+	resultado = copiar_numero_en_registro(tcb, registro, &numero);
+	assert_int_equal(-1, resultado);
+	free(tcb);
+	free(registro);
 }
 
 void test_fixture_copiar_numero_en_registro( void )
 {
         test_fixture_start();
         run_test(test_poner_1_en_registro_a);
+        run_test(test_fail_poner_1_en_registro_h);
         test_fixture_end();
 }
 
