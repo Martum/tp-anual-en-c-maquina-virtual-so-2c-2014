@@ -353,7 +353,22 @@ int cleq(tcb_t* tcb) {
 }
 
 int _goto(tcb_t* tcb) {
-	return OK;
+	char* registro = obtener_registro(tcb);
+
+	int valor = obtener_valor_de_registro(tcb, registro);
+
+	int resultado;
+
+	if (valor == FALLO) {
+		resultado = FALLO;
+	} else {
+		direccion base_de_codigo = obtener_base_de_codigo(tcb);
+		resultado = actualizar_pc(tcb, base_de_codigo + valor);
+	}
+
+	free(registro);
+
+	return resultado;
 }
 
 int jmpz(tcb_t* tcb) {

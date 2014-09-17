@@ -53,3 +53,16 @@ int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
 	}
 	return FALLO;
 }
+
+int actualizar_pc(tcb_t* tcb, int valor) {
+	tcb->pc = valor;
+	return OK;
+}
+
+int obtener_pc(tcb_t* tcb) {
+	return tcb->pc;
+}
+
+direccion obtener_base_de_codigo(tcb_t* tcb) {
+	return tcb->base_codigo;
+}
