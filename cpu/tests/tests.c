@@ -76,6 +76,14 @@ void test_fail_obtener_valor_20_de_registro_h()
 	free(registro);
 }
 
+void test_actualizar_valor_en_registro_a_version_solo_char()
+{
+	tcb_t* tcb = malloc(sizeof(tcb_t));
+	actualizar_valor_en_registro1(tcb, 'a', 20);
+	assert_int_equal(20, tcb->a);
+	free(tcb);
+}
+
 void test_fixture_copiar_numero_en_registro( void )
 {
         test_fixture_start();
@@ -83,6 +91,7 @@ void test_fixture_copiar_numero_en_registro( void )
         run_test(test_obtener_valor_20_de_registro_a);
         run_test(test_fail_poner_1_en_registro_h);
         run_test(test_fail_obtener_valor_20_de_registro_h);
+        run_test(test_actualizar_valor_en_registro_a_version_solo_char);
         test_fixture_end();
 }
 
@@ -91,6 +100,5 @@ void test_fixture_copiar_numero_en_registro( void )
 //
 void all_tests( void )
 {
-        test_fixture_hello();
         test_fixture_copiar_numero_en_registro();
 }

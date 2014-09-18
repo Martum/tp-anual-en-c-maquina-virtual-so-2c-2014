@@ -35,6 +35,30 @@ int actualizar_valor_en_registro(tcb_t* tcb, char* registro, int numero) {
 	return FALLO;
 }
 
+int actualizar_valor_en_registro1(tcb_t* tcb, char registro, int numero) {
+	if ('a' == registro) {
+		tcb->a = numero;
+		return OK;
+	}
+	if ('b' == registro) {
+		tcb->a = numero;
+		return OK;
+	}
+	if ('c' == registro) {
+		tcb->a = numero;
+		return OK;
+	}
+	if ('d' == registro) {
+		tcb->a = numero;
+		return OK;
+	}
+	if ('e' == registro) {
+		tcb->a = numero;
+		return OK;
+	}
+	return FALLO;
+}
+
 int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
 	if (strcmp(registro, "a") == 0) {
 		return tcb->a;

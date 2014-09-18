@@ -16,6 +16,7 @@
  * 		Devuelve 0 si _todo sale bien. Devuelve -1 si no se le paso un registro que exista.
  */
 int actualizar_valor_en_registro(tcb_t* tcb, char* registro, int numero);
+int actualizar_valor_en_registro1(tcb_t* tcb, char registro, int numero);
 /**
  * @NAME: obtener_valor_de_registro
  * @DESC: Obtiene el valor del registro de la tcb.
