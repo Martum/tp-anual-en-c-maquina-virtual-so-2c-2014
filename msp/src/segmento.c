@@ -15,7 +15,7 @@
 #include "estructuras.h"
 #include "pagina.h"
 
-segmento_t *crear_segmento(proceso_msp_t *proceso, uint32_t tamanio_en_bytes) {
+segmento_t *crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t tamanio_en_bytes) {
 	segmento_t *segmento = malloc(sizeof(segmento_t));
 	uint32_t paginas = cantidad_paginas(tamanio_en_bytes);
 	segmento->tamanio = paginas;
