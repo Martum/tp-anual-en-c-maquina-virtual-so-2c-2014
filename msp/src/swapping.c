@@ -25,6 +25,8 @@ marco_t* liberar_un_marco()
 {
 	marco_t* marco_a_liberar= realizar_algoritmo_swapping();
 
+	ñamñam
+
 
 
 
