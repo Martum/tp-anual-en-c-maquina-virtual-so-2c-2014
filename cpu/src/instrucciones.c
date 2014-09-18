@@ -11,12 +11,11 @@
 int load(tcb_t* tcb) {
 
 	char* registro = obtener_registro(tcb);
-	int* valor = obtener_numero(tcb);
+	int numero = obtener_numero(tcb);
 
-	int resultado = actualizar_valor_en_registro(tcb, registro, *valor);
+	int resultado = actualizar_valor_en_registro(tcb, registro, numero);
 
 	free(registro);
-	free(valor);
 
 	return resultado;
 }
@@ -43,7 +42,7 @@ int getm(tcb_t* tcb) {
 }
 
 int setm(tcb_t* tcb) {
-	int* valor = obtener_numero(tcb);
+	int numero = obtener_numero(tcb);
 	char* registro1 = obtener_registro(tcb);
 	char* registro2 = obtener_registro(tcb);
 
@@ -52,10 +51,10 @@ int setm(tcb_t* tcb) {
 
 	int resultado = 0;
 
-	char* buffer = malloc(*valor);
+	char* buffer = malloc(numero);
 
-	leer_de_memoria(direccion1, *valor, buffer);
-	escribir_en_memoria(direccion2, *valor, buffer);
+	leer_de_memoria(direccion1, numero, buffer);
+	escribir_en_memoria(direccion2, numero, buffer);
 
 	free(registro1);
 	free(registro2);

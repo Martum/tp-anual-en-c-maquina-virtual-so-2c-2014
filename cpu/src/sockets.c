@@ -45,9 +45,9 @@ char* obtener_registro(tcb_t* tcb) {
 	return registro;
 }
 
-int* obtener_numero(tcb_t* tcb) {
+int obtener_numero(tcb_t* tcb) {
 	int* numero = malloc(sizeof(int));
 	leer_de_memoria(tcb->pc, sizeof(int), numero);
 	tcb->pc = tcb->pc + 4;
-	return numero;
+	return *numero;
 }
