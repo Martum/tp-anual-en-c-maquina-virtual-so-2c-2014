@@ -83,8 +83,7 @@ int32_t addr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a',
-				valor1 - valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
 	}
 
 	return resultado;
@@ -102,8 +101,7 @@ int32_t subr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a',
-				valor1 - valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
 	}
 
 	return resultado;
@@ -121,8 +119,7 @@ int32_t mulr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a',
-				valor1 * valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 * valor2);
 	}
 
 	return resultado;
@@ -140,8 +137,7 @@ int32_t modr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a',
-				valor1 % valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 % valor2);
 	}
 
 	return resultado;
@@ -161,8 +157,7 @@ int32_t divr(tcb_t* tcb) {
 	} else if (valor2 == 0) {
 		resultado = actualizar_valor_en_registro(tcb, 'f', ZERO_DIV);
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a',
-				valor1 / valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 / valor2);
 	}
 
 	return resultado;
@@ -292,10 +287,29 @@ int32_t _goto(tcb_t* tcb) {
 }
 
 int32_t jmpz(tcb_t* tcb) {
+
+	uint32_t offset = obtener_numero(tcb);
+
+	if (obtener_valor_de_registro(tcb, 'a') != 0)
+		return OK;
+
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
+
+	actualizar_pc(tcb, base_de_codigo + offset);
+
 	return OK;
 }
 
 int32_t jpnz(tcb_t* tcb) {
+	uint32_t offset = obtener_numero(tcb);
+
+	if (obtener_valor_de_registro(tcb, 'a') == 0)
+		return OK;
+
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
+
+	actualizar_pc(tcb, base_de_codigo + offset);
+
 	return OK;
 }
 
@@ -304,10 +318,21 @@ int32_t inte(tcb_t* tcb) {
 }
 
 int32_t flcl(tcb_t* tcb) {
+	// fue deprecada
 	return OK;
 }
 
 int32_t shif(tcb_t* tcb) {
+	uint32_t bytes = obtener_numero(tcb);
+	char registro = obtener_registro(tcb);
+	uint32_t valor_de_registro = obtener_valor_de_registro(tcb, registro);
+	uint32_t valor_de_registro_desplazado;
+	if (bytes > 0) {
+		valor_de_registro_desplazado = valor_de_registro >> bytes;
+	} else {
+		valor_de_registro_desplazado = valor_de_registro << bytes;
+	}
+	actualizar_valor_en_registro(tcb, registro, valor_de_registro_desplazado);
 	return OK;
 }
 
