@@ -11,5 +11,6 @@
 #define FALLO -31
 #define OK -30
 #define ZERO_DIV -40
+#define TERMINO -32
 
 #endif /* RESULTADOS_H_ */

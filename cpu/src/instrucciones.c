@@ -349,10 +349,13 @@ int32_t take(tcb_t* tcb) {
 }
 
 int32_t xxxx(tcb_t* tcb) {
-	return OK;
+	return TERMINO;
 }
 
 int32_t malc(tcb_t* tcb) {
+	uint32_t bytes = obtener_valor_de_registro(tcb, 'a');
+	direccion direccion = crear_segmento(tcb, bytes);
+	actualizar_valor_en_registro(tcb, 'a', direccion);
 	return OK;
 }
 
