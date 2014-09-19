@@ -38,11 +38,11 @@ int informar_a_kernel_de_finalizacion(tcb_t* tcb, int res) {
 	return 0;
 }
 
-char* obtener_registro(tcb_t* tcb) {
+char obtener_registro(tcb_t* tcb) {
 	char* registro = malloc(sizeof(char));
 	leer_de_memoria(tcb->pc, sizeof(char), registro);
 	tcb->pc = tcb->pc + 1;
-	return registro;
+	return *registro;
 }
 
 int obtener_numero(tcb_t* tcb) {

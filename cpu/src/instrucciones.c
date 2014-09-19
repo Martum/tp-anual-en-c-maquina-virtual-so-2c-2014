@@ -10,20 +10,15 @@
 
 int load(tcb_t* tcb) {
 
-	char* registro = obtener_registro(tcb);
+	char registro = obtener_registro(tcb);
 	int numero = obtener_numero(tcb);
-
-	int resultado = actualizar_valor_en_registro(tcb, registro, numero);
-
-	free(registro);
-
-	return resultado;
+	return actualizar_valor_en_registro(tcb, registro, numero);
 }
 
 int getm(tcb_t* tcb) {
 
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor = obtener_valor_de_registro(tcb, registro2);
 
@@ -35,16 +30,13 @@ int getm(tcb_t* tcb) {
 		resultado = actualizar_valor_en_registro(tcb, registro1, valor);
 	}
 
-	free(registro1);
-	free(registro2);
-
 	return resultado;
 }
 
 int setm(tcb_t* tcb) {
 	int numero = obtener_numero(tcb);
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	direccion direccion1 = obtener_valor_de_registro(tcb, registro1);
 	direccion direccion2 = obtener_valor_de_registro(tcb, registro2);
@@ -56,16 +48,14 @@ int setm(tcb_t* tcb) {
 	leer_de_memoria(direccion1, numero, buffer);
 	escribir_en_memoria(direccion2, numero, buffer);
 
-	free(registro1);
-	free(registro2);
 	free(buffer);
 
 	return resultado;
 }
 
 int movr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor = obtener_valor_de_registro(tcb, registro2);
 
@@ -77,18 +67,12 @@ int movr(tcb_t* tcb) {
 		resultado = actualizar_valor_en_registro(tcb, registro1, valor);
 	}
 
-	free(registro1);
-	free(registro2);
-
 	return resultado;
 }
 
 int addr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -98,23 +82,16 @@ int addr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA,
+		resultado = actualizar_valor_en_registro(tcb, 'a',
 				valor1 - valor2);
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int subr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -124,23 +101,16 @@ int subr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA,
+		resultado = actualizar_valor_en_registro(tcb, 'a',
 				valor1 - valor2);
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int mulr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -150,23 +120,16 @@ int mulr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA,
+		resultado = actualizar_valor_en_registro(tcb, 'a',
 				valor1 * valor2);
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int modr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -176,23 +139,16 @@ int modr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA,
+		resultado = actualizar_valor_en_registro(tcb, 'a',
 				valor1 % valor2);
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int divr(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -202,27 +158,17 @@ int divr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else if (valor2 == 0) {
-		char* registroF = malloc(sizeof(char) + 1);
-		*registroF = 'f';
-		resultado = actualizar_valor_en_registro(tcb, registroF, ZERO_DIV);
-		free(registroF);
+		resultado = actualizar_valor_en_registro(tcb, 'f', ZERO_DIV);
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, registroA,
+		resultado = actualizar_valor_en_registro(tcb, 'a',
 				valor1 / valor2);
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int incr(tcb_t* tcb) {
-	char* registro = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro = obtener_registro(tcb);
 
 	int valor = obtener_valor_de_registro(tcb, registro);
 
@@ -232,20 +178,14 @@ int incr(tcb_t* tcb) {
 		resultado = FALLO;
 	} else {
 		valor++;
-		resultado = actualizar_valor_en_registro(tcb, registroA, valor);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
 	}
-
-	free(registro);
-	free(registroA);
 
 	return resultado;
 }
 
 int decr(tcb_t* tcb) {
-	char* registro = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro = obtener_registro(tcb);
 
 	int valor = obtener_valor_de_registro(tcb, registro);
 
@@ -255,18 +195,15 @@ int decr(tcb_t* tcb) {
 		resultado = FALLO;
 	} else {
 		valor--;
-		resultado = actualizar_valor_en_registro(tcb, registroA, valor);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
 	}
-
-	free(registro);
-	free(registroA);
 
 	return resultado;
 }
 
 int comp(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	char* registroA = malloc(sizeof(char) + 1);
 	*registroA = 'a';
@@ -280,25 +217,18 @@ int comp(tcb_t* tcb) {
 		resultado = FALLO;
 	} else {
 		if (valor1 == valor2) {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 1);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
 		} else {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 0);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
 		}
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int cgeq(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	int valor1 = obtener_valor_de_registro(tcb, registro1);
 	int valor2 = obtener_valor_de_registro(tcb, registro2);
@@ -309,22 +239,18 @@ int cgeq(tcb_t* tcb) {
 		resultado = FALLO;
 	} else {
 		if (valor1 >= valor2) {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 1);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
 		} else {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 0);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
 		}
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int cleq(tcb_t* tcb) {
-	char* registro1 = obtener_registro(tcb);
-	char* registro2 = obtener_registro(tcb);
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
 
 	char* registroA = malloc(sizeof(char) + 1);
 	*registroA = 'a';
@@ -338,21 +264,17 @@ int cleq(tcb_t* tcb) {
 		resultado = FALLO;
 	} else {
 		if (valor1 <= valor2) {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 1);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
 		} else {
-			resultado = actualizar_valor_en_registro(tcb, registroA, 0);
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
 		}
 	}
-
-	free(registro1);
-	free(registro2);
-	free(registroA);
 
 	return resultado;
 }
 
 int _goto(tcb_t* tcb) {
-	char* registro = obtener_registro(tcb);
+	char registro = obtener_registro(tcb);
 
 	int valor = obtener_valor_de_registro(tcb, registro);
 
@@ -364,8 +286,6 @@ int _goto(tcb_t* tcb) {
 		direccion base_de_codigo = obtener_base_de_codigo(tcb);
 		resultado = actualizar_pc(tcb, base_de_codigo + valor);
 	}
-
-	free(registro);
 
 	return resultado;
 }

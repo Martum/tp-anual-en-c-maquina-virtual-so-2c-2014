@@ -11,7 +11,7 @@
 #include "estructuras.h"
 #include "resultados.h"
 
-int actualizar_valor_en_registro(tcb_t* tcb, char* registro, int numero) {
+int actualizar_valor_en_registro1(tcb_t* tcb, char* registro, int numero) {
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = numero;
 		return OK;
@@ -35,7 +35,7 @@ int actualizar_valor_en_registro(tcb_t* tcb, char* registro, int numero) {
 	return FALLO;
 }
 
-int actualizar_valor_en_registro1(tcb_t* tcb, char registro, int numero) {
+int actualizar_valor_en_registro(tcb_t* tcb, char registro, int numero) {
 	if ('a' == registro) {
 		tcb->a = numero;
 		return OK;
@@ -59,7 +59,7 @@ int actualizar_valor_en_registro1(tcb_t* tcb, char registro, int numero) {
 	return FALLO;
 }
 
-int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
+int obtener_valor_de_registro1(tcb_t* tcb, char* registro) {
 	if (strcmp(registro, "a") == 0) {
 		return tcb->a;
 	}
@@ -73,6 +73,25 @@ int obtener_valor_de_registro(tcb_t* tcb, char* registro) {
 		return tcb->d;
 	}
 	if (strcmp(registro, "e") == 0) {
+		return tcb->e;
+	}
+	return FALLO;
+}
+
+int obtener_valor_de_registro(tcb_t* tcb, char registro) {
+	if ('a' == registro) {
+		return tcb->a;
+	}
+	if ('b' == registro) {
+		return tcb->b;
+	}
+	if ('c' == registro) {
+		return tcb->c;
+	}
+	if ('d' == registro) {
+		return tcb->d;
+	}
+	if ('e' == registro) {
 		return tcb->e;
 	}
 	return FALLO;
