@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <commons/collections/dictionary.h>
 #include "estructuras.h"
 #include "instrucciones.h"
@@ -8,21 +9,21 @@
 #include "tcb-funciones.h"
 #include "resultados.h"
 
-int load(tcb_t* tcb) {
+int32_t load(tcb_t* tcb) {
 
 	char registro = obtener_registro(tcb);
-	int numero = obtener_numero(tcb);
+	int32_t numero = obtener_numero(tcb);
 	return actualizar_valor_en_registro(tcb, registro, numero);
 }
 
-int getm(tcb_t* tcb) {
+int32_t getm(tcb_t* tcb) {
 
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor == FALLO) {
 		resultado = FALLO;
@@ -33,15 +34,15 @@ int getm(tcb_t* tcb) {
 	return resultado;
 }
 
-int setm(tcb_t* tcb) {
-	int numero = obtener_numero(tcb);
+int32_t setm(tcb_t* tcb) {
+	int32_t numero = obtener_numero(tcb);
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
 	direccion direccion1 = obtener_valor_de_registro(tcb, registro1);
 	direccion direccion2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado = 0;
+	int32_t resultado = 0;
 
 	char* buffer = malloc(numero);
 
@@ -53,13 +54,13 @@ int setm(tcb_t* tcb) {
 	return resultado;
 }
 
-int movr(tcb_t* tcb) {
+int32_t movr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor == FALLO) {
 		resultado = FALLO;
@@ -70,14 +71,14 @@ int movr(tcb_t* tcb) {
 	return resultado;
 }
 
-int addr(tcb_t* tcb) {
+int32_t addr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -89,14 +90,14 @@ int addr(tcb_t* tcb) {
 	return resultado;
 }
 
-int subr(tcb_t* tcb) {
+int32_t subr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -108,14 +109,14 @@ int subr(tcb_t* tcb) {
 	return resultado;
 }
 
-int mulr(tcb_t* tcb) {
+int32_t mulr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -127,14 +128,14 @@ int mulr(tcb_t* tcb) {
 	return resultado;
 }
 
-int modr(tcb_t* tcb) {
+int32_t modr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -146,14 +147,14 @@ int modr(tcb_t* tcb) {
 	return resultado;
 }
 
-int divr(tcb_t* tcb) {
+int32_t divr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -167,12 +168,12 @@ int divr(tcb_t* tcb) {
 	return resultado;
 }
 
-int incr(tcb_t* tcb) {
+int32_t incr(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
 
-	int valor = obtener_valor_de_registro(tcb, registro);
+	int32_t valor = obtener_valor_de_registro(tcb, registro);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor == FALLO) {
 		resultado = FALLO;
@@ -184,12 +185,12 @@ int incr(tcb_t* tcb) {
 	return resultado;
 }
 
-int decr(tcb_t* tcb) {
+int32_t decr(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
 
-	int valor = obtener_valor_de_registro(tcb, registro);
+	int32_t valor = obtener_valor_de_registro(tcb, registro);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor == FALLO) {
 		resultado = FALLO;
@@ -201,17 +202,17 @@ int decr(tcb_t* tcb) {
 	return resultado;
 }
 
-int comp(tcb_t* tcb) {
+int32_t comp(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
 	char* registroA = malloc(sizeof(char) + 1);
 	*registroA = 'a';
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -226,14 +227,14 @@ int comp(tcb_t* tcb) {
 	return resultado;
 }
 
-int cgeq(tcb_t* tcb) {
+int32_t cgeq(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -248,17 +249,17 @@ int cgeq(tcb_t* tcb) {
 	return resultado;
 }
 
-int cleq(tcb_t* tcb) {
+int32_t cleq(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 
 	char* registroA = malloc(sizeof(char) + 1);
 	*registroA = 'a';
 
-	int valor1 = obtener_valor_de_registro(tcb, registro1);
-	int valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
@@ -273,12 +274,12 @@ int cleq(tcb_t* tcb) {
 	return resultado;
 }
 
-int _goto(tcb_t* tcb) {
+int32_t _goto(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
 
-	int valor = obtener_valor_de_registro(tcb, registro);
+	int32_t valor = obtener_valor_de_registro(tcb, registro);
 
-	int resultado;
+	int32_t resultado;
 
 	if (valor == FALLO) {
 		resultado = FALLO;
@@ -290,79 +291,79 @@ int _goto(tcb_t* tcb) {
 	return resultado;
 }
 
-int jmpz(tcb_t* tcb) {
+int32_t jmpz(tcb_t* tcb) {
 	return OK;
 }
 
-int jpnz(tcb_t* tcb) {
+int32_t jpnz(tcb_t* tcb) {
 	return OK;
 }
 
-int inte(tcb_t* tcb) {
+int32_t inte(tcb_t* tcb) {
 	return OK;
 }
 
-int flcl(tcb_t* tcb) {
+int32_t flcl(tcb_t* tcb) {
 	return OK;
 }
 
-int shif(tcb_t* tcb) {
+int32_t shif(tcb_t* tcb) {
 	return OK;
 }
 
-int nopp(tcb_t* tcb) {
+int32_t nopp(tcb_t* tcb) {
 	return OK;
 }
 
-int push(tcb_t* tcb) {
+int32_t push(tcb_t* tcb) {
 	return OK;
 }
 
-int take(tcb_t* tcb) {
+int32_t take(tcb_t* tcb) {
 	return OK;
 }
 
-int xxxx(tcb_t* tcb) {
+int32_t xxxx(tcb_t* tcb) {
 	return OK;
 }
 
-int malc(tcb_t* tcb) {
+int32_t malc(tcb_t* tcb) {
 	return OK;
 }
 
-int _free(tcb_t* tcb) {
+int32_t _free(tcb_t* tcb) {
 	return OK;
 }
 
-int innn(tcb_t* tcb) {
+int32_t innn(tcb_t* tcb) {
 	return OK;
 }
 
-int innc(tcb_t* tcb) {
+int32_t innc(tcb_t* tcb) {
 	return OK;
 }
 
-int outn(tcb_t* tcb) {
+int32_t outn(tcb_t* tcb) {
 	return OK;
 }
 
-int outc(tcb_t* tcb) {
+int32_t outc(tcb_t* tcb) {
 	return OK;
 }
 
-int crea(tcb_t* tcb) {
+int32_t crea(tcb_t* tcb) {
 	return OK;
 }
 
-int join(tcb_t* tcb) {
+int32_t join(tcb_t* tcb) {
 	return OK;
 }
 
-int blok(tcb_t* tcb) {
+int32_t blok(tcb_t* tcb) {
 	return OK;
 }
 
-int wake(tcb_t* tcb) {
+int32_t wake(tcb_t* tcb) {
 	return OK;
 }
 

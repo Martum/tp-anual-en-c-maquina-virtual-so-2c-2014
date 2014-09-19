@@ -8,10 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "estructuras.h"
 #include "resultados.h"
 
-int actualizar_valor_en_registro1(tcb_t* tcb, char* registro, int numero) {
+int32_t actualizar_valor_en_registro1(tcb_t* tcb, char* registro, int32_t numero) {
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = numero;
 		return OK;
@@ -35,7 +36,7 @@ int actualizar_valor_en_registro1(tcb_t* tcb, char* registro, int numero) {
 	return FALLO;
 }
 
-int actualizar_valor_en_registro(tcb_t* tcb, char registro, int numero) {
+int32_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) {
 	if ('a' == registro) {
 		tcb->a = numero;
 		return OK;
@@ -59,7 +60,7 @@ int actualizar_valor_en_registro(tcb_t* tcb, char registro, int numero) {
 	return FALLO;
 }
 
-int obtener_valor_de_registro1(tcb_t* tcb, char* registro) {
+int32_t obtener_valor_de_registro1(tcb_t* tcb, char* registro) {
 	if (strcmp(registro, "a") == 0) {
 		return tcb->a;
 	}
@@ -78,7 +79,7 @@ int obtener_valor_de_registro1(tcb_t* tcb, char* registro) {
 	return FALLO;
 }
 
-int obtener_valor_de_registro(tcb_t* tcb, char registro) {
+int32_t obtener_valor_de_registro(tcb_t* tcb, char registro) {
 	if ('a' == registro) {
 		return tcb->a;
 	}
@@ -97,12 +98,12 @@ int obtener_valor_de_registro(tcb_t* tcb, char registro) {
 	return FALLO;
 }
 
-int actualizar_pc(tcb_t* tcb, int valor) {
+int32_t actualizar_pc(tcb_t* tcb, int32_t valor) {
 	tcb->pc = valor;
 	return OK;
 }
 
-int obtener_pc(tcb_t* tcb) {
+int32_t obtener_pc(tcb_t* tcb) {
 	return tcb->pc;
 }
 

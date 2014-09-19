@@ -1,24 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "sockets.h"
 #include "instrucciones.h"
 #include <commons/collections/dictionary.h>
 #include "seatest.h"
 #include "tests.h"
 
-int main(int argc, char** argv) {
+int32_t main(int32_t argc, char** argv) {
 
 	run_tests(all_tests);
 
 	t_dictionary* dic_instrucciones = dictionary_create();
 	tcb_t* tcb = malloc(sizeof(tcb_t));
 	char buffer[4];
-	int quantum, res = 0;
+	int32_t quantum, res = 0;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
-	int memoria = conectar_con_memoria();
-	int kernel = conectar_con_kernel();
+	int32_t memoria = conectar_con_memoria();
+	int32_t kernel = conectar_con_kernel();
 
 	if (memoria == -1 || kernel == -1) { // fallo la conexion
 	// informo por pantalla y loggeo
@@ -34,7 +35,7 @@ int main(int argc, char** argv) {
 
 		do {
 			leer_de_memoria(tcb->pc, sizeof(buffer), buffer);
-			int (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
+			int32_t (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
 			res = funcion(tcb); // si _todo fue como deberia  ser devuelve 0
 			quantum--;
 		} while ((quantum > 0 || quantum == -1) && res == 0); // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso. Quantum -1 significa que es el kernel
