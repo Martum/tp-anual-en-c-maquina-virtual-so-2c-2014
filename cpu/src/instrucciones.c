@@ -360,6 +360,8 @@ int32_t malc(tcb_t* tcb) {
 }
 
 int32_t _free(tcb_t* tcb) {
+	direccion direccion = obtener_valor_de_registro(tcb, 'a');
+	destruir_segmento(tcb, direccion);
 	return OK;
 }
 

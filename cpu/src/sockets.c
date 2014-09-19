@@ -28,6 +28,10 @@ direccion crear_segmento(tcb_t* tcb, int32_t bytes) {
 	return 0;
 }
 
+int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
+	return 0;
+}
+
 int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
