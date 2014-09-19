@@ -83,7 +83,7 @@ int32_t addr(tcb_t* tcb) {
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 + valor2);
 	}
 
 	return resultado;

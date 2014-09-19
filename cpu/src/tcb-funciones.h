@@ -11,6 +11,8 @@
 #ifndef TCB_FUNCIONES_H_
 #define TCB_FUNCIONES_H_
 
+tcb_t* crear_tcb();
+
 /**
  * @NAME: copiar_valor_en_registro
  * @DESC: Actualiza el valor del registro de la tcb con el numero.

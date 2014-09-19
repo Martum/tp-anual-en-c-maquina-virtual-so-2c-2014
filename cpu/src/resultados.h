@@ -12,5 +12,6 @@
 #define OK -30
 #define ZERO_DIV -40
 #define TERMINO -32
+#define FALLO_CONEXION -33
 
 #endif /* RESULTADOS_H_ */

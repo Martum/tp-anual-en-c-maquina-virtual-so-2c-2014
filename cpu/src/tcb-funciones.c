@@ -12,6 +12,10 @@
 #include "estructuras.h"
 #include "resultados.h"
 
+tcb_t* crear_tcb() {
+	return malloc(sizeof(tcb_t));
+}
+
 int32_t actualizar_valor_en_registro1(tcb_t* tcb, char* registro, int32_t numero) {
 	if (strcmp(registro, "a") == 0) {
 		tcb->a = numero;
