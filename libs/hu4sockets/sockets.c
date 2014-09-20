@@ -84,8 +84,12 @@ uint32_t _enviar_todo(sock_t* socket, char* msg, uint32_t* len)
 	int32_t bytesleft = *len; // cuantos se han quedado pendientes
 	int32_t n;
 	while(total < *len) {
-		n = send(socket->fd, msg+total, bytesleft, 0);
-		if (n == -1) { break; }
+		n = _enviar(socket, msg+total, bytesleft);
+
+		// Si falla el envio cortamos el loop
+		if (n == -1)
+			break;
+
 		total += n;
 		bytesleft -= n;
 	}
@@ -111,6 +115,33 @@ void _liberar_memoria(sock_t* socket)
 {
 	free(socket->datos_conexion);
 	free(socket);
+}
+
+char* _serializar_cabecera(cabecera_t* cabecera)
+{
+	char* msg = malloc(sizeof(cabecera_t));
+	memcpy(msg, cabecera, sizeof(cabecera_t));
+
+	return msg;
+}
+
+
+uint32_t enviar(sock_t* socket, char* msg, uint32_t* len)
+{
+	// Seteamos el Header
+	uint32_t len_cabecera = sizeof(cabecera_t);
+	cabecera_t cabecera;
+	cabecera.longitud_mensaje = *len;
+
+	// Enviamos el Header, si falla devolvemos -1
+	if(_enviar_todo(socket, _serializar_cabecera(&cabecera), &len_cabecera) != 0)
+		return -1;
+
+	// Enviamos el Mensaje, si falla devolvemos -1
+	if(_enviar_todo(socket, msg, len))
+		return -1;
+
+	return 0;
 }
 
 

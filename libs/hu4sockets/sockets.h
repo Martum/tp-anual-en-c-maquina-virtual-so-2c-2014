@@ -26,7 +26,7 @@ typedef struct sock
 
 typedef struct cabecera
 {
-
+	uint32_t longitud_mensaje;
 } cabecera_t;
 
 
@@ -94,8 +94,20 @@ void _cerrame_esto_nestor(sock_t* socket);
  */
 void _liberar_memoria(sock_t* socket);
 
+/**
+ * Serializa la cabecera para enviarla por la Matrix
+ */
+char* _serializar_cabecera(cabecera_t* cabecera);
+
+
 
 /***FUNCIONES PBLICAS***/
+
+/**
+ * Envia el msg. Len es la longitud del chorro de bytes.
+ * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes no enviados
+ */
+uint32_t enviar(sock_t* socket, char* msg, uint32_t* len);
 
 /**
  * Cierra el Socket y libera la memoria ocupada por el Struct
