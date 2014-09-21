@@ -1,22 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "sockets.h"
-#include "instrucciones.h"
 #include <commons/collections/dictionary.h>
-#include "seatest.h"
-#include "tests.h"
+#include "instrucciones.h"
 #include "resultados.h"
+#include "seatest.h"
+#include "sockets.h"
+#include "tcb-funciones.h"
+#include "tests.h"
 
 int32_t main(int32_t argc, char** argv) {
 
 	run_tests(all_tests);
 
-	t_dictionary* dic_instrucciones = dictionary_create();
 	tcb_t* tcb = crear_tcb();
+	t_dictionary* dic_instrucciones = dictionary_create();
+	resultado_t (*funcion)(tcb_t*);
 	resultado_t res = OK;
 	int32_t quantum;
-	char buffer[4];
+	instruccion_t instruccion;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
@@ -35,10 +37,10 @@ int32_t main(int32_t argc, char** argv) {
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 		}
 
-		while ((quantum > 0 || quantum == -1) && res == OK) { // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso. Quantum -1 significa que es el kernel
-			leer_de_memoria(tcb->pc, sizeof(buffer), buffer);
-			resultado_t (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
-			res = funcion(tcb); // si _todo fue como deberia  ser devuelve 0
+		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
+			leer_de_memoria(tcb->pc, sizeof(instruccion), instruccion);
+			funcion = dictionary_get(dic_instrucciones, instruccion);
+			res = funcion(tcb);
 			quantum--;
 		}
 
@@ -47,7 +49,7 @@ int32_t main(int32_t argc, char** argv) {
 
 	dictionary_destroy(dic_instrucciones);
 	free(tcb);
-	free(buffer);
+	free(instruccion);
 
 	return 0;
 }

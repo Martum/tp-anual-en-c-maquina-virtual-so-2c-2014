@@ -12,6 +12,7 @@
 #include <stdbool.h>
 
 typedef uint32_t direccion;
+typedef char instruccion_t[4];
 
 typedef struct tcb
 {
