@@ -109,6 +109,7 @@ int32_t _recibir_todo(sock_t* socket, char* buff, uint32_t* len)
 {
 	int32_t recibidos = 0;
 	int32_t n = 0;
+	int32_t bytesleft = *len;
 
 	while(recibidos < *len)
 	{
@@ -119,9 +120,10 @@ int32_t _recibir_todo(sock_t* socket, char* buff, uint32_t* len)
 			break;
 
 		recibidos += n;
-		*len -= n;
+		bytesleft -= n;
 	}
 
+	*len = recibidos;
 	return n == -1?-1:0;
 }
 
