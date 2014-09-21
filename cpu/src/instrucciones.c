@@ -192,26 +192,31 @@ int32_t _goto(tcb_t* tcb) {
 	return actualizar_pc(tcb, base_de_codigo + valor);
 }
 
-int32_t jmpz(tcb_t* tcb) {
+int32_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t offset = obtener_numero(tcb);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
 	if (obtener_valor_de_registro_con_puntero(tcb, 'a', &valor) == FALLO)
 		return FALLO;
-	if (valor != 0)
+	if (condicion(valor))
 		return OK;
 	return actualizar_pc(tcb, base_de_codigo + offset);
 }
 
+int32_t jmpz(tcb_t* tcb) {
+	int32_t condicion(int32_t valor) {
+		return valor != 0;
+	}
+
+	return _funcion_de_salto(tcb, condicion);
+}
+
 int32_t jpnz(tcb_t* tcb) {
-	int32_t offset = obtener_numero(tcb);
-	direccion base_de_codigo = obtener_base_de_codigo(tcb);
-	int32_t valor;
-	if (obtener_valor_de_registro_con_puntero(tcb, 'a', &valor) == FALLO)
-		return FALLO;
-	if (valor == 0)
-		return OK;
-	return actualizar_pc(tcb, base_de_codigo + offset);
+	int32_t condicion(int32_t valor) {
+		return valor == 0;
+	}
+
+	return _funcion_de_salto(tcb, condicion);
 }
 
 int32_t inte(tcb_t* tcb) {
