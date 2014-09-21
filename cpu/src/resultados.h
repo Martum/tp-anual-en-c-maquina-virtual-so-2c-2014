@@ -8,8 +8,9 @@
 #ifndef RESULTADOS_H_
 #define RESULTADOS_H_
 
-#define FALLO -31
-#define OK -30
-#define ZERO_DIV -40
+typedef enum {OK, FALLO, NO_ENCONTRO_EL_REGISTRO, TERMINO} resultado_t;
+
+#define FALLO_CONEXION -33
+
 
 #endif /* RESULTADOS_H_ */
