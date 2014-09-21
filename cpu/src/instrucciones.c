@@ -92,8 +92,7 @@ int32_t addr(tcb_t* tcb) {
 		return valor1 + valor2;
 	}
 
-	int32_t resultado = _funcion_operacion(tcb, sumar);
-	return resultado;
+	return _funcion_operacion(tcb, sumar);
 }
 
 int32_t subr(tcb_t* tcb) {
@@ -101,8 +100,7 @@ int32_t subr(tcb_t* tcb) {
 		return valor1 - valor2;
 	}
 
-	int32_t resultado = _funcion_operacion(tcb, restar);
-	return resultado;
+	return _funcion_operacion(tcb, restar);
 }
 
 int32_t mulr(tcb_t* tcb) {
@@ -110,8 +108,7 @@ int32_t mulr(tcb_t* tcb) {
 		return valor1 * valor2;
 	}
 
-	int32_t resultado = _funcion_operacion(tcb, multiplicar);
-	return resultado;
+	return _funcion_operacion(tcb, multiplicar);
 }
 
 int32_t modr(tcb_t* tcb) {
@@ -119,8 +116,7 @@ int32_t modr(tcb_t* tcb) {
 		return valor1 % valor2;
 	}
 
-	int32_t resultado = _funcion_operacion(tcb, modulo);
-	return resultado;
+	return _funcion_operacion(tcb, modulo);
 }
 
 int32_t divr(tcb_t* tcb) {
@@ -128,8 +124,7 @@ int32_t divr(tcb_t* tcb) {
 		return valor1 / valor2;
 	}
 
-	int32_t resultado = _funcion_operacion(tcb, dividir);
-	return resultado;
+	return _funcion_operacion(tcb, dividir);
 }
 
 int32_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
@@ -149,8 +144,7 @@ int32_t incr(tcb_t* tcb) {
 		return valor++;
 	}
 
-	int32_t resultado = _funcion_incr_decr(tcb, sumar_1);
-	return resultado;
+	return _funcion_incr_decr(tcb, sumar_1);
 }
 
 int32_t decr(tcb_t* tcb) {
@@ -158,80 +152,57 @@ int32_t decr(tcb_t* tcb) {
 		return valor--;
 	}
 
-	int32_t resultado = _funcion_incr_decr(tcb, restar_1);
+	return _funcion_incr_decr(tcb, restar_1);
+}
+
+int32_t _funcion_comparacion(tcb_t* tcb, int32_t comparador(int32_t, int32_t)) {
+	char registro1 = obtener_registro(tcb);
+	char registro2 = obtener_registro(tcb);
+	char* registroA = malloc(sizeof(char) + 1);
+	*registroA = 'a';
+	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
+	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
+	int32_t resultado;
+	if (valor1 == FALLO || valor2 == FALLO) {
+		resultado = FALLO;
+	} else {
+		if (comparador(valor1, valor2)) {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
+		} else {
+			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
+		}
+	}
 	return resultado;
 }
 
 int32_t comp(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		if (valor1 == valor2) {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
-		} else {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
-		}
+	int32_t comparador(int32_t valor1, int32_t valor2) {
+		if (valor1 == valor2)
+			return 1;
+		return 0;
 	}
 
-	return resultado;
+	return _funcion_comparacion(tcb, comparador);
 }
 
 int32_t cgeq(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		if (valor1 >= valor2) {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
-		} else {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
-		}
+	int32_t comparador(int32_t valor1, int32_t valor2) {
+		if (valor1 >= valor2)
+			return 1;
+		return 0;
 	}
 
-	return resultado;
+	return _funcion_comparacion(tcb, comparador);
 }
 
 int32_t cleq(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	char* registroA = malloc(sizeof(char) + 1);
-	*registroA = 'a';
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		if (valor1 <= valor2) {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 1);
-		} else {
-			resultado = actualizar_valor_en_registro(tcb, 'a', 0);
-		}
+	int32_t comparador(int32_t valor1, int32_t valor2) {
+		if (valor1 <= valor2)
+			return 1;
+		return 0;
 	}
 
-	return resultado;
+	return _funcion_comparacion(tcb, comparador);
 }
 
 int32_t _goto(tcb_t* tcb) {
