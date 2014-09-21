@@ -13,6 +13,14 @@ int32_t main(int32_t argc, char** argv) {
 
 	run_tests(all_tests);
 
+	int32_t memoria = conectar_con_memoria();
+	int32_t kernel = conectar_con_kernel();
+
+	if (memoria == FALLO_CONEXION || kernel == FALLO_CONEXION) { // fallo la conexion
+		// informo por pantalla y loggeo
+		return 0;
+	}
+
 	tcb_t* tcb = crear_tcb();
 	t_dictionary* dic_instrucciones = dictionary_create();
 	resultado_t (*funcion)(tcb_t*);
@@ -22,16 +30,10 @@ int32_t main(int32_t argc, char** argv) {
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
-	int32_t memoria = conectar_con_memoria();
-	int32_t kernel = conectar_con_kernel();
-
-	if (memoria == FALLO_CONEXION || kernel == FALLO_CONEXION) { // fallo la conexion
-	// informo por pantalla y loggeo
-		return 0;
-	}
 
 	while (1) {
-		while (pedir_tcb(tcb, &quantum)); // pide hasta que se lo da
+		while (pedir_tcb(tcb, &quantum))
+			; // pide hasta que se lo da
 
 		if (quantum < -1 || quantum == 0) {
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
