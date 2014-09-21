@@ -48,6 +48,11 @@ int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
 	return 0;
 }
 
+void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion) {
+	leer_de_memoria(tcb->pc, sizeof(instruccion), instruccion);
+	tcb->pc = tcb->pc + 4;
+}
+
 char obtener_registro(tcb_t* tcb) {
 	char* registro = malloc(sizeof(char));
 	leer_de_memoria(tcb->pc, sizeof(char), registro);

@@ -38,7 +38,7 @@ int32_t main(int32_t argc, char** argv) {
 		}
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
-			leer_de_memoria(tcb->pc, sizeof(instruccion), instruccion);
+			obtener_instruccion(tcb, instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			res = funcion(tcb);
 			quantum--;
