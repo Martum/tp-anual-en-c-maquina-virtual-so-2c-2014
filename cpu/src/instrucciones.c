@@ -9,14 +9,14 @@
 #include "tcb-funciones.h"
 #include "resultados.h"
 
-int32_t load(tcb_t* tcb) {
+resultado_t load(tcb_t* tcb) {
 
 	char registro = obtener_registro(tcb);
 	int32_t numero = obtener_numero(tcb);
 	return actualizar_valor_en_registro(tcb, registro, numero);
 }
 
-int32_t getm(tcb_t* tcb) { // creo que no esta bien
+resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
@@ -28,7 +28,7 @@ int32_t getm(tcb_t* tcb) { // creo que no esta bien
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
-int32_t setm(tcb_t* tcb) {
+resultado_t setm(tcb_t* tcb) {
 	int32_t numero = obtener_numero(tcb);
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
@@ -53,7 +53,7 @@ int32_t setm(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t movr(tcb_t* tcb) {
+resultado_t movr(tcb_t* tcb) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 	int32_t valor;
@@ -64,7 +64,7 @@ int32_t movr(tcb_t* tcb) {
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
-int32_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
+resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 	int32_t valor1;
@@ -76,7 +76,7 @@ int32_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
 }
 
-int32_t addr(tcb_t* tcb) {
+resultado_t addr(tcb_t* tcb) {
 
 	int32_t sumar(int32_t valor1, int32_t valor2) {
 		return valor1 + valor2;
@@ -85,7 +85,8 @@ int32_t addr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, sumar);
 }
 
-int32_t subr(tcb_t* tcb) {
+resultado_t subr(tcb_t* tcb) {
+
 	int32_t restar(int32_t valor1, int32_t valor2) {
 		return valor1 - valor2;
 	}
@@ -93,7 +94,8 @@ int32_t subr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, restar);
 }
 
-int32_t mulr(tcb_t* tcb) {
+resultado_t mulr(tcb_t* tcb) {
+
 	int32_t multiplicar(int32_t valor1, int32_t valor2) {
 		return valor1 * valor2;
 	}
@@ -101,7 +103,8 @@ int32_t mulr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, multiplicar);
 }
 
-int32_t modr(tcb_t* tcb) {
+resultado_t modr(tcb_t* tcb) {
+
 	int32_t modulo(int32_t valor1, int32_t valor2) {
 		return valor1 % valor2;
 	}
@@ -109,7 +112,8 @@ int32_t modr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, modulo);
 }
 
-int32_t divr(tcb_t* tcb) {
+resultado_t divr(tcb_t* tcb) {
+
 	int32_t dividir(int32_t valor1, int32_t valor2) {
 		return valor1 / valor2;
 	}
@@ -117,7 +121,7 @@ int32_t divr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, dividir);
 }
 
-int32_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
+resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	char registro = obtener_registro(tcb);
 	int32_t valor;
 	if (obtener_valor_de_registro(tcb, registro, &valor) == FALLO)
@@ -125,7 +129,8 @@ int32_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
 }
 
-int32_t incr(tcb_t* tcb) {
+resultado_t incr(tcb_t* tcb) {
+
 	int32_t sumar_1(int32_t valor) {
 		return valor++;
 	}
@@ -133,7 +138,8 @@ int32_t incr(tcb_t* tcb) {
 	return _funcion_incr_decr(tcb, sumar_1);
 }
 
-int32_t decr(tcb_t* tcb) {
+resultado_t decr(tcb_t* tcb) {
+
 	int32_t restar_1(int32_t valor) {
 		return valor--;
 	}
@@ -141,7 +147,7 @@ int32_t decr(tcb_t* tcb) {
 	return _funcion_incr_decr(tcb, restar_1);
 }
 
-int32_t _funcion_comparacion(tcb_t* tcb, int32_t comparador(int32_t, int32_t)) {
+resultado_t _funcion_comparacion(tcb_t* tcb, int32_t comparador(int32_t, int32_t)) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
 	int32_t valor1;
@@ -153,7 +159,8 @@ int32_t _funcion_comparacion(tcb_t* tcb, int32_t comparador(int32_t, int32_t)) {
 	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
 }
 
-int32_t comp(tcb_t* tcb) {
+resultado_t comp(tcb_t* tcb) {
+
 	int32_t comparador(int32_t valor1, int32_t valor2) {
 		if (valor1 == valor2)
 			return 1;
@@ -163,7 +170,8 @@ int32_t comp(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
-int32_t cgeq(tcb_t* tcb) {
+resultado_t cgeq(tcb_t* tcb) {
+
 	int32_t comparador(int32_t valor1, int32_t valor2) {
 		if (valor1 >= valor2)
 			return 1;
@@ -173,7 +181,8 @@ int32_t cgeq(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
-int32_t cleq(tcb_t* tcb) {
+resultado_t cleq(tcb_t* tcb) {
+
 	int32_t comparador(int32_t valor1, int32_t valor2) {
 		if (valor1 <= valor2)
 			return 1;
@@ -183,7 +192,7 @@ int32_t cleq(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
-int32_t _goto(tcb_t* tcb) {
+resultado_t _goto(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
@@ -192,7 +201,7 @@ int32_t _goto(tcb_t* tcb) {
 	return actualizar_pc(tcb, base_de_codigo + valor);
 }
 
-int32_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
+resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t offset = obtener_numero(tcb);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
@@ -203,7 +212,8 @@ int32_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	return actualizar_pc(tcb, base_de_codigo + offset);
 }
 
-int32_t jmpz(tcb_t* tcb) {
+resultado_t jmpz(tcb_t* tcb) {
+
 	int32_t condicion(int32_t valor) {
 		return valor != 0;
 	}
@@ -211,7 +221,8 @@ int32_t jmpz(tcb_t* tcb) {
 	return _funcion_de_salto(tcb, condicion);
 }
 
-int32_t jpnz(tcb_t* tcb) {
+resultado_t jpnz(tcb_t* tcb) {
+
 	int32_t condicion(int32_t valor) {
 		return valor == 0;
 	}
@@ -219,16 +230,16 @@ int32_t jpnz(tcb_t* tcb) {
 	return _funcion_de_salto(tcb, condicion);
 }
 
-int32_t inte(tcb_t* tcb) {
+resultado_t inte(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t flcl(tcb_t* tcb) {
+resultado_t flcl(tcb_t* tcb) {
 	// fue deprecada
 	return OK;
 }
 
-int32_t shif(tcb_t* tcb) {
+resultado_t shif(tcb_t* tcb) {
 	int32_t bytes = obtener_numero(tcb);
 	char registro = obtener_registro(tcb);
 	int32_t valor_de_registro;
@@ -245,23 +256,23 @@ int32_t shif(tcb_t* tcb) {
 			valor_de_registro_desplazado);
 }
 
-int32_t nopp(tcb_t* tcb) {
+resultado_t nopp(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t push(tcb_t* tcb) {
+resultado_t push(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t take(tcb_t* tcb) {
+resultado_t take(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t xxxx(tcb_t* tcb) {
+resultado_t xxxx(tcb_t* tcb) {
 	return TERMINO;
 }
 
-int32_t malc(tcb_t* tcb) {
+resultado_t malc(tcb_t* tcb) {
 	int32_t bytes;
 	if (obtener_valor_de_registro(tcb, 'a', &bytes) == FALLO)
 		return FALLO;
@@ -269,7 +280,7 @@ int32_t malc(tcb_t* tcb) {
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
 }
 
-int32_t _free(tcb_t* tcb) {
+resultado_t _free(tcb_t* tcb) {
 	int32_t valor;
 	if (obtener_valor_de_registro(tcb, 'a', &valor) == FALLO)
 		return FALLO;
@@ -277,35 +288,35 @@ int32_t _free(tcb_t* tcb) {
 	return destruir_segmento(tcb, direccion);
 }
 
-int32_t innn(tcb_t* tcb) {
+resultado_t innn(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t innc(tcb_t* tcb) {
+resultado_t innc(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t outn(tcb_t* tcb) {
+resultado_t outn(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t outc(tcb_t* tcb) {
+resultado_t outc(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t crea(tcb_t* tcb) {
+resultado_t crea(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t join(tcb_t* tcb) {
+resultado_t join(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t blok(tcb_t* tcb) {
+resultado_t blok(tcb_t* tcb) {
 	return OK;
 }
 
-int32_t wake(tcb_t* tcb) {
+resultado_t wake(tcb_t* tcb) {
 	return OK;
 }
 

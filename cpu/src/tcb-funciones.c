@@ -12,11 +12,11 @@
 #include "estructuras.h"
 #include "resultados.h"
 
-void* crear_tcb() {
-	return malloc(sizeof(tcb_t));
+tcb_t* crear_tcb() {
+	return (tcb_t*) malloc(sizeof(tcb_t));
 }
 
-int32_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) {
+resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) {
 	if ('a' == registro) {
 		tcb->a = numero;
 		return OK;
@@ -40,7 +40,7 @@ int32_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) 
 	return FALLO;
 }
 
-int32_t obtener_valor_de_registro(tcb_t* tcb, char registro,
+resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
 		int32_t* numero) {
 	if ('a' == registro) {
 		*numero = tcb->a;

@@ -14,7 +14,8 @@ int32_t main(int32_t argc, char** argv) {
 
 	t_dictionary* dic_instrucciones = dictionary_create();
 	tcb_t* tcb = crear_tcb();
-	int32_t quantum, res = OK;
+	resultado_t res = OK;
+	int32_t quantum;
 	char buffer[4];
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
@@ -36,7 +37,7 @@ int32_t main(int32_t argc, char** argv) {
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // si res == 0 significa que la instruccion hizo todas las cosas bien y no termino el proceso. Quantum -1 significa que es el kernel
 			leer_de_memoria(tcb->pc, sizeof(buffer), buffer);
-			int32_t (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
+			resultado_t (*funcion)(tcb_t*) = dictionary_get(dic_instrucciones, buffer); // buscar la instruccion en el diccionario
 			res = funcion(tcb); // si _todo fue como deberia  ser devuelve 0
 			quantum--;
 		}

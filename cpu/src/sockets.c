@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "estructuras.h"
+#include "resultados.h"
 
 int32_t conectar_con_memoria() {
 	// Me conecto con la memoria MSP. Si falla la conexion devuelvo -1
@@ -42,7 +43,7 @@ int32_t escribir_en_memoria(direccion dir, int32_t byes, void* buffer) {
 	return 0;
 }
 
-int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, int32_t res) {
+int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
 	// deberia mandar al Kernel el tcb modificado y porque finalizo
 	return 0;
 }
