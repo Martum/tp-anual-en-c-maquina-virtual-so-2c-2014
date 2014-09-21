@@ -55,29 +55,6 @@ int32_t _bind_puerto(sock_t* socket)
 }
 
 
-int32_t _conectar(sock_t* socket)
-{
-	return connect(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
-}
-
-
-int32_t _escuchar(sock_t* socket)
-{
-	return listen(socket->fd, CANTIDAD_CONEXIONES_LISTEN);
-}
-
-
-sock_t* _aceptar_conexion(sock_t* socket)
-{
-	sock_t* sock_nuevo = _crear_socket();
-	uint32_t i = sizeof(struct sockaddr_in);	// TODO: Ver que hacer con este INT. Sirve devolverlo dentro del struct?
-
-	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)&sock_nuevo->datos_conexion, &i);
-
-	return sock_nuevo;
-}
-
-
 int32_t _enviar(sock_t* socket, char* msg, uint32_t len)
 {
 	return send(socket->fd, msg, len, 0);
@@ -228,6 +205,29 @@ sock_t* crear_socket_escuchador(uint32_t puerto)
 sock_t* crear_socket_hablador(char* ip, uint32_t puerto)
 {
 	return _crear_y_preparar(ip, puerto);
+}
+
+
+int32_t conectar(sock_t* socket)
+{
+	return connect(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
+}
+
+
+int32_t escuchar(sock_t* socket)
+{
+	return listen(socket->fd, CANTIDAD_CONEXIONES_LISTEN);
+}
+
+
+sock_t* aceptar_conexion(sock_t* socket)
+{
+	sock_t* sock_nuevo = _crear_socket();
+	uint32_t i = sizeof(struct sockaddr_in);	// TODO: Ver que hacer con este INT. Sirve devolverlo dentro del struct?
+
+	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)&sock_nuevo->datos_conexion, &i);
+
+	return sock_nuevo->fd == -1?NULL:sock_nuevo;
 }
 
 

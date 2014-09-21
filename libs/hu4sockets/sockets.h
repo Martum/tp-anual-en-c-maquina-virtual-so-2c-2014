@@ -54,24 +54,6 @@ sock_t* _crear_y_preparar(char* ip, uint32_t puerto);
 int32_t _bind_puerto(sock_t* socket);
 
 /**
- * Conecta con otra PC
- * Devuelve -1 en caso de error
- */
-int32_t _conectar(sock_t* socket);
-
-/**
- * Establece el socket para escuchar
- * Devuelve -1 en caso de error
- */
-int32_t _escuchar(sock_t* socket);
-
-/**
- * Acepta una conexion entrante
- * Devuelve el nuevo FD
- */
-sock_t* _aceptar_conexion(sock_t* socket);
-
-/**
  * Envia un mensaje a traves del socket
  * Devuelve la cantidad de bytes que se enviaron realmente, o -1 en caso de error
  */
@@ -168,6 +150,29 @@ sock_t* crear_socket_escuchador(uint32_t puerto);
  * @RETURNS: El struct socket.
  */
 sock_t* crear_socket_hablador(char* ip, uint32_t puerto);
+
+/**
+ * Conecta con otra PC
+ *
+ * @RETURNS: -1 en caso de error
+ * NOTA: Recordar que es una funcion bloqueante
+ */
+int32_t conectar(sock_t* socket);
+
+/**
+ * Establece el socket para escuchar
+ *
+ * @RETURNS: -1 en caso de error
+ */
+int32_t escuchar(sock_t* socket);
+
+/**
+ * Acepta una conexion entrante
+ *
+ * @RETURNS: el nuevo FD; o NULL en caso de error
+ * NOTA: Recordar que es una funcion bloqueante
+ */
+sock_t* aceptar_conexion(sock_t* socket);
 
 /**
  * Envia el msg. Len es la longitud del chorro de bytes a enviar.
