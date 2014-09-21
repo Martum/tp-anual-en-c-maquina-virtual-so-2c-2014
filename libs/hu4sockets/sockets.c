@@ -27,8 +27,7 @@ sock_t* _crear_socket()
 	return sock;
 }
 
-
-int32_t _bind_puerto(sock_t* socket, uint32_t puerto, char* ip)
+void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto)
 {
 	// Seteamos la IP, si es NULL es localhost
 	if(ip != NULL)
@@ -39,14 +38,20 @@ int32_t _bind_puerto(sock_t* socket, uint32_t puerto, char* ip)
 	socket->datos_conexion->sin_family = AF_INET;
 	socket->datos_conexion->sin_port = htons(puerto);
 	memset(&(socket->datos_conexion->sin_zero), '\0', 8);
+}
 
-	return bind(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
+sock_t* _crear_y_preparar(char* ip, uint32_t puerto)
+{
+	sock_t* socket = _crear_socket();
+	_preparar_conexion(socket, NULL, puerto);
+
+	return socket;
 }
 
 
-int32_t _bind_puerto_local(sock_t* socket, uint32_t puerto)
+int32_t _bind_puerto(sock_t* socket)
 {
-	return _bind_puerto(socket, puerto, NULL);
+	return bind(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
 }
 
 
@@ -207,6 +212,25 @@ int32_t _recibir_cabecera(sock_t* socket, cabecera_t* cabecera)
 
 /**** FUNCIONES PUBLICAS ****/
 
+
+sock_t* crear_socket_escuchador(uint32_t puerto)
+{
+	sock_t* socket = _crear_y_preparar(NULL, puerto);
+
+	// Si el puerto esta ocupado, devolvemos NULL
+	if(_bind_puerto(socket) == -1)
+		return NULL;
+
+	return socket;
+}
+
+
+sock_t* crear_socket_hablador(char* ip, uint32_t puerto)
+{
+	return _crear_y_preparar(ip, puerto);
+}
+
+
 int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 {
 	// Seteamos el Header
@@ -223,6 +247,7 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 	return 0;
 }
 
+
 int32_t recibir(sock_t* socket, char** msg, uint32_t* len)
 {
 	cabecera_t* cabecera = _crear_cabecera_vacia();
@@ -235,11 +260,13 @@ int32_t recibir(sock_t* socket, char** msg, uint32_t* len)
 	*msg = malloc(cabecera->longitud_mensaje);
 	*len = cabecera->longitud_mensaje;
 
+	// Si no se recibe el mensaje completamente fallamos, pero dejamos lo leido en el buffer
 	if(_recibir_todo(socket, *msg, len) == -1)
 		return -1;
 
 	return 0;
 }
+
 
 void cerrar_liberar(sock_t* socket)
 {

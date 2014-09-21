@@ -38,15 +38,20 @@ typedef struct cabecera
 sock_t* _crear_socket();
 
 /**
- * Bindea el puerto al Socket
+ * Prepara la conexion para trabajar con el socket.
+ * Si es localhost usar NULL en la IP
  */
-int32_t _bind_puerto(sock_t* socket, uint32_t puerto, char* ip);
+void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto);
 
 /**
- * Bindea el puerto con IP local.
- * Es igual a: _bind_puerto(socket, puerto, "127.0.0.7");
+ * Crea un socket y lo prepara para conectarse
  */
-int32_t _bind_puerto_local(sock_t* socket, uint32_t puerto);
+sock_t* _crear_y_preparar(char* ip, uint32_t puerto);
+
+/**
+ * Bindea el puerto al Socket
+ */
+int32_t _bind_puerto(sock_t* socket);
 
 /**
  * Conecta con otra PC
@@ -141,17 +146,42 @@ int32_t _deserealizar_cabecera(cabecera_t* cabecera, char* bytes);
  */
 int32_t _recibir_cabecera(sock_t* socket, cabecera_t* cabecera);
 
+
+
 /***FUNCIONES PBLICAS***/
 
 /**
+ * Crea un socket y para escuchar conexiones y lo bindea al puerto especificado.
+ * Puerto es el puerto en el que se va a escuchar nuevas conexiones.
+ * NO realiza el listen.
+ *
+ * @RETURNS: El struct socket. Si el puerto esta ocupado retorna -1
+ */
+sock_t* crear_socket_escuchador(uint32_t puerto);
+
+/**
+ * Crea un socket para enviar mensajes.
+ * Puerto es el puerto de la maquina remota que esta escuchando.
+ * Si queres especificar el puerto de salida de tu PC la tenes atroden.
+ * NO realiza el connect.
+ *
+ * @RETURNS: El struct socket.
+ */
+sock_t* crear_socket_hablador(char* ip, uint32_t puerto);
+
+/**
  * Envia el msg. Len es la longitud del chorro de bytes a enviar.
- * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes no enviados
+ *
+ * @RETURNS: 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes no enviados
  */
 int32_t enviar(sock_t* socket, char* msg, uint32_t* len);
 
 /**
  * Recibe el msg. Len es la longitud del chorro de bytes recibidos.
- * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
+ *
+ * @RETURNS: 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
+ * NOTA: En caso de fallar el buffer queda ocupando el tamanio completo del mensaje, no solo el leido
+ * 		 Una vez procesados los bytes (o descartados) limpiar la memoria
  */
 int32_t recibir(sock_t* socket, char** msg, uint32_t* len);
 
