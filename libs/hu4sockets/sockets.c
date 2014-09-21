@@ -27,8 +27,7 @@ sock_t* _crear_socket()
 	return sock;
 }
 
-
-int32_t _bind_puerto(sock_t* socket, uint32_t puerto, char* ip)
+void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto)
 {
 	// Seteamos la IP, si es NULL es localhost
 	if(ip != NULL)
@@ -39,37 +38,20 @@ int32_t _bind_puerto(sock_t* socket, uint32_t puerto, char* ip)
 	socket->datos_conexion->sin_family = AF_INET;
 	socket->datos_conexion->sin_port = htons(puerto);
 	memset(&(socket->datos_conexion->sin_zero), '\0', 8);
+}
 
+sock_t* _crear_y_preparar(char* ip, uint32_t puerto)
+{
+	sock_t* socket = _crear_socket();
+	_preparar_conexion(socket, NULL, puerto);
+
+	return socket;
+}
+
+
+int32_t _bind_puerto(sock_t* socket)
+{
 	return bind(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
-}
-
-
-int32_t _bind_puerto_local(sock_t* socket, uint32_t puerto)
-{
-	return _bind_puerto(socket, puerto, NULL);
-}
-
-
-int32_t _conectar(sock_t* socket)
-{
-	return connect(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
-}
-
-
-int32_t _escuchar(sock_t* socket)
-{
-	return listen(socket->fd, CANTIDAD_CONEXIONES_LISTEN);
-}
-
-
-sock_t* _aceptar_conexion(sock_t* socket)
-{
-	sock_t* sock_nuevo = _crear_socket();
-	uint32_t i = sizeof(struct sockaddr_in);	// TODO: Ver que hacer con este INT. Sirve devolverlo dentro del struct?
-
-	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)&sock_nuevo->datos_conexion, &i);
-
-	return sock_nuevo;
 }
 
 
@@ -166,8 +148,8 @@ cabecera_t* _crear_cabecera(uint32_t len)
 
 char* _serializar_cabecera(cabecera_t* cabecera)
 {
-	char* msg = malloc(sizeof(cabecera_t));
-	memcpy(msg, cabecera, sizeof(cabecera_t));
+	char* msg = malloc(_tamanio_cabecera());
+	memcpy(msg, cabecera, _tamanio_cabecera());
 
 	return msg;
 }
@@ -181,7 +163,7 @@ char* _crear_cabecera_serializada(uint32_t len)
 
 int32_t _deserealizar_cabecera(cabecera_t* cabecera, char* bytes)
 {
-	memcpy(cabecera, bytes, sizeof(cabecera_t));
+	memcpy(cabecera, bytes, _tamanio_cabecera());
 
 	// Si la cabecera verifica la validacion, se recibio bien
 	return (cabecera->valido == CABECERA_VALIDA)?0:-1;
@@ -207,10 +189,52 @@ int32_t _recibir_cabecera(sock_t* socket, cabecera_t* cabecera)
 
 /**** FUNCIONES PUBLICAS ****/
 
+
+sock_t* crear_socket_escuchador(uint32_t puerto)
+{
+	sock_t* socket = _crear_y_preparar(NULL, puerto);
+
+	// Si el puerto esta ocupado, devolvemos NULL
+	if(_bind_puerto(socket) == -1)
+		return NULL;
+
+	return socket;
+}
+
+
+sock_t* crear_socket_hablador(char* ip, uint32_t puerto)
+{
+	return _crear_y_preparar(ip, puerto);
+}
+
+
+int32_t conectar(sock_t* socket)
+{
+	return connect(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
+}
+
+
+int32_t escuchar(sock_t* socket)
+{
+	return listen(socket->fd, CANTIDAD_CONEXIONES_LISTEN);
+}
+
+
+sock_t* aceptar_conexion(sock_t* socket)
+{
+	sock_t* sock_nuevo = _crear_socket();
+	uint32_t i = sizeof(struct sockaddr_in);	// TODO: Ver que hacer con este INT. Sirve devolverlo dentro del struct?
+
+	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)&sock_nuevo->datos_conexion, &i);
+
+	return sock_nuevo->fd == -1?NULL:sock_nuevo;
+}
+
+
 int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 {
 	// Seteamos el Header
-	uint32_t len_cabecera = sizeof(cabecera_t);
+	uint32_t len_cabecera = _tamanio_cabecera();
 
 	// Enviamos el Header, si falla devolvemos -1
 	if(_enviar_todo(socket, _crear_cabecera_serializada(*len), &len_cabecera) == -1)
@@ -222,6 +246,7 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 
 	return 0;
 }
+
 
 int32_t recibir(sock_t* socket, char** msg, uint32_t* len)
 {
@@ -235,11 +260,13 @@ int32_t recibir(sock_t* socket, char** msg, uint32_t* len)
 	*msg = malloc(cabecera->longitud_mensaje);
 	*len = cabecera->longitud_mensaje;
 
+	// Si no se recibe el mensaje completamente fallamos, pero dejamos lo leido en el buffer
 	if(_recibir_todo(socket, *msg, len) == -1)
 		return -1;
 
 	return 0;
 }
+
 
 void cerrar_liberar(sock_t* socket)
 {
