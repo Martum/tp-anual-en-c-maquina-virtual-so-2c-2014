@@ -153,7 +153,7 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len);
  * Recibe el msg. Len es la longitud del chorro de bytes recibidos.
  * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
  */
-int32_t recibir(sock_t* socket, char* msg, uint32_t* len);
+int32_t recibir(sock_t* socket, char** msg, uint32_t* len);
 
 /**
  * Cierra el Socket y libera la memoria ocupada por el Struct
