@@ -40,25 +40,6 @@ int32_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) 
 	return FALLO;
 }
 
-int32_t obtener_valor_de_registro_sin_puntero(tcb_t* tcb, char registro) {
-	if ('a' == registro) {
-		return tcb->a;
-	}
-	if ('b' == registro) {
-		return tcb->b;
-	}
-	if ('c' == registro) {
-		return tcb->c;
-	}
-	if ('d' == registro) {
-		return tcb->d;
-	}
-	if ('e' == registro) {
-		return tcb->e;
-	}
-	return FALLO;
-}
-
 int32_t obtener_valor_de_registro(tcb_t* tcb, char registro,
 		int32_t* numero) {
 	if ('a' == registro) {
