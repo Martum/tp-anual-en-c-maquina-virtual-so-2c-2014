@@ -15,6 +15,7 @@
 
 
 #define CANTIDAD_CONEXIONES_LISTEN 20
+#define CABECERA_VALIDA 666
 
 typedef struct sock
 {
@@ -27,6 +28,7 @@ typedef struct sock
 typedef struct cabecera
 {
 	uint32_t longitud_mensaje;
+	uint16_t valido;
 } cabecera_t;
 
 
@@ -95,19 +97,38 @@ void _cerrame_esto_nestor(sock_t* socket);
 void _liberar_memoria(sock_t* socket);
 
 /**
+ * Crea una cabecera para enviar datos
+ */
+cabecera_t* _crear_cabecera(uint32_t len);
+
+/**
  * Serializa la cabecera para enviarla por la Matrix
  */
 char* _serializar_cabecera(cabecera_t* cabecera);
 
+/**
+ * Crea una cabecera y la serializa
+ */
+char* _crear_cabecera_serializada(uint32_t len);
 
+/**
+ * Deserializar cabecera
+ */
+cabecera_t* _deserealizar_cabecera(char* bytes);
 
 /***FUNCIONES PBLICAS***/
 
 /**
- * Envia el msg. Len es la longitud del chorro de bytes.
+ * Envia el msg. Len es la longitud del chorro de bytes a enviar.
  * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes no enviados
  */
 uint32_t enviar(sock_t* socket, char* msg, uint32_t* len);
+
+/**
+ * Recibe el msg. Len es la longitud del chorro de bytes recibidos.
+ * Devuelve 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
+ */
+uint32_t recibir(sock_t* socket, char* msg, uint32_t* len);
 
 /**
  * Cierra el Socket y libera la memoria ocupada por el Struct

@@ -117,6 +117,17 @@ void _liberar_memoria(sock_t* socket)
 	free(socket);
 }
 
+
+cabecera_t* _crear_cabecera(uint32_t len)
+{
+	cabecera_t* cabecera = malloc(sizeof(cabecera_t));
+	cabecera->longitud_mensaje = len;
+	cabecera->valido = CABECERA_VALIDA;	// Seteamos variable para ver si los datos llegan bien
+
+	return cabecera;
+}
+
+
 char* _serializar_cabecera(cabecera_t* cabecera)
 {
 	char* msg = malloc(sizeof(cabecera_t));
@@ -126,15 +137,19 @@ char* _serializar_cabecera(cabecera_t* cabecera)
 }
 
 
+char* _crear_cabecera_serializada(uint32_t len)
+{
+	return _serializar_cabecera(_crear_cabecera(len));
+}
+
+
 uint32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 {
 	// Seteamos el Header
 	uint32_t len_cabecera = sizeof(cabecera_t);
-	cabecera_t cabecera;
-	cabecera.longitud_mensaje = *len;
 
 	// Enviamos el Header, si falla devolvemos -1
-	if(_enviar_todo(socket, _serializar_cabecera(&cabecera), &len_cabecera) != 0)
+	if(_enviar_todo(socket, _crear_cabecera_serializada(*len), &len_cabecera) != 0)
 		return -1;
 
 	// Enviamos el Mensaje, si falla devolvemos -1
@@ -142,6 +157,15 @@ uint32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 		return -1;
 
 	return 0;
+}
+
+uint32_t recibir(sock_t* socket, char* msg, uint32_t* len)
+{
+	cabecera_t* cabecera = malloc(sizeof(cabecera_t));
+	char* bytes_cabecera = malloc(sizeof(cabecera_t));
+
+	if(_recibir(socket, bytes_cabecera, sizeof(cabecera_t)) != 0)
+		return -1;
 }
 
 
