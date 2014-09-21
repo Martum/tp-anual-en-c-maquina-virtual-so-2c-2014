@@ -71,129 +71,94 @@ int32_t movr(tcb_t* tcb) {
 	return resultado;
 }
 
-int32_t addr(tcb_t* tcb) {
+int32_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
-
 	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
 	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
 	int32_t resultado;
-
 	if (valor1 == FALLO || valor2 == FALLO) {
 		resultado = FALLO;
 	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 + valor2);
+		resultado = actualizar_valor_en_registro(tcb, 'a',
+				operacion(valor1, valor2));
+	}
+	return resultado;
+}
+
+int32_t addr(tcb_t* tcb) {
+
+	int32_t sumar(int32_t valor1, int32_t valor2) {
+		return valor1 + valor2;
 	}
 
+	int32_t resultado = _funcion_operacion(tcb, sumar);
 	return resultado;
 }
 
 int32_t subr(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 - valor2);
+	int32_t restar(int32_t valor1, int32_t valor2) {
+		return valor1 - valor2;
 	}
 
+	int32_t resultado = _funcion_operacion(tcb, restar);
 	return resultado;
 }
 
 int32_t mulr(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 * valor2);
+	int32_t multiplicar(int32_t valor1, int32_t valor2) {
+		return valor1 * valor2;
 	}
 
+	int32_t resultado = _funcion_operacion(tcb, multiplicar);
 	return resultado;
 }
 
 int32_t modr(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 % valor2);
+	int32_t modulo(int32_t valor1, int32_t valor2) {
+		return valor1 % valor2;
 	}
 
+	int32_t resultado = _funcion_operacion(tcb, modulo);
 	return resultado;
 }
 
 int32_t divr(tcb_t* tcb) {
-	char registro1 = obtener_registro(tcb);
-	char registro2 = obtener_registro(tcb);
-
-	int32_t valor1 = obtener_valor_de_registro(tcb, registro1);
-	int32_t valor2 = obtener_valor_de_registro(tcb, registro2);
-
-	int32_t resultado;
-
-	if (valor1 == FALLO || valor2 == FALLO) {
-		resultado = FALLO;
-	} else if (valor2 == 0) {
-		resultado = actualizar_valor_en_registro(tcb, 'f', ZERO_DIV);
-	} else {
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor1 / valor2);
+	int32_t dividir(int32_t valor1, int32_t valor2) {
+		return valor1 / valor2;
 	}
 
+	int32_t resultado = _funcion_operacion(tcb, dividir);
+	return resultado;
+}
+
+int32_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
+	char registro = obtener_registro(tcb);
+	int32_t valor = obtener_valor_de_registro(tcb, registro);
+	int32_t resultado;
+	if (valor == FALLO) {
+		resultado = FALLO;
+	} else {
+		resultado = actualizar_valor_en_registro(tcb, 'a', operacion(valor));
+	}
 	return resultado;
 }
 
 int32_t incr(tcb_t* tcb) {
-	char registro = obtener_registro(tcb);
-
-	int32_t valor = obtener_valor_de_registro(tcb, registro);
-
-	int32_t resultado;
-
-	if (valor == FALLO) {
-		resultado = FALLO;
-	} else {
-		valor++;
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
+	int32_t sumar_1(int32_t valor) {
+		return valor++;
 	}
 
+	int32_t resultado = _funcion_incr_decr(tcb, sumar_1);
 	return resultado;
 }
 
 int32_t decr(tcb_t* tcb) {
-	char registro = obtener_registro(tcb);
-
-	int32_t valor = obtener_valor_de_registro(tcb, registro);
-
-	int32_t resultado;
-
-	if (valor == FALLO) {
-		resultado = FALLO;
-	} else {
-		valor--;
-		resultado = actualizar_valor_en_registro(tcb, 'a', valor);
+	int32_t restar_1(int32_t valor) {
+		return valor--;
 	}
 
+	int32_t resultado = _funcion_incr_decr(tcb, restar_1);
 	return resultado;
 }
 
