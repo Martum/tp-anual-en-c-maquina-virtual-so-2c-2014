@@ -12,7 +12,7 @@
 #include "estructuras.h"
 #include "resultados.h"
 
-tcb_t* crear_tcb() {
+void* crear_tcb() {
 	return malloc(sizeof(tcb_t));
 }
 
@@ -55,6 +55,31 @@ int32_t obtener_valor_de_registro(tcb_t* tcb, char registro) {
 	}
 	if ('e' == registro) {
 		return tcb->e;
+	}
+	return FALLO;
+}
+
+int32_t obtener_valor_de_registro_con_puntero(tcb_t* tcb, char registro,
+		int32_t* numero) {
+	if ('a' == registro) {
+		*numero = tcb->a;
+		return OK;
+	}
+	if ('b' == registro) {
+		*numero = tcb->b;
+		return OK;
+	}
+	if ('c' == registro) {
+		*numero = tcb->c;
+		return OK;
+	}
+	if ('d' == registro) {
+		*numero = tcb->d;
+		return OK;
+	}
+	if ('e' == registro) {
+		*numero = tcb->e;
+		return OK;
 	}
 	return FALLO;
 }
