@@ -16,7 +16,7 @@ void test_obtener_valor_de_registro_a_con_puntero()
 	tcb_t* tcb = malloc(sizeof(tcb_t));
 	tcb->a = 20;
 	int32_t numero;
-	obtener_valor_de_registro_con_puntero(tcb, 'a', &numero);
+	obtener_valor_de_registro(tcb, 'a', &numero);
 	assert_int_equal(20, numero);
 	free(tcb);
 }

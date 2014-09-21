@@ -22,7 +22,7 @@ int32_t getm(tcb_t* tcb) { // creo que no esta bien
 	char registro2 = obtener_registro(tcb);
 	int32_t valor;
 
-	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro2, &valor) == FALLO)
 		return FALLO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
@@ -35,9 +35,9 @@ int32_t setm(tcb_t* tcb) {
 	int32_t valor1;
 	int32_t valor2;
 
-	if (obtener_valor_de_registro_con_puntero(tcb, registro1, &valor1) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro1, &valor1) == FALLO)
 		return FALLO;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor2) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro2, &valor2) == FALLO)
 		return FALLO;
 
 	direccion direccion1 = valor1;
@@ -58,7 +58,7 @@ int32_t movr(tcb_t* tcb) {
 	char registro2 = obtener_registro(tcb);
 	int32_t valor;
 
-	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro2, &valor) == FALLO)
 		return FALLO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
@@ -69,9 +69,9 @@ int32_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
 	char registro2 = obtener_registro(tcb);
 	int32_t valor1;
 	int32_t valor2;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro1, &valor1) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro1, &valor1) == FALLO)
 		return FALLO;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor2) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro2, &valor2) == FALLO)
 		return FALLO;
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
 }
@@ -120,7 +120,7 @@ int32_t divr(tcb_t* tcb) {
 int32_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	char registro = obtener_registro(tcb);
 	int32_t valor;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro, &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro, &valor) == FALLO)
 		return FALLO;
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
 }
@@ -146,9 +146,9 @@ int32_t _funcion_comparacion(tcb_t* tcb, int32_t comparador(int32_t, int32_t)) {
 	char registro2 = obtener_registro(tcb);
 	int32_t valor1;
 	int32_t valor2;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro1, &valor1) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro1, &valor1) == FALLO)
 		return FALLO;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor2) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro2, &valor2) == FALLO)
 		return FALLO;
 	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
 }
@@ -187,7 +187,7 @@ int32_t _goto(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
-	if (obtener_valor_de_registro_con_puntero(tcb, registro, &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, registro, &valor) == FALLO)
 		return FALLO;
 	return actualizar_pc(tcb, base_de_codigo + valor);
 }
@@ -196,7 +196,7 @@ int32_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t offset = obtener_numero(tcb);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
-	if (obtener_valor_de_registro_con_puntero(tcb, 'a', &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, 'a', &valor) == FALLO)
 		return FALLO;
 	if (condicion(valor))
 		return OK;
@@ -232,7 +232,7 @@ int32_t shif(tcb_t* tcb) {
 	int32_t bytes = obtener_numero(tcb);
 	char registro = obtener_registro(tcb);
 	int32_t valor_de_registro;
-	if (obtener_valor_de_registro_con_puntero(tcb, 'a',
+	if (obtener_valor_de_registro(tcb, 'a',
 			&valor_de_registro) == FALLO)
 		return FALLO;
 	int32_t valor_de_registro_desplazado;
@@ -263,7 +263,7 @@ int32_t xxxx(tcb_t* tcb) {
 
 int32_t malc(tcb_t* tcb) {
 	int32_t bytes;
-	if (obtener_valor_de_registro_con_puntero(tcb, 'a', &bytes) == FALLO)
+	if (obtener_valor_de_registro(tcb, 'a', &bytes) == FALLO)
 		return FALLO;
 	direccion direccion = crear_segmento(tcb, bytes);
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
@@ -271,7 +271,7 @@ int32_t malc(tcb_t* tcb) {
 
 int32_t _free(tcb_t* tcb) {
 	int32_t valor;
-	if (obtener_valor_de_registro_con_puntero(tcb, 'a', &valor) == FALLO)
+	if (obtener_valor_de_registro(tcb, 'a', &valor) == FALLO)
 		return FALLO;
 	direccion direccion = valor;
 	return destruir_segmento(tcb, direccion);
