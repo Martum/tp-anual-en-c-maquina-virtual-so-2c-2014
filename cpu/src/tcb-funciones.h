@@ -25,6 +25,7 @@ int32_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero);
  * 		Devuelve el valor si _todo sale bien. Devuelve -1 si no se le paso un registro que exista.
  */
 int32_t obtener_valor_de_registro(tcb_t* tcb, char registro);
+int32_t obtener_valor_de_registro_con_puntero(tcb_t* tcb, char registro, int32_t* numero);
 /**
  * @NAME: actualizar_pc
  * @DESC: Actualiza el valor del pc con el valor.

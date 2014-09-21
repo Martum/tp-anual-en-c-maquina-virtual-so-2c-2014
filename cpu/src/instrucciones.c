@@ -20,29 +20,25 @@ int32_t getm(tcb_t* tcb) {
 
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
+	int32_t valor;
 
-	int32_t valor = obtener_valor_de_registro(tcb, registro2);
+	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor) == FALLO) return FALLO;
 
-	int32_t resultado;
-
-	if (valor == FALLO) {
-		resultado = FALLO;
-	} else {
-		resultado = actualizar_valor_en_registro(tcb, registro1, valor);
-	}
-
-	return resultado;
+	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
 int32_t setm(tcb_t* tcb) {
 	int32_t numero = obtener_numero(tcb);
 	char registro1 = obtener_registro(tcb);
 	char registro2 = obtener_registro(tcb);
+	int32_t valor1;
+	int32_t valor2;
 
-	direccion direccion1 = obtener_valor_de_registro(tcb, registro1);
-	direccion direccion2 = obtener_valor_de_registro(tcb, registro2);
+	if (obtener_valor_de_registro_con_puntero(tcb, registro1, &valor1) == FALLO) return FALLO;
+	if (obtener_valor_de_registro_con_puntero(tcb, registro2, &valor2) == FALLO) return FALLO;
 
-	int32_t resultado = 0;
+	direccion direccion1 = valor1;
+	direccion direccion2 = valor2;
 
 	char* buffer = malloc(numero);
 
@@ -51,7 +47,7 @@ int32_t setm(tcb_t* tcb) {
 
 	free(buffer);
 
-	return resultado;
+	return OK;
 }
 
 int32_t movr(tcb_t* tcb) {
