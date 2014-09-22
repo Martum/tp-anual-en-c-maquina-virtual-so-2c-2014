@@ -23,7 +23,7 @@ resultado_t conectar_con_memoria(sock_t* socket) {
 }
 
 resultado_t conectar_con_kernel(sock_t* socket) {
-	return _conectar(NULL, 6666, socket);
+	return _conectar(NULL, 6667, socket);
 }
 
 int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
