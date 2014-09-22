@@ -3,6 +3,7 @@
 	<name>msp</name>
 	<comment></comment>
 	<projects>
+		<project>hu4sockets</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
