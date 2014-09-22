@@ -14,7 +14,7 @@ t_queue* exec;
 t_queue* block;
 t_queue* exit;
 
-void inicializar_listas()
+void inicializar_listas_estados_tcb()
 {
 	exec = queue_create();
 	block = queue_create();

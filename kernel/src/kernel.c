@@ -16,6 +16,9 @@
 #include "configuraciones.h"
 #include "lstestados.h"
 #include "loader.h"
+#include <pthread.h>
+
+#include <hu4sockets/sockets.h>
 
 int jose = 5;
 
@@ -26,7 +29,6 @@ int main(void) {
 
 	// Inicializa las listas del Planificador
 	//inicializar_listas();
-
 
 
 	printf("!!!%d!!!", jose); /* prints !!!Hello World!!! */

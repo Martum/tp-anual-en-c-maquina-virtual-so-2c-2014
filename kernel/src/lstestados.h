@@ -14,7 +14,7 @@
 /**
  * Inicializa las colas del Planificador
  */
-void inicializar_listas();
+void inicializar_listas_estados_tcb();
 
 /**
  * Agrega un TCB a la cola de Ready
