@@ -186,7 +186,7 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len);
  *
  * @RETURNS: 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
  * NOTA: En caso de fallar el buffer queda ocupando el tamanio completo del mensaje, no solo el leido
- * 		 Una vez procesados los bytes (o descartados) limpiar la memoria
+ * 		 Una vez procesados (o descartados) los bytes recibidos, limpiar la memoria
  */
 int32_t recibir(sock_t* socket, char** msg, uint32_t* len);
 

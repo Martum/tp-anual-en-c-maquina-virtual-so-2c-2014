@@ -43,7 +43,7 @@ void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto)
 sock_t* _crear_y_preparar(char* ip, uint32_t puerto)
 {
 	sock_t* socket = _crear_socket();
-	_preparar_conexion(socket, NULL, puerto);
+	_preparar_conexion(socket, ip, puerto);
 
 	return socket;
 }
