@@ -8,7 +8,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <commons/collections/list.h>
+#include <commons/config.h>
 
+t_config* configs_msp;
 t_list* lista_procesos;
 uint32_t memoria_fisica_total;
 
