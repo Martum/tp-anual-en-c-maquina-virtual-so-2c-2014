@@ -29,13 +29,13 @@ int32_t main(int32_t argc, char** argv) {
 	t_dictionary* dic_instrucciones = dictionary_create();
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t res = OK;
-	int32_t quantum = 0;
+	int32_t quantum;
 	instruccion_t instruccion;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		pedir_tcb(kernel, tcb, &quantum);
+		while (pedir_tcb(kernel, tcb, &quantum) == FALLO); // todo ver el tema de corte de conexion
 
 		if (quantum < -1 || quantum == 0) break;
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
