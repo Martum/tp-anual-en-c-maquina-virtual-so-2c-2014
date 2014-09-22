@@ -26,9 +26,14 @@ resultado_t conectar_con_kernel(sock_t* socket) {
 	return _conectar(NULL, 4558, socket);
 }
 
-int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
-	// Mientras no me de un tcb devuelvo -1
-	return 0;
+resultado_t pedir_tcb(sock_t* kernel, tcb_t* tcb, int32_t* quantum) {
+	char mensaje_a_enviar;
+	char* mensaje_a_recibir;
+	uint32_t len_enviar;
+	uint32_t len_recibir;
+	if (enviar(kernel, &mensaje_a_enviar, &len_enviar) == -1) return FALLO;
+	if (recibir(kernel, &mensaje_a_recibir, &len_recibir) == -1) return FALLO;
+	return OK;
 }
 
 direccion crear_segmento(tcb_t* tcb, int32_t bytes) {
