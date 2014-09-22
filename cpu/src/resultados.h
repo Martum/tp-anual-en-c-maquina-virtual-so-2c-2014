@@ -8,9 +8,6 @@
 #ifndef RESULTADOS_H_
 #define RESULTADOS_H_
 
-typedef enum {OK, FALLO, NO_ENCONTRO_EL_REGISTRO, TERMINO} resultado_t;
-
-#define FALLO_CONEXION -33
-
+typedef enum {OK, FALLO, NO_ENCONTRO_EL_REGISTRO, TERMINO, FALLO_CONEXION} resultado_t;
 
 #endif /* RESULTADOS_H_ */
