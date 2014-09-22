@@ -25,7 +25,7 @@ void swap_in(pagina_t*);
 void swap_out(pagina_t*);
 
 //Mediante un algoritmo libera un marco y lo devuelve
-marco_t* liberar_un_marco();
+uint32_t liberar_un_marco();
 
 //Con un algoritmo predeterminado, toma un marco de la tabla de marcos y devuelve la pagina
 //que lo contiene para liberarlo
