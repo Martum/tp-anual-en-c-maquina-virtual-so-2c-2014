@@ -161,6 +161,7 @@ int32_t conectar(sock_t* socket);
 
 /**
  * Establece el socket para escuchar
+ * TODO: Esta funcion podria incluirse en crear_socket_escuchador ya que no es bloqueante
  *
  * @RETURNS: -1 en caso de error
  */
