@@ -6,8 +6,9 @@
  */
 
 
-#include "marco.h"
-#include "pagina.h"
+
+#include <stdint.h>
+#include "estructuras.h"
 
 #ifndef SWAPPING_H_
 #define SWAPPING_H_
@@ -28,11 +29,11 @@ void swap_out(pagina_t*);
 uint32_t liberar_un_marco();
 
 //Con un algoritmo predeterminado, toma un marco de la tabla de marcos y devuelve la pagina
-//que lo contiene para liberarlo
-pagina_t* realizar_algoritmo_swapping();
+//que lo contiene para liberarlo. Tambien devuelve el PID y el id_segmento de esa pagina
+pagina_t* realizar_algoritmo_swapping(uint32_t, uint16_t);
 
 // Mueve una pagina a disco
-void mover_a_disco(pagina_t*);
+void mover_a_disco(pagina_t*, uint32_t,uint16_t);
 
 char* concat_string(const char* a, const char* b, const char* c);
 
