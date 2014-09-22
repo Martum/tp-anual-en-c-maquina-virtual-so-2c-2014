@@ -51,7 +51,6 @@ int32_t main(int32_t argc, char** argv) {
 
 	dictionary_destroy(dic_instrucciones);
 	free(tcb);
-	free(instruccion);
 
 	return 0;
 }
