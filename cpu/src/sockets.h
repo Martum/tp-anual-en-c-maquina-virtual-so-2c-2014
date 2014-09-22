@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "estructuras.h"
 #include "resultados.h"
+#include "hu4sockets/sockets.h"
 
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
@@ -29,7 +30,7 @@ resultado_t conectar_con_memoria();
  * 		FALLO_CONEXION si hubo problemas al conectarse
  */
 resultado_t conectar_con_kernel();
-int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
+int32_t pedir_tcb(sock_t* kernel, tcb_t* tcb, int32_t* quantum);
 direccion crear_segmento(tcb_t* tcb, int32_t bytes);
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion);
 int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer);

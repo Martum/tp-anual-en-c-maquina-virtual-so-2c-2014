@@ -26,8 +26,13 @@ resultado_t conectar_con_kernel(sock_t* socket) {
 	return _conectar(NULL, 4558, socket);
 }
 
-int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
-	// Mientras no me de un tcb devuelvo -1
+int32_t pedir_tcb(sock_t* kernel, tcb_t* tcb, int32_t* quantum) {
+	char mensaje_a_enviar = 'p';
+	char* mensaje_a_recibir;
+	uint32_t len_enviar = sizeof(char);
+	uint32_t len_recibir = sizeof(tcb_t);
+	enviar(kernel, &mensaje_a_enviar, &len_enviar);
+	recibir(kernel, &mensaje_a_recibir, &len_recibir);
 	return 0;
 }
 

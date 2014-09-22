@@ -29,14 +29,13 @@ int32_t main(int32_t argc, char** argv) {
 	t_dictionary* dic_instrucciones = dictionary_create();
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t res = OK;
-	int32_t quantum = -2;
+	int32_t quantum = 0;
 	instruccion_t instruccion;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		while (pedir_tcb(tcb, &quantum))
-			; // pide hasta que se lo da
+		pedir_tcb(kernel, tcb, &quantum);
 
 		if (quantum < -1 || quantum == 0) break;
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
