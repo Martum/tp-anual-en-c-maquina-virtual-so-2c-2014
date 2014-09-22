@@ -12,13 +12,14 @@
 
 int32_t main(int32_t argc, char** argv) {
 
-	run_tests(all_tests);
+	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
+
+	//run_tests(all_tests);
 	sock_t* memoria = NULL;
 	sock_t* kernel = NULL;
 
 	if (conectar_con_memoria(memoria) == FALLO_CONEXION
-			|| conectar_con_memoria(kernel) == FALLO_CONEXION) {
-		// informo por pantalla y loggeo
+			|| conectar_con_kernel(kernel) == FALLO_CONEXION) { // todo informar por pantalla y log
 		printf("Fallo la conexion");
 		return 0;
 	}
@@ -35,11 +36,12 @@ int32_t main(int32_t argc, char** argv) {
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		while (pedir_tcb(kernel, tcb, &quantum) == FALLO); // todo ver el tema de corte de conexion
+		while (pedir_tcb(kernel, tcb, &quantum) == FALLO)
+			printf("No pudo conseguir tcb"); // todo ver el tema de corte de conexion
 
-		if (quantum < -1 || quantum == 0) break;
-			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
-
+		if (quantum < -1 || quantum == 0)
+			break;
+		// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
 			obtener_instruccion(tcb, instruccion);
@@ -51,10 +53,10 @@ int32_t main(int32_t argc, char** argv) {
 		informar_a_kernel_de_finalizacion(tcb, res);
 	}
 
-	cerrar_liberar(memoria);
-	cerrar_liberar(kernel);
 	dictionary_destroy(dic_instrucciones);
 	free(tcb);
+	cerrar_liberar(memoria);
+	cerrar_liberar(kernel);
 
 	return 0;
 }
