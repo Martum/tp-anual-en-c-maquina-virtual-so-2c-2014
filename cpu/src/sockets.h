@@ -12,7 +12,7 @@
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
 
-int32_t conectar_con_memoria();
+resultado_t conectar_con_memoria();
 int32_t conectar_con_kernel();
 int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
 direccion crear_segmento(tcb_t* tcb, int32_t bytes);
