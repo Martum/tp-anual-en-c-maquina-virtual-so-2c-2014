@@ -16,6 +16,31 @@
 void cargar_configuraciones(void);
 
 /**
+ * @RETURNS: El puerto donde se escuchan conexiones
+ */
+uint32_t puerto();
+
+/**
+ * @RETURNS: La IP donde esta la MSP
+ */
+char* ip_msp();
+
+/**
+ * @RETURNS: El puerto donde escucha la MSP
+ */
+uint32_t puerto_msp();
+
+/**
+ * @RETURNS: El Quantum del CPU
+ */
+uint32_t quantum();
+
+/**
+ * @RETURNS: La ruta del archivo de codigo BESO de las Syscalls
+ */
+char* syscalls();
+
+/**
  * @NAME: tamanio_stack
  * @DESC: Devuelve TAMANIO_STACK del archivo de Configuraciones
  */

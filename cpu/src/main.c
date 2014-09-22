@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
+#include "hu4sockets/sockets.h"
 #include "instrucciones.h"
 #include "resultados.h"
 #include "seatest.h"
@@ -13,10 +14,11 @@ int32_t main(int32_t argc, char** argv) {
 
 	run_tests(all_tests);
 
-	int32_t memoria = conectar_con_memoria();
-	int32_t kernel = conectar_con_kernel();
+	sock_t* memoria = NULL;
+	sock_t* kernel = NULL;
 
-	if (memoria == FALLO_CONEXION || kernel == FALLO_CONEXION) { // fallo la conexion
+	if (conectar_con_memoria(memoria) == FALLO_CONEXION
+			|| conectar_con_memoria(kernel) == FALLO_CONEXION) {
 		// informo por pantalla y loggeo
 		return 0;
 	}
@@ -29,7 +31,6 @@ int32_t main(int32_t argc, char** argv) {
 	instruccion_t instruccion;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
-
 
 	while (1) {
 		while (pedir_tcb(tcb, &quantum))
@@ -51,7 +52,6 @@ int32_t main(int32_t argc, char** argv) {
 
 	dictionary_destroy(dic_instrucciones);
 	free(tcb);
-	free(instruccion);
 
 	return 0;
 }

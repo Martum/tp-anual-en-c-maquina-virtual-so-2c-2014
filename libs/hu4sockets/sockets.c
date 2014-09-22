@@ -19,8 +19,8 @@
 
 sock_t* _crear_socket()
 {
-	sock_t* sock = malloc(sizeof(sock_t));
-	sock->datos_conexion = malloc(sizeof(struct sockaddr));
+	sock_t* sock = (sock_t*) malloc(sizeof(sock_t));
+	sock->datos_conexion = (struct sockaddr_in*) malloc(sizeof(struct sockaddr));
 
 	sock->fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -43,15 +43,23 @@ void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto)
 sock_t* _crear_y_preparar(char* ip, uint32_t puerto)
 {
 	sock_t* socket = _crear_socket();
-	_preparar_conexion(socket, NULL, puerto);
+	_preparar_conexion(socket, ip, puerto);
 
 	return socket;
 }
 
 
+int32_t _limpiar_puerto(sock_t* socket)
+{
+	int yes=1;
+	return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+}
+
+
 int32_t _bind_puerto(sock_t* socket)
 {
-	return bind(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
+	_limpiar_puerto(socket);
+	return bind(socket->fd, (struct sockaddr *)socket->datos_conexion, sizeof(struct sockaddr));
 }
 
 
@@ -210,7 +218,7 @@ sock_t* crear_socket_hablador(char* ip, uint32_t puerto)
 
 int32_t conectar(sock_t* socket)
 {
-	return connect(socket->fd, (struct sockaddr *)&socket->datos_conexion, sizeof(struct sockaddr));
+	return connect(socket->fd, (struct sockaddr *)socket->datos_conexion, sizeof(struct sockaddr));
 }
 
 
@@ -225,7 +233,7 @@ sock_t* aceptar_conexion(sock_t* socket)
 	sock_t* sock_nuevo = _crear_socket();
 	uint32_t i = sizeof(struct sockaddr_in);	// TODO: Ver que hacer con este INT. Sirve devolverlo dentro del struct?
 
-	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)&sock_nuevo->datos_conexion, &i);
+	sock_nuevo->fd = accept(socket->fd, (struct sockaddr *)sock_nuevo->datos_conexion, &i);
 
 	return sock_nuevo->fd == -1?NULL:sock_nuevo;
 }

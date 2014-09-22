@@ -49,6 +49,12 @@ void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto);
 sock_t* _crear_y_preparar(char* ip, uint32_t puerto);
 
 /**
+ * Limpia el puerto para reutilizarlo (para los casos en que se corre
+ * varias veces un bind sobre el mismo puerto)
+ */
+int32_t _limpiar_puerto(sock_t* socket);
+
+/**
  * Bindea el puerto al Socket
  */
 int32_t _bind_puerto(sock_t* socket);
@@ -161,6 +167,7 @@ int32_t conectar(sock_t* socket);
 
 /**
  * Establece el socket para escuchar
+ * TODO: Esta funcion podria incluirse en crear_socket_escuchador ya que no es bloqueante
  *
  * @RETURNS: -1 en caso de error
  */
@@ -186,7 +193,7 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len);
  *
  * @RETURNS: 0 en caso de exito; o -1 si falla y deja en len la cantidad de bytes leidos correctamente
  * NOTA: En caso de fallar el buffer queda ocupando el tamanio completo del mensaje, no solo el leido
- * 		 Una vez procesados los bytes (o descartados) limpiar la memoria
+ * 		 Una vez procesados (o descartados) los bytes recibidos, limpiar la memoria
  */
 int32_t recibir(sock_t* socket, char** msg, uint32_t* len);
 

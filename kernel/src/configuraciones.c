@@ -19,3 +19,29 @@ uint32_t tamanio_stack()
 {
 	return config_get_int_value(configs_kernel, "TAMANIO_STACK");
 }
+
+
+uint32_t puerto()
+{
+	return config_get_int_value(configs_kernel, "PUERTO");
+}
+
+char* ip_msp()
+{
+	return config_get_string_value(configs_kernel, "IP_MSP");
+}
+
+uint32_t puerto_msp()
+{
+	return config_get_int_value(configs_kernel, "PUERTO_MSP");
+}
+
+uint32_t quantum()
+{
+	return config_get_int_value(configs_kernel, "QUANTUM");
+}
+
+char* syscalls()
+{
+	return config_get_string_value(configs_kernel, "SYSCALLS");
+}
