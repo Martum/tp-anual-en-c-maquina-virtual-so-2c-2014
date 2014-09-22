@@ -25,13 +25,15 @@ void swap_in(pagina_t*);
 void swap_out(pagina_t*);
 
 //Mediante un algoritmo libera un marco y lo devuelve
-marco_t* liberar_un_marco();
+uint32_t liberar_un_marco();
 
-//Con un algoritmo predeterminado, toma un marco de la tabla de marcos y lo devuelve para
-// ser liberado. No lo libera él mismo.
-marco_t* realizar_algoritmo_swapping();
+//Con un algoritmo predeterminado, toma un marco de la tabla de marcos y devuelve la pagina
+//que lo contiene para liberarlo
+pagina_t* realizar_algoritmo_swapping();
 
-// Mueve el contenido de un marco a disco
-void mover_a_disco(marco_t* marco);
+// Mueve una pagina a disco
+void mover_a_disco(pagina_t*);
+
+char* concat_string(const char* a, const char* b, const char* c);
 
 #endif /* SWAPPING_H_ */

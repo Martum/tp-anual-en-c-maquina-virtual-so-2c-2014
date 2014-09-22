@@ -12,36 +12,41 @@
 #ifndef TCB_FUNCIONES_H_
 #define TCB_FUNCIONES_H_
 
+/*
+ * @DESC: Crea un espacio de memoria para la tcb
+ * @RETURNS: el puntero al espacio de memoria creado
+ */
 tcb_t* crear_tcb();
 
-/**
- * @NAME: copiar_valor_en_registro
+/*
  * @DESC: Actualiza el valor del registro de la tcb con el numero.
- * 		Devuelve 0 si _todo sale bien. Devuelve -1 si no se le paso un registro que exista.
+ * @RETURNS:
+ * 		OK si _todo sale bien
+ * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero);
-/**
- * @NAME: obtener_valor_de_registro
+resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro,
+		int32_t numero);
+/*
  * @DESC: Obtiene el valor del registro de la tcb.
- * 		Devuelve el valor si _todo sale bien. Devuelve -1 si no se le paso un registro que exista.
+ * @RETURNS:
+ * 		OK si _todo sale bien
+ * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro, int32_t* numero);
+resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
+		int32_t* numero);
 /**
- * @NAME: actualizar_pc
  * @DESC: Actualiza el valor del pc con el valor.
- * 		Devuelve 0 si _todo sale bien.
+ * @RETURNS:
  */
 int32_t actualizar_pc(tcb_t* tcb, int32_t valor);
 /**
- * @NAME: obtener_pc
  * @DESC: Obtiene el valor del pc de la tcb.
- * 		Devuelve el pc
+ * @RETURNS: la direccion del pc
  */
 int32_t obtener_pc(tcb_t* tcb);
 /**
- * @NAME: obtener_base_de_codigo
- * @DESC: Obtiene la direccion de la basel de codigo de la tcb.
- * 		Devuelve la direccion de la base de codigo
+ * @DESC: Obtiene la direccion de la base de codigo de la tcb.
+ * @RETURNS: la direccion de la base de codigo
  */
 direccion obtener_base_de_codigo(tcb_t* tcb);
 

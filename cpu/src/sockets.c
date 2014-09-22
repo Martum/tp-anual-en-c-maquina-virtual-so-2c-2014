@@ -7,17 +7,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "hu4sockets/sockets.h"
 #include "estructuras.h"
 #include "resultados.h"
 
-int32_t conectar_con_memoria() {
-	// Me conecto con la memoria MSP. Si falla la conexion devuelvo -1
-	return 0;
+resultado_t _conectar(char* ip, int32_t puerto, sock_t* s) {
+	s = crear_socket_hablador(ip, puerto);
+	if (conectar(s) == -1)
+		return FALLO_CONEXION;
+	return OK;
 }
 
-int32_t conectar_con_kernel() {
-	// "Me conecto con el Kernel. Si falla la conexion devuelvo -1
-	return 0;
+resultado_t conectar_con_memoria(sock_t* socket) {
+	return _conectar(NULL, 6666, socket);
+}
+
+resultado_t conectar_con_kernel(sock_t* socket) {
+	return _conectar(NULL, 6666, socket);
 }
 
 int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
