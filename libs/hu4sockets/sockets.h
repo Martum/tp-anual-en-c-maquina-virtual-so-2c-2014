@@ -49,6 +49,12 @@ void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto);
 sock_t* _crear_y_preparar(char* ip, uint32_t puerto);
 
 /**
+ * Limpia el puerto para reutilizarlo (para los casos en que se corre
+ * varias veces un bind sobre el mismo puerto)
+ */
+int32_t _limpiar_puerto(sock_t* socket);
+
+/**
  * Bindea el puerto al Socket
  */
 int32_t _bind_puerto(sock_t* socket);

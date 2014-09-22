@@ -49,8 +49,16 @@ sock_t* _crear_y_preparar(char* ip, uint32_t puerto)
 }
 
 
+int32_t _limpiar_puerto(sock_t* socket)
+{
+	int yes=1;
+	return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+}
+
+
 int32_t _bind_puerto(sock_t* socket)
 {
+	_limpiar_puerto(socket);
 	return bind(socket->fd, (struct sockaddr *)socket->datos_conexion, sizeof(struct sockaddr));
 }
 
