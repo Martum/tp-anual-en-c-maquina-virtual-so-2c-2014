@@ -19,8 +19,8 @@
 
 sock_t* _crear_socket()
 {
-	sock_t* sock = malloc(sizeof(sock_t));
-	sock->datos_conexion = malloc(sizeof(struct sockaddr));
+	sock_t* sock = (sock_t*) malloc(sizeof(sock_t));
+	sock->datos_conexion = (struct sockaddr_in*) malloc(sizeof(struct sockaddr));
 
 	sock->fd = socket(AF_INET, SOCK_STREAM, 0);
 
