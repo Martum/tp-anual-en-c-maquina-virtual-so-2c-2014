@@ -13,20 +13,17 @@
 
 #include <commons/collections/list.h>
 
-#include "estructuras.h"
-#include "pagina.h"
-#include "segmento.h"
-#include "proceso_msp.h"
-#include "interfaz.c"
+#include "interfaz.h"
 #include "consola_msp.h"
+#include "configuraciones.h"
 
 int main(void){
-
-	lista_procesos = list_create();
-	memoria_fisica_total = malloc(10000); // el parametro viene por archivo de configuracion
-
+	inicializar_lista_procesos();
+	inicializar_memoria_fisica_total(10000);// el parametro viene por archivo de configuracion
+	printf("%d",5);
 	return 0;
 }
+
 /* Prueba de main para saber que anda
 proceso_msp_t *proceso1 = crear_proceso_msp();
 

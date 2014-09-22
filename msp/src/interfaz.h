@@ -1,22 +1,21 @@
 /*
- * main.h
+ * interfaz.h
  *
- *  Created on: 15/09/2014
+ *  Created on: 22/09/2014
  *      Author: utnso
  */
 
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef INTERFAZ_H_
+#define INTERFAZ_H_
 
+#include "estructuras.h"
 /* variables globales:
  * 		- tabla de procesos (lista de procesos)
  * 		- cantidad de memoria fisica total pedida
  */
 
 
-
 // INTERFAZ DE LA MSP:
-
 
 /*
  *  crear_segmento(pid, tamanio):direccion_virtual_base
@@ -26,7 +25,7 @@
  *  Si no hay espacio suficiente en la mp o en el espacio de swapping
  *  retorna un error de memoria llena.
  */
-direccion crear_segmento (uint32_t pid, uint32_t tamanio_en_bytes);
+direccion crear_segmento(uint32_t, uint32_t);
 
 
 /*
@@ -58,5 +57,4 @@ uint32_t leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio)
  */
 uint32_t escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio);
 
-
-#endif /* MAIN_H_ */
+#endif /* INTERFAZ_H_ */
