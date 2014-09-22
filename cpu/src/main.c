@@ -18,7 +18,7 @@ int32_t main(int32_t argc, char** argv) {
 	sock_t* kernel = NULL;
 
 	if (conectar_con_memoria(memoria) == FALLO_CONEXION
-			|| conectar_con_memoria(kernel) == FALLO_CONEXION) { // fallo la conexion
+			|| conectar_con_memoria(kernel) == FALLO_CONEXION) {
 		// informo por pantalla y loggeo
 		return 0;
 	}
