@@ -13,33 +13,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+/*
 
 
 
 void swap_in(pagina_t* pagina)
 {
-	marco_t* marco_libre = liberar_un_marco();
+	uint32_t direccion_marco_libre = liberar_un_marco();
 
 
-	pagina->marco=marco_libre->base;
-	marco_libre->ocupado=true;
+	pagina->marco=direccion_marco_libre;
+
 
 
 }
 
 
- marco_t* liberar_un_marco()
+uint32_t liberar_un_marco()
 {
 	pagina_t* pagina_a_liberar= realizar_algoritmo_swapping();
 
-	//Discutir con Fer. En pagina, marco es un marco_t o un unint16???
-	marco_t* marco_a_liberar= pagina_a_liberar->marco;
+
+	uint32_t direccion_marco_a_liberar= pagina_a_liberar->marco;
 
 	mover_a_disco(pagina_a_liberar);
 
 
-	return marco_a_liberar;
+
+	return direccion_marco_a_liberar;
 }
 
 
@@ -53,27 +54,19 @@ pagina_t* realizar_algoritmo_swapping()
 
 void mover_a_disco(pagina_t* pagina)
 {
-	//ACA FALTA DECIRLE A LA PAGINA QUE ACTUALMENTE OCUPA EL MARCO QUE VA A ESTAR EN DISCO
-	//PAGINA.EN_DISCO=TRUE
 
-	char* path = (char*)concat_string("en_disco/",/*direccion pagina como char* */"bla",".txt");
+	char* path = (char*)concat_string("en_disco/",direccion pagina como char*"bla",".txt");
 
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
 
 	//Como paso el contenido de la pagina a char*??
-	txt_write_in_file(arch, /*contenido pagina*/"pagina");
+	txt_write_in_file(arch, contenido pagina"pagina");
 
 	pagina->en_disco=true;
 
 	pagina->tiene_marco=false;
-
-
-
-
-
-
 
 }
 
@@ -92,4 +85,4 @@ char* concat_string(const char* a, const char* b, const char* c)
 }
 
 
-
+*/
