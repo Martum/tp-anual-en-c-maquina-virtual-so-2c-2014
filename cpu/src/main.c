@@ -51,6 +51,8 @@ int32_t main(int32_t argc, char** argv) {
 		informar_a_kernel_de_finalizacion(tcb, res);
 	}
 
+	cerrar_liberar(memoria);
+	cerrar_liberar(kernel);
 	dictionary_destroy(dic_instrucciones);
 	free(tcb);
 
