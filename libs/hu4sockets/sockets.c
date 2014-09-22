@@ -30,7 +30,7 @@ sock_t* _crear_socket()
 void _preparar_conexion(sock_t* socket, char* ip, uint32_t puerto)
 {
 	// Seteamos la IP, si es NULL es localhost
-	if(ip != NULL)
+	if(ip == NULL)
 		socket->datos_conexion->sin_addr.s_addr = htonl(INADDR_ANY); // Local
 	else
 		socket->datos_conexion->sin_addr.s_addr = inet_addr(ip);	// Remota
