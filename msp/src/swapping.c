@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+/*
 
 
 
@@ -54,27 +54,19 @@ pagina_t* realizar_algoritmo_swapping()
 
 void mover_a_disco(pagina_t* pagina)
 {
-	//ACA FALTA DECIRLE A LA PAGINA QUE ACTUALMENTE OCUPA EL MARCO QUE VA A ESTAR EN DISCO
-	//PAGINA.EN_DISCO=TRUE
 
-	char* path = (char*)concat_string("en_disco/",/*direccion pagina como char* */"bla",".txt");
+	char* path = (char*)concat_string("en_disco/",direccion pagina como char*"bla",".txt");
 
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
 
 	//Como paso el contenido de la pagina a char*??
-	txt_write_in_file(arch, /*contenido pagina*/"pagina");
+	txt_write_in_file(arch, contenido pagina"pagina");
 
 	pagina->en_disco=true;
 
 	pagina->tiene_marco=false;
-
-
-
-
-
-
 
 }
 
@@ -93,4 +85,4 @@ char* concat_string(const char* a, const char* b, const char* c)
 }
 
 
-
+*/
