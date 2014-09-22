@@ -13,21 +13,23 @@
 int32_t main(int32_t argc, char** argv) {
 
 	run_tests(all_tests);
-
 	sock_t* memoria = NULL;
 	sock_t* kernel = NULL;
 
 	if (conectar_con_memoria(memoria) == FALLO_CONEXION
 			|| conectar_con_memoria(kernel) == FALLO_CONEXION) {
 		// informo por pantalla y loggeo
+		printf("Fallo la conexion");
 		return 0;
 	}
+
+	printf("Se pudo conectar a memoria y kernel");
 
 	tcb_t* tcb = crear_tcb();
 	t_dictionary* dic_instrucciones = dictionary_create();
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t res = OK;
-	int32_t quantum;
+	int32_t quantum = -2;
 	instruccion_t instruccion;
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
@@ -36,9 +38,9 @@ int32_t main(int32_t argc, char** argv) {
 		while (pedir_tcb(tcb, &quantum))
 			; // pide hasta que se lo da
 
-		if (quantum < -1 || quantum == 0) {
+		if (quantum < -1 || quantum == 0) break;
 			// aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
-		}
+
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
 			obtener_instruccion(tcb, instruccion);

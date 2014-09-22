@@ -19,11 +19,11 @@ resultado_t _conectar(char* ip, int32_t puerto, sock_t* s) {
 }
 
 resultado_t conectar_con_memoria(sock_t* socket) {
-	return _conectar(NULL, 6666, socket);
+	return _conectar(NULL, 4557, socket);
 }
 
 resultado_t conectar_con_kernel(sock_t* socket) {
-	return _conectar(NULL, 6667, socket);
+	return _conectar(NULL, 4558, socket);
 }
 
 int32_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
