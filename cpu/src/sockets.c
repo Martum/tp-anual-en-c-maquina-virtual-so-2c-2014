@@ -7,33 +7,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include "hu4sockets/sockets.h"
 #include "tcb-estructuras.h"
 #include "instrucciones-estructuras.h"
+#include "sockets-estructuras.h"
 #include "resultados.h"
 
-resultado_t _conectar(char* ip, int32_t puerto, sock_t* s) {
-	s = crear_socket_hablador(ip, puerto);
-	if (conectar(s) == -1)
+resultado_t _conectar(sock_t** s, char* ip, int32_t puerto) {
+	*s = crear_socket_hablador(ip, puerto);
+	if (conectar(*s) == -1)
 		return FALLO_CONEXION;
 	return OK;
 }
 
-resultado_t conectar_con_memoria(sock_t* socket) {
-	return _conectar(NULL, 4557, socket);
+resultado_t conectar_con_memoria(sock_t** socket) {
+	return _conectar(socket, NULL, 4557);
 }
 
-resultado_t conectar_con_kernel(sock_t* socket) {
-	return _conectar(NULL, 4558, socket);
+resultado_t conectar_con_kernel(sock_t** socket) {
+	return _conectar(socket, NULL, 4559);
 }
 
-resultado_t pedir_tcb(sock_t* kernel, tcb_t* tcb, int32_t* quantum) {
-	char mensaje_a_enviar;
-	char* mensaje_a_recibir;
-	uint32_t len_enviar;
-	uint32_t len_recibir;
-	if (enviar(kernel, &mensaje_a_enviar, &len_enviar) == -1) return FALLO;
-	if (recibir(kernel, &mensaje_a_recibir, &len_recibir) == -1) return FALLO;
+resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
+
+	printf("Me preparo para mandar\n");
+
+	mensaje_t m;
+	m.flag = 2;
+	char* msg = malloc(sizeof(mensaje_t));
+	uint32_t len = sizeof(mensaje_t);
+	memcpy(msg, &m, sizeof(mensaje_t));
+
+	printf("Envio\n");
+
+	enviar(*kernel, msg, &len);
+
+	printf("Me preparo para recibir\n");
+
+	char* msg_devolucion;
+	uint32_t len_devolucion;
+
+	printf("Recibo\n");
+
+	recibir(*kernel, &msg_devolucion, &len_devolucion);
+
+	mensaje_t m_devolucion;
+	memcpy(&m_devolucion, msg_devolucion, len_devolucion);
+
+	printf("Recibi: %d\n\n", m_devolucion.flag);
+
+	printf("Libero los sockets\n");
+
 	return OK;
 }
 
