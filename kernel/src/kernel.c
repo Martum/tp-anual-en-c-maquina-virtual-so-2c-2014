@@ -33,9 +33,11 @@ int main(void) {
 	// - Inicailiza las listas de conexiones socketeras
 	//inicializar_listas_conexiones();
 
-	// - Conectar con la memoria
+	// - Conectar con la memoria (agregar funcion en conexiones.h)
 
 	// - Crear thread para esperar_conexiones()
+
+	// - Crear threar para esperar_conexiones_unsigned()
 
 	printf("Bienvenido al Kernel");
 	return EXIT_SUCCESS;
