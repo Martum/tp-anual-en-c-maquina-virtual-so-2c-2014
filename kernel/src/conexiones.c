@@ -58,6 +58,12 @@ void _agregar_conexion_a_procesos(sock_t* conexion)
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 }
 
+void _cerrar_liberar_generico(void* elemento)
+{
+	sock_t* socket = (sock_t*) elemento;
+	cerrar_liberar(socket);
+}
+
 void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds)
 {
 	int i;
@@ -82,7 +88,7 @@ void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds)
 		}
 		else if((poll_fds->revents & POLLERR) || (poll_fds->revents & POLLHUP))
 		{// Error o socket cerrado, lo volamos a la mierda
-			list_remove_and_destroy_by_condition(conexiones_unasigned, encontrar_socket, cerrar_liberar_generico);
+			list_remove_and_destroy_by_condition(conexiones_unasigned, encontrar_socket, _cerrar_liberar_generico);
 		}
 
 		poll_fds++;

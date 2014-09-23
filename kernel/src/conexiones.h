@@ -41,6 +41,13 @@ void _agregar_conexion_a_procesos(sock_t*);
  */
 void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds);
 
+
+/**
+ * Lee del socket lo que la conexion unasigned tiene para decir,
+ * y la mueve a la lista que corresponde
+ */
+void _conexion_unasigned_lista(sock_t* conexion);
+
 /**
  * Espera y despacha conexiones entrantes.
  * Se corre en un thread inmortal (o inmoral?).
