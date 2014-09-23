@@ -29,36 +29,37 @@ resultado_t conectar_con_kernel(sock_t** socket) {
 	return _conectar(socket, NULL, 4559);
 }
 
-resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
+void _armar_mensaje(char** mensaje, uint32_t* len) {
+	*mensaje = malloc(sizeof(mensaje_aviso_t));
+	*len = sizeof(mensaje_aviso_t);
+	mensaje_aviso_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = MANDA_TCB;
+	memcpy(*mensaje, &cuerpo_del_mensaje, sizeof(mensaje_aviso_t));
+}
 
-	printf("Me preparo para mandar\n");
-
-	mensaje_aviso_t m;
-	m.flag = MANDA_TCB;
-	char* msg = malloc(sizeof(mensaje_aviso_t));
-	uint32_t len = sizeof(mensaje_aviso_t);
-	memcpy(msg, &m, sizeof(mensaje_aviso_t));
-
+void __enviar(sock_t** kernel, char* msg, uint32_t len) {
 	printf("Envio\n");
-
 	enviar(*kernel, msg, &len);
+}
 
+void __recibir(sock_t** kernel) {
 	printf("Me preparo para recibir\n");
-
-	char* msg_devolucion;
-	uint32_t len_devolucion;
-
+	char* msg;
+	uint32_t len;
 	printf("Recibo\n");
-
-	recibir(*kernel, &msg_devolucion, &len_devolucion);
-
+	recibir(*kernel, &msg, &len);
 	mensaje_tcb_t m_devolucion;
-	memcpy(&m_devolucion, msg_devolucion, len_devolucion);
-
+	memcpy(&m_devolucion, msg, len);
 	printf("Quantum: %d\n\n", m_devolucion.quantum);
+}
 
-	printf("Libero los sockets\n");
-
+resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
+	printf("Me preparo para mandar\n");
+	char* mensaje_a_enviar;
+	uint32_t len_a_enviar;
+	_armar_mensaje(&mensaje_a_enviar, &len_a_enviar);
+	__enviar(kernel, mensaje_a_enviar, len_a_enviar);
+	__recibir(kernel);
 	return OK;
 }
 
