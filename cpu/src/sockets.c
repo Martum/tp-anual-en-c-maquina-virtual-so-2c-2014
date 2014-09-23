@@ -33,11 +33,11 @@ resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
 
 	printf("Me preparo para mandar\n");
 
-	mensaje_t m;
-	m.flag = 2;
-	char* msg = malloc(sizeof(mensaje_t));
-	uint32_t len = sizeof(mensaje_t);
-	memcpy(msg, &m, sizeof(mensaje_t));
+	mensaje_aviso_t m;
+	m.flag = MANDA_TCB;
+	char* msg = malloc(sizeof(mensaje_aviso_t));
+	uint32_t len = sizeof(mensaje_aviso_t);
+	memcpy(msg, &m, sizeof(mensaje_aviso_t));
 
 	printf("Envio\n");
 
@@ -52,10 +52,10 @@ resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
 
 	recibir(*kernel, &msg_devolucion, &len_devolucion);
 
-	mensaje_t m_devolucion;
+	mensaje_tcb_t m_devolucion;
 	memcpy(&m_devolucion, msg_devolucion, len_devolucion);
 
-	printf("Recibi: %d\n\n", m_devolucion.flag);
+	printf("Quantum: %d\n\n", m_devolucion.quantum);
 
 	printf("Libero los sockets\n");
 

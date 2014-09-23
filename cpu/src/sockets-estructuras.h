@@ -8,8 +8,15 @@
 #ifndef SOCKETS_ESTRUCTURAS_H_
 #define SOCKETS_ESTRUCTURAS_H_
 
+typedef enum {MANDA_TCB} flag_t;
+
 typedef struct mensaje {
-	uint32_t flag;
-} mensaje_t;
+	flag_t flag;
+} mensaje_aviso_t;
+
+typedef struct mensaje_tcb {
+	uint32_t tcb; // todo cambiar por tcb
+	uint32_t quantum;
+} mensaje_tcb_t;
 
 #endif /* SOCKETS_ESTRUCTURAS_H_ */
