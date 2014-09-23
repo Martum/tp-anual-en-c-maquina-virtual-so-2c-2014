@@ -84,4 +84,10 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 
 	pagina->tiene_marco=false;
 
-}*/
+}
+
+void swap_out(pagina_t* pagina)
+{
+
+}
+*/
