@@ -24,13 +24,19 @@ int jose = 5;
 
 
 int main(void) {
-	// Levanta las configuraciones del archivo
+	// - Levanta las configuraciones del archivo
 	//cargar_configuraciones();
 
-	// Inicializa las listas del Planificador
+	// - Inicializa las listas del Planificador
 	//inicializar_listas();
 
+	// - Inicailiza las listas de conexiones socketeras
+	//inicializar_listas_conexiones();
 
-	printf("!!!%d!!!", jose); /* prints !!!Hello World!!! */
+	// - Conectar con la memoria
+
+	// - Crear thread para esperar_conexiones()
+
+	printf("Bienvenido al Kernel");
 	return EXIT_SUCCESS;
 }

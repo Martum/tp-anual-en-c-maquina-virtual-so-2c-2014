@@ -8,6 +8,18 @@
 #ifndef CONEXIONES_H_
 #define CONEXIONES_H_
 
+#include <hu4sockets/sockets.h>
+
+typedef struct conexion_cpu {
+	sock_t* socket;
+	uint32_t id;
+} conexion_cpu_t;
+
+typedef struct conexion_procesos {
+	sock_t* socket;
+	uint32_t pid;
+} conexion_procesos_t;
+
 /**
  * Espera y despacha conexiones entrantes.
  * Se corre en un thread
@@ -22,16 +34,16 @@ void inicializar_listas_conexiones(void);
 /**
  * Agrega una conexion a la lista de conexiones sin clasificacion
  */
-void agregar_conexion_a_unasigned(sock_t*);
+void _agregar_conexion_a_unasigned(sock_t*);
 
 /**
  * Agrega una conexion a la lista de conexiones de CPU
  */
-void agregar_conexion_a_cpu(sock_t*);
+void _agregar_conexion_a_cpu(sock_t*);
 
 /**
  * Agrega una conexion a la lista de conexiones de Procesos
  */
-void agregar_conexion_a_procesos(sock_t*);
+void _agregar_conexion_a_procesos(sock_t*);
 
 #endif /* CONEXIONES_H_ */
