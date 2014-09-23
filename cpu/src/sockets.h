@@ -6,7 +6,8 @@
  */
 
 #include <stdint.h>
-#include "estructuras.h"
+#include "tcb-estructuras.h"
+#include "instrucciones-estructuras.h"
 #include "resultados.h"
 #include "hu4sockets/sockets.h"
 

@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "hu4sockets/sockets.h"
-#include "estructuras.h"
+#include "tcb-estructuras.h"
+#include "instrucciones-estructuras.h"
 #include "resultados.h"
 
 resultado_t _conectar(char* ip, int32_t puerto, sock_t* s) {
