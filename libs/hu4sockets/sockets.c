@@ -281,3 +281,9 @@ void cerrar_liberar(sock_t* socket)
 	_cerrame_esto_nestor(socket);
 	_liberar_memoria(socket);
 }
+
+void cerrar_liberar_generico(void* elemento)
+{
+	sock_t* socket = (sock_t*) elemento;
+	cerrar_liberar(socket);
+}

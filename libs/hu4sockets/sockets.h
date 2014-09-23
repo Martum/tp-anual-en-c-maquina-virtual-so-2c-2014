@@ -202,4 +202,9 @@ int32_t recibir(sock_t* socket, char** msg, uint32_t* len);
  */
 void cerrar_liberar(sock_t* socket);
 
+/**
+ * Igual que cerrar_liberar() pero sirve para las listas de las commons
+ */
+void cerrar_liberar_generico(void* elemento);
+
 #endif /* SOCKETS_H_ */
