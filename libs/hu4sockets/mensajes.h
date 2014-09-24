@@ -33,6 +33,9 @@ typedef enum {
 	// Mensajes del Kernel a la Consola: 151 -> 200
 
 
+	// Mensajes del CPU al Kernel: 201 -> 250
+	NUEVO_CPU = 201,
+
 	// ORDENAME SANTI
 	EXITO,
 	MANDA_TCB,
