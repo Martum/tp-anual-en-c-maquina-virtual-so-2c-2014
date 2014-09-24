@@ -13,6 +13,6 @@ uint32_t get_memoria_fisica_total();
 void inicializar_lista_procesos();
 void inicializar_memoria_fisica_total(uint32_t);
 
-char * arma_direccion(uint16_t, int);
+//char * arma_direccion(uint16_t, int);
 
 #endif /* CONFIGURACIONES_H_ */
