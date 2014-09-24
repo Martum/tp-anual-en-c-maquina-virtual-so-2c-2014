@@ -31,6 +31,8 @@ void inicializar_memoria_fisica_total(uint32_t tamanio){
 	memoria_fisica_total = tamanio;
 }
 
+// POR AHORA ESTO NO SE NECESITA
+/*
 char* arma_direccion(uint16_t numero, int cant_bits)
 {
 		char* aux=malloc(13);
@@ -59,3 +61,4 @@ char* arma_direccion(uint16_t numero, int cant_bits)
 
 		return binario;
 }
+*/

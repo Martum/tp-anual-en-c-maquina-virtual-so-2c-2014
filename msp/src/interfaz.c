@@ -25,25 +25,15 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes){
 	// creo el segmento en la tabla de segmentos del proceso
 	segmento_t* segmento = crear_segmento_con_paginas(proceso, tamanio_en_bytes);
 
+	// la primer pagina empieza en 0 y el desplazamiento en la base es 0
+	uint16_t primer_pagina = 0x000;
+	int desplazamiento_a_la_base = 0x00;
+
 	// creo la direccion virtual base del segmento
-	char* direccion_segmento_en_binario = arma_direccion(segmento->id,12);
+	uint32_t direccion_virtual = (segmento->id<<20) | (primer_pagina<<8)| desplazamiento_a_la_base;
 
-	/* le concateno 12 ceros que referencian a la pagina 0 y 8 ceros mas
-	* por desplazamiento cero
-	*/
-	char* aux=malloc(2);
-	int j;
-	aux=string_itoa(0);
-	for(j=0; j<20; j++){
-		string_append(&direccion_segmento_en_binario,aux);
-	}
-
-	// libero memoria de la variable auxiliar
-	free(aux);
-
-	// puedo retornar la direccion base del segmento como una cadena de ceros y unos
-	// HAY QUE CONVERTIR ESA CADENA DE CEROS Y UNOS A NUMERO
-	return 0;
+	// retorno la direccion formada
+	return direccion_virtual;
 
 }
 
