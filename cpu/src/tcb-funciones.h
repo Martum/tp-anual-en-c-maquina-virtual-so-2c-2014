@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include "estructuras.h"
+#include "tcb-estructuras.h"
 #include "resultados.h"
 
 #ifndef TCB_FUNCIONES_H_

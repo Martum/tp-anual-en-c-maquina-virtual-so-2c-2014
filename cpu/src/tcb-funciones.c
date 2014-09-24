@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "estructuras.h"
+#include "tcb-estructuras.h"
 #include "resultados.h"
 
 tcb_t* crear_tcb() {

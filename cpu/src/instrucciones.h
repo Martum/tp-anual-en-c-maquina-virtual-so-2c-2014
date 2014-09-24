@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
-#include "estructuras.h"
+#include "tcb-estructuras.h"
 #include "resultados.h"
 
 #ifndef INSTRUCCIONES_H_

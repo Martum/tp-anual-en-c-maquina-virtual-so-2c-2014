@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
-#include "estructuras.h"
+#include "tcb-estructuras.h"
 #include "instrucciones.h"
 #include "sockets.h"
 #include "tcb-funciones.h"
