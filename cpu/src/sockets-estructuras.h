@@ -8,10 +8,10 @@
 #ifndef SOCKETS_ESTRUCTURAS_H_
 #define SOCKETS_ESTRUCTURAS_H_
 
-typedef enum {MANDA_TCB} flag_t;
+typedef enum {MANDA_UN_TCB} flags_t;
 
 typedef struct mensaje {
-	flag_t flag;
+	flags_t flag;
 } mensaje_aviso_t;
 
 typedef struct mensaje_tcb {

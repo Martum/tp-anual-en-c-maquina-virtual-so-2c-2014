@@ -20,45 +20,43 @@ int32_t main(int32_t argc, char** argv) {
 
 	if (conectar_con_memoria(&memoria) == FALLO_CONEXION
 			|| conectar_con_kernel(&kernel) == FALLO_CONEXION) { // todo informar por pantalla y log
-		printf("Fallo la conexion");
+		printf("Fallo la conexion. Aborto\n");
 		return 0;
 	}
 
 	printf("Se pudo conectar a memoria y kernel");
 
-	pedir_tcb(&kernel, NULL, NULL );
-	/*
-	 tcb_t* tcb = crear_tcb();
-	 t_dictionary* dic_instrucciones = dictionary_create();
-	 resultado_t (*funcion)(tcb_t*);
-	 resultado_t res = OK;
-	 int32_t quantum;
-	 instruccion_t instruccion;
+	tcb_t* tcb = crear_tcb();
+	t_dictionary* dic_instrucciones = dictionary_create();
+	resultado_t (*funcion)(tcb_t*);
+	resultado_t res = OK;
+	int32_t quantum;
+	instruccion_t instruccion;
 
-	 cargar_diccionario_de_instrucciones(dic_instrucciones);
-	 */
-	/*
-	 while (1) {
-	 while (pedir_tcb(kernel, tcb, &quantum) == FALLO)
-	 printf("No pudo conseguir tcb"); // todo ver el tema de corte de conexion
+	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
-	 if (quantum < -1 || quantum == 0)
-	 break;
-	 // aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
+	while (1) {
+		pedir_tcb_compartido(&kernel, tcb, &quantum);
 
-	 while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
-	 obtener_instruccion(tcb, instruccion);
-	 funcion = dictionary_get(dic_instrucciones, instruccion);
-	 res = funcion(tcb);
-	 quantum--;
-	 }
+		break;
 
-	 informar_a_kernel_de_finalizacion(tcb, res);
-	 }
+		if (quantum < -1 || quantum == 0) {
+			printf("Quantum invalido. Aborto\n");
+			break;
+		} // aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 
-	 dictionary_destroy(dic_instrucciones);
-	 free(tcb);
-	 */
+		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
+			obtener_instruccion(tcb, instruccion);
+			funcion = dictionary_get(dic_instrucciones, instruccion);
+			res = funcion(tcb);
+			quantum--;
+		}
+
+		informar_a_kernel_de_finalizacion(tcb, res);
+	}
+
+	dictionary_destroy(dic_instrucciones);
+	free(tcb);
 
 	cerrar_liberar(memoria);
 	cerrar_liberar(kernel);

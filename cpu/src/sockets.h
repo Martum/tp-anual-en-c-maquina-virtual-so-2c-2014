@@ -31,7 +31,7 @@ resultado_t conectar_con_memoria(sock_t** socket);
  * 		FALLO_CONEXION si hubo problemas al conectarse
  */
 resultado_t conectar_con_kernel(sock_t** socket);
-resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum);
+resultado_t pedir_tcb_compartido(sock_t** kernel, tcb_t* tcb, int32_t* quantum);
 direccion crear_segmento(tcb_t* tcb, int32_t bytes);
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion);
 int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer);
