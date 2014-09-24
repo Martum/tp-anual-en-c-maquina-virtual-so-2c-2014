@@ -26,6 +26,14 @@ typedef struct tcb {
 } tcb_t;
 
 typedef enum {
+	// Mensajes de la Consola al Kernel: 101 -> 150
+	NUEVO_PROGRAMA = 101,
+	TERMINAR_CONEXION = 102,
+
+	// Mensajes del Kernel a la Consola: 151 -> 200
+
+
+	// ORDENAME SANTI
 	EXITO,
 	MANDA_TCB,
 	TOMA_TCB,

@@ -16,19 +16,27 @@
 #include "conexiones.h"
 
 // Lista y mutex para conexiones sin asignar (recien recibidas)
-pthread_mutex_t mutex_conexiones_unsigned;
+pthread_mutex_t mutex_conexiones_unsigned = PTHREAD_MUTEX_INITIALIZER;
 t_list* conexiones_unasigned;
 
-// Lista y mutex para conexiones cpu
-pthread_mutex_t mutex_conexiones_cpu;
-t_list* conexiones_cpu;
-
 // Lista y mutex para conexiones de procesos
-pthread_mutex_t mutex_conexiones_procesos;
+pthread_mutex_t mutex_conexiones_procesos = PTHREAD_MUTEX_INITIALIZER;
 t_list* conexiones_procesos;
 
+// SET para conexiones unasigned y de procesos
+fd_set readfds_unasigned_procesos;
+
+//---------------------
+
+// Lista y mutex para conexiones cpu
+pthread_mutex_t mutex_conexiones_cpu = PTHREAD_MUTEX_INITIALIZER;
+t_list* conexiones_cpu;
+
+// SET para conexiones cpu
+fd_set readfds_cpus;
+
 // Socket y mutex de la conexion con memoria
-pthread_mutex_t mutex_conexion_memoria;
+pthread_mutex_t mutex_conexion_memoria = PTHREAD_MUTEX_INITIALIZER;
 sock_t* conexion_memoria;
 
 void _agregar_conexion_a_unasigned(sock_t* conexion)
@@ -36,17 +44,9 @@ void _agregar_conexion_a_unasigned(sock_t* conexion)
 	pthread_mutex_lock(&mutex_conexiones_unsigned);
 
 	list_add(conexiones_unasigned, conexion);
+	FD_SET(conexion->fd, &readfds_unasigned_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_unsigned);
-}
-
-void _agregar_conexion_a_cpu(sock_t* conexion)
-{
-	pthread_mutex_lock(&mutex_conexiones_cpu);
-
-	list_add(conexiones_cpu, conexion);
-
-	pthread_mutex_unlock(&mutex_conexiones_cpu);
 }
 
 void _agregar_conexion_a_procesos(sock_t* conexion)
@@ -54,113 +54,114 @@ void _agregar_conexion_a_procesos(sock_t* conexion)
 	pthread_mutex_lock(&mutex_conexiones_procesos);
 	//TODO: Agregar un struct para wrappear las conexiones a los procesos que tenga el PID
 	list_add(conexiones_procesos, conexion);
+	FD_SET(conexion->fd, &readfds_unasigned_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 }
 
-void _cerrar_liberar_generico(void* elemento)
+void _agregar_conexion_a_cpu(sock_t* conexion)
 {
-	sock_t* socket = (sock_t*) elemento;
-	cerrar_liberar(socket);
+	pthread_mutex_lock(&mutex_conexiones_cpu);
+	//TODO: Agregar un struct para wrappear las conexiones a los cpus con un ID
+	list_add(conexiones_cpu, conexion);
+	FD_SET(conexion->fd, &readfds_cpus);
+
+	pthread_mutex_unlock(&mutex_conexiones_cpu);
 }
 
-void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds)
+void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 {
-	int i;
-	for(i = 0; i < cantidad_fds; i++)
+	if(*mayor_fd < nuevo_fd)
+		*mayor_fd = nuevo_fd;
+}
+
+sock_t* _procesar_nueva_conexion(sock_t* principal)
+{
+	sock_t* nueva_conexion = aceptar_conexion(principal);
+
+	_agregar_conexion_a_unasigned(nueva_conexion);
+
+	return nueva_conexion;
+}
+
+
+void _atender_socket_unasigned_proceso(int32_t fd)
+{
+	//TODO: Atendeme el socket maestro
+}
+
+void _atender_socket_cpu(int32_t fd)
+{
+	//TODO: Atendeme el socket maestro
+}
+
+// Corre en un THREAD
+void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
+{
+	sock_t* principal = crear_socket_escuchador(puerto());
+	escuchar(principal);
+
+	// Seteamos este como el socket mas grande
+	int32_t mayor_fd = principal->fd;
+	FD_ZERO(&readfds_unasigned_procesos);
+	FD_SET(principal->fd, &readfds_unasigned_procesos);
+
+	// Preparamos el SET
+	fd_set readfds = readfds_unasigned_procesos;
+
+	while(1)
 	{
-		// Funcion para encontrar el elemento deseado
-		int fd = poll_fds->fd;
-		bool encontrar_socket(void* elemento)
+		// Escuchamos el universo
+		int rs = select(mayor_fd+1, &readfds, NULL, NULL, NULL);
+
+		if(rs != -1)
 		{
-			sock_t* socket = (sock_t*) elemento;
-			return socket->fd == fd;
+			// Vemos si hay sockets para leer
+			int32_t i;
+			int32_t copia_mayor_fd = mayor_fd;
+			for(i = 0; i < copia_mayor_fd; i++)
+			{
+				// Si el socket se puede leer
+				if(FD_ISSET(i, &readfds))
+				{
+
+					if(i == principal->fd)
+					{// Es el socket principal, new connection knocking
+						sock_t* nueva_conexion = _procesar_nueva_conexion(principal);
+						_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
+					}
+					else
+					{// No es el socket principal, es un chiruso
+						_atender_socket_unasigned_proceso(i);
+					}
+				}
+			}
 		}
 
-		if(poll_fds->revents & POLLIN)
-		{// Podemos leer
-
-			// Encontramos el elemento
-			sock_t* socket = list_find(conexiones_unasigned, encontrar_socket);
-
-			// Procesamos una conexion unasigned que esta lista para hablarnos
-			_conexion_unasigned_lista(socket);
-		}
-		else if((poll_fds->revents & POLLERR) || (poll_fds->revents & POLLHUP))
-		{// Error o socket cerrado, lo volamos a la mierda
-			list_remove_and_destroy_by_condition(conexiones_unasigned, encontrar_socket, _cerrar_liberar_generico);
-		}
-
-		poll_fds++;
+		// Rearmamos el readfds
+		readfds = readfds_unasigned_procesos;
 	}
+
+	return NULL;
+}
+
+// Corre en un THREAD
+void* escuchar_cpus(void* otro_ente)
+{
+	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
 }
 
 void inicializar_listas_conexiones(void)
 {
 	conexiones_unasigned = list_create();
-	pthread_mutex_init(&mutex_conexiones_unsigned, NULL);
+	//pthread_mutex_init(&mutex_conexiones_unsigned, NULL);
 
 	conexiones_cpu = list_create();
-	pthread_mutex_init(&mutex_conexiones_cpu, NULL);
+	//pthread_mutex_init(&mutex_conexiones_cpu, NULL);
 
 	conexiones_procesos = list_create();
-	pthread_mutex_init(&mutex_conexiones_procesos, NULL);
+	//pthread_mutex_init(&mutex_conexiones_procesos, NULL);
 
-	pthread_mutex_init(&mutex_conexion_memoria, NULL);
+	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
 }
 
-// Corre en un thread principal
-void* esperar_conexiones(void* p)
-{
-	sock_t* s = crear_socket_escuchador(puerto());
-
-	escuchar(s);
-
-	while(1)
-	{
-		sock_t* nueva_conexion = aceptar_conexion(s);
-		_agregar_conexion_a_unasigned(nueva_conexion);
-	}
-
-	return NULL;
-}
-
-// Corre en un thread
-void* esperar_conexiones_unasigned(void* p)
-{
-	while(1)
-	{
-		pthread_mutex_lock(&mutex_conexiones_unsigned);
-
-		uint32_t tamanio_lista = list_size(conexiones_unasigned);
-
-		// Creamos el poll de conexiones
-		struct pollfd* poll_fds = malloc(sizeof(struct pollfd) * tamanio_lista);
-		struct pollfd* poll_fds_copia = poll_fds;
-
-		void agregar_a_fds(void* elemento)
-		{
-			// Seteamos el fd para que nos notifique sobre lectura
-			sock_t* socket = (sock_t*) elemento;
-			poll_fds_copia->fd = socket->fd;
-			poll_fds_copia->events = POLLIN;
-
-			// Adelantamos le puntero al siguiente struct
-			poll_fds_copia++;
-		}
-
-		list_iterate(conexiones_unasigned, agregar_a_fds);
-
-		pthread_mutex_unlock(&mutex_conexiones_unsigned);
-
-		// Hacemos poll. Si hay movimientos, los procesamos
-		int rv = poll(poll_fds, tamanio_lista, 3500);
-		if(rv != -1 && rv != 0)
-			_procesar_poll_unasigned(poll_fds, tamanio_lista);
-
-		// Limpiamos la lista del poll
-		free(poll_fds);
-	}
-
-	return NULL;
-}
