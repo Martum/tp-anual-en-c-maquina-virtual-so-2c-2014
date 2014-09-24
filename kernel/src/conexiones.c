@@ -103,6 +103,7 @@ void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
+	FD_ZERO(&readfds_unasigned_procesos);
 	FD_SET(principal->fd, &readfds_unasigned_procesos);
 
 	// Preparamos el SET
@@ -137,7 +138,7 @@ void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
 			}
 		}
 
-		// Rearmamos el readfd
+		// Rearmamos el readfds
 		readfds = readfds_unasigned_procesos;
 	}
 
@@ -145,9 +146,9 @@ void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
 }
 
 // Corre en un THREAD
-void* escuchar_cpus_memoria(void* otro_ente)
+void* escuchar_cpus(void* otro_ente)
 {
-
+	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
 }
 
 void inicializar_listas_conexiones(void)
