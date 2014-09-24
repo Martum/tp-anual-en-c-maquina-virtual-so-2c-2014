@@ -106,4 +106,11 @@ typedef struct mensaje_response_lee_de_memoria {
 	char* bytes_leido;
 } mensaje_response_lee_de_memoria_t;
 
+/**
+ * Mensaje es el chorro de bytes recibidos a traves del socket.
+ *
+ * @RETURNS: El codigo de operacion solicitado
+ */
+flag_t codigo_operacion(char* mensaje);
+
 #endif /* MENSAJES_H_ */

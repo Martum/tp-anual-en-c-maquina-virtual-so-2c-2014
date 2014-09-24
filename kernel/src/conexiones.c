@@ -84,10 +84,20 @@ sock_t* _procesar_nueva_conexion(sock_t* principal)
 	return nueva_conexion;
 }
 
-
 void _atender_socket_unasigned_proceso(int32_t fd)
 {
 	//TODO: Atendeme el socket maestro
+	// Variables para el mensaje
+	char* mensaje;
+	uint32_t len;
+
+	// Creamos un socket fantasma con el fd
+	sock_t socket_fantasma;
+	socket_fantasma.fd = fd;
+
+
+
+	recibir(socket_fantasma, &msg, &len);
 }
 
 void _atender_socket_cpu(int32_t fd)
