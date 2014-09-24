@@ -14,6 +14,7 @@
 #include <pthread.h>
 #include "configuraciones.h"
 #include "conexiones.h"
+#include <hu4sockets/mensajes.h>
 
 // Lista y mutex para conexiones sin asignar (recien recibidas)
 pthread_mutex_t mutex_conexiones_unsigned = PTHREAD_MUTEX_INITIALIZER;
@@ -84,6 +85,7 @@ sock_t* _procesar_nueva_conexion(sock_t* principal)
 	return nueva_conexion;
 }
 
+// Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
 void _atender_socket_unasigned_proceso(int32_t fd)
 {
 	//TODO: Atendeme el socket maestro
@@ -95,9 +97,17 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 	sock_t socket_fantasma;
 	socket_fantasma.fd = fd;
 
+	// Recibimos el mensaje y obtenemos el codigo operacion
+	recibir(socket_fantasma, &mensaje, &len);
+	flag_t cod_op = codigo_operacion(mensaje);
 
+	switch(cod_op)
+	{
+		case NUEVO_PROGRAMA:
 
-	recibir(socket_fantasma, &msg, &len);
+			break;
+	}
+
 }
 
 void _atender_socket_cpu(int32_t fd)
