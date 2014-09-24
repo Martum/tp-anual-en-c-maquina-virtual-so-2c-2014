@@ -25,4 +25,5 @@ bool hay_marcos_libre(t_list *marcos)
 	{
 
 	}
-}*/
+}
+*/
