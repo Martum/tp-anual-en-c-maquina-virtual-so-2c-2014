@@ -98,7 +98,7 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 	socket_fantasma.fd = fd;
 
 	// Recibimos el mensaje y obtenemos el codigo operacion
-	recibir(socket_fantasma, &mensaje, &len);
+	int32_t resultado = recibir(socket_fantasma, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
 	switch(cod_op)
@@ -107,6 +107,9 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 
 			break;
 	}
+
+	// Liberamos el buffer
+	free(mensaje);
 
 }
 
