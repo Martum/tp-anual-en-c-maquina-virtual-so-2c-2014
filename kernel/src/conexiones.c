@@ -93,6 +93,16 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 {
 	//TODO: Lo que hacemos al procesar un programa entrante
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
+	int32_t pid = procesar_nuevo_programa(codigo_beso);
+
+	// Si no se pudo alocar memoria, notificamos al proceso
+	if(pid == -1)
+	{
+		_informar_no_hay_memoria(fd);
+		return;
+	}
+
+	//TODO HAY QUE GUARDARNOS EL FD EN EL MASTER DE PROCESOS Y CARGARLO EN LA LISTA
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron

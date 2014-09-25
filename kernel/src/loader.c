@@ -24,7 +24,7 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 	return tcb;
 }
 
-int cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
+int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 {
 	tcb_hijo->tamanio_codigo = tcb_padre->tamanio_codigo;
 
@@ -45,7 +45,7 @@ int cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 
 }
 
-int cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo)
+int32_t cargar_tcb(tcb_t* tcb, char* codigo_beso, uint32_t tamanio_codigo)
 {
 	tcb->tamanio_codigo = tamanio_codigo;
 
