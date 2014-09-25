@@ -14,7 +14,14 @@
 
 
 /**
- * Procesa un nuevo programa que acaba de conectarse con nosotros
+ * @RETURNS: Un nuevo PID que no esta en uso
+ */
+uint32_t dame_nuevo_pid();
+
+/**
+ * Procesa un nuevo programa que acaba de conectarse con nosotros.
+ * Creamos el TCB, le asignamos PID y TID (como es el primero TID=1).
+ * Pedimos memoria y cargamos el BESO ;)
  *
  * @RETURNS: Devuelve el PID del programa; o -1 si no hay memoria (segui participando, campeon)
  */

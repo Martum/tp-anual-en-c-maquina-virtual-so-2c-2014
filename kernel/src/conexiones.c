@@ -103,6 +103,7 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 	}
 
 	//TODO HAY QUE GUARDARNOS EL FD EN EL MASTER DE PROCESOS Y CARGARLO EN LA LISTA
+	NO BORRAR, ESTOY PARA SABER QUE ACA FALTA TERMINAR;
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron

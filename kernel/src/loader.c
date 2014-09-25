@@ -12,6 +12,13 @@
 #include "memoria.h"
 #include "configuraciones.h"
 
+uint32_t pid = 1;
+
+uint32_t dame_nuevo_pid()
+{
+	return pid++;
+}
+
 
 tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 {
