@@ -85,11 +85,22 @@ sock_t* _procesar_nueva_conexion(sock_t* principal)
 	return nueva_conexion;
 }
 
+/**
+ * Se procesa un nuevo programa.
+ * Tenemos que llamar a los metodos del loader.h y agregar el fd en donde corresponda
+ */
+void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int32_t fd)
+{
+	//TODO: Lo que hacemos al procesar un programa entrante
+	// Recordar agregar el fd al set master de procesos, y el registro a la lista
+}
+
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
 void _atender_socket_unasigned_proceso(int32_t fd)
 {
-	//TODO: Atendeme el socket maestro
 	// Variables para el mensaje
+	// IMPORTANTE: NO LIBERAR MENSAJE DENTRO DE UNA FUNCION,
+	// SE LIBERA AL FINAL DEL SWITCH
 	char* mensaje;
 	uint32_t len;
 
@@ -98,15 +109,25 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 	socket_fantasma.fd = fd;
 
 	// Recibimos el mensaje y obtenemos el codigo operacion
-	int32_t resultado = recibir(socket_fantasma, &mensaje, &len);
+	int32_t resultado = recibir(&socket_fantasma, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
-	switch(cod_op)
-	{
-		case NUEVO_PROGRAMA:
-			//procesar_nuevo_programa(mensaje + );
-			break;
+	if(resultado == 0)
+	{// Se recibio la totalidad de los bytes
+		switch(cod_op)
+		{
+			case NUEVO_PROGRAMA:
+				_procesar_conexion_nuevo_programa(mensaje + tamanio_flagt(), len - tamanio_flagt(), fd);
+				break;
+
+
+			default:
+				_informar_mensaje_incompleto(fd);
+				break;
+		}
 	}
+	else
+		_informar_mensaje_incompleto(fd);
 
 	// Liberamos el buffer
 	free(mensaje);
