@@ -15,3 +15,8 @@ flag_t codigo_operacion(char* mensaje)
 
 	return cod_op;
 }
+
+uint32_t tamanio_flagt()
+{
+	return sizeof(flag_t);
+}

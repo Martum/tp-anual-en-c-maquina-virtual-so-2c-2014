@@ -113,4 +113,9 @@ typedef struct mensaje_response_lee_de_memoria {
  */
 flag_t codigo_operacion(char* mensaje);
 
+/**
+ * @RETURNS: El tamanio de un flag_t (igual a sizeof(flag_t))
+ */
+uint32_t tamanio_flagt();
+
 #endif /* MENSAJES_H_ */
