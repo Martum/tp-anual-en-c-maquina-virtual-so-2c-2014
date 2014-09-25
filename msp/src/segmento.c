@@ -60,11 +60,4 @@ uint32_t cantidad_paginas(uint32_t tamanio_en_bytes){
 	return tamanio_en_bytes / 256 + agregado;
 }
 
-/*
-direccion get_direccion_virtual(uint16_t segmento_id, uint16_t pagina_id){
-	char *dir_virtual;
-	t_bitarray* direccion_virtual = bitarray_create(dir_virtual, 8);
 
-	for
-	 bitarray_set_bit(direccion_virtual, off_t bit_index);
-}*/

@@ -17,13 +17,3 @@ void crear_marco_en_lista_de_marcos(t_list *marcos, uint32_t base_de_marcos)
 	marco->ocupado = false;
 	list_add(marcos,marco);
 }
-
-/*
-bool hay_marcos_libre(t_list *marcos)
-{
-	bool _marco_libre(marco_t marco)
-	{
-
-	}
-}
-*/
