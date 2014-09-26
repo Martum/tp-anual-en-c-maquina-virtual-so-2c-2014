@@ -29,8 +29,10 @@ void agregar_a_exit(tcb_t* tcb);
 
 void quitar_de_exec(tcb_t* tcb);
 
+void quitar_de_block(tcb_t* tcb);
+
 void agregar_a_cola_recurso(uint32_t recurso, tcb_t* tcb);
 
-void quitar_primero_de_cola_recurso(uint32_t recurso);
+tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso);
 
 #endif /* LSTESTADOS_H_ */

@@ -28,6 +28,7 @@ void inicializar_listas_estados_tcb() {
 
 void agregar_a_ready(tcb_t* tcb) {
 	queue_push(ready[!tcb->km], tcb);
+	// Aca deberíamos llamar al planificador.
 }
 
 void agregar_a_block(tcb_t* tcb) {
@@ -45,12 +46,22 @@ void agregar_a_exit(tcb_t* tcb) {
 void quitar_de_exec(tcb_t* tcb) {
 	// no encontré en las common un método para quitar de una queue un elemento determinado. Todo para sacar
 	// el primero..
+	// Aca deberíamos llamar al planificador.
+}
+
+void quitar_de_block(tcb_t* tcb) {
+	// no encontré en las common un método para quitar de una queue un elemento determinado. Todo para sacar
+	// el primero..
 }
 
 void agregar_a_cola_recurso(uint32_t recurso, tcb_t* tcb) {
 	queue_push(dictionary_get(dic_colas_espera_recursos, recurso), tcb);
 }
 
-void quitar_primero_de_cola_recurso(uint32_t recurso){
+tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso){
+	tcb_t* tcb;
+	tcb = queue_peek(dictionary_get(dic_colas_espera_recursos, recurso))
 	queue_pop(dictionary_get(dic_colas_espera_recursos, recurso));
+
+	return tcb;
 }

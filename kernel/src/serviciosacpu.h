@@ -37,4 +37,14 @@ int entrada_estandar(uint32_t pid, uint16_t identificador_tipo);
  */
 int salida_estandar(uint32_t pid, char* cadena_a_escribir);
 
+/*
+ * Envia el hilo a block, lo encola en la cola de espera del recurso.
+ */
+int bloquear(tcb_t* tcb, uint32_t recurso);
+
+/*
+ * Remueve el primer hilo de la cola de espera del recurso y lo manda a ready.
+ */
+int despertar(uint32_t recurso);
+
 #endif /* SERVICIOSACPU_H_ */
