@@ -8,10 +8,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "hu4sockets/sockets.h"
 #include "hu4sockets/mensajes.h"
 #include "sockets-estructuras.h"
-#include "instrucciones-estructuras.h"
+#include "sockets.h"
 
 resultado_t _conectar(sock_t** s, char* ip, int32_t puerto) {
 	*s = crear_socket_hablador(ip, puerto);
@@ -58,7 +57,7 @@ resultado_t pedir_tcb_compartido(sock_t** kernel, tcb_t* tcb, int32_t* quantum) 
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
 	recibir(*kernel, &mensaje_recibido, &len_devolucion);
-	mensaje_response_tcb_t m_devolucion;
+	respuesta_de_nuevo_tcb_t m_devolucion;
 	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
 	printf("Quantum: %d\n\n", m_devolucion.quantum);
 	return OK;

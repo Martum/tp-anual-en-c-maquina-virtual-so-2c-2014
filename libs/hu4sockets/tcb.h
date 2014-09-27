@@ -33,6 +33,12 @@ typedef struct tcb {
 tcb_t* crear_tcb();
 
 /*
+ * @DESC: Libera el espacio de memoria de la tcb
+ * @RETURNS: nada
+ */
+void liberar_tcb(tcb_t* tcb);
+
+/*
  * @DESC: Actualiza el valor del registro de la tcb con el numero.
  * @RETURNS:
  * 		OK si _todo sale bien

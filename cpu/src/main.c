@@ -2,19 +2,13 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
-//#include "hu4sockets/sockets.h"
 #include "instrucciones.h"
-//#include "resultados.h"
-//#include "seatest.h"
 #include "sockets.h"
-//#include "tcb-funciones.h"
-//#include "tests.h"
 
 int32_t main(int32_t argc, char** argv) {
 
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
-	//run_tests(all_tests);
 	sock_t* memoria;
 	sock_t* kernel;
 
