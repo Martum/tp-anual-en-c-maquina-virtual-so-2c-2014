@@ -5,8 +5,6 @@
  *      Author: utnso
  */
 
-#include <stdbool.h>
-#include <stdint.h>
 #include "tcb.h"
 
 #ifndef MENSAJES_H_
@@ -40,8 +38,6 @@ typedef enum {
 	ESCRIBI_EN_MEMORIA,
 	TOMA_RESULTADO,
 } flag_t;
-
-typedef enum {OK, FALLO, NO_ENCONTRO_EL_REGISTRO, TERMINO, FALLO_CONEXION} resultado_t;
 
 typedef struct mensaje_request {
 	flag_t flag;
