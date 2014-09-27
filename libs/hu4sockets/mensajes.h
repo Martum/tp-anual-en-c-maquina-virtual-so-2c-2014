@@ -7,23 +7,10 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "tcb.h"
 
 #ifndef MENSAJES_H_
 #define MENSAJES_H_
-
-typedef uint32_t direccion;
-
-typedef struct tcb {
-	uint32_t pid;
-	uint32_t tid;
-	bool km;
-	direccion base_codigo;
-	direccion tamanio_codigo;
-	direccion pc;
-	direccion base_stack;
-	direccion cursor_stack;
-	int32_t a, b, c, d, e, f;
-} tcb_t;
 
 typedef enum {
 	// Mensajes de la Consola al Kernel: 101 -> 150
@@ -37,6 +24,10 @@ typedef enum {
 	NUEVO_CPU = 201,
 
 	// ORDENAME SANTI
+	/*
+	 * martin = new Persona();
+	 * sort(martin);
+	 */
 	EXITO,
 	MANDA_TCB,
 	TOMA_TCB,
@@ -49,6 +40,8 @@ typedef enum {
 	ESCRIBI_EN_MEMORIA,
 	TOMA_RESULTADO,
 } flag_t;
+
+typedef enum {OK, FALLO, NO_ENCONTRO_EL_REGISTRO, TERMINO, FALLO_CONEXION} resultado_t;
 
 typedef struct mensaje_request {
 	flag_t flag;
