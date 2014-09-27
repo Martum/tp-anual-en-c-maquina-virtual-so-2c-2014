@@ -6,10 +6,9 @@
  */
 
 #include <stdint.h>
-#include "tcb-estructuras.h"
-#include "instrucciones-estructuras.h"
-#include "resultados.h"
 #include "hu4sockets/sockets.h"
+#include "instrucciones-estructuras.h"
+
 
 #ifndef MEMORIA_H_
 #define MEMORIA_H_

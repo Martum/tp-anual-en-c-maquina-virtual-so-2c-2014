@@ -9,11 +9,9 @@
 #include <stdint.h>
 #include <string.h>
 #include "hu4sockets/sockets.h"
-//#include "tcb-estructuras.h"
-#include "instrucciones-estructuras.h"
-#include "sockets-estructuras.h"
-#include "resultados.h"
 #include "hu4sockets/mensajes.h"
+#include "sockets-estructuras.h"
+#include "instrucciones-estructuras.h"
 
 resultado_t _conectar(sock_t** s, char* ip, int32_t puerto) {
 	*s = crear_socket_hablador(ip, puerto);

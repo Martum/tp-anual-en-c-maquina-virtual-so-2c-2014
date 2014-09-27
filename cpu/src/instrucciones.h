@@ -7,8 +7,7 @@
 
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
-#include "tcb-estructuras.h"
-#include "resultados.h"
+#include "hu4sockets/tcb.h"
 
 #ifndef INSTRUCCIONES_H_
 #define INSTRUCCIONES_H_

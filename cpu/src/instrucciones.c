@@ -3,11 +3,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
-#include "tcb-estructuras.h"
 #include "instrucciones.h"
 #include "sockets.h"
-#include "tcb-funciones.h"
-#include "resultados.h"
 
 resultado_t load(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);
