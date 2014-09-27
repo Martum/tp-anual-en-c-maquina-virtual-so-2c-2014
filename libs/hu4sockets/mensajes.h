@@ -23,8 +23,11 @@ typedef enum {
 
 	// ORDENAME SANTI
 	/*
+	 * challenge = new Challenge();
+	 * santi = new Persona();
+	 * santi.accept(challenge);
 	 * martin = new Persona();
-	 * sort(martin);
+	 * santi.sort(martin);
 	 */
 	EXITO,
 	MANDA_TCB,
@@ -39,61 +42,91 @@ typedef enum {
 	TOMA_RESULTADO,
 } flag_t;
 
-typedef struct mensaje_request {
+typedef struct pedido {
 	flag_t flag;
-} mensaje_request_t;
+} pedido_t;
 
-typedef struct mensaje_response {
+typedef struct respuesta {
 	flag_t flag;
-} mensaje_response_t;
+} respuesta_t;
 
-typedef struct mensaje_request_resultado {
+typedef struct pedido_con_resultado {
 	flag_t flag;
 	uint32_t resultado;
-} mensaje_request_resultado_t;
+} pedido_con_resultado_t;
 
-typedef struct mensaje_request_crear_segmento {
+typedef struct respuesta_de_nuevo_tcb {
+	flag_t flag;
+	tcb_t tcb;
+	uint32_t quantum;
+} respuesta_de_nuevo_tcb_t;
+
+// OPCION 1
+
+typedef struct pedido_de_crear_segmento {
 	flag_t flag;
 	uint32_t pid;
 	uint32_t tamano;
-} mensaje_request_crear_segmento_t;
+} pedido_de_crear_segmento_t;
 
-typedef struct mensaje_request_destruir_segmento {
+typedef struct pedido_de_destruir_segmento {
 	flag_t flag;
 	uint32_t pid;
 	direccion direccion_virtual;
-} mensaje_request_destruir_segmento_t;
+} pedido_de_destruir_segmento_t;
 
-typedef struct mensaje_request_lee_de_memoria {
+typedef struct pedido_de_leer_de_memoria {
 	flag_t flag;
 	uint32_t pid;
 	direccion direccion_virtual;
 	uint32_t tamano;
-} mensaje_request_lee_de_memoria_t;
+} pedido_de_leer_de_memoria_t;
 
-typedef struct mensaje_request_escribi_en_memoria {
+typedef struct pedido_de_escribir_en_memoria {
 	flag_t flag;
 	uint32_t pid;
 	direccion direccion_virtual;
 	char* bytes_a_escribir;
 	uint32_t tamano;
-} mensaje_request_escribi_en_memoria_t;
+} pedido_de_escribir_en_memoria_t;
 
-typedef struct mensaje_response_tcb {
-	flag_t flag;
-	tcb_t tcb;
-	uint32_t quantum;
-} mensaje_response_tcb_t;
-
-typedef struct mensaje_response_crear_segmento {
+typedef struct respuesta_de_crear_segmento {
 	flag_t flag;
 	direccion direccion_virtual;
-} mensaje_response_crear_segmento_t;
+} respuesta_de_crear_segmento_t;
 
-typedef struct mensaje_response_lee_de_memoria {
+typedef struct respuesta_de_leer_de_memoria {
 	flag_t flag;
 	char* bytes_leido;
-} mensaje_response_lee_de_memoria_t;
+} respuesta_de_leer_de_memoria_t;
+
+// OPCION 2
+
+typedef struct pedido_de_cpu_a_memoria {
+	flag_t flag;
+	uint32_t pid;
+	direccion direccion_virtual;
+	char* bytes_a_escribir;
+	uint32_t tamano;
+} pedido_de_cpu_a_memoria_t;
+
+typedef struct respuesta_de_memoria_a_cpu {
+	flag_t flag;
+	direccion direccion_virtual;
+	char* bytes_leido;
+	uint32_t tamano;
+} respuesta_de_memoria_a_cpu_t;
+
+// OPCION 3
+
+typedef struct mensaje_cpu_y_memoria {
+	flag_t flag;
+	uint32_t pid;
+	direccion direccion_virtual;
+	char* bytes_leido;
+	uint32_t tamano;
+} mensaje_cpu_y_memoria_t;
+
 
 /**
  * Mensaje es el chorro de bytes recibidos a traves del socket.
