@@ -30,13 +30,13 @@ typedef struct tcb {
  * @DESC: Crea un espacio de memoria para la tcb
  * @RETURNS: el puntero al espacio de memoria creado
  */
-tcb_t* crear_tcb();
+//tcb_t* crear_tcb();
 
 /*
  * @DESC: Libera el espacio de memoria de la tcb
  * @RETURNS: nada
  */
-void liberar_tcb(tcb_t* tcb);
+//void liberar_tcb(tcb_t* tcb);
 
 /*
  * @DESC: Actualiza el valor del registro de la tcb con el numero.
@@ -44,30 +44,30 @@ void liberar_tcb(tcb_t* tcb);
  * 		OK si _todo sale bien
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro,
-		int32_t numero);
+//resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro,
+//		int32_t numero);
 /*
  * @DESC: Obtiene el valor del registro de la tcb.
  * @RETURNS:
  * 		OK si _todo sale bien
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
-		int32_t* numero);
+//resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
+//		int32_t* numero);
 /**
  * @DESC: Actualiza el valor del pc con el valor.
  * @RETURNS:
  */
-int32_t actualizar_pc(tcb_t* tcb, int32_t valor);
+//int32_t actualizar_pc(tcb_t* tcb, int32_t valor);
 /**
  * @DESC: Obtiene el valor del pc de la tcb.
  * @RETURNS: la direccion del pc
  */
-int32_t obtener_pc(tcb_t* tcb);
+//int32_t obtener_pc(tcb_t* tcb);
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.
  * @RETURNS: la direccion de la base de codigo
  */
-direccion obtener_base_de_codigo(tcb_t* tcb);
+//direccion obtener_base_de_codigo(tcb_t* tcb);
 
 #endif /* TCB_H_ */
