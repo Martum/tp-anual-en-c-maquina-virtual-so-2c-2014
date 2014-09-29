@@ -28,7 +28,6 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes){
 
 	// retorno la direccion formada
 	return direccion_virtual;
-
 }
 
 void destruir_segmento(uint32_t pid, direccion base){
