@@ -43,7 +43,7 @@ void inicializar_lista_procesos(){
 
 void inicializar_lista_marcos(){
 	lista_marcos = list_create();
-	uint32_t cant_marcos = cantidad_swap();
+	uint32_t cant_marcos = cantidad_memoria();
 	int i;
 	for(i=0;i<cant_marcos;i++){
 		// pongo arbitrariamente 10000 como base de marcos, se puede cambiar
