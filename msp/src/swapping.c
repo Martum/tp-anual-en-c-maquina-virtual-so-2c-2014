@@ -16,7 +16,7 @@
 #include <string.h>
 #include <commons/string.h>
 
-
+/*
 uint32_t pid;
 uint16_t id_segmento;
 
@@ -80,13 +80,17 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 	//Consigo la direccion de donde voy a escribir los datos
 	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,pagina->id);
 
+	//Preparo el string que voy a escribir
 	char* string_a_escribir=string_itoa(leer_memoria(pid, direccion_logica, 256));
 
+	//Escribo en el archivo
 	txt_write_in_file(arch, string_a_escribir);
 
 	pagina->en_disco=true;
 
 	pagina->tiene_marco=false;
+
+	txt_close_file(path);
 
 }
 
@@ -94,4 +98,4 @@ void swap_out(pagina_t* pagina)
 {
 
 }
-
+*/

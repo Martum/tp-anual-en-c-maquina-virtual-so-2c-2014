@@ -40,6 +40,8 @@ void destruir_segmento(uint32_t pid, direccion base){
 
 uint32_t leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio)
 {
+
+	//uint32_t* dir=&direccon_logica;
 	return 0;
 }
 
