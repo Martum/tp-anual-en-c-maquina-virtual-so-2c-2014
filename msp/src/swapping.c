@@ -7,20 +7,22 @@
 
 #include "swapping.h"
 #include "estructuras.h"
+#include "pagina.h"
 #include "marco.h"
+#include "interfaz.h"
 #include <commons/txt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <commons/string.h>
 
-/*
+
 uint32_t pid;
 uint16_t id_segmento;
 
 
 
-
+/*
 void swap_in(pagina_t* pagina)
 {
 	uint32_t direccion_marco_libre = liberar_un_marco();
@@ -75,10 +77,12 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
 
+	//Consigo la direccion de donde voy a escribir los datos
+	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,pagina->id);
 
+	char* string_a_escribir=string_itoa(leer_memoria(pid, direccion_logica, 256));
 
-
-	txt_write_in_file(arch, string_itoa(pagina->marco));
+	txt_write_in_file(arch, string_a_escribir);
 
 	pagina->en_disco=true;
 
@@ -90,4 +94,5 @@ void swap_out(pagina_t* pagina)
 {
 
 }
+
 */

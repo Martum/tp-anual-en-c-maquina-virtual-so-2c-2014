@@ -21,6 +21,9 @@ typedef enum {
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
 
+	// Mensajes del Kernel al CPU: 251 -> 300
+	RESPONDO_TCB = 251,
+
 	// ORDENAME SANTI
 	/*
 	 * challenge = new Challenge();
@@ -53,6 +56,7 @@ typedef struct respuesta {
 typedef struct pedido_con_resultado {
 	flag_t flag;
 	uint32_t resultado;
+	tcb_t tcb;
 } pedido_con_resultado_t;
 
 typedef struct respuesta_de_nuevo_tcb {

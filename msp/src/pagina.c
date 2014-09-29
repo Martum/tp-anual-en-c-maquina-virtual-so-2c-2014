@@ -23,3 +23,9 @@ void crear_pagina(segmento_t *segmento){
 void agregar_pagina_a_segmento(segmento_t *segmento, pagina_t *pagina){
 	list_add(segmento->paginas, pagina);
 }
+
+direccion direccion_virtual_segmento_base_pagina(uint16_t id_segmento, uint16_t id_pagina)
+{
+	uint32_t base_segmento=direccion_virtual_base_de_segmento(id_segmento);
+	return base_segmento | (id_pagina<<8);
+}
