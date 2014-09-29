@@ -18,6 +18,9 @@ uint32_t memoria_fisica_total;
 t_list* lista_procesos;
 t_list* lista_marcos;
 
+// indice de paginas para acceder a todas las paginas rapidamente
+t_list* indice_paginas;
+
 void cargar_configuraciones(){
 	configs_msp = config_create("config_msp.txt");
 }
@@ -51,6 +54,13 @@ void inicializar_lista_marcos(){
 		crear_marco_en_lista_de_marcos(lista_marcos,10000);
 	}
 }
+void inicializar_memoria_fisica_total(){
+	memoria_fisica_total = cantidad_memoria();
+}
+
+void inicializar_indice_paginas(){
+	indice_paginas = list_create();
+}
 
 t_list* get_lista_procesos(){
 	return lista_procesos;
@@ -64,39 +74,8 @@ uint32_t get_memoria_fisica_total(){
 	return memoria_fisica_total;
 }
 
-
-void inicializar_memoria_fisica_total(){
-	memoria_fisica_total = cantidad_memoria();
+t_list* get_indice_pagina(){
+	return indice_paginas;
 }
 
-// POR AHORA ESTO NO SE NECESITA
-/*
-char* arma_direccion(uint16_t numero, int cant_bits)
-{
-		char* aux=malloc(13);
-		char* binario =malloc(13);
-		bool fin=false;
 
-		while(!fin)
-		{
-			aux=string_itoa(numero%2);
-			string_append(&aux,binario);
-			binario=aux;
-			numero=numero/2;
-			if(numero==0)fin=true;
-
-		}
-
-		int len = strlen(binario);
-
-		while(len<cant_bits)
-		{
-			aux=string_itoa(0);
-			string_append(&aux,binario);
-			binario=aux;
-			len = strlen(binario);
-		}
-
-		return binario;
-}
-*/

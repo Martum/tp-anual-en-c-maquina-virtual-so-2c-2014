@@ -13,6 +13,7 @@ marco_t* clock(){
 
 }
 
+
 marco_t* lru(){
 
 }
