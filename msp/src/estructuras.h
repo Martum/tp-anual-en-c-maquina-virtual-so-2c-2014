@@ -18,7 +18,7 @@ typedef struct pagina {
 	bool tiene_marco;
 	bool en_disco;
 	uint32_t marco;
-
+	char* ultima_vez_usada;
 } pagina_t;
 
 typedef struct segmento {

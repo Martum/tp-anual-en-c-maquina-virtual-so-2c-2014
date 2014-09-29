@@ -38,8 +38,10 @@ void destruir_segmento(uint32_t pid, direccion base){
 	quitar_segmento(proceso,base);
 }
 
-uint32_t leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio)
+uint32_t leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 {
+	//bool hay_error= memoria_invalida(pid, direccion_logica) || excede_limite_segmento();
+
 	return 0;
 }
 

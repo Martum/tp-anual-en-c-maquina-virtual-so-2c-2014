@@ -20,26 +20,22 @@ typedef enum {
 
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
+	MANDA_TCB = 202,
+	TOMA_RESULTADO = 203,
 
-	// ORDENAME SANTI
-	/*
-	 * challenge = new Challenge();
-	 * santi = new Persona();
-	 * santi.accept(challenge);
-	 * martin = new Persona();
-	 * santi.sort(martin);
-	 */
+	// Mensajes del Kernel al CPU: 251 -> 300
+	TOMA_TCB = 251,
+
+
+
 	EXITO,
-	MANDA_TCB,
-	TOMA_TCB,
 	CREAME_UN_SEGMENTO,
 	TOMA_SEGMENTO,
 	ERROR_MEMORIA_LLENA,
 	DESTRUI_SEGMENTO,
 	LEE_DE_MEMORIA,
 	ERROR_VIOLACION_DE_SEGMENTO,
-	ESCRIBI_EN_MEMORIA,
-	TOMA_RESULTADO,
+	ESCRIBI_EN_MEMORIA
 } flag_t;
 
 typedef struct pedido {
@@ -53,6 +49,7 @@ typedef struct respuesta {
 typedef struct pedido_con_resultado {
 	flag_t flag;
 	uint32_t resultado;
+	tcb_t tcb;
 } pedido_con_resultado_t;
 
 typedef struct respuesta_de_nuevo_tcb {
@@ -99,34 +96,6 @@ typedef struct respuesta_de_leer_de_memoria {
 	flag_t flag;
 	char* bytes_leido;
 } respuesta_de_leer_de_memoria_t;
-
-// OPCION 2
-
-typedef struct pedido_de_cpu_a_memoria {
-	flag_t flag;
-	uint32_t pid;
-	direccion direccion_virtual;
-	char* bytes_a_escribir;
-	uint32_t tamano;
-} pedido_de_cpu_a_memoria_t;
-
-typedef struct respuesta_de_memoria_a_cpu {
-	flag_t flag;
-	direccion direccion_virtual;
-	char* bytes_leido;
-	uint32_t tamano;
-} respuesta_de_memoria_a_cpu_t;
-
-// OPCION 3
-
-typedef struct mensaje_cpu_y_memoria {
-	flag_t flag;
-	uint32_t pid;
-	direccion direccion_virtual;
-	char* bytes_leido;
-	uint32_t tamano;
-} mensaje_cpu_y_memoria_t;
-
 
 /**
  * Mensaje es el chorro de bytes recibidos a traves del socket.
