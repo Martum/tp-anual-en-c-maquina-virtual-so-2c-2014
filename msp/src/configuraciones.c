@@ -16,6 +16,26 @@ t_config* configs_msp;
 t_list* lista_procesos;
 uint32_t memoria_fisica_total;
 
+void cargar_configuraciones(){
+	configs_msp = config_create("config_msp.txt");
+}
+
+uint32_t puerto(){
+	return config_get_int_value(configs_msp, "PUERTO");
+}
+
+uint32_t cantidad_memoria(){
+	return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
+}
+
+uint32_t cantidad_swap(){
+	return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
+}
+
+char* algoritmo_sustitucion_de_paginas(){
+	return config_get_string_value(configs_msp, "SUST_PAGS");
+}
+
 t_list* get_lista_procesos(){
 	return lista_procesos;
 }

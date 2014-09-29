@@ -8,6 +8,12 @@
 #ifndef CONFIGURACIONES_H_
 #define CONFIGURACIONES_H_
 
+void cargar_configuraciones();
+
+uint32_t puerto();
+uint32_t cantidad_memoria();
+uint32_t cantidad_swap();
+char* algoritmo_sustitucion_de_paginas();
 t_list* get_lista_procesos();
 uint32_t get_memoria_fisica_total();
 void inicializar_lista_procesos();
