@@ -15,6 +15,7 @@
 #include "configuraciones.h"
 #include "conexiones.h"
 #include <hu4sockets/mensajes.h>
+#include "loader.h"
 
 // Lista y mutex para conexiones sin asignar (recien recibidas)
 pthread_mutex_t mutex_conexiones_unsigned = PTHREAD_MUTEX_INITIALIZER;
@@ -97,7 +98,7 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 {
 	//TODO: Lo que hacemos al procesar un programa entrante
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
-	int32_t pid = procesar_nuevo_programa(codigo_beso);
+	int32_t pid = procesar_nuevo_programa(codigo_beso, longitud);
 
 	// Si no se pudo alocar memoria, notificamos al proceso
 	if(pid == -1)
