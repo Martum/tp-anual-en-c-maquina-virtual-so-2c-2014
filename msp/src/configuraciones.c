@@ -13,8 +13,9 @@
 #include <commons/string.h>
 
 t_config* configs_msp;
-t_list* lista_procesos;
 uint32_t memoria_fisica_total;
+t_list* lista_procesos;
+t_list* lista_marcos;
 
 void cargar_configuraciones(){
 	configs_msp = config_create("config_msp.txt");
@@ -36,19 +37,35 @@ char* algoritmo_sustitucion_de_paginas(){
 	return config_get_string_value(configs_msp, "SUST_PAGS");
 }
 
-t_list* get_lista_procesos(){
-	return lista_procesos;
-}
-uint32_t get_memoria_fisica_total(){
-	return memoria_fisica_total;
-}
-
 void inicializar_lista_procesos(){
 	lista_procesos = list_create();
 }
 
-void inicializar_memoria_fisica_total(uint32_t tamanio){
-	memoria_fisica_total = tamanio;
+void inicializar_lista_marcos(){
+	lista_marcos = list_create();
+	uint32_t cant_marcos = cantidad_swap();
+	int i;
+	for(i=0;i<cant_marcos;i++){
+		// pongo arbitrariamente 10000 como base de marcos, se puede cambiar
+		crear_marco_en_lista_de_marcos(lista_marcos,10000);
+	}
+}
+
+t_list* get_lista_procesos(){
+	return lista_procesos;
+}
+
+t_list* get_lista_marcos(){
+	return lista_marcos;
+}
+
+uint32_t get_memoria_fisica_total(){
+	return memoria_fisica_total;
+}
+
+
+void inicializar_memoria_fisica_total(){
+	memoria_fisica_total = cantidad_memoria();
 }
 
 // POR AHORA ESTO NO SE NECESITA
