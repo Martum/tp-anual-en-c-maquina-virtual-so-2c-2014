@@ -19,7 +19,9 @@
 #include "configuraciones.h"
 
 int main(void){
+	cargar_configuraciones();
 	inicializar_lista_procesos();
-	inicializar_memoria_fisica_total(10000);// el parametro viene por archivo de configuracion
+	inicializar_lista_marcos();
+	inicializar_memoria_fisica_total();
 	return 0;
 }

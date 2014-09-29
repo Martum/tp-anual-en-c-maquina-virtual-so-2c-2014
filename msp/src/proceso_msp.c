@@ -54,6 +54,7 @@ void _destruye_segmento(segmento_t *segmento){
 	list_remove_and_destroy_by_condition(segmento->paginas, (void*)_is_pagina,(void*)_destruye_pagina);
 	free(segmento);
 }
+
 void _destruye_pagina(pagina_t *pagina) {
 	if(pagina->tiene_marco){
 		// aca busco el marco y lo marco como no ocupado
