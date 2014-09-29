@@ -20,22 +20,15 @@ typedef enum {
 
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
-	TOMA_RESULTADO = 202,
+	MANDA_TCB = 202,
+	TOMA_RESULTADO = 203,
 
 	// Mensajes del Kernel al CPU: 251 -> 300
-	RESPONDO_TCB = 251,
+	TOMA_TCB = 251,
 
-	// ORDENAME SANTI
-	/*
-	 * challenge = new Challenge();
-	 * santi = new Persona();
-	 * santi.accept(challenge);
-	 * martin = new Persona();
-	 * santi.sort(martin);
-	 */
+
+
 	EXITO,
-	MANDA_TCB,
-	TOMA_TCB,
 	CREAME_UN_SEGMENTO,
 	TOMA_SEGMENTO,
 	ERROR_MEMORIA_LLENA,
