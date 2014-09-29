@@ -60,4 +60,10 @@ uint32_t cantidad_paginas(uint32_t tamanio_en_bytes){
 	return tamanio_en_bytes / 256 + agregado;
 }
 
-
+direccion direccion_virtual_base_de_segmento(uint16_t id_segmento){
+	// la primer pagina empieza en 0 y el desplazamiento en la base es 0
+	uint16_t primer_pagina = 0x000;
+	int desplazamiento_a_la_base = 0x00;
+	// retorno la direccion (32 bits)
+	return (id_segmento<<20) | (primer_pagina<<8)| desplazamiento_a_la_base;
+}
