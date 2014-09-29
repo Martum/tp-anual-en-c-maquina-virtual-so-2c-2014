@@ -8,13 +8,18 @@
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
 
-#include "estructuras.h"
+#include <hu4sockets/tcb.h>
 
 /**
  * @NAME: crear_segmento
  * @DESC: Solicita la creacion de un segmento a la MSP.
- * 		Devuelve la direccion virtual base del segmento, -1 en caso de Error de Memoria Llena.
+ * 		Deja en direccion la direccion del segmento
+ * @RETURNS: Devuelve 0 en caso de exito; -1 en caso de Error de Memoria Llena.
  */
-direccion crear_segmento(uint32_t pid, uint32_t tamanio);
+int32_t crear_segmento(uint32_t pid, uint32_t tamanio, direccion* direccion);
 
+/**
+ * Destruye el segmento correspondiente
+ */
+void destruir_segmento(uint32_t pid, direccion base_segmento);
 #endif /* MEMORIA_H_ */
