@@ -161,8 +161,13 @@ cabecera_t* _crear_cabecera(uint32_t len)
 
 char* _serializar_cabecera(cabecera_t* cabecera)
 {
-	char* msg = malloc(_tamanio_cabecera());
-	memcpy(msg, cabecera, _tamanio_cabecera());
+	char* msg = malloc(_tamanio_cabecera_sin_padding());
+
+	memcpy(msg, &(cabecera->longitud_mensaje), sizeof(uint32_t));
+
+	uint32_t offset = sizeof(uint32_t);
+
+	memcpy(msg + offset, &(cabecera->valido), sizeof(uint16_t));
 
 	return msg;
 }
@@ -176,7 +181,11 @@ char* _crear_cabecera_serializada(uint32_t len)
 
 int32_t _deserealizar_cabecera(cabecera_t* cabecera, char* bytes)
 {
-	memcpy(cabecera, bytes, _tamanio_cabecera());
+	memcpy(&(cabecera->longitud_mensaje), bytes, sizeof(uint32_t));
+
+	uint32_t offset = sizeof(uint32_t);
+
+	memcpy(&(cabecera->valido), bytes + offset, sizeof(uint16_t));
 
 	// Si la cabecera verifica la validacion, se recibio bien
 	return (cabecera->valido == CABECERA_VALIDA)?0:-1;
@@ -185,8 +194,8 @@ int32_t _deserealizar_cabecera(cabecera_t* cabecera, char* bytes)
 
 int32_t _recibir_cabecera(sock_t* socket, cabecera_t* cabecera)
 {
-	char* bytes_cabecera = malloc(_tamanio_cabecera());
-	uint32_t i = _tamanio_cabecera();
+	char* bytes_cabecera = malloc(_tamanio_cabecera_sin_padding());
+	uint32_t i = _tamanio_cabecera_sin_padding();
 
 	// Si no se recibe la cabecera se tira error
 	if(_recibir_todo(socket, bytes_cabecera, &i) == -1)
@@ -255,7 +264,7 @@ sock_t* aceptar_conexion(sock_t* socket)
 int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 {
 	// Seteamos el Header
-	uint32_t len_cabecera = _tamanio_cabecera();
+	uint32_t len_cabecera = _tamanio_cabecera_sin_padding();
 	char* cabecera_serializada = _crear_cabecera_serializada(*len);
 
 	// Enviamos el Header, si falla devolvemos -1
