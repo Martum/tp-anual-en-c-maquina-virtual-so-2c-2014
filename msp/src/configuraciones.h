@@ -16,6 +16,7 @@ uint32_t cantidad_swap();
 char* algoritmo_sustitucion_de_paginas();
 t_list* get_lista_procesos();
 t_list* get_lista_marcos();
+t_list* get_indice_paginas();
 uint32_t get_memoria_fisica_total();
 void inicializar_lista_procesos();
 void inicializar_lista_marcos();

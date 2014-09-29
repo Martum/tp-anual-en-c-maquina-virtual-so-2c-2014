@@ -74,7 +74,7 @@ uint32_t get_memoria_fisica_total(){
 	return memoria_fisica_total;
 }
 
-t_list* get_indice_pagina(){
+t_list* get_indice_paginas(){
 	return indice_paginas;
 }
 

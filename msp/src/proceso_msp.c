@@ -59,6 +59,17 @@ void _destruye_pagina(pagina_t *pagina) {
 		marco_t* m = buscar_marco_segun_id(pagina->marco);
 		m->ocupado = false;
 	}
+	bool _is_pagina(pagina_t *pagina){
+		return true;
+	}
+	// saco a la pagina de la lista indice de paginas
+	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
+
 	// libero memoria de la pagina
 	free(pagina);
 }
+
+void _destruye_pagina_de_indice(pagina_t *pag) {
+	free(pag);
+}
+
