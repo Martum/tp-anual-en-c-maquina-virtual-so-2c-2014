@@ -38,6 +38,11 @@ void destruir_segmento(uint32_t pid, direccion base){
 	quitar_segmento(proceso,base);
 }
 
+uint32_t leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio)
+{
+	return 0;
+}
+
 
 
 
