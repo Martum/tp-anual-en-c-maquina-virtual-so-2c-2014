@@ -255,7 +255,10 @@ int32_t enviar(sock_t* socket, char* msg, uint32_t* len)
 
 	// Enviamos el Header, si falla devolvemos -1
 	if(_enviar_todo(socket, cabecera_serializada, &len_cabecera) == -1)
+	{
+		free(cabecera_serializada);
 		return -1;
+	}
 
 	// Liberamos cabecera
 	free(cabecera_serializada);
@@ -274,7 +277,10 @@ int32_t recibir(sock_t* socket, char** msg, uint32_t* len)
 
 	// Si no se recibe la cabecera se tira error
 	if(_recibir_cabecera(socket, cabecera) == -1)
+	{
+		free(cabecera);
 		return -1;
+	}
 
 	// Creamos un buffer del tamaño necesario
 	*msg = malloc(cabecera->longitud_mensaje);
