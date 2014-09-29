@@ -137,6 +137,11 @@ uint32_t _tamanio_cabecera()
 	return sizeof(cabecera_t);
 }
 
+uint32_t _tamanio_cabecera_sin_padding()
+{
+	return sizeof(uint32_t) + sizeof(uint16_t);
+}
+
 
 cabecera_t* _crear_cabecera_vacia()
 {
