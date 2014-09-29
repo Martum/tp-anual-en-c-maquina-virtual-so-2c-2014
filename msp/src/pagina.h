@@ -17,5 +17,6 @@
 
 void crear_pagina(segmento_t*);
 void agregar_pagina_a_segmento(segmento_t*, pagina_t*);
+direccion direccion_virtual_segmento_base_pagina(uint16_t id_segmento, uint16_t id_pagina);
 
 #endif /* PAGINA_H_ */
