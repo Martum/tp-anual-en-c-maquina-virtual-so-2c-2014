@@ -96,18 +96,19 @@ sock_t* _procesar_nueva_conexion(sock_t* principal)
  */
 void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int32_t fd)
 {
-	//TODO: Lo que hacemos al procesar un programa entrante
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
 	int32_t pid = procesar_nuevo_programa(codigo_beso, longitud);
 
 	// Si no se pudo alocar memoria, notificamos al proceso
 	if(pid == -1)
-	{
+	{	// TODO: HACER ESTA FUNCION
 		_informar_no_hay_memoria(fd);
 		return;
 	}
 
 	// Buscamos en la lista de conexiones el sock_t
+
+	// TODO: EXTRAER ESTE CODIGO EN UNA FUNCION DE BUSCAR
 	bool buscar_unasigned(void* elemento)
 	{
 		sock_t* conexion = (sock_t*) elemento;

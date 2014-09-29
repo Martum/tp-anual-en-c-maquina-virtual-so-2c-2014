@@ -10,12 +10,18 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <hu4sockets/tcb.h>
 
 
 /**
  * @RETURNS: Un nuevo PID que no esta en uso
  */
 uint32_t dame_nuevo_pid();
+
+/**
+ * @RETURNS: Un nuevo TID que no esta en uso
+ */
+uint32_t dame_nuevo_tid();
 
 /**
  * Procesa un nuevo programa que acaba de conectarse con nosotros.
