@@ -22,6 +22,7 @@ tcb_t* _planificar(){
 	return tcb;
 }
 
+// FALTA EL WRAPPER QUE LLAME A ESTA FUNCION Y LE MANDE A LA CPU LO QUE RETORNA ESTO.
 respuesta_de_nuevo_tcb_t  devolver_tcb(){
 	respuesta_de_nuevo_tcb_t rta;
 
@@ -32,18 +33,25 @@ respuesta_de_nuevo_tcb_t  devolver_tcb(){
 	return rta;
 }
 
-void recibir_tcb(pedido_con_resultado_t resultado){
-	switch(resultado.resultado){
+// FALTA EL WRAPPER QUE SERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
+// QUE TRANSFORMAR EN RESULTADO_T Y TCB_T
+void recibir_tcb(resultado_t resultado, tcb_t* tcb){
+	quitar_de_exec(tcb);
+
+	switch(resultado){
 	 	case FIN_QUANTUM:
+	 		agregar_a_ready(tcb);_
 	 		break;
 
-	 	case INTERRUPCION:
+	 	case BLOCK:
+	 		agregar_a_block(tcb);
 	 		break;
 
 	 	case DESCONEXION_CONSOLA:
-	 		break;
-
 	 	case DESCONEXION_CPU:
+	 	case ERROR:
+	 	case FIN_EJECUCION:
+	 		agregar_a_exit(tcb);
 	 		break;
 
 	}

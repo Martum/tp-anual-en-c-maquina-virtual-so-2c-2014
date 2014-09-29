@@ -26,20 +26,22 @@ int crear_hilo(tcb_t* tcb, uint32_t tid)
 	return -1;
 }
 
-int entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
-	//obtener consola correspondiente al pid recibido.
+void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
+	//REVISAR
 	if (identificador_tipo == 1){
-		//leer_int() a la consola.
+		pedido_leer_int(pid);
 	}
 	if (identificador_tipo == 2){
-		//leer_cadena() a la consola.
+		pedido_leer_cadena(pid);
 	}
+}
+
+void* recibir_entrada_estandar(uint32_t pid, void* ){
 
 }
 
 int salida_estandar(uint32_t pid, char* cadena){
-	//obtener consola correspondiente al pid recibido.
-	//escribir(cadena) a la consola.
+	return escribir(pid, cadena);
 }
 
 
