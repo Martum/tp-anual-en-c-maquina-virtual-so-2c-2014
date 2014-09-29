@@ -12,5 +12,4 @@
 
 void recibir_syscall(tcb_t* tcb, direccion dir);
 
-
 #endif /* SYSCALLS_H_ */
