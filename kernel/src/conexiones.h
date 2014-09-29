@@ -34,7 +34,7 @@ void _agregar_conexion_a_cpu(sock_t*);
 /**
  * Agrega una conexion a la lista de conexiones de Procesos
  */
-void _agregar_conexion_a_procesos(sock_t*);
+void _agregar_conexion_a_procesos(sock_t*, uint32_t pid);
 
 /**
  * Procesa los fds del poll de conexiones unasigned

@@ -50,11 +50,15 @@ void _agregar_conexion_a_unasigned(sock_t* conexion)
 	pthread_mutex_unlock(&mutex_conexiones_unsigned);
 }
 
-void _agregar_conexion_a_procesos(sock_t* conexion)
+void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 {
+	conexion_procesos_t* conexion_proceso = malloc(sizeof(conexion_procesos_t));
+	conexion_proceso->pid = pid;
+	conexion_proceso->socket = conexion;
+
 	pthread_mutex_lock(&mutex_conexiones_procesos);
-	//TODO: Agregar un struct para wrappear las conexiones a los procesos que tenga el PID
-	list_add(conexiones_procesos, conexion);
+
+	list_add(conexiones_procesos, conexion_proceso);
 	FD_SET(conexion->fd, &readfds_unasigned_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
@@ -102,8 +106,17 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 		return;
 	}
 
-	//TODO HAY QUE GUARDARNOS EL FD EN EL MASTER DE PROCESOS Y CARGARLO EN LA LISTA
-	NO BORRAR, ESTOY PARA SABER QUE ACA FALTA TERMINAR;
+	// Buscamos en la lista de conexiones el sock_t
+	bool buscar_unasigned(void* elemento)
+	{
+		sock_t* conexion = (sock_t*) elemento;
+
+		return conexion->fd == fd;
+	}
+	sock_t* conexion = list_find(conexiones_unasigned, buscar_unasigned);
+
+	// Agregamos la conexion a la lista de procesos
+	_agregar_conexion_a_procesos(conexion, pid);
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
@@ -184,6 +197,9 @@ void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion = _procesar_nueva_conexion(principal);
 						_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
+
+						// Agrego la conexion a la lista de unasigned y al readfds
+						_agregar_conexion_a_unasigned(nueva_conexion);
 					}
 					else
 					{// No es el socket principal, es un chiruso
