@@ -8,6 +8,7 @@
 #include "lstestados.h"
 #include <stdbool.h>
 #include <commons/collections/queue.h>
+#include <commons/collections/dictionary.h>
 
 t_queue* ready[2];
 t_queue* exec;
@@ -59,9 +60,11 @@ void agregar_a_cola_recurso(uint32_t recurso, tcb_t* tcb) {
 }
 
 tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso){
-	tcb_t* tcb;
+	/*tcb_t* tcb;
 	tcb = queue_peek(dictionary_get(dic_colas_espera_recursos, recurso));
 	queue_pop(dictionary_get(dic_colas_espera_recursos, recurso));
 
-	return tcb;
+	return tcb;*/
+
+	return queue_pop(dictionary_get(dic_colas_espera_recursos, recurso));
 }
