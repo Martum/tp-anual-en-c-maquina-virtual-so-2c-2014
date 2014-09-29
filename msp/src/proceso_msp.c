@@ -13,6 +13,7 @@
 #include <commons/collections/list.h>
 #include "configuraciones.h"
 #include "estructuras.h"
+#include "marco.h"
 
 void listar_segmentos(proceso_msp_t *proceso){
 
@@ -39,10 +40,7 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 
 void quitar_segmento(proceso_msp_t *proceso, direccion base){
 	bool _is_segmento_con_base(segmento_t *s) {
-		return s->id == base; /* en realidad falta una conversion de id de segmento
-							   * a direccion base.
-							   * (concatenar pagina y desplazamiento en cero)
-							   */
+		return direccion_virtual_base_de_segmento(s->id) == base;
 	}
 	list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _is_segmento_con_base, (void*)_destruye_segmento);
 }
@@ -56,9 +54,11 @@ void _destruye_segmento(segmento_t *segmento){
 }
 
 void _destruye_pagina(pagina_t *pagina) {
+	// marco como desocupado su marco si es que tiene
 	if(pagina->tiene_marco){
-		// aca busco el marco y lo marco como no ocupado
-		// .........
+		marco_t* m = buscar_marco_segun_id(pagina->marco);
+		m->ocupado = false;
 	}
+	// libero memoria de la pagina
 	free(pagina);
 }

@@ -23,12 +23,8 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes){
 	// creo el segmento en la tabla de segmentos del proceso
 	segmento_t* segmento = crear_segmento_con_paginas(proceso, tamanio_en_bytes);
 
-	// la primer pagina empieza en 0 y el desplazamiento en la base es 0
-	uint16_t primer_pagina = 0x000;
-	int desplazamiento_a_la_base = 0x00;
-
 	// creo la direccion virtual base del segmento
-	direccion direccion_virtual = (segmento->id<<20) | (primer_pagina<<8)| desplazamiento_a_la_base;
+	direccion direccion_virtual = direccion_virtual_base_de_segmento(segmento->id);
 
 	// retorno la direccion formada
 	return direccion_virtual;
