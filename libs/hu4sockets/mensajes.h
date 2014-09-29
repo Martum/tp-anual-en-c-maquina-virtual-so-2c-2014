@@ -97,34 +97,6 @@ typedef struct respuesta_de_leer_de_memoria {
 	char* bytes_leido;
 } respuesta_de_leer_de_memoria_t;
 
-// OPCION 2
-
-typedef struct pedido_de_cpu_a_memoria {
-	flag_t flag;
-	uint32_t pid;
-	direccion direccion_virtual;
-	char* bytes_a_escribir;
-	uint32_t tamano;
-} pedido_de_cpu_a_memoria_t;
-
-typedef struct respuesta_de_memoria_a_cpu {
-	flag_t flag;
-	direccion direccion_virtual;
-	char* bytes_leido;
-	uint32_t tamano;
-} respuesta_de_memoria_a_cpu_t;
-
-// OPCION 3
-
-typedef struct mensaje_cpu_y_memoria {
-	flag_t flag;
-	uint32_t pid;
-	direccion direccion_virtual;
-	char* bytes_leido;
-	uint32_t tamano;
-} mensaje_cpu_y_memoria_t;
-
-
 /**
  * Mensaje es el chorro de bytes recibidos a traves del socket.
  *
