@@ -20,6 +20,7 @@ typedef enum {
 
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
+	TOMA_RESULTADO = 202,
 
 	// Mensajes del Kernel al CPU: 251 -> 300
 	RESPONDO_TCB = 251,
@@ -41,8 +42,7 @@ typedef enum {
 	DESTRUI_SEGMENTO,
 	LEE_DE_MEMORIA,
 	ERROR_VIOLACION_DE_SEGMENTO,
-	ESCRIBI_EN_MEMORIA,
-	TOMA_RESULTADO,
+	ESCRIBI_EN_MEMORIA
 } flag_t;
 
 typedef struct pedido {
