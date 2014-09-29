@@ -185,11 +185,19 @@ int32_t _recibir_cabecera(sock_t* socket, cabecera_t* cabecera)
 
 	// Si no se recibe la cabecera se tira error
 	if(_recibir_todo(socket, bytes_cabecera, &i) == -1)
+	{
+		free(bytes_cabecera);
 		return -1;
+	}
 
 	// Si no se puede deserealizar la cabecera o esta es invalida
 	if(_deserealizar_cabecera(cabecera, bytes_cabecera) == -1)
+	{
+		free(bytes_cabecera);
 		return -1;
+	}
+
+	free(bytes_cabecera);
 
 	return 0;
 }
