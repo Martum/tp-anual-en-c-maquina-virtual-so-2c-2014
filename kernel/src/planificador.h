@@ -10,12 +10,14 @@
 
 #include <hu4sockets/mensajes.h>
 
-
 void _planificar();
 
+
+// RETORNA EL PROXIMO TCB A EJECUTAR.
 respuesta_de_nuevo_tcb_t  devolver_tcb();
 
-void recibir_tcb(pedido_con_resultado_t);
+// RECIBE UN TCB DEL CPU Y HACE LO QUE CORRESPONDA SEGUN EL RESULTADO.
+void recibir_tcb(resultado_t resultado, tcb_t* tcb);
 
 
 #endif /* PLANIFICADOR_H_ */

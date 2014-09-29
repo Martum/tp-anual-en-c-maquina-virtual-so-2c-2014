@@ -16,16 +16,16 @@
 //void* leer(uint16_t identificador_tipo);
 
 /*
- * retorna los numeros leidos por consola
+ * pide leer numeros por consola.
  */
-int leer_int();
+void pedido_leer_int(uint32_t pid);
 
 /*
- * retorna la cadena leida por consola.
+ * pide leer cadena por consola.
  */
-char* leer_cadena();
+void pedido_leer_cadena(uint32_t pid);
 
 
-void escribir(uint16_t identificador_tipo);
+void escribir(uint32_t pid, uint16_t identificador_tipo);
 
 #endif /* CONSOLA_H_ */
