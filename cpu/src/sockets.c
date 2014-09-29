@@ -27,24 +27,6 @@ resultado_t conectar_con_kernel(sock_t** socket) {
 	return _conectar(socket, NULL, 4559);
 }
 
-resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
-	printf("Me preparo para mandar\n");
-	mensaje_aviso_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = MANDA_UN_TCB;
-	char* mensaje_a_enviar = malloc(sizeof(mensaje_aviso_t));
-	uint32_t len_a_enviar = sizeof(mensaje_aviso_t);
-	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
-	printf("Envio\n");
-	enviar(*kernel, mensaje_a_enviar, &len_a_enviar);
-	char* mensaje_recibido;
-	uint32_t len_devolucion;
-	recibir(*kernel, &mensaje_recibido, &len_devolucion);
-	mensaje_tcb_t m_devolucion;
-	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
-	printf("Quantum: %d\n\n", m_devolucion.quantum);
-	return OK;
-}
-
 resultado_t pedir_tcb_compartido(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
 	printf("Me preparo para mandar\n");
 	pedido_t cuerpo_del_mensaje;
