@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "marco.h"
 #include <commons/collections/list.h>
 #include <commons/config.h>
 #include <commons/string.h>
