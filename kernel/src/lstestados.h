@@ -35,4 +35,11 @@ void agregar_a_cola_recurso(uint32_t recurso, tcb_t* tcb);
 
 tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso);
 
+bool hay_hilo_km_ready();
+
+tcb_t* quitar_de_ready_km();
+
+// Quita de la queue de ready de hilos usuario.
+tcb_t* quitar_de_ready();
+
 #endif /* LSTESTADOS_H_ */
