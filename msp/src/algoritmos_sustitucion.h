@@ -8,7 +8,8 @@
 #ifndef ALGORITMOS_SUSTITUCION_H_
 #define ALGORITMOS_SUSTITUCION_H_
 
-marco_t* clock();
-marco_t* lru();
+// retornan el id del marco elegido
+uint32_t clock();
+uint32_t lru();
 
 #endif /* ALGORITMOS_SUSTITUCION_H_ */
