@@ -11,23 +11,26 @@
 #include "hu4sockets/mensajes.h"
 #include "sockets.h"
 
-resultado_t _conectar(sock_t** s, char* ip, int32_t puerto) {
-	*s = crear_socket_hablador(ip, puerto);
-	if (conectar(*s) == -1)
+sock_t* memoria;
+sock_t* kernel;
+
+resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto) {
+	*socket = crear_socket_hablador(ip, puerto);
+	if (conectar(*socket) == -1)
 		return FALLO_CONEXION;
 	return OK;
 }
 
-resultado_t conectar_con_memoria(sock_t** socket) {
-	return _conectar(socket, NULL, 4557);
+resultado_t conectar_con_memoria() {
+	return _conectar(&memoria, NULL, 4557);
 }
 
-resultado_t conectar_con_kernel(sock_t** socket) {
-	return _conectar(socket, NULL, 4559);
+resultado_t conectar_con_kernel() {
+	return _conectar(&kernel, NULL, 4559);
 	return OK;
 }
 
-resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
+resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	printf("Me preparo para mandar mensaje\n");
 
 	// ARMO EL MENSAJE
@@ -38,18 +41,20 @@ resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
 	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
 
 	// ENVIO EL MENSAJE
-	enviar(*kernel, mensaje_a_enviar, &len_a_enviar);
+	enviar(kernel, mensaje_a_enviar, &len_a_enviar);
 
 	// PREPARO LA RESPUESTA
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
 
 	// RECIBO LA RESPUESTA
-	recibir(*kernel, &mensaje_recibido, &len_devolucion);
+	recibir(kernel, &mensaje_recibido, &len_devolucion);
 
 	// ANALIZO LA RESPUESTA
 	respuesta_de_nuevo_tcb_t m_devolucion;
 	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
+
+	printf("%d", m_devolucion.quantum);
 
 	*tcb = m_devolucion.tcb;
 	*quantum = m_devolucion.quantum;
@@ -86,6 +91,11 @@ int32_t escribir_en_memoria(direccion dir, uint32_t byes, void* buffer) {
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
 	// deberia mandar al Kernel el tcb modificado y porque finalizo
 	return 0;
+}
+
+void cerrar_puertos() {
+	cerrar_liberar(memoria);
+	cerrar_liberar(kernel);
 }
 
 void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion) {
