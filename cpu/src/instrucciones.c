@@ -44,8 +44,8 @@ resultado_t setm(tcb_t* tcb) {
 
 	char* buffer = malloc(numero);
 
-	leer_de_memoria(direccion1, numero, buffer);
-	escribir_en_memoria(direccion2, numero, buffer);
+	leer_de_memoria(tcb, direccion1, numero, buffer);
+	escribir_en_memoria(tcb, direccion2, numero, buffer);
 
 	free(buffer);
 
