@@ -19,6 +19,7 @@ typedef enum {
 	FALLO_CONEXION = 102,
 	FALLO_COMUNICACION = 103,
 	FALLO_PEDIDO_DE_TCB = 104,
+	FALLO_CREACION_DE_SEGMENTO = 105,
 } resultado_t;
 
 #endif /* RESULTADOS_H_ */
