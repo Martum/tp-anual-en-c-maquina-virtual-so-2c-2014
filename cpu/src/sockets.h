@@ -93,18 +93,18 @@ void cerrar_puertos();
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
  * @RETURNS:
  */
-void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion);
+void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc.
  * @RETURNS: el char leido
  */
-char obtener_registro(tcb_t* tcb);
+char obtener_registro(tcb_t tcb);
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc.
  * @RETURNS: el numero leido
  */
-int32_t obtener_numero(tcb_t* tcb);
+int32_t obtener_numero(tcb_t tcb);
 
 #endif /* MEMORIA_H_ */

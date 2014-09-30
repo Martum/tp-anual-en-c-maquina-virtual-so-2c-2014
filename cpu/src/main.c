@@ -38,7 +38,7 @@ int32_t main(int32_t argc, char** argv) {
 		} // aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
-			obtener_instruccion(&tcb, &instruccion);
+			obtener_instruccion(tcb, &instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			res = funcion(&tcb);
 			quantum--;

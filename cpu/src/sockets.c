@@ -150,21 +150,21 @@ void cerrar_puertos() {
 	cerrar_liberar(kernel);
 }
 
-void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion) {
-	leer_de_memoria(*tcb, tcb->pc, sizeof(instruccion), instruccion);
-	tcb->pc = tcb->pc + 4;
+void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion) {
+	leer_de_memoria(tcb, tcb.pc, sizeof(instruccion), instruccion);
+	tcb.pc = tcb.pc + 4;
 }
 
-char obtener_registro(tcb_t* tcb) {
+char obtener_registro(tcb_t tcb) {
 	char* registro = malloc(sizeof(char));
-	leer_de_memoria(*tcb, tcb->pc, sizeof(char), registro);
-	tcb->pc = tcb->pc + 1;
+	leer_de_memoria(tcb, tcb.pc, sizeof(char), registro);
+	tcb.pc = tcb.pc + 1;
 	return *registro;
 }
 
-int32_t obtener_numero(tcb_t* tcb) {
+int32_t obtener_numero(tcb_t tcb) {
 	int32_t* numero = malloc(sizeof(int32_t));
-	leer_de_memoria(*tcb, tcb->pc, sizeof(int32_t), numero);
-	tcb->pc = tcb->pc + 4;
+	leer_de_memoria(tcb, tcb.pc, sizeof(int32_t), numero);
+	tcb.pc = tcb.pc + 4;
 	return *numero;
 }
