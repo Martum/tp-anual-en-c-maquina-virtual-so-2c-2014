@@ -64,12 +64,12 @@ resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
 	return NO_ENCONTRO_EL_REGISTRO;
 }
 
-int32_t actualizar_pc(tcb_t* tcb, int32_t valor) {
+resultado_t actualizar_pc(tcb_t* tcb, int32_t valor) {
 	tcb->pc = valor;
 	return OK;
 }
 
-int32_t obtener_pc(tcb_t* tcb) {
+resultado_t obtener_pc(tcb_t* tcb) {
 	return tcb->pc;
 }
 

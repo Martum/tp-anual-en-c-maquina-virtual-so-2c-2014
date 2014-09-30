@@ -44,13 +44,13 @@ resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
  * @DESC: Actualiza el valor del pc con el valor.
  * @RETURNS:
  */
-int32_t actualizar_pc(tcb_t* tcb, int32_t valor);
+resultado_t actualizar_pc(tcb_t* tcb, int32_t valor);
 
 /**
  * @DESC: Obtiene el valor del pc de la tcb.
  * @RETURNS: la direccion del pc
  */
-int32_t obtener_pc(tcb_t* tcb);
+resultado_t obtener_pc(tcb_t* tcb);
 
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.

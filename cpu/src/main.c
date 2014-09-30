@@ -31,12 +31,14 @@ int32_t main(int32_t argc, char** argv) {
 		break;
 
 		if (quantum < -1 || quantum == 0) {
-			printf("Quantum invalido. Aborto\n");
+			dictionary_destroy(dic_instrucciones);
+			cerrar_puertos();
+			printf("ERROR FALTAL: Quantum invalido. Aborto\n");
 			break;
 		} // aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
-			obtener_instruccion(&tcb, instruccion);
+			obtener_instruccion(&tcb, &instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			res = funcion(&tcb);
 			quantum--;

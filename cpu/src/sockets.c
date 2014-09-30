@@ -141,10 +141,8 @@ int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
 	cuerpo_del_mensaje.tcb = *tcb;
 	cuerpo_del_mensaje.resultado = res;
 
-	_enviar_y_recibir(kernel, &cuerpo_del_mensaje,
+	return _enviar_y_recibir(kernel, &cuerpo_del_mensaje,
 			sizeof(pedido_con_resultado_t), &m_devolucion);
-
-	return OK;
 }
 
 void cerrar_puertos() {
@@ -152,7 +150,7 @@ void cerrar_puertos() {
 	cerrar_liberar(kernel);
 }
 
-void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion) {
+void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion) {
 	leer_de_memoria(tcb, tcb->pc, sizeof(instruccion), instruccion);
 	tcb->pc = tcb->pc + 4;
 }

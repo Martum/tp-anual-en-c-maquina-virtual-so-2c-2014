@@ -79,8 +79,7 @@ resultado_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
  * @RETURNS:
  * 		OK si pudo conectarse y mandar bien el mensaje
- * 		FALLO_CONEXION si hubo problemas al conectarse
- * 		todo si no pudo mandar bien el mensaje
+ * 		FALLO_COMUNICACION si no pudo mandar bien el mensaje
  */
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res);
 
@@ -94,7 +93,7 @@ void cerrar_puertos();
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
  * @RETURNS:
  */
-void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion);
+void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc.
