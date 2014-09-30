@@ -28,6 +28,7 @@ int32_t main(int32_t argc, char** argv) {
 
 	while (1) {
 		pedir_tcb(&tcb, &quantum);
+		crear_segmento(&tcb, 32);
 		break;
 
 		if (quantum < -1 || quantum == 0) {

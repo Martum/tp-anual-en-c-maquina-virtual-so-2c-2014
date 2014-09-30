@@ -87,7 +87,7 @@ int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
-	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 
@@ -101,7 +101,7 @@ int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	respuesta_de_leer_de_memoria_t m_devolucion;
-	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.tamano = bytes;
@@ -118,7 +118,7 @@ int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
-	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.bytes_a_escribir = (char*) buffer;
@@ -133,7 +133,7 @@ int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
-	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.tcb = *tcb;
 	cuerpo_del_mensaje.resultado = res;
 
