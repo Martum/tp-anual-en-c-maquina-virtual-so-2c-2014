@@ -23,10 +23,9 @@ resultado_t conectar_con_memoria() {
 
 resultado_t conectar_con_kernel() {
 	return _conectar(&kernel, NULL, 4559);
-	return OK;
 }
 
-void _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
+resultado_t _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
 		uint32_t tamano, void* m_devolucion) {
 	// ARMO EL CHORRO DE BYTES
 	char* mensaje_a_enviar = malloc(sizeof(tamano));
@@ -34,17 +33,21 @@ void _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
 	memcpy(mensaje_a_enviar, cuerpo_del_mensaje, len_a_enviar);
 
 	// ENVIO EL MENSAJE
-	enviar(socket, mensaje_a_enviar, &len_a_enviar);
+	if (enviar(socket, mensaje_a_enviar, &len_a_enviar) == -1)
+		return FALLO_COMUNICACION;
 
 	// PREPARO LA RESPUESTA
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
 
 	// RECIBO LA RESPUESTA
-	recibir(socket, &mensaje_recibido, &len_devolucion);
+	if (recibir(socket, &mensaje_recibido, &len_devolucion) == -1)
+		return FALLO_COMUNICACION;
 
 	// ANALIZO LA RESPUESTA
 	memcpy(m_devolucion, mensaje_recibido, len_devolucion);
+
+	return OK;
 }
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
@@ -55,8 +58,11 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
 	// ENVIO Y RECIBO
-	_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
-			&m_devolucion);
+
+	if (_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
+					&m_devolucion) == FALLO_COMUNICACION) {
+		return FALLO_PEDIDO_DE_TCB;
+	}
 
 	// DESARMO EL MENSAJE
 	*tcb = m_devolucion.tcb;
