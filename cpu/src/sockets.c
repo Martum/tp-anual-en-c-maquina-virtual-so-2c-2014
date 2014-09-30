@@ -30,8 +30,8 @@ resultado_t conectar_con_kernel() {
 	return OK;
 }
 
-void enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje, uint32_t tamano,
-		void* m_devolucion) {
+void _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
+		uint32_t tamano, void* m_devolucion) {
 	// ARMO EL CHORRO DE BYTES
 	char* mensaje_a_enviar = malloc(sizeof(tamano));
 	uint32_t len_a_enviar = sizeof(tamano);
@@ -59,7 +59,8 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
 	// ENVIO Y RECIBO
-	enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t), &m_devolucion);
+	_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
+			&m_devolucion);
 
 	// DESARMO EL MENSAJE
 	*tcb = m_devolucion.tcb;
@@ -71,26 +72,13 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
 	// ARMO EL MENSAJE
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
+	respuesta_de_crear_segmento_t m_devolucion;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.tamano = bytes;
-	char* mensaje_a_enviar = malloc(sizeof(pedido_de_crear_segmento_t));
-	uint32_t len_a_enviar = sizeof(pedido_de_crear_segmento_t);
-	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
 
-	// ENVIO EL MENSAJE
-	enviar(memoria, mensaje_a_enviar, &len_a_enviar);
-
-	// PREPARO LA RESPUESTA
-	char* mensaje_recibido;
-	uint32_t len_devolucion;
-
-	// RECIBO LA RESPUESTA
-	recibir(memoria, &mensaje_recibido, &len_devolucion);
-
-	// ANALIZO LA RESPUESTA
-	respuesta_de_crear_segmento_t m_devolucion;
-	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
+	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+			sizeof(pedido_de_crear_segmento_t), &m_devolucion);
 
 	return m_devolucion.direccion_virtual;
 }
@@ -98,26 +86,13 @@ direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
+	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
-	char* mensaje_a_enviar = malloc(sizeof(pedido_de_destruir_segmento_t));
-	uint32_t len_a_enviar = sizeof(pedido_de_destruir_segmento_t);
-	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
 
-	// ENVIO EL MENSAJE
-	enviar(memoria, mensaje_a_enviar, &len_a_enviar);
-
-	// PREPARO LA RESPUESTA
-	char* mensaje_recibido;
-	uint32_t len_devolucion;
-
-	// RECIBO LA RESPUESTA
-	recibir(memoria, &mensaje_recibido, &len_devolucion);
-
-	// ANALIZO LA RESPUESTA
-	respuesta_t m_devolucion;
-	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
+	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+				sizeof(pedido_de_destruir_segmento_t), &m_devolucion);
 
 	return OK;
 }
