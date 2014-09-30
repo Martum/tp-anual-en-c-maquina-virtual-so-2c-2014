@@ -13,12 +13,30 @@
 #include "estructuras.h"
 #include "configuraciones.h"
 
-/*
-marco_t* clock(){
 
+marco_t* clock(){
+	// filtro a las paginas segun las que tienen marco
+	bool _paginas_con_marco(pagina_t* pagina){
+		return pagina->tiene_marco;
+	}
+	t_list* paginas_con_marco =	list_filter(get_indice_paginas(),(void*) _paginas_con_marco);
+
+	// itero las paginas
+	pagina_t* pag = malloc(sizeof(pagina_t));
+	int i;
+	for(i=0; i<list_size(paginas_con_marco); i++){
+		pag = list_get(paginas_con_marco,i);
+		if(pag->bit_referencia == 1){
+			pag->bit_referencia = 0;
+			list_replace(paginas_con_marco,i,pag);
+		}else{
+			return pag->marco;
+		}
+	}
 }
 
-*/
+// ME PARECE QUE TENGO QUE CAMBIAR EL LRU, DEBERIA MANEJARSE CON EL BIT DE REFERENCIA
+// Y ORDENANDO LA LISTA, NO CON EL HORARIO DEL ULTIMO ACCESO
 uint32_t lru(){
 	// filtro a las paginas segun las que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
@@ -74,6 +92,7 @@ uint32_t lru(){
 	// retorno el id de su marco
 	uint32_t id_marco_elegido = pag_menos_usada->marco;
 	free(pag_menos_usada);
+	free(paginas_con_marco);
 	return id_marco_elegido;
 }
 

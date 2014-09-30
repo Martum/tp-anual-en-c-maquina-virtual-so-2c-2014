@@ -20,6 +20,8 @@ void crear_pagina(segmento_t *segmento){
 	agregar_pagina_a_segmento(segmento,pagina);
 	pagina->id = list_size(segmento->paginas)-1;
 
+	pagina->bit_referencia = 0;
+
 	// agrego pagina a indice de paginas
 	list_add(get_indice_paginas(), pagina);
 }
