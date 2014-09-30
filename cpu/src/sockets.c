@@ -131,8 +131,16 @@ int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 }
 
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
-	// deberia mandar al Kernel el tcb modificado y porque finalizo
-	return 0;
+	pedido_con_resultado_t cuerpo_del_mensaje;
+	respuesta_t m_devolucion;
+	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.tcb = *tcb;
+	cuerpo_del_mensaje.resultado = res;
+
+	_enviar_y_recibir(kernel, &cuerpo_del_mensaje,
+			sizeof(pedido_con_resultado_t), &m_devolucion);
+
+	return OK;
 }
 
 void cerrar_puertos() {
