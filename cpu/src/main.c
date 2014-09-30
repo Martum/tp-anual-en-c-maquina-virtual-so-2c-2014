@@ -31,6 +31,7 @@ int32_t main(int32_t argc, char** argv) {
 
 	while (1) {
 		pedir_tcb_compartido(&kernel, tcb, &quantum);
+		printf("%d", tcb->a);
 
 		break;
 

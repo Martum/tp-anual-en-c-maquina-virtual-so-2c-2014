@@ -1,11 +1,12 @@
 /*
- * tcb.c
+ * tcb-funciones.c
  *
- *  Created on: 27/09/2014
+ *  Created on: 29/09/2014
  *      Author: utnso
  */
-#include "tcb.h"
+
 #include <stdlib.h>
+#include "tcb-funciones.h"
 
 tcb_t* crear_tcb() {
 	return (tcb_t*) malloc(sizeof(tcb_t));
@@ -76,5 +77,3 @@ int32_t obtener_pc(tcb_t* tcb) {
 direccion obtener_base_de_codigo(tcb_t* tcb) {
 	return tcb->base_codigo;
 }
-
-
