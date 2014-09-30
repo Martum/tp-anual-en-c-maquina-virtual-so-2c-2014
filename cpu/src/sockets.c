@@ -156,15 +156,15 @@ void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion) {
 }
 
 char obtener_registro(tcb_t tcb) {
-	char* registro = malloc(sizeof(char));
-	leer_de_memoria(tcb, tcb.pc, sizeof(char), registro);
+	char registro;
+	leer_de_memoria(tcb, tcb.pc, sizeof(char), &registro);
 	tcb.pc = tcb.pc + 1;
-	return *registro;
+	return registro;
 }
 
 int32_t obtener_numero(tcb_t tcb) {
-	int32_t* numero = malloc(sizeof(int32_t));
-	leer_de_memoria(tcb, tcb.pc, sizeof(int32_t), numero);
+	int32_t numero;
+	leer_de_memoria(tcb, tcb.pc, sizeof(int32_t), &numero);
 	tcb.pc = tcb.pc + 4;
-	return *numero;
+	return numero;
 }
