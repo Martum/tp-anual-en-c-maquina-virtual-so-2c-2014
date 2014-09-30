@@ -30,32 +30,41 @@ resultado_t conectar_con_kernel() {
 	return OK;
 }
 
-resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
-	printf("Me preparo para mandar mensaje\n");
-
-	// ARMO EL MENSAJE
-	pedido_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = MANDA_TCB;
-	char* mensaje_a_enviar = malloc(sizeof(pedido_t));
-	uint32_t len_a_enviar = sizeof(pedido_t);
-	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
+void enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje, uint32_t tamano,
+		void* m_devolucion) {
+	// ARMO EL CHORRO DE BYTES
+	char* mensaje_a_enviar = malloc(sizeof(tamano));
+	uint32_t len_a_enviar = sizeof(tamano);
+	memcpy(mensaje_a_enviar, cuerpo_del_mensaje, len_a_enviar);
 
 	// ENVIO EL MENSAJE
-	enviar(kernel, mensaje_a_enviar, &len_a_enviar);
+	enviar(socket, mensaje_a_enviar, &len_a_enviar);
 
 	// PREPARO LA RESPUESTA
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
 
 	// RECIBO LA RESPUESTA
-	recibir(kernel, &mensaje_recibido, &len_devolucion);
+	recibir(socket, &mensaje_recibido, &len_devolucion);
 
 	// ANALIZO LA RESPUESTA
-	respuesta_de_nuevo_tcb_t m_devolucion;
-	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
+	memcpy(m_devolucion, mensaje_recibido, len_devolucion);
+}
 
+resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
+
+	// ARMO EL MENSAJE
+	pedido_t cuerpo_del_mensaje;
+	respuesta_de_nuevo_tcb_t m_devolucion;
+	cuerpo_del_mensaje.flag = MANDA_TCB;
+
+	// ENVIO Y RECIBO
+	enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t), &m_devolucion);
+
+	// DESARMO EL MENSAJE
 	*tcb = m_devolucion.tcb;
 	*quantum = m_devolucion.quantum;
+
 	return OK;
 }
 
@@ -65,8 +74,8 @@ direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.tamano = bytes;
-	char* mensaje_a_enviar = malloc(sizeof(pedido_t));
-	uint32_t len_a_enviar = sizeof(pedido_t);
+	char* mensaje_a_enviar = malloc(sizeof(pedido_de_crear_segmento_t));
+	uint32_t len_a_enviar = sizeof(pedido_de_crear_segmento_t);
 	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
 
 	// ENVIO EL MENSAJE
@@ -113,12 +122,14 @@ int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	return OK;
 }
 
-int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer) {
+int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
+		void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
 }
 
-int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer) {
+int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
+		void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
 }
