@@ -49,7 +49,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
  * 		OK si pudo conectarse y se creo el nuevo segemento
  * 		FALLO_CREACION_DE_SEGMENTO si hubo problemas al crear el segmento
  */
-resultado_t crear_segmento(tcb_t tcb, uint32_t bytes, direccion* direccion);
+resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion);
 
 /*
  * @DESC: Le pide a memoria que destruya un segmento
@@ -57,7 +57,7 @@ resultado_t crear_segmento(tcb_t tcb, uint32_t bytes, direccion* direccion);
  * 		OK si pudo conectarse y se destruyo el segmento
  * 		FALLO_DESTRUCCION_DE_SEGMENTO si hubo problemas al destruir el segmento
  */
-resultado_t destruir_segmento(tcb_t tcb, direccion direccion);
+resultado_t destruir_segmento(direccion pid, direccion direccion);
 
 /*
  * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
@@ -65,7 +65,7 @@ resultado_t destruir_segmento(tcb_t tcb, direccion direccion);
  * 		OK si pudo conectarse y trajo bien los datos
  * 		FALLO_LECTURA_DE_MEMORIA si hubo problemas al traer los datos
  */
-resultado_t leer_de_memoria(tcb_t tcb, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
@@ -73,7 +73,7 @@ resultado_t leer_de_memoria(tcb_t tcb, direccion direccion, uint32_t bytes, void
  * 		OK si pudo conectarse y escribir los datos
  * 		FALLO_ESCRITURA_EN_MEMORIA si hubo problemas al escribir los datos
  */
-resultado_t escribir_en_memoria(tcb_t tcb, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion

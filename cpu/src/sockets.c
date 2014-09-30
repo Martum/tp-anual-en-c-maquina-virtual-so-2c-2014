@@ -71,12 +71,12 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	return OK;
 }
 
-resultado_t crear_segmento(tcb_t tcb, uint32_t bytes, direccion* direccion) {
+resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	respuesta_de_crear_segmento_t m_devolucion;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
-	cuerpo_del_mensaje.pid = tcb.pid;
+	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.tamano = bytes;
 
 	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
@@ -90,24 +90,24 @@ resultado_t crear_segmento(tcb_t tcb, uint32_t bytes, direccion* direccion) {
 	return OK;
 }
 
-resultado_t destruir_segmento(tcb_t tcb, direccion direccion) {
+resultado_t destruir_segmento(direccion pid, direccion direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
-	cuerpo_del_mensaje.pid = tcb.pid;
+	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 
 	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
 			sizeof(pedido_de_destruir_segmento_t), &m_devolucion);
 }
 
-resultado_t leer_de_memoria(tcb_t tcb, direccion direccion, uint32_t bytes,
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	respuesta_de_leer_de_memoria_t m_devolucion;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
-	cuerpo_del_mensaje.pid = tcb.pid;
+	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.tamano = bytes;
 
@@ -120,12 +120,12 @@ resultado_t leer_de_memoria(tcb_t tcb, direccion direccion, uint32_t bytes,
 	return OK;
 }
 
-resultado_t escribir_en_memoria(tcb_t tcb, direccion direccion, uint32_t bytes,
+resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
-	cuerpo_del_mensaje.pid = tcb.pid;
+	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.bytes_a_escribir = (char*) buffer;
 	cuerpo_del_mensaje.tamano = bytes;
@@ -151,20 +151,20 @@ void cerrar_puertos() {
 }
 
 void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion) {
-	leer_de_memoria(tcb, tcb.pc, sizeof(instruccion), instruccion);
+	leer_de_memoria(tcb.pid, tcb.pc, sizeof(instruccion), instruccion);
 	tcb.pc = tcb.pc + 4;
 }
 
 char obtener_registro(tcb_t tcb) {
 	char registro;
-	leer_de_memoria(tcb, tcb.pc, sizeof(char), &registro);
+	leer_de_memoria(tcb.pid, tcb.pc, sizeof(char), &registro);
 	tcb.pc = tcb.pc + 1;
 	return registro;
 }
 
 int32_t obtener_numero(tcb_t tcb) {
 	int32_t numero;
-	leer_de_memoria(tcb, tcb.pc, sizeof(int32_t), &numero);
+	leer_de_memoria(tcb.pid, tcb.pc, sizeof(int32_t), &numero);
 	tcb.pc = tcb.pc + 4;
 	return numero;
 }
