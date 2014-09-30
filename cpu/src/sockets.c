@@ -71,7 +71,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	return OK;
 }
 
-direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
+resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	respuesta_de_crear_segmento_t m_devolucion;
@@ -79,10 +79,14 @@ direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.tamano = bytes;
 
-	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_crear_segmento_t), &m_devolucion);
+	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+			sizeof(pedido_de_crear_segmento_t), &m_devolucion) == FALLO_COMUNICACION) {
+		return FALLO_CREACION_DE_SEGMENTO;
+	}
 
-	return m_devolucion.direccion_virtual;
+	*direccion = m_devolucion.direccion_virtual;
+
+	return OK;
 }
 
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {

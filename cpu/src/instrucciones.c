@@ -290,7 +290,9 @@ resultado_t malc(tcb_t* tcb) {
 	if (obtener_valor_de_registro(tcb, 'a', &bytes) == NO_ENCONTRO_EL_REGISTRO)
 		return NO_ENCONTRO_EL_REGISTRO;
 
-	direccion direccion = crear_segmento(tcb, bytes);
+	direccion direccion;
+    if (crear_segmento(tcb, bytes, &direccion) == FALLO_CREACION_DE_SEGMENTO)
+    	return FALLO_CREACION_DE_SEGMENTO;
 
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
 }

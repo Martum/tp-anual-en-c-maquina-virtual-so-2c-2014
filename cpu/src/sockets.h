@@ -39,8 +39,7 @@ resultado_t conectar_con_kernel();
  * @DESC: Le pide al kernel un tcb y guarda el tcb devuelto y su quantum y los parametros
  * @RETURNS:
  * 		OK si pudo conectarse y trajo bien los datos
- * 		FALLO_CONEXION si hubo problemas al conectarse
- * 		todo si hubo problemas al traer los datos
+ * 		FALLO_PEDIDO_DE_TCB si hubo problemas al traer los datos
  */
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
 
@@ -48,10 +47,9 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
  * @DESC: Le pide a memoria que cree un nuevo segmento
  * @RETURNS:
  * 		OK si pudo conectarse y se creo el nuevo segemento
- * 		FALLO_CONEXION si hubo problemas al conectarse
- * 		todo si hubo problemas al crear el segmento
+ * 		FALLO_CREACION_DE_SEGMENTO si hubo problemas al crear el segmento
  */
-direccion crear_segmento(tcb_t* tcb, uint32_t bytes);
+resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion);
 
 /*
  * @DESC: Le pide a memoria que destruya un segmento
