@@ -54,7 +54,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	respuesta_de_nuevo_tcb_t m_devolucion;
 	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
 
-	printf("%d", m_devolucion.quantum);
+	printf("%d\n", m_devolucion.quantum);
 
 	*tcb = m_devolucion.tcb;
 	*quantum = m_devolucion.quantum;
@@ -71,7 +71,23 @@ direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
 	uint32_t len_a_enviar = sizeof(pedido_t);
 	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
 
-	return 0;
+	// ENVIO EL MENSAJE
+	enviar(memoria, mensaje_a_enviar, &len_a_enviar);
+
+	// PREPARO LA RESPUESTA
+	char* mensaje_recibido;
+	uint32_t len_devolucion;
+
+	// RECIBO LA RESPUESTA
+	recibir(memoria, &mensaje_recibido, &len_devolucion);
+
+	// ANALIZO LA RESPUESTA
+	respuesta_de_crear_segmento_t m_devolucion;
+	memcpy(&m_devolucion, mensaje_recibido, len_devolucion);
+
+	printf("%d\n", m_devolucion.direccion_virtual);
+
+	return m_devolucion.direccion_virtual;
 }
 
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
