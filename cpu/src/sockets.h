@@ -20,7 +20,7 @@
  * 		OK si pudo conectarse
  * 		FALLO_CONEXION si hubo problemas al conectarse
  */
-resultado_t conectar_con_memoria(sock_t** socket);
+resultado_t conectar_con_memoria();
 
 /*
  * @DESC: Crea el socket sock_t y se conecta con el ip y puerto
@@ -29,13 +29,14 @@ resultado_t conectar_con_memoria(sock_t** socket);
  * 		OK si pudo conectarse
  * 		FALLO_CONEXION si hubo problemas al conectarse
  */
-resultado_t conectar_con_kernel(sock_t** socket);
-resultado_t pedir_tcb_compartido(sock_t** kernel, tcb_t* tcb, int32_t* quantum);
-direccion crear_segmento(tcb_t* tcb, int32_t bytes);
+resultado_t conectar_con_kernel();
+resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
+direccion crear_segmento(tcb_t* tcb, uint32_t bytes);
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion);
-int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer);
-int32_t escribir_en_memoria(direccion dir, int32_t byes, void* buffer);
+int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
+int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res);
+void cerrar_puertos();
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
