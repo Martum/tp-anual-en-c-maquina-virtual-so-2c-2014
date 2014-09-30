@@ -56,7 +56,16 @@ resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum) {
 	return OK;
 }
 
-direccion crear_segmento(tcb_t* tcb, int32_t bytes) {
+direccion crear_segmento(tcb_t* tcb, uint32_t bytes) {
+	// ARMO EL MENSAJE
+	pedido_de_crear_segmento_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.pid = tcb->pid;
+	cuerpo_del_mensaje.tamano = bytes;
+	char* mensaje_a_enviar = malloc(sizeof(pedido_t));
+	uint32_t len_a_enviar = sizeof(pedido_t);
+	memcpy(mensaje_a_enviar, &cuerpo_del_mensaje, len_a_enviar);
+
 	return 0;
 }
 
@@ -64,12 +73,12 @@ int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	return 0;
 }
 
-int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer) {
+int32_t leer_de_memoria(direccion dir, uint32_t bytes, void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
 }
 
-int32_t escribir_en_memoria(direccion dir, int32_t byes, void* buffer) {
+int32_t escribir_en_memoria(direccion dir, uint32_t byes, void* buffer) {
 	// tendria que devolver la cantidad de byes que leyo o algo asi
 	return 0;
 }

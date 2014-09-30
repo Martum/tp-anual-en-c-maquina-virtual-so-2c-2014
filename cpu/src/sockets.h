@@ -31,10 +31,10 @@ resultado_t conectar_con_memoria(sock_t** socket);
  */
 resultado_t conectar_con_kernel(sock_t** socket);
 resultado_t pedir_tcb(sock_t** kernel, tcb_t* tcb, int32_t* quantum);
-direccion crear_segmento(tcb_t* tcb, int32_t bytes);
+direccion crear_segmento(tcb_t* tcb, uint32_t bytes);
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion);
-int32_t leer_de_memoria(direccion dir, int32_t bytes, void* buffer);
-int32_t escribir_en_memoria(direccion dir, int32_t byes, void* buffer);
+int32_t leer_de_memoria(direccion dir, uint32_t bytes, void* buffer);
+int32_t escribir_en_memoria(direccion dir, uint32_t byes, void* buffer);
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res);
 
 /*
