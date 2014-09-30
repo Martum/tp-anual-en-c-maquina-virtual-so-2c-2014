@@ -97,14 +97,14 @@ void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc.
- * @RETURNS: el char leido
+ * @RETURNS:
  */
-char obtener_registro(tcb_t tcb);
+void obtener_registro(tcb_t tcb, char* registro);
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc.
- * @RETURNS: el numero leido
+ * @RETURNS:
  */
-int32_t obtener_numero(tcb_t tcb);
+void obtener_numero(tcb_t tcb, int32_t* numero);
 
 #endif /* MEMORIA_H_ */
