@@ -19,6 +19,7 @@ typedef struct pagina {
 	bool en_disco;
 	uint32_t marco;
 	char* ultima_vez_usada;
+	int bit_referencia;
 } pagina_t;
 
 typedef struct segmento {
