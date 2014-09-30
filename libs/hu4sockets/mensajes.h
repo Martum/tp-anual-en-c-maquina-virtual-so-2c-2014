@@ -26,18 +26,18 @@ typedef enum {
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
 
-	// Mensajes del Kernel al CPU: 301 -> 350
+	// Mensajes del CPU a Memoria: 301 -> 350
 	CREAME_UN_SEGMENTO = 301,
+	DESTRUI_SEGMENTO = 302,
+	LEE_DE_MEMORIA = 303,
+	ESCRIBI_EN_MEMORIA = 304,
 
-	// Mensajes del Kernel al CPU: 351 -> 400
+	// Mensajes de Memoria al CPU: 351 -> 400
+	EXITO = 351,
+	TOMA_SEGMENTO = 352,
+	ERROR_MEMORIA_LLENA = 353,
+	ERROR_VIOLACION_DE_SEGMENTO = 354,
 
-	EXITO,
-	TOMA_SEGMENTO,
-	ERROR_MEMORIA_LLENA,
-	DESTRUI_SEGMENTO,
-	LEE_DE_MEMORIA,
-	ERROR_VIOLACION_DE_SEGMENTO,
-	ESCRIBI_EN_MEMORIA
 } flag_t;
 
 typedef struct pedido {
