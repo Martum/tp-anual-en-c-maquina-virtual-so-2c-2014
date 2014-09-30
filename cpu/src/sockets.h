@@ -81,7 +81,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t byt
  * 		OK si pudo conectarse y mandar bien el mensaje
  * 		FALLO_COMUNICACION si no pudo mandar bien el mensaje
  */
-int32_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
+resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
@@ -96,13 +96,13 @@ void cerrar_puertos();
 void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion);
 
 /*
- * @DESC: Lee de memoria un byte apuntado por pc.
+ * @DESC: Lee de memoria un byte apuntado por pc y actualiza el registro.
  * @RETURNS:
  */
 void obtener_registro(tcb_t tcb, char* registro);
 
 /*
- * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc.
+ * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza el numero.
  * @RETURNS:
  */
 void obtener_numero(tcb_t tcb, int32_t* numero);

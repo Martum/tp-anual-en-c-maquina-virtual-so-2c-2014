@@ -120,8 +120,8 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	return OK;
 }
 
-resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes,
-		void* buffer) {
+resultado_t escribir_en_memoria(direccion pid, direccion direccion,
+		uint32_t bytes, void* buffer) {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
@@ -134,7 +134,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t byt
 			sizeof(pedido_de_escribir_en_memoria_t), &m_devolucion);
 }
 
-int32_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res) {
+resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res) {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -150,17 +150,20 @@ void cerrar_puertos() {
 	cerrar_liberar(kernel);
 }
 
+void _obtener(tcb_t tcb, void* memoria_a_actualizar, uint32_t tamano_de_memoria,
+		uint32_t bytes_a_leer) {
+	leer_de_memoria(tcb.pid, tcb.pc, tamano_de_memoria, memoria_a_actualizar);
+	tcb.pc = tcb.pc + bytes_a_leer;
+}
+
 void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion) {
-	leer_de_memoria(tcb.pid, tcb.pc, sizeof(instruccion), instruccion);
-	tcb.pc = tcb.pc + 4;
+	_obtener(tcb, instruccion, sizeof(instruccion), 4);
 }
 
 void obtener_registro(tcb_t tcb, char* registro) {
-	leer_de_memoria(tcb.pid, tcb.pc, sizeof(char), registro);
-	tcb.pc = tcb.pc + 1;
+	_obtener(tcb, registro, sizeof(char), 1);
 }
 
 void obtener_numero(tcb_t tcb, int32_t* numero) {
-	leer_de_memoria(tcb.pid, tcb.pc, sizeof(int32_t), numero);
-	tcb.pc = tcb.pc + 4;
+	_obtener(tcb, numero, sizeof(int32_t), 4);
 }
