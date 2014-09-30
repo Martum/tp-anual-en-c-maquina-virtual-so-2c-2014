@@ -6,7 +6,7 @@ int32_t main(int32_t argc, char** argv) {
 
 	if (conectar_con_memoria() == FALLO_CONEXION
 			|| conectar_con_kernel() == FALLO_CONEXION) { // todo informar por pantalla y log
-		printf("Fallo la conexion. Aborto\n");
+		printf("ERROR FALTAL: Fallo la conexion\n");
 		return 0;
 	}
 
@@ -22,7 +22,12 @@ int32_t main(int32_t argc, char** argv) {
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		pedir_tcb(&tcb, &quantum);
+		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
+			dictionary_destroy(dic_instrucciones);
+			cerrar_puertos();
+			printf("ERROR FALTAL: Fallo pedido de tcb\n");
+			return 0;
+		}
 		break;
 
 		if (quantum < -1 || quantum == 0) {
