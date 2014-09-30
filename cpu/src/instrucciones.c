@@ -37,8 +37,8 @@ resultado_t setm(tcb_t* tcb) {
 
 	char* buffer = malloc(numero);
 
-	leer_de_memoria(tcb, direccion1, numero, buffer);
-	escribir_en_memoria(tcb, direccion2, numero, buffer);
+	leer_de_memoria(*tcb, direccion1, numero, buffer);
+	escribir_en_memoria(*tcb, direccion2, numero, buffer);
 
 	free(buffer);
 
@@ -291,7 +291,7 @@ resultado_t malc(tcb_t* tcb) {
 		return NO_ENCONTRO_EL_REGISTRO;
 
 	direccion direccion;
-    if (crear_segmento(tcb, bytes, &direccion) == FALLO_CREACION_DE_SEGMENTO)
+    if (crear_segmento(*tcb, bytes, &direccion) == FALLO_CREACION_DE_SEGMENTO)
     	return FALLO_CREACION_DE_SEGMENTO;
 
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
@@ -305,7 +305,7 @@ resultado_t _free(tcb_t* tcb) {
 
 	direccion direccion = valor;
 
-	return destruir_segmento(tcb, direccion);
+	return destruir_segmento(*tcb, direccion);
 }
 
 resultado_t innn(tcb_t* tcb) {

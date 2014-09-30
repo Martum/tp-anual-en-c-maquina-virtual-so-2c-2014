@@ -44,7 +44,7 @@ int32_t main(int32_t argc, char** argv) {
 			quantum--;
 		}
 
-		informar_a_kernel_de_finalizacion(&tcb, res);
+		informar_a_kernel_de_finalizacion(tcb, res);
 	}
 
 	dictionary_destroy(dic_instrucciones);

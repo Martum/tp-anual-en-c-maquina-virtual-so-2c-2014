@@ -49,7 +49,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
  * 		OK si pudo conectarse y se creo el nuevo segemento
  * 		FALLO_CREACION_DE_SEGMENTO si hubo problemas al crear el segmento
  */
-resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion);
+resultado_t crear_segmento(tcb_t tcb, uint32_t bytes, direccion* direccion);
 
 /*
  * @DESC: Le pide a memoria que destruya un segmento
@@ -57,7 +57,7 @@ resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion);
  * 		OK si pudo conectarse y se destruyo el segmento
  * 		FALLO_DESTRUCCION_DE_SEGMENTO si hubo problemas al destruir el segmento
  */
-resultado_t destruir_segmento(tcb_t* tcb, direccion direccion);
+resultado_t destruir_segmento(tcb_t tcb, direccion direccion);
 
 /*
  * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
@@ -65,7 +65,7 @@ resultado_t destruir_segmento(tcb_t* tcb, direccion direccion);
  * 		OK si pudo conectarse y trajo bien los datos
  * 		FALLO_LECTURA_DE_MEMORIA si hubo problemas al traer los datos
  */
-resultado_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t leer_de_memoria(tcb_t tcb, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
@@ -73,7 +73,7 @@ resultado_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, voi
  * 		OK si pudo conectarse y escribir los datos
  * 		FALLO_ESCRITURA_EN_MEMORIA si hubo problemas al escribir los datos
  */
-resultado_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t escribir_en_memoria(tcb_t tcb, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
@@ -81,7 +81,7 @@ resultado_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
  * 		OK si pudo conectarse y mandar bien el mensaje
  * 		FALLO_COMUNICACION si no pudo mandar bien el mensaje
  */
-int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res);
+int32_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
