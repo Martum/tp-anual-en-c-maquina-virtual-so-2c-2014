@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 
+#include <stdlib.h>
 #include "hu4sockets/tcb.h"
 
 #ifndef TCB_FUNCIONES_H_

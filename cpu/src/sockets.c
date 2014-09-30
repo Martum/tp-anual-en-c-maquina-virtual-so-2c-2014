@@ -4,11 +4,7 @@
  *  Created on: 15/09/2014
  *      Author: utnso
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include "hu4sockets/mensajes.h"
+
 #include "sockets.h"
 
 sock_t* memoria;

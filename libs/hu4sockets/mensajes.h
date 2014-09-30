@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 
+#include <string.h>
 #include "tcb.h"
 
 #ifndef MENSAJES_H_

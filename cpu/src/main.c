@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <commons/collections/dictionary.h>
 #include "instrucciones.h"
-#include "sockets.h"
 
 int32_t main(int32_t argc, char** argv) {
 

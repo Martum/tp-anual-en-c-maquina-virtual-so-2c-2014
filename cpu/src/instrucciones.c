@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <commons/collections/dictionary.h>
-#include "tcb-funciones.h"
 #include "instrucciones.h"
-#include "sockets.h"
 
 resultado_t load(tcb_t* tcb) {
 	char registro = obtener_registro(tcb);

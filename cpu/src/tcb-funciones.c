@@ -5,7 +5,6 @@
  *      Author: utnso
  */
 
-#include <stdlib.h>
 #include "tcb-funciones.h"
 
 tcb_t* crear_tcb() {
