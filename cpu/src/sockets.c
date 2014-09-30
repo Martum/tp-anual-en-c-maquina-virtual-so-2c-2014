@@ -60,7 +60,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	// ENVIO Y RECIBO
 
 	if (_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
-					&m_devolucion) == FALLO_COMUNICACION) {
+			&m_devolucion) == FALLO_COMUNICACION) {
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
@@ -80,7 +80,8 @@ resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion) {
 	cuerpo_del_mensaje.tamano = bytes;
 
 	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_crear_segmento_t), &m_devolucion) == FALLO_COMUNICACION) {
+			sizeof(pedido_de_crear_segmento_t), &m_devolucion)
+			== FALLO_COMUNICACION) {
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
@@ -89,7 +90,7 @@ resultado_t crear_segmento(tcb_t* tcb, uint32_t bytes, direccion* direccion) {
 	return OK;
 }
 
-int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
+resultado_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	// ARMO EL MENSAJE
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
@@ -97,13 +98,11 @@ int32_t destruir_segmento(tcb_t* tcb, direccion direccion) {
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 
-	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
 			sizeof(pedido_de_destruir_segmento_t), &m_devolucion);
-
-	return OK;
 }
 
-int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
+resultado_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	respuesta_de_leer_de_memoria_t m_devolucion;
@@ -112,15 +111,16 @@ int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.tamano = bytes;
 
-	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_leer_de_memoria_t), &m_devolucion);
+	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+			sizeof(pedido_de_leer_de_memoria_t), &m_devolucion))
+		return FALLO_LECTURA_DE_MEMORIA;
 
 	memcpy(buffer, m_devolucion.bytes_leido, sizeof(m_devolucion.bytes_leido));
 
 	return OK;
 }
 
-int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
+resultado_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
@@ -130,10 +130,8 @@ int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes,
 	cuerpo_del_mensaje.bytes_a_escribir = (char*) buffer;
 	cuerpo_del_mensaje.tamano = bytes;
 
-	_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
+	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
 			sizeof(pedido_de_escribir_en_memoria_t), &m_devolucion);
-
-	return OK;
 }
 
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res) {
