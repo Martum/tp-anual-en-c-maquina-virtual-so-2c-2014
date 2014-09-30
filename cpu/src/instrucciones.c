@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <commons/collections/dictionary.h>
+#include "tcb-funciones.h"
 #include "instrucciones.h"
 #include "sockets.h"
 
