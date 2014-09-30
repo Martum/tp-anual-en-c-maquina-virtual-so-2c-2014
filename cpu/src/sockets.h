@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include "hu4sockets/sockets.h"
@@ -33,12 +34,65 @@ resultado_t conectar_con_memoria();
  * 		FALLO_CONEXION si hubo problemas al conectarse
  */
 resultado_t conectar_con_kernel();
+
+/*
+ * @DESC: Le pide al kernel un tcb y guarda el tcb devuelto y su quantum y los parametros
+ * @RETURNS:
+ * 		OK si pudo conectarse y trajo bien los datos
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si hubo problemas al traer los datos
+ */
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
+
+/*
+ * @DESC: Le pide a memoria que cree un nuevo segmento
+ * @RETURNS:
+ * 		OK si pudo conectarse y se creo el nuevo segemento
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si hubo problemas al crear el segmento
+ */
 direccion crear_segmento(tcb_t* tcb, uint32_t bytes);
+
+/*
+ * @DESC: Le pide a memoria que destruya un segmento
+ * @RETURNS:
+ * 		OK si pudo conectarse y se destruyo el segmento
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si hubo problemas al destruir el segmento
+ */
 int32_t destruir_segmento(tcb_t* tcb, direccion direccion);
+
+/*
+ * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
+ * @RETURNS:
+ * 		OK si pudo conectarse y trajo bien los datos
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si hubo problemas al traer los datos
+ */
 int32_t leer_de_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
+
+/*
+ * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
+ * @RETURNS:
+ * 		OK si pudo conectarse y escribir los datos
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si hubo problemas al escribir los datos
+ */
 int32_t escribir_en_memoria(tcb_t* tcb, direccion direccion, uint32_t bytes, void* buffer);
+
+/*
+ * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
+ * @RETURNS:
+ * 		OK si pudo conectarse y mandar bien el mensaje
+ * 		FALLO_CONEXION si hubo problemas al conectarse
+ * 		todo si no pudo mandar bien el mensaje
+ */
 int32_t informar_a_kernel_de_finalizacion(tcb_t* tcb, resultado_t res);
+
+/*
+ * @DESC: Cierra los puertos de memoria y kernel
+ * @RETURNS:
+ */
 void cerrar_puertos();
 
 /*
