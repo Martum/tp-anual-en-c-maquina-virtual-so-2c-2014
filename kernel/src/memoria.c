@@ -6,7 +6,3 @@
  */
 #include "memoria.h"
 
-direccion crear_segmento(uint32_t pid, uint32_t tamanio)
-{
-
-}
