@@ -4,17 +4,23 @@
  *  Created on: 17/09/2014
  *      Author: utnso
  */
+#include <stdlib.h>
+#include "estructuras.h"
+#include <stdio.h>
 
 #include "consola_msp.h"
 #include "configuraciones.h"
+#include "algoritmos_sustitucion.h"
 
 int main(void){
 	cargar_configuraciones();
 	inicializar_lista_procesos();
 	inicializar_lista_marcos();
+	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
 	return 0;
 }
+
 // PRUEBAS
 
 /*

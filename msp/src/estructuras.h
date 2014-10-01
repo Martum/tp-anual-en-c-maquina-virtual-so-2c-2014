@@ -18,12 +18,8 @@ typedef struct pagina {
 	bool tiene_marco;
 	bool en_disco;
 	uint32_t marco;
-	char* ultima_vez_usada;
-	int bit_referencia; /* el bit de referencia se pone en 1 cuando
-						*	se accede (leer, escribir, ..),
-						*	se pone en 0 cuando se pasa por esa pagina en
-						*	el algoritmo de sustitucion clock
-						*/
+	uint64_t id_en_indice;
+	int bit_referencia;
 } pagina_t;
 
 typedef struct segmento {
