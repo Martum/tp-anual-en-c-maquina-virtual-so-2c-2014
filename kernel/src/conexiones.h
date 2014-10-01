@@ -19,7 +19,7 @@ typedef struct conexion_cpu {
 typedef struct conexion_procesos {
 	sock_t* socket;
 	uint32_t pid;
-} conexion_procesos_t;
+} conexion_proceso_t;
 
 /**
  * Agrega una conexion a la lista de conexiones sin clasificacion
@@ -64,5 +64,26 @@ void* esperar_conexiones_unasigned(void* p);
  * Inicializa las listas para las conexiones
  */
 void inicializar_listas_conexiones(void);
+
+/**
+ * Busca el sock_t* correspondiende a un proceso por su PID
+ *
+ * @RETURNS: El sock_t* del proceso identificado por el PID
+ */
+sock_t* buscar_conexion_proceso_por_pid(uint32_t pid);
+
+/**
+ * Busca el sock_t* correspondiente a un proceso por su FD
+ *
+ * @RETURNS: El sock_t* del proceso correspondiente al FD
+ */
+sock_t* buscar_conexion_proceso_por_fd(int32_t fd);
+
+/**
+ * Busca el sock_t* correspondiente a una conexion por su FD
+ *
+ * @RETURNS: El sock_t* de la conexion unasigned correspondiente al FD
+ */
+sock_t* buscar_conexion_unasigned_por_fd(int32_t fd);
 
 #endif /* CONEXIONES_H_ */

@@ -53,7 +53,7 @@ void _agregar_conexion_a_unasigned(sock_t* conexion)
 
 void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 {
-	conexion_procesos_t* conexion_proceso = malloc(sizeof(conexion_procesos_t));
+	conexion_proceso_t* conexion_proceso = malloc(sizeof(conexion_proceso_t));
 	conexion_proceso->pid = pid;
 	conexion_proceso->socket = conexion;
 
@@ -119,6 +119,8 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
+
+	//TODO: Remover conexion de UNASIGNED (NO REMOVER EL FD QUE ESE QUEDA IGUAL)
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
@@ -238,3 +240,56 @@ void inicializar_listas_conexiones(void)
 	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
 }
 
+sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
+{
+	// Funcion de busqueda
+	bool buscar_proceso(void* elemento)
+	{
+		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
+
+		return conexion->pid == pid;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&mutex_conexiones_procesos);
+	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
+	pthread_mutex_unlock(&mutex_conexiones_procesos);
+
+	return conexion->socket;
+}
+
+sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
+{
+	// Funcion de busqueda
+	bool buscar_proceso(void* elemento)
+	{
+		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
+
+		return conexion->socket->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&mutex_conexiones_procesos);
+	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
+	pthread_mutex_unlock(&mutex_conexiones_procesos);
+
+	return conexion->socket;
+}
+
+sock_t* buscar_conexion_unasigned_por_fd(int32_t fd)
+{
+	// Funcion de busqueda
+	bool buscar_unasigned(void* elemento)
+	{
+		sock_t* conexion = (sock_t*) elemento;
+
+		return conexion->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&mutex_conexiones_unsigned);
+	sock_t* conexion = list_find(conexiones_unasigned, buscar_unasigned);
+	pthread_mutex_unlock(&mutex_conexiones_unsigned);
+
+	return conexion;
+}
