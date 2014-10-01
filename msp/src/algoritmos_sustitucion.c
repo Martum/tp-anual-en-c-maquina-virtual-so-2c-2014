@@ -54,7 +54,7 @@ uint32_t lru(){
 	}
 	t_list* paginas_con_marco =	list_filter(get_indice_paginas(),(void*) _paginas_con_marco);
 	// saco el ultimo elemento (el menos usado recientemente)
-	pagina_t* pag = list_get(get_indice_paginas(),list_size(get_indice_paginas())-1);
+	pagina_t* pag = list_get(paginas_con_marco,list_size(paginas_con_marco)-1);
 	uint32_t resultado = pag->marco;
 	free(pag);
 	free(paginas_con_marco);
@@ -66,7 +66,7 @@ void ubico_al_principio(pagina_t* pag){
 	list_add_in_index(get_indice_paginas(),0,pagina3);
 }
 // VIEJO LRU
-/*
+
 uint32_t lru(){
 	// filtro a las paginas segun las que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
