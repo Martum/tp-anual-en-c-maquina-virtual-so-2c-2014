@@ -9,7 +9,7 @@
 #define LSTESTADOS_H_
 
 #include <commons/collections/queue.h>
-#include "estructuras.h"
+#include <hu4sockets/tcb.h>
 
 /**
  * Inicializa las colas del Planificador

@@ -5,15 +5,16 @@
  *      Author: utnso
  */
 
+#include "consola.h"
 
 void pedido_leer_int(uint32_t pid){
-	codear;
+	//TODO: codear;
 }
 
 void pedido_leer_cadena(uint32_t pid){
-	codear;
+	//TODO: codear;
 }
 
 void escribir(uint32_t pid, uint16_t identificador_tipo){
-	codear;
+	//TODO: codear;
 }

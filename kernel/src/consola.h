@@ -8,7 +8,7 @@
 #ifndef CONSOLA_H_
 #define CONSOLA_H_
 
-#include "estructuras.h"
+#include <stdint.h>
 
 /**
  * recibe por parámetro el identificador de tipo y retorna un puntero a lo que leyó por consola.
