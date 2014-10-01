@@ -9,7 +9,7 @@
 #include <hu4sockets/mensajes.h>
 #include <hu4sockets/tcb.h>
 
-
+//TODO: Ver estos warnings
 tcb_t* _planificar(){
 
 	tcb_t* tcb;
@@ -28,7 +28,7 @@ tcb_t* _planificar(){
 respuesta_de_nuevo_tcb_t  _proximo_tcb(){
 
 	//TODO: Cuidado aca, no se como lo usas, pero en el 99% de los casos
-	// las variables tienen que crearse con malloc
+	// las variables tienen que crearse con malloc, sobre todo si la devolves
 
 	respuesta_de_nuevo_tcb_t rta;
 

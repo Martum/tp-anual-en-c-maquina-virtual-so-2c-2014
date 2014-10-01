@@ -184,7 +184,7 @@ void _atender_socket_cpu(int32_t fd)
 }
 
 // Corre en un THREAD
-void* esperar_conexiones_entrantes_y_procesos(void* un_ente)
+void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 {
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);

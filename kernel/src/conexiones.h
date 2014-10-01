@@ -54,16 +54,16 @@ void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds);
 void _conexion_unasigned_lista(sock_t* conexion);
 
 /**
- * Espera y despacha conexiones entrantes.
+ * Escucha por conexiones entrantes nuevas y por contactos desde procesos
  * Se corre en un thread inmortal (o inmoral?).
  */
-void* esperar_conexiones(void* p);
+void* escuchar_conexiones_entrantes_y_procesos(void* p);
 
 /**
- * Espera a que las conexiones sin asignacion hagan el primer contacto
+ * Escucha las solicitudes de los CPUs
  * Se corre en un thread inmortal.
  */
-void* esperar_conexiones_unasigned(void* p);
+void* escuchar_cpus(void* p);
 
 /**
  * Inicializa las listas para las conexiones
