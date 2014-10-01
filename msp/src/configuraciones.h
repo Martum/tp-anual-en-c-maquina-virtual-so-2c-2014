@@ -23,5 +23,6 @@ uint32_t get_memoria_fisica_total();
 void inicializar_lista_procesos();
 void inicializar_lista_marcos();
 void inicializar_memoria_fisica_total();
+void inicializar_indice_paginas();
 
 #endif /* CONFIGURACIONES_H_ */
