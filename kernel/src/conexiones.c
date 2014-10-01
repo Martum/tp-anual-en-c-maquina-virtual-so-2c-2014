@@ -115,15 +115,17 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
 	int32_t pid = procesar_nuevo_programa(codigo_beso, longitud);
 
+	// Buscamos en la lista de conexiones el sock_t
+	sock_t* conexion = buscar_conexion_unasigned_por_fd(fd);
+
 	// Si no se pudo alocar memoria, notificamos al proceso
 	if(pid == -1)
 	{	// TODO: HACER ESTA FUNCION
 		_informar_no_hay_memoria(fd);
+		_eliminar_conexion_de_unasigned(conexion->fd);
+		FD_CLR(conexion->fd, &readfds_unasigned_procesos);
 		return;
 	}
-
-	// Buscamos en la lista de conexiones el sock_t
-	sock_t* conexion = buscar_conexion_unasigned_por_fd(fd);
 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
@@ -151,10 +153,15 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
+		// Creamos copia del puntero al mensaje y a su len
+		char* copia_mensaje = mensaje + tamanio_flagt();
+		uint32_t copia_len = len - tamanio_flagt();
+
+		// Vemos que operacion es
 		switch(cod_op)
 		{
 			case NUEVO_PROGRAMA:
-				_procesar_conexion_nuevo_programa(mensaje + tamanio_flagt(), len - tamanio_flagt(), fd);
+				_procesar_conexion_nuevo_programa(copia_mensaje, copia_len, fd);
 				break;
 
 
