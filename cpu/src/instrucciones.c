@@ -2,17 +2,17 @@
 
 resultado_t load(tcb_t* tcb) {
 	char registro;
-	obtener_registro(*tcb, &registro);
+	obtener_registro(tcb, &registro);
 	int32_t numero;
-	obtener_numero(*tcb, &numero);
+	obtener_numero(tcb, &numero);
 	return actualizar_valor_en_registro(tcb, registro, numero);
 }
 
 resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 	char registro1;
-	obtener_registro(*tcb, &registro1);
+	obtener_registro(tcb, &registro1);
 	char registro2;
-	obtener_registro(*tcb, &registro2);
+	obtener_registro(tcb, &registro2);
 	int32_t valor;
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
@@ -24,11 +24,11 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 
 resultado_t setm(tcb_t* tcb) {
 	int32_t numero;
-	obtener_numero(*tcb, &numero);
+	obtener_numero(tcb, &numero);
 	char registro1;
-	obtener_registro(*tcb, &registro1);
+	obtener_registro(tcb, &registro1);
 	char registro2;
-	obtener_registro(*tcb, &registro2);
+	obtener_registro(tcb, &registro2);
 	int32_t valor1;
 	int32_t valor2;
 
@@ -54,9 +54,9 @@ resultado_t setm(tcb_t* tcb) {
 
 resultado_t movr(tcb_t* tcb) {
 	char registro1;
-	obtener_registro(*tcb, &registro1);
+	obtener_registro(tcb, &registro1);
 	char registro2;
-	obtener_registro(*tcb, &registro2);
+	obtener_registro(tcb, &registro2);
 	int32_t valor;
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
@@ -68,9 +68,9 @@ resultado_t movr(tcb_t* tcb) {
 
 resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
 	char registro1;
-	obtener_registro(*tcb, &registro1);
+	obtener_registro(tcb, &registro1);
 	char registro2;
-	obtener_registro(*tcb, &registro2);
+	obtener_registro(tcb, &registro2);
 	int32_t valor1;
 	int32_t valor2;
 
@@ -131,7 +131,7 @@ resultado_t divr(tcb_t* tcb) {
 
 resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	char registro;
-	obtener_registro(*tcb, &registro);
+	obtener_registro(tcb, &registro);
 	int32_t valor;
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
@@ -162,9 +162,9 @@ resultado_t decr(tcb_t* tcb) {
 resultado_t _funcion_comparacion(tcb_t* tcb,
 		int32_t comparador(int32_t, int32_t)) {
 	char registro1;
-	obtener_registro(*tcb, &registro1);
+	obtener_registro(tcb, &registro1);
 	char registro2;
-	obtener_registro(*tcb, &registro2);
+	obtener_registro(tcb, &registro2);
 	int32_t valor1;
 	int32_t valor2;
 
@@ -213,7 +213,7 @@ resultado_t cleq(tcb_t* tcb) {
 
 resultado_t _goto(tcb_t* tcb) {
 	char registro;
-	obtener_registro(*tcb, &registro);
+	obtener_registro(tcb, &registro);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
 
@@ -226,7 +226,7 @@ resultado_t _goto(tcb_t* tcb) {
 
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t offset;
-	obtener_numero(*tcb, &offset);
+	obtener_numero(tcb, &offset);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 	int32_t valor;
 
@@ -267,9 +267,9 @@ resultado_t flcl(tcb_t* tcb) {
 
 resultado_t shif(tcb_t* tcb) {
 	int32_t bytes;
-	obtener_numero(*tcb, &bytes);
+	obtener_numero(tcb, &bytes);
 	char registro;
-	obtener_registro(*tcb, &registro);
+	obtener_registro(tcb, &registro);
 	int32_t valor_de_registro, valor_de_registro_desplazado;
 
 	if (obtener_valor_de_registro(tcb, 'a', &valor_de_registro)

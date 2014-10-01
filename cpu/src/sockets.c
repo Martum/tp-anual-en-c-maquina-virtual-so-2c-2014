@@ -46,25 +46,19 @@ resultado_t _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
 
 	// ANALIZO LA RESPUESTA
 	memcpy(m_devolucion, mensaje_recibido, len_devolucion);
-
 	return OK;
 }
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
-
-	// ARMO EL MENSAJE
 	pedido_t cuerpo_del_mensaje;
 	respuesta_de_nuevo_tcb_t m_devolucion;
 	cuerpo_del_mensaje.flag = MANDA_TCB;
-
-	// ENVIO Y RECIBO
 
 	if (_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
 			&m_devolucion) == FALLO_COMUNICACION) {
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-	// DESARMO EL MENSAJE
 	*tcb = m_devolucion.tcb;
 	*quantum = m_devolucion.quantum;
 
@@ -72,7 +66,6 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 }
 
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion) {
-	// ARMO EL MENSAJE
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	respuesta_de_crear_segmento_t m_devolucion;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
@@ -91,7 +84,6 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion) 
 }
 
 resultado_t destruir_segmento(direccion pid, direccion direccion) {
-	// ARMO EL MENSAJE
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	respuesta_t m_devolucion;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
@@ -150,20 +142,19 @@ void cerrar_puertos() {
 	cerrar_liberar(kernel);
 }
 
-void _obtener(tcb_t tcb, void* memoria_a_actualizar, uint32_t tamano_de_memoria,
-		uint32_t bytes_a_leer) {
-	leer_de_memoria(tcb.pid, tcb.pc, tamano_de_memoria, memoria_a_actualizar);
-	tcb.pc = tcb.pc + bytes_a_leer;
+void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer) {
+	leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar);
+	tcb->pc = tcb->pc + bytes_a_leer;
 }
 
-void obtener_instruccion(tcb_t tcb, instruccion_t* instruccion) {
-	_obtener(tcb, instruccion, sizeof(instruccion), 4);
+void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion) {
+	_obtener(tcb, instruccion, sizeof(instruccion));
 }
 
-void obtener_registro(tcb_t tcb, char* registro) {
-	_obtener(tcb, registro, sizeof(char), 1);
+void obtener_registro(tcb_t* tcb, char* registro) {
+	_obtener(tcb, registro, sizeof(char));
 }
 
-void obtener_numero(tcb_t tcb, int32_t* numero) {
-	_obtener(tcb, numero, sizeof(int32_t), 4);
+void obtener_numero(tcb_t* tcb, int32_t* numero) {
+	_obtener(tcb, numero, sizeof(int32_t));
 }
