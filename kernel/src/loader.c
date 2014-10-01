@@ -58,6 +58,8 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 	tcb->base_stack = direccion_segmento_stack;
 	tcb->cursor_stack = direccion_segmento_stack;
 
+	//TODO: ENVIAR CODIGO BESO A LA MEMORIA ACA!
+
 	// Agregamos el TCB a rdy
 	agregar_a_ready(tcb);
 

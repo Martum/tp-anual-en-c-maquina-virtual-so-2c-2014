@@ -65,6 +65,22 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 }
 
+void _eliminar_conexion_de_unasigned(int32_t fd)
+{
+	bool buscar_unasigned(void* elemento)
+	{
+		sock_t* conexion = (sock_t*) elemento;
+
+		return conexion->fd == fd;
+	}
+
+	pthread_mutex_lock(&mutex_conexiones_unsigned);
+
+	list_remove_by_condition(conexiones_unasigned, buscar_unasigned);
+
+	pthread_mutex_unlock(&mutex_conexiones_unsigned);
+}
+
 void _agregar_conexion_a_cpu(sock_t* conexion)
 {
 	pthread_mutex_lock(&mutex_conexiones_cpu);
@@ -107,20 +123,13 @@ void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int
 	}
 
 	// Buscamos en la lista de conexiones el sock_t
-
-	// TODO: EXTRAER ESTE CODIGO EN UNA FUNCION DE BUSCAR
-	bool buscar_unasigned(void* elemento)
-	{
-		sock_t* conexion = (sock_t*) elemento;
-
-		return conexion->fd == fd;
-	}
-	sock_t* conexion = list_find(conexiones_unasigned, buscar_unasigned);
+	sock_t* conexion = buscar_conexion_unasigned_por_fd(fd);
 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	//TODO: Remover conexion de UNASIGNED (NO REMOVER EL FD QUE ESE QUEDA IGUAL)
+	// Removemos la conexion de la lista de unasigneds
+	_eliminar_conexion_de_unasigned(conexion->fd);
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron

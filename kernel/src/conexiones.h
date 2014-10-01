@@ -37,6 +37,11 @@ void _agregar_conexion_a_cpu(sock_t*);
 void _agregar_conexion_a_procesos(sock_t*, uint32_t pid);
 
 /**
+ * Elimina una conexion de la lista de unasigned (no elimina el FD del SET)
+ */
+void _eliminar_conexion_de_unasigned(int32_t fd);
+
+/**
  * Procesa los fds del poll de conexiones unasigned
  */
 void _procesar_poll_unasigned(struct pollfd* poll_fds, uint32_t cantidad_fds);
