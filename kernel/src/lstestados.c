@@ -19,7 +19,7 @@ t_queue* ready[2];
 t_queue* exit;
 t_list* exec;
 t_list* block;
-t_dictionary* dic_colas_espera_recursos = dictionary_create();
+t_dictionary* dic_colas_espera_recursos;
 t_queue* syscalls;
 
 void inicializar_listas_estados_tcb() {
@@ -33,7 +33,9 @@ void inicializar_listas_estados_tcb() {
 	exec = list_create();
 	block = list_create();
 
-	// FALTA INICIALIZAR EL DICCIONARIO DE COLAS DE ESPERA DE RECURSOS.
+	dic_colas_espera_recursos = dictionary_create();
+
+	//TODO: FALTA INICIALIZAR EL DICCIONARIO DE COLAS DE ESPERA DE RECURSOS.
 }
 
 
@@ -64,8 +66,8 @@ void agregar_a_exit(tcb_t* tcb) {
 
 void quitar_de_exec(tcb_t* tcb) {
 
-	bool _igual_tid(tcb_t* elemento){
-		return tcb->tid == elemento->tid;
+	bool _igual_tid(void* elemento){
+		return tcb->tid == ((tcb_t*) elemento)->tid;
 	}
 
 	list_remove_by_condition(exec, _igual_tid );
@@ -73,8 +75,8 @@ void quitar_de_exec(tcb_t* tcb) {
 
 void quitar_de_block(tcb_t* tcb) {
 
-	bool _igual_tid(tcb_t* elemento){
-		return tcb->tid == elemento->tid;
+	bool _igual_tid(void* elemento){
+		return tcb->tid == ((tcb_t*) elemento)->tid;
 	}
 
 	list_remove_by_condition(block, _igual_tid);

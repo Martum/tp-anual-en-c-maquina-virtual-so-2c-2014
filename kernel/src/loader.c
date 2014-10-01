@@ -80,7 +80,8 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 	return tcb;
 }
 
-int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
+// DEPRECATED
+/*int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 {
 	tcb_hijo->tamanio_codigo = tcb_padre->tamanio_codigo;
 
@@ -99,4 +100,4 @@ int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 
 	return -1;
 
-}
+}*/
