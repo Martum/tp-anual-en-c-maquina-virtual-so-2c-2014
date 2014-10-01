@@ -1,13 +1,7 @@
-/*
- * instrucciones.h
- *
- *  Created on: 15/09/2014
- *      Author: utnso
- */
-
-#include <stdint.h>
+#include <stdlib.h>
 #include <commons/collections/dictionary.h>
-#include "hu4sockets/tcb.h"
+#include "tcb-funciones.h"
+#include "sockets.h"
 
 #ifndef INSTRUCCIONES_H_
 #define INSTRUCCIONES_H_

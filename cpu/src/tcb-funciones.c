@@ -1,11 +1,11 @@
 /*
- * tcb.c
+ * tcb-funciones.c
  *
- *  Created on: 27/09/2014
+ *  Created on: 29/09/2014
  *      Author: utnso
  */
-#include "tcb.h"
-#include <stdlib.h>
+
+#include "tcb-funciones.h"
 
 tcb_t* crear_tcb() {
 	return (tcb_t*) malloc(sizeof(tcb_t));
@@ -64,17 +64,15 @@ resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
 	return NO_ENCONTRO_EL_REGISTRO;
 }
 
-int32_t actualizar_pc(tcb_t* tcb, int32_t valor) {
+resultado_t actualizar_pc(tcb_t* tcb, int32_t valor) {
 	tcb->pc = valor;
 	return OK;
 }
 
-int32_t obtener_pc(tcb_t* tcb) {
+resultado_t obtener_pc(tcb_t* tcb) {
 	return tcb->pc;
 }
 
 direccion obtener_base_de_codigo(tcb_t* tcb) {
 	return tcb->base_codigo;
 }
-
-

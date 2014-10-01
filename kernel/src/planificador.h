@@ -12,9 +12,8 @@
 
 void _planificar();
 
-
 // RETORNA EL PROXIMO TCB A EJECUTAR.
-respuesta_de_nuevo_tcb_t  devolver_tcb();
+respuesta_de_nuevo_tcb_t  _proximo_tcb();
 
 // RECIBE UN TCB DEL CPU Y HACE LO QUE CORRESPONDA SEGUN EL RESULTADO.
 void recibir_tcb(resultado_t resultado, tcb_t* tcb);

@@ -6,7 +6,6 @@
  */
 
 #include "mensajes.h"
-#include <string.h>
 
 flag_t codigo_operacion(char* mensaje)
 {

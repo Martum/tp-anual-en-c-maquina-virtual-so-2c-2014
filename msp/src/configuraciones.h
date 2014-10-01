@@ -7,7 +7,9 @@
 
 #ifndef CONFIGURACIONES_H_
 #define CONFIGURACIONES_H_
+
 #include <stdint.h>
+#include <commons/collections/list.h>
 
 void cargar_configuraciones();
 uint32_t puerto();
@@ -21,7 +23,6 @@ uint32_t get_memoria_fisica_total();
 void inicializar_lista_procesos();
 void inicializar_lista_marcos();
 void inicializar_memoria_fisica_total();
-
-//char * arma_direccion(uint16_t, int);
+void inicializar_indice_paginas();
 
 #endif /* CONFIGURACIONES_H_ */
