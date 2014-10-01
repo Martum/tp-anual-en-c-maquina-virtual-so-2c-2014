@@ -7,7 +7,9 @@
 
 #include "planificador.h"
 #include <hu4sockets/mensajes.h>
+#include <hu4sockets/tcb.h>
 
+//TODO: Ver todos los WARNINGS de este archivo
 tcb_t* _planificar(){
 
 	tcb_t* tcb;
@@ -24,6 +26,8 @@ tcb_t* _planificar(){
 
 // FALTA EL WRAPPER QUE LLAME A ESTA FUNCION Y LE MANDE A LA CPU LO QUE RETORNA ESTO.
 respuesta_de_nuevo_tcb_t  devolver_tcb(){
+	//TODO: Cuidado aca, no se como lo usas, pero en el 99% de los casos
+	// las variables tienen que crearse con malloc
 	respuesta_de_nuevo_tcb_t rta;
 
 	rta.tcb = _planificar();
