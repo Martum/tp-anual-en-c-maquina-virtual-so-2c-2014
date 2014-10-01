@@ -37,7 +37,10 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 
 	// Si no hay memoria devolvemos
 	if(resultado == -1)
+	{
+		free(tcb);
 		return -1;
+	}
 
 	// Pido segmento stack
 	direccion direccion_segmento_stack;
@@ -47,6 +50,7 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 	if(resultado == -1)
 	{
 		destruir_segmento(tcb->pid, direccion_segmento_codigo);
+		free(tcb);
 		return -1;
 	}
 
