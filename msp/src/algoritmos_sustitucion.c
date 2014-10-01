@@ -62,12 +62,9 @@ uint32_t lru(){
 }
 
 void ubico_al_principio(pagina_t* pag){
-	int i = 0;
-	while(list_get(get_indice_paginas(),i) != pag){
-		i++;
-	}
-	list_remove(get_indice_paginas(),i);
+	list_remove(get_indice_paginas(),pag->id_en_indice);
 	list_add_in_index(get_indice_paginas(),0,pag);
+	pag->id_en_indice = 0;
 }
 
 void set_bit_referencia(pagina_t* pag){
