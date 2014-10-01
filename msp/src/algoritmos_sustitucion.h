@@ -17,7 +17,10 @@ uint32_t clock();
 
 /* el algoritmo lru requiere que cada vez que una pagina se lee o se escribe
  * se la ubique al principio de la lista indice de paginas
+ * (USAR FUNCION ubico_al_principio(*pagina))
  */
 uint32_t lru();
+
+void ubico_al_principio(pagina_t*);
 
 #endif /* ALGORITMOS_SUSTITUCION_H_ */

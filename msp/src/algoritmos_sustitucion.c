@@ -60,13 +60,17 @@ uint32_t lru(){
 	free(paginas_con_marco);
 	return resultado;
 }
-/*
+
 void ubico_al_principio(pagina_t* pag){
-	list_remove(get_indice_paginas(),1);
-	list_add_in_index(get_indice_paginas(),0,pagina3);
+	int i = 0;
+	while(list_get(get_indice_paginas(),i) != pag){
+		i++;
+	}
+	list_remove(get_indice_paginas(),i);
+	list_add_in_index(get_indice_paginas(),0,pag);
 }
 // VIEJO LRU
-
+/*
 uint32_t lru(){
 	// filtro a las paginas segun las que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
