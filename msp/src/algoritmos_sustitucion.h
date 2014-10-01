@@ -12,6 +12,7 @@
 
 /* el algoritmo clock requiere que cada vez que una pagina se lee o se escribe
  * su bit_referencia de su lugar en el indice de paginas se setee en 1
+ * (USAR FUNCION set_bit_referencia(*pagina))
  */
 uint32_t clock();
 
@@ -20,6 +21,8 @@ uint32_t clock();
  * (USAR FUNCION ubico_al_principio(*pagina))
  */
 uint32_t lru();
+
+void set_bit_referencia(pagina_t*);
 
 void ubico_al_principio(pagina_t*);
 

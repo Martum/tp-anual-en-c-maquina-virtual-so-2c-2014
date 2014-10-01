@@ -69,6 +69,11 @@ void ubico_al_principio(pagina_t* pag){
 	list_remove(get_indice_paginas(),i);
 	list_add_in_index(get_indice_paginas(),0,pag);
 }
+
+void set_bit_referencia(pagina_t* pag){
+	pag->bit_referencia = 1;
+}
+
 // VIEJO LRU
 /*
 uint32_t lru(){
