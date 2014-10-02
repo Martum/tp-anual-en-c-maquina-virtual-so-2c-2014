@@ -40,7 +40,7 @@ void destruir_segmento(uint32_t pid, direccion base){
 	quitar_segmento(proceso,base);
 }
 
-/*
+
 //Falta lanzar mensaje de error y leer la memoria propiamente dicha
 uint32_t leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 {
@@ -58,7 +58,7 @@ uint32_t leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio
 	return 0;
 }
 
-*/
+
 
 
 

@@ -12,6 +12,8 @@
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
 
+
+
 int main(void){
 	cargar_configuraciones();
 	inicializar_lista_procesos();

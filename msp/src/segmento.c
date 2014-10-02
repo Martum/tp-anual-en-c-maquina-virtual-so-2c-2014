@@ -67,3 +67,10 @@ direccion direccion_virtual_base_de_segmento(uint16_t id_segmento){
 	// retorno la direccion (32 bits)
 	return (id_segmento<<20) | (primer_pagina<<8)| desplazamiento_a_la_base;
 }
+
+segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t id_segmento, t_list* lista_segmentos){
+	bool _es_segmento(segmento_t* segmento) {
+		return segmento->id==id_segmento;
+	}
+	return list_find(lista_segmentos, (void*) _es_segmento);
+}
