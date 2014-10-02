@@ -11,6 +11,7 @@
 #include <commons/collections/list.h>
 #include "segmento.h"
 #include "configuraciones.h"
+#include "swapping.h"
 
 void crear_pagina(segmento_t *segmento){
 	pagina_t *pagina = malloc(sizeof(pagina_t));
@@ -35,4 +36,28 @@ direccion direccion_virtual_segmento_base_pagina(uint16_t id_segmento, uint16_t 
 {
 	uint32_t base_segmento=direccion_virtual_base_de_segmento(id_segmento);
 	return base_segmento | (id_pagina<<8);
+}
+
+pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* lista_paginas){
+	bool _es_pagina(pagina_t* pagina) {
+		return pagina->id==id_pagina;
+	}
+	return list_find(lista_paginas, (void*) _es_pagina);
+}
+
+void asignar_marco(pagina_t* pagina)
+{
+	marco_t* marco = buscar_marco_libre();
+	//Si no hay ningun marco libre, swappeo
+	//Si hay un marco libre, se lo asigno a la pagina
+	if(marco == NULL)
+	{
+		swap_in(pagina);
+	}
+	else
+	{
+		pagina->marco=marco->id;
+		pagina->tiene_marco= true;
+	}
+
 }

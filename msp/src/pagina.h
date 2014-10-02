@@ -13,12 +13,13 @@
 #include <stdbool.h>
 #include "segmento.h"
 #include "estructuras.h"
+#include "marco.h"
 
 
 void crear_pagina(segmento_t*);
 void agregar_pagina_a_segmento(segmento_t*, pagina_t*);
 direccion direccion_virtual_segmento_base_pagina(uint16_t id_segmento, uint16_t id_pagina);
-pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t, t_list*);
-
+pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* lista_paginas);
+void asignar_marco(pagina_t*);
 
 #endif /* PAGINA_H_ */

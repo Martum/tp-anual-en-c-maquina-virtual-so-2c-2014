@@ -25,3 +25,11 @@ marco_t* buscar_marco_segun_id(uint32_t id){
 	}
 	return list_find(get_lista_marcos(), (void*) _is_marco);
 }
+
+marco_t* buscar_marco_libre()
+{
+	bool _is_marco_libre(marco_t *m) {
+			return m->ocupado == false;
+		}
+		return list_find(get_lista_marcos(), (void*) _is_marco_libre);
+}

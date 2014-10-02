@@ -16,7 +16,7 @@
 #include <string.h>
 #include <commons/string.h>
 
-/*
+
 uint32_t pid;
 uint16_t id_segmento;
 
@@ -37,7 +37,8 @@ void swap_in(pagina_t* pagina)
 
 uint32_t liberar_un_marco()
 {
-	pagina_t* pagina_a_liberar= realizar_algoritmo_swapping(pid, id_segmento);
+	//SACAR EL NULL
+	pagina_t* pagina_a_liberar=NULL;//= realizar_algoritmo_swapping(pid, id_segmento);
 
 
 	uint32_t direccion_marco_a_liberar= pagina_a_liberar->marco;
@@ -49,10 +50,10 @@ uint32_t liberar_un_marco()
 	return direccion_marco_a_liberar;
 }
 
-
-pagina_t* realizar_algoritmo_swapping(uint32_t pid, uint16_t id_segmento)
+//Debe deolver una pagina*
+int realizar_algoritmo_swapping(uint32_t pid, uint16_t id_segmento)
 {
-
+	return 0;
 
 }
 
@@ -90,12 +91,13 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 
 	pagina->tiene_marco=false;
 
-	txt_close_file(path);
+	txt_close_file(arch);
 
 }
 
-void swap_out(pagina_t* pagina)
+void swap_out(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina)
 {
 
 }
-*/
+
+
