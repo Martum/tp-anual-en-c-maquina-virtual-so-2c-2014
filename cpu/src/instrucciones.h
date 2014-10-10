@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <commons/collections/dictionary.h>
 #include "tcb-funciones.h"
 #include "sockets.h"

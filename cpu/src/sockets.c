@@ -26,10 +26,10 @@ resultado_t conectar_con_kernel() {
 }
 
 resultado_t _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
-		uint32_t tamano, void* m_devolucion) {
+		uint32_t tamano, void* respuesta) {
 	// ARMO EL CHORRO DE BYTES
-	char* mensaje_a_enviar = malloc(sizeof(tamano));
-	uint32_t len_a_enviar = sizeof(tamano);
+	char* mensaje_a_enviar = malloc(tamano);
+	uint32_t len_a_enviar = tamano;
 	memcpy(mensaje_a_enviar, cuerpo_del_mensaje, len_a_enviar);
 
 	// ENVIO EL MENSAJE
@@ -44,70 +44,70 @@ resultado_t _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
 	if (recibir(socket, &mensaje_recibido, &len_devolucion) == -1)
 		return FALLO_COMUNICACION;
 
-	// ANALIZO LA RESPUESTA
-	memcpy(m_devolucion, mensaje_recibido, len_devolucion);
+	// DEVUELVE LA RESPUESTA
+	memcpy(respuesta, mensaje_recibido, len_devolucion);
 	return OK;
 }
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	pedido_t cuerpo_del_mensaje;
-	respuesta_de_nuevo_tcb_t m_devolucion;
+	respuesta_de_nuevo_tcb_t respuesta;
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
 	if (_enviar_y_recibir(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
-			&m_devolucion) == FALLO_COMUNICACION) {
+			&respuesta) == FALLO_COMUNICACION) {
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-	*tcb = m_devolucion.tcb;
-	*quantum = m_devolucion.quantum;
+	*tcb = respuesta.tcb;
+	*quantum = respuesta.quantum;
 
 	return OK;
 }
 
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion) {
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
-	respuesta_de_crear_segmento_t m_devolucion;
+	respuesta_de_crear_segmento_t respuesta;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.tamano = bytes;
 
 	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_crear_segmento_t), &m_devolucion)
+			sizeof(pedido_de_crear_segmento_t), &respuesta)
 			== FALLO_COMUNICACION) {
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
-	*direccion = m_devolucion.direccion_virtual;
+	*direccion = respuesta.direccion_virtual;
 
 	return OK;
 }
 
 resultado_t destruir_segmento(direccion pid, direccion direccion) {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
-	respuesta_t m_devolucion;
+	respuesta_t respuesta;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 
 	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_destruir_segmento_t), &m_devolucion);
+			sizeof(pedido_de_destruir_segmento_t), &respuesta);
 }
 
 resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 		void* buffer) {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
-	respuesta_de_leer_de_memoria_t m_devolucion;
+	respuesta_de_leer_de_memoria_t respuesta;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
 	cuerpo_del_mensaje.tamano = bytes;
 
 	if (_enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_leer_de_memoria_t), &m_devolucion))
+			sizeof(pedido_de_leer_de_memoria_t), &respuesta))
 		return FALLO_LECTURA_DE_MEMORIA;
 
-	memcpy(buffer, m_devolucion.bytes_leido, sizeof(m_devolucion.bytes_leido));
+	memcpy(buffer, respuesta.bytes_leido, sizeof(respuesta.bytes_leido));
 
 	return OK;
 }
@@ -115,7 +115,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 		uint32_t bytes, void* buffer) {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
-	respuesta_t m_devolucion;
+	respuesta_t respuesta;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
@@ -123,18 +123,18 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	cuerpo_del_mensaje.tamano = bytes;
 
 	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
-			sizeof(pedido_de_escribir_en_memoria_t), &m_devolucion);
+			sizeof(pedido_de_escribir_en_memoria_t), &respuesta);
 }
 
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res) {
 	pedido_con_resultado_t cuerpo_del_mensaje;
-	respuesta_t m_devolucion;
+	respuesta_t respuesta;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.tcb = tcb;
 	cuerpo_del_mensaje.resultado = res;
 
 	return _enviar_y_recibir(kernel, &cuerpo_del_mensaje,
-			sizeof(pedido_con_resultado_t), &m_devolucion);
+			sizeof(pedido_con_resultado_t), &respuesta);
 }
 
 void cerrar_puertos() {

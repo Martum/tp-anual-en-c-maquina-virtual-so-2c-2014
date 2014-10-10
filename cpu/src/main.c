@@ -28,6 +28,7 @@ int32_t main(int32_t argc, char** argv) {
 			printf("ERROR FALTAL: Fallo pedido de tcb\n");
 			return 0;
 		}
+		printf("%d", quantum);
 		break;
 
 		if (quantum < -1 || quantum == 0) {
