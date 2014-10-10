@@ -23,7 +23,6 @@ resultado_t _goto(tcb_t* tcb);
 resultado_t jmpz(tcb_t* tcb);
 resultado_t jpnz(tcb_t* tcb);
 resultado_t inte(tcb_t* tcb);
-resultado_t flcl(tcb_t* tcb);
 resultado_t shif(tcb_t* tcb);
 resultado_t nopp(tcb_t* tcb);
 resultado_t push(tcb_t* tcb);

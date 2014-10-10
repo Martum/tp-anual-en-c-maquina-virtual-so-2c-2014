@@ -402,11 +402,6 @@ resultado_t inte(tcb_t* tcb) {
 	return OK; // TODO implementar system calls
 }
 
-resultado_t flcl(tcb_t* tcb) { // TODO eliminar flcl
-	// fue deprecada
-	return OK;
-}
-
 /*
  * 	SHIF [Número], [Registro]
  *
@@ -654,7 +649,6 @@ void cargar_diccionario_de_instrucciones(t_dictionary* dic) {
 	dictionary_put(dic, "JMPZ", jmpz);
 	dictionary_put(dic, "JPNZ", jpnz);
 	dictionary_put(dic, "INTE", inte);
-	dictionary_put(dic, "FLCL", flcl);
 	dictionary_put(dic, "SHIF", shif);
 	dictionary_put(dic, "NOPP", nopp);
 	dictionary_put(dic, "PUSH", push);
