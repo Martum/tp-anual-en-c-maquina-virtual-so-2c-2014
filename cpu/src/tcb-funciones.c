@@ -69,10 +69,10 @@ resultado_t actualizar_pc(tcb_t* tcb, int32_t valor) {
 	return OK;
 }
 
-resultado_t obtener_pc(tcb_t* tcb) {
-	return tcb->pc;
+void obtener_pc(tcb_t* tcb, direccion* pc) {
+	*pc = tcb->pc;
 }
 
-direccion obtener_base_de_codigo(tcb_t* tcb) {
-	return tcb->base_codigo;
+void obtener_base_de_codigo(tcb_t* tcb, direccion* base) {
+	*base = tcb->base_codigo;
 }

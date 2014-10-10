@@ -310,12 +310,13 @@ resultado_t cleq(tcb_t* tcb) {
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
-resultado_t _goto(tcb_t* tcb) { //TODO refactorear con _funcion_de_salto
+resultado_t _goto(tcb_t* tcb) {
 	char registro;
 	int32_t valor;
-	direccion base_de_codigo = obtener_base_de_codigo(tcb);
+	direccion base_de_codigo;
 
 	obtener_registro(tcb, &registro);
+	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
 			== NO_ENCONTRO_EL_REGISTRO)
@@ -327,7 +328,9 @@ resultado_t _goto(tcb_t* tcb) { //TODO refactorear con _funcion_de_salto
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t offset;
 	int32_t valor;
-	direccion base_de_codigo = obtener_base_de_codigo(tcb);
+	direccion base_de_codigo;
+
+	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	obtener_numero(tcb, &offset);
 	obtener_valor_de_registro(tcb, 'a', &valor);
