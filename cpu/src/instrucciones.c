@@ -1,5 +1,8 @@
 #include "instrucciones.h"
 
+/*
+ * 	Carga en el registro el número dado
+ */
 resultado_t load(tcb_t* tcb) {
 	char registro;
 	obtener_registro(tcb, &registro);
@@ -8,6 +11,9 @@ resultado_t load(tcb_t* tcb) {
 	return actualizar_valor_en_registro(tcb, registro, numero);
 }
 
+/*
+ * 	Carga en el primer registro el valor de memoria apuntado por el segundo registro
+ */
 resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 	char registro1;
 	obtener_registro(tcb, &registro1);
@@ -22,6 +28,10 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
+/*
+ * 	Pone tantos bytes desde el segundo registro hacia la memoria
+ * 		apuntada por el primer registro
+ */
 resultado_t setm(tcb_t* tcb) {
 	int32_t numero;
 	obtener_numero(tcb, &numero);
@@ -51,7 +61,9 @@ resultado_t setm(tcb_t* tcb) {
 
 	return OK;
 }
-
+/*
+ *	Copia el valor del segundo registro hacia el primero
+ */
 resultado_t movr(tcb_t* tcb) {
 	char registro1;
 	obtener_registro(tcb, &registro1);
@@ -84,6 +96,10 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) 
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
 }
 
+/*
+ * 	Suma el valor del primer registro con el del segundo registro.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t addr(tcb_t* tcb) {
 
 	int32_t sumar(int32_t valor1, int32_t valor2) {
@@ -93,6 +109,10 @@ resultado_t addr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, sumar);
 }
 
+/*
+ * 	Resta el valor del primer registro con el del segundo registro.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t subr(tcb_t* tcb) {
 
 	int32_t restar(int32_t valor1, int32_t valor2) {
@@ -102,6 +122,10 @@ resultado_t subr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, restar);
 }
 
+/*
+ * 	Multiplica el valor del primer registro con el del segundo registro.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t mulr(tcb_t* tcb) {
 
 	int32_t multiplicar(int32_t valor1, int32_t valor2) {
@@ -111,6 +135,11 @@ resultado_t mulr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, multiplicar);
 }
 
+/*
+ * 	Obtiene el resto de la división el valor del primer registro
+ * 		con el del segundo registro.
+ * 	El resultado de la operación se almacena en elregistro A.
+ */
 resultado_t modr(tcb_t* tcb) {
 
 	int32_t modulo(int32_t valor1, int32_t valor2) {
@@ -120,6 +149,10 @@ resultado_t modr(tcb_t* tcb) {
 	return _funcion_operacion(tcb, modulo);
 }
 
+/*
+ * 	Divide el valor del primer registro con el del segundo registro.
+ * 	El resultado de la operación se almacena en elregistro A.
+ */
 resultado_t divr(tcb_t* tcb) {
 
 	int32_t dividir(int32_t valor1, int32_t valor2) {
@@ -141,6 +174,9 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
 }
 
+/*
+ * 	Incrementa una unidad al valor del registro.
+ */
 resultado_t incr(tcb_t* tcb) {
 
 	int32_t sumar_1(int32_t valor) {
@@ -150,6 +186,9 @@ resultado_t incr(tcb_t* tcb) {
 	return _funcion_incr_decr(tcb, sumar_1);
 }
 
+/*
+ * 	Incrementa una unidad al valor del registro.
+ */
 resultado_t decr(tcb_t* tcb) {
 
 	int32_t restar_1(int32_t valor) {
@@ -178,6 +217,12 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
 }
 
+/*
+ * 	Compara si el valor del primer registro es igual al del segundo.
+ * 		De ser verdadero, se almacena el valor 1.
+ * 		De lo contrario el valor 0.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t comp(tcb_t* tcb) {
 
 	int32_t comparador(int32_t valor1, int32_t valor2) {
@@ -189,6 +234,12 @@ resultado_t comp(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
+/*
+ * 	Compara si el valor del primer registro es mayor o igual al del segundo.
+ * 		De ser verdadero, se almacena el valor 1.
+ * 		De lo contrario el valor 0.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t cgeq(tcb_t* tcb) {
 
 	int32_t comparador(int32_t valor1, int32_t valor2) {
@@ -200,6 +251,12 @@ resultado_t cgeq(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
+/*
+ * 	Compara si el valor del primer registro es menor o igual al del segundo.
+ * 		De ser verdadero, se almacena el valor 1.
+ * 		De lo contrario el valor 0.
+ * 	El resultado de la operación se almacena en el registro A.
+ */
 resultado_t cleq(tcb_t* tcb) {
 
 	int32_t comparador(int32_t valor1, int32_t valor2) {
@@ -211,6 +268,10 @@ resultado_t cleq(tcb_t* tcb) {
 	return _funcion_comparacion(tcb, comparador);
 }
 
+/*
+ * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro.
+ * 	El valor es el desplazamiento desde el inicio del programa.
+ */
 resultado_t _goto(tcb_t* tcb) {
 	char registro;
 	obtener_registro(tcb, &registro);
@@ -238,19 +299,29 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	return actualizar_pc(tcb, base_de_codigo + offset);
 }
 
+/*
+ * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro,
+ * 		solo si el valor del registro A es 0.
+ * 	El valor es el desplazamiento desde el inicio del programa.
+ */
 resultado_t jmpz(tcb_t* tcb) {
 
 	int32_t condicion(int32_t valor) {
-		return valor != 0;
+		return valor != 0; //TODO es al revez
 	}
 
 	return _funcion_de_salto(tcb, condicion);
 }
 
+/*
+ * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro,
+ * 		solo si el valor del registro A no es 0.
+ * 	El valor es el desplazamiento desde el inicio del programa.
+ */
 resultado_t jpnz(tcb_t* tcb) {
 
 	int32_t condicion(int32_t valor) {
-		return valor == 0;
+		return valor == 0; //TODO es al revez
 	}
 
 	return _funcion_de_salto(tcb, condicion);
@@ -291,10 +362,31 @@ resultado_t nopp(tcb_t* tcb) {
 }
 
 resultado_t push(tcb_t* tcb) {
+	int32_t bytes;
+	obtener_numero(tcb, &bytes);
+	char registro;
+	obtener_registro(tcb, &registro);
+	int32_t valor;
+	direccion direccion;
+	char buffer[bytes];
+
+	obtener_valor_de_registro(tcb, registro, &valor);
+	direccion = (uint32_t) valor;
+
+	leer_de_memoria(tcb->pid, direccion, bytes, buffer);
+
+	escribir_en_memoria(tcb->pid, tcb->cursor_stack, bytes, buffer);
+
+	tcb->cursor_stack = tcb->cursor_stack + bytes;
+
 	return OK;
 }
 
 resultado_t take(tcb_t* tcb) {
+	int32_t numero;
+	obtener_numero(tcb, &numero);
+	char registro;
+	obtener_registro(tcb, &registro);
 	return OK;
 }
 
