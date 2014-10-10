@@ -403,22 +403,25 @@ resultado_t flcl(tcb_t* tcb) { // TODO eliminar flcl
  * 		De lo contrario hacia la izquierda.
  */
 resultado_t shif(tcb_t* tcb) {
-	int32_t bytes; // TODO cambiar nombre por uno mas descriptivo
+	int32_t bits_a_desplazar; // TODO cambiar nombre por uno mas descriptivo
 	char registro;
-	int32_t valor_de_registro, valor_de_registro_desplazado;
+	int32_t valor, valor_desplazado;
 
-	obtener_numero(tcb, &bytes);
+	obtener_numero(tcb, &bits_a_desplazar);
 	obtener_registro(tcb, &registro);
-	obtener_valor_de_registro(tcb, 'a', &valor_de_registro);
 
-	if (bytes > 0) {
-		valor_de_registro_desplazado = valor_de_registro >> bytes;
+	if (obtener_valor_de_registro(tcb, registro, &valor)
+			== NO_ENCONTRO_EL_REGISTRO)
+		return NO_ENCONTRO_EL_REGISTRO;
+
+	if (bits_a_desplazar > 0) {
+		valor_desplazado = valor >> bits_a_desplazar;
 	} else {
-		valor_de_registro_desplazado = valor_de_registro << bytes;
+		valor_desplazado = valor << bits_a_desplazar;
 	}
 
 	return actualizar_valor_en_registro(tcb, registro,
-			valor_de_registro_desplazado);
+			valor_desplazado);
 }
 
 /*
