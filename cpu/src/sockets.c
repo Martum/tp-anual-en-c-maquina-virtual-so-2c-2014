@@ -133,6 +133,12 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res) {
 	cuerpo_del_mensaje.tcb = tcb;
 	cuerpo_del_mensaje.resultado = res;
 
+	if (res == EXCEPCION_POR_INTERRUPCION) {
+		int32_t valor;
+		obtener_numero(&tcb, &valor);
+		cuerpo_del_mensaje.direccion = (uint32_t) valor;
+	}
+
 	return _enviar_y_recibir(kernel, &cuerpo_del_mensaje,
 			sizeof(pedido_con_resultado_t), &respuesta);
 }

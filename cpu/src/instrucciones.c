@@ -399,7 +399,7 @@ resultado_t jpnz(tcb_t* tcb) {
  * 	Notar que el hilo en cuestión debe bloquearse tras una interrupción.
  */
 resultado_t inte(tcb_t* tcb) {
-	return OK; // TODO implementar system calls
+	return EXCEPCION_POR_INTERRUPCION;
 }
 
 /*

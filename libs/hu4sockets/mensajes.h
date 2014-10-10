@@ -53,6 +53,7 @@ typedef struct pedido_con_resultado {
 	flag_t flag;
 	uint32_t resultado;
 	tcb_t tcb;
+	direccion direccion;
 } pedido_con_resultado_t;
 
 typedef struct respuesta_de_nuevo_tcb {
