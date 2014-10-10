@@ -29,8 +29,8 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
@@ -53,11 +53,11 @@ resultado_t setm(tcb_t* tcb) {
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	direccion direccion1 = valor1;
 	direccion direccion2 = valor2;
@@ -85,8 +85,8 @@ resultado_t movr(tcb_t* tcb) {
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
@@ -101,11 +101,11 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) 
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
 }
@@ -177,13 +177,26 @@ resultado_t modr(tcb_t* tcb) {
  * 	Divide el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en elregistro A.
  */
-resultado_t divr(tcb_t* tcb) { //  todo agregar finalizacion de ejecucion si valor2 es 0
+resultado_t divr(tcb_t* tcb) {
+	char registro1;
+	char registro2;
+	int32_t valor1;
+	int32_t valor2;
 
-	int32_t dividir(int32_t valor1, int32_t valor2) {
-		return valor1 / valor2;
-	}
+	obtener_registro(tcb, &registro1);
+	obtener_registro(tcb, &registro2);
 
-	return _funcion_operacion(tcb, dividir);
+	if (obtener_valor_de_registro(tcb, registro1, &valor1)
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+	if (obtener_valor_de_registro(tcb, registro2, &valor2)
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+
+	if (valor2 == 0)
+		return EXCEPCION_DIVISION_POR_CERO;
+
+	return actualizar_valor_en_registro(tcb, 'a', valor1 / valor2);
 }
 
 resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
@@ -193,8 +206,8 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 	obtener_registro(tcb, &registro);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
 }
@@ -238,11 +251,11 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
 }
@@ -319,8 +332,8 @@ resultado_t _goto(tcb_t* tcb) {
 	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_pc(tcb, base_de_codigo + valor);
 }
@@ -330,10 +343,9 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	int32_t valor;
 	direccion base_de_codigo;
 
-	obtener_base_de_codigo(tcb, &base_de_codigo);
-
 	obtener_numero(tcb, &offset);
 	obtener_valor_de_registro(tcb, 'a', &valor);
+	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (condicion(valor))
 		return OK;
@@ -403,7 +415,7 @@ resultado_t flcl(tcb_t* tcb) { // TODO eliminar flcl
  * 		De lo contrario hacia la izquierda.
  */
 resultado_t shif(tcb_t* tcb) {
-	int32_t bits_a_desplazar; // TODO cambiar nombre por uno mas descriptivo
+	int32_t bits_a_desplazar;
 	char registro;
 	int32_t valor, valor_desplazado;
 
@@ -411,8 +423,8 @@ resultado_t shif(tcb_t* tcb) {
 	obtener_registro(tcb, &registro);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	if (bits_a_desplazar > 0) {
 		valor_desplazado = valor >> bits_a_desplazar;
@@ -420,8 +432,7 @@ resultado_t shif(tcb_t* tcb) {
 		valor_desplazado = valor << bits_a_desplazar;
 	}
 
-	return actualizar_valor_en_registro(tcb, registro,
-			valor_desplazado);
+	return actualizar_valor_en_registro(tcb, registro, valor_desplazado);
 }
 
 /*
