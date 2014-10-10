@@ -1,7 +1,5 @@
 #include "instrucciones.h"
 
-// TODO sacar todas las comprobaciones de errores innecesarias
-
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -332,9 +330,8 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 
 	obtener_numero(tcb, &offset);
+	obtener_valor_de_registro(tcb, 'a', &valor);
 
-	if (obtener_valor_de_registro(tcb, 'a', &valor) == NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
 	if (condicion(valor))
 		return OK;
 
@@ -409,10 +406,7 @@ resultado_t shif(tcb_t* tcb) {
 
 	obtener_numero(tcb, &bytes);
 	obtener_registro(tcb, &registro);
-
-	if (obtener_valor_de_registro(tcb, 'a', &valor_de_registro)
-			== NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+	obtener_valor_de_registro(tcb, 'a', &valor_de_registro);
 
 	if (bytes > 0) {
 		valor_de_registro_desplazado = valor_de_registro >> bytes;
@@ -495,8 +489,7 @@ resultado_t xxxx(tcb_t* tcb) {
 resultado_t malc(tcb_t* tcb) {
 	int32_t bytes;
 
-	if (obtener_valor_de_registro(tcb, 'a', &bytes) == NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+	obtener_valor_de_registro(tcb, 'a', &bytes);
 
 	direccion direccion;
 	if (crear_segmento(tcb->pid, bytes, &direccion)
@@ -516,8 +509,7 @@ resultado_t malc(tcb_t* tcb) {
 resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada sea por instruccion MALC
 	int32_t valor;
 
-	if (obtener_valor_de_registro(tcb, 'a', &valor) == NO_ENCONTRO_EL_REGISTRO)
-		return NO_ENCONTRO_EL_REGISTRO;
+	obtener_valor_de_registro(tcb, 'a', &valor);
 
 	direccion direccion = valor;
 
