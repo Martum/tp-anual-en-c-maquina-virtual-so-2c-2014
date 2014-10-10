@@ -533,6 +533,8 @@ resultado_t xxxx(tcb_t* tcb) {
 	return TERMINO;
 }
 
+// todo verificar que las instrucciones de sistema solo las pueda ejecutar el tcb k
+
 /*
  * 	MALC
  *
@@ -580,7 +582,7 @@ resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada s
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t innn(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_INGRESO_TEXTO;
 }
 
 /*
@@ -592,7 +594,7 @@ resultado_t innn(tcb_t* tcb) {
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t innc(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_INGRESO_TEXTO_CON_TAMANO;
 }
 
 /*
@@ -602,7 +604,7 @@ resultado_t innc(tcb_t* tcb) {
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t outn(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_IMPRIMIR_TEXTO;
 }
 
 /*
@@ -613,7 +615,7 @@ resultado_t outn(tcb_t* tcb) {
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t outc(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_IMPRIMIR_TEXTO_CON_TAMANO;
 }
 
 /*
