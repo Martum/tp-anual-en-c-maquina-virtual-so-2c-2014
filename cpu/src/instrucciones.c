@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+// TODO sacar todas las comprobaciones de errores innecesarias
+
 /*
  * 	Carga en el registro el número dado
  */
@@ -272,7 +274,7 @@ resultado_t cleq(tcb_t* tcb) {
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
-resultado_t _goto(tcb_t* tcb) {
+resultado_t _goto(tcb_t* tcb) { //TODO refactorear con _funcion_de_salto
 	char registro;
 	obtener_registro(tcb, &registro);
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
@@ -327,17 +329,33 @@ resultado_t jpnz(tcb_t* tcb) {
 	return _funcion_de_salto(tcb, condicion);
 }
 
+/*
+ * 	Interrumpe la ejecución del programa para ejecutar la rutina del kernel
+ * 		que se encuentra en la posición apuntada por la direccion.
+ * 	El ensamblador admite ingresar una cadena indicando el nombre,
+ * 		que luego transformará en el número correspondiente.
+ * 	Los posibles valores son
+ * 		“MALC”, “FREE”,	“INNN”,	“INNC”, “OUTN”,
+ * 		“OUTC”, “BLOK”, “WAKE”, “CREA”, “JOIN”.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ * 	Notar que el hilo en cuestión debe bloquearse tras una interrupción.
+ */
 resultado_t inte(tcb_t* tcb) {
-	return OK;
+	return OK; // TODO implementar system calls
 }
 
-resultado_t flcl(tcb_t* tcb) {
+resultado_t flcl(tcb_t* tcb) { // TODO eliminar flcl
 	// fue deprecada
 	return OK;
 }
 
+/*
+ * 	Desplaza los bits del registro, tantas veces como se indique en el número.
+ * 		De ser desplazamiento positivo, se considera hacia la derecha.
+ * 		De lo contrario hacia la izquierda.
+ */
 resultado_t shif(tcb_t* tcb) {
-	int32_t bytes;
+	int32_t bytes; // TODO cambiar nombre por uno mas descriptivo
 	obtener_numero(tcb, &bytes);
 	char registro;
 	obtener_registro(tcb, &registro);
@@ -357,11 +375,18 @@ resultado_t shif(tcb_t* tcb) {
 			valor_de_registro_desplazado);
 }
 
+/*
+ * 	Consume un ciclo del CPU sin hacer nada
+ */
 resultado_t nopp(tcb_t* tcb) {
 	return OK;
 }
 
-resultado_t push(tcb_t* tcb) {
+/*
+ * 	Apila los primeros bytes, indicado por el número, del registro hacia el stack.
+ * 	Modifica el valor del registro cursor de stack de forma acorde.
+ */
+resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 	int32_t bytes;
 	obtener_numero(tcb, &bytes);
 	char registro;
@@ -382,7 +407,11 @@ resultado_t push(tcb_t* tcb) {
 	return OK;
 }
 
-resultado_t take(tcb_t* tcb) {
+/*
+ * 	Desapila los primeros bytes, indicado por el número, del registro hacia el stack.
+ * 	Modifica el valor del registro cursor de stack de forma acorde.
+ */
+resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 	int32_t numero;
 	obtener_numero(tcb, &numero);
 	char registro;
@@ -390,10 +419,19 @@ resultado_t take(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Finaliza la ejecución.
+ */
 resultado_t xxxx(tcb_t* tcb) {
 	return TERMINO;
 }
 
+/*
+ *	Reserva una cantidad de memoria especificada por el registro A.
+ *	La direccion de esta se almacena en el registro A.
+ *	Crea en la MSP un nuevo segmento del tamaño especificado
+ *		asociado al programa en ejecución.
+ */
 resultado_t malc(tcb_t* tcb) {
 	int32_t bytes;
 
@@ -408,7 +446,12 @@ resultado_t malc(tcb_t* tcb) {
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
 }
 
-resultado_t _free(tcb_t* tcb) {
+/*
+ * 	Libera la memoria apuntada por el registro A.
+ * 	Solo se podrá liberar memoria alocada por la instrucción de MALC.
+ * 	Destruye en la MSP el segmento indicado en el registro A.
+ */
+resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada sea por instruccion MALC
 	int32_t valor;
 
 	if (obtener_valor_de_registro(tcb, 'a', &valor) == NO_ENCONTRO_EL_REGISTRO)
@@ -419,34 +462,88 @@ resultado_t _free(tcb_t* tcb) {
 	return destruir_segmento(tcb->pid, direccion);
 }
 
+/*
+ * 	Pide por consola del programa que se ingrese un número,
+ * 		con signo entre –2.147.483.648 y 2.147.483.647.
+ * 	El mismo será almacenado en el registro A.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ */
 resultado_t innn(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Pide por consola del programa que se ingrese una cadena no más larga de lo indicado
+ * 		por el registro B.
+ * 	La misma será almacenada en la posición de memoria apuntada por el registro A.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ */
 resultado_t innc(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Imprime por consola del programa el número, con signo almacenado en el registro A.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ */
 resultado_t outn(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Imprime por consola del programa una cadena de tamaño indicado por el registro B
+ * 		que se encuentra en la direccion apuntada por el registro A.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ */
 resultado_t outc(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Crea un hilo, hijo del TCB que ejecutó la llamada al sistema correspondiente.
+ * 	El nuevo hilo tendrá su Program Counter apuntado al número almacenado en el registro B.
+ * 	El identificador del nuevo hilo se almacena en el registro A.
+ * 	Para lograrlo debe:
+ * 		generar un nuevo TCB como copia del TCB actual,
+ * 		asignarle un nuevo TID correlativo al actual,
+ * 		cargar en el Puntero de Instrucción la rutina donde comenzará a ejecutar el
+ * 			nuevo hilo (registro B),
+ * 		pasarlo de modo Kernel a modo Usuario,
+ * 		duplicar el segmento de stack desde la base del stack hasta el cursor del stack,
+ * 		asignar la base y cursor de forma acorde
+ * 			(tal que la diferencia entre cursor y base se mantenga igual),
+ * 		luego invocar al servicio correspondiente en el proceso Kernel
+ * 			con el TCB recién generado.
+ * 	De no tener espacio para crear el segmento de stack, deberá abortar el programa.
+ */
 resultado_t crea(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
+ * 		el hilo con el identificador almacenado en el registro A haya finalizado.
+ * 	Invoca al servicio correspondiente en el proceso Kernel.
+ */
 resultado_t join(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
+ * 		el recurso apuntado por B se libere.
+ * 	La evaluación y decisión de si el recurso está libre o no es hecha por
+ * 		la llamada al sistema WAIT pre-compilada.
+ */
 resultado_t blok(tcb_t* tcb) {
 	return OK;
 }
 
+/*
+ * 	Desbloquea al primer programa bloqueado por el recurso apuntado por B.
+ * 	La evaluación y decisión de si el recurso está libre o no es hecha por
+ * 		la llamada al sistema SIGNAL pre-compilada.
+ */
 resultado_t wake(tcb_t* tcb) {
 	return OK;
 }
