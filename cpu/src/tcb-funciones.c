@@ -36,7 +36,7 @@ resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t nume
 		tcb->a = numero;
 		return OK;
 	}
-	return NO_ENCONTRO_EL_REGISTRO;
+	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
 
 resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
@@ -61,7 +61,7 @@ resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
 		*numero = tcb->e;
 		return OK;
 	}
-	return NO_ENCONTRO_EL_REGISTRO;
+	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
 
 resultado_t actualizar_pc(tcb_t* tcb, int32_t valor) {

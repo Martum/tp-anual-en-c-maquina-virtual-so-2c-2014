@@ -442,27 +442,49 @@ resultado_t nopp(tcb_t* tcb) {
 /*
  *  PUSH [Número], [Registro]
  *
- * 	Apila los primeros bytes, indicado por el número, del registro hacia el stack.
+ * 	Apila los primeros bytes, indicado por el número, del valor del registro hacia el stack.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
 resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
-	int32_t bytes;
-	char registro;
-	char buffer[bytes];
-	int32_t valor;
-	direccion direccion;
 
-	obtener_numero(tcb, &bytes);
+	/*
+	 CASO DE USO:
+
+	 El valor del registro es un int, por ejemplo
+	 0x072A4704 	(expresado en hexa)
+	 120211204 	(expresado en decimal)
+	 00000111 00101010 01000111 00000100 (expresado en binario)
+
+	 El primer byte es 07, 7, 00000111
+	 El segundo byte es 2A, 42, 00101010
+	 El tercer byte es 47, 71, 01000111
+	 El cuarto byte es 04, 4, 00000100
+
+	 El numero de bytes a guardar es 2
+
+	 Lo que va a hacer push es guardar en la pila primero 07 y despues 2A
+
+	 */
+
+	// todo validar que numero no sea mayor que 4
+	char registro;
+	int32_t cantidad_de_bytes;
+	int32_t valor;
+
+	obtener_numero(tcb, &cantidad_de_bytes);
 	obtener_registro(tcb, &registro);
 	obtener_valor_de_registro(tcb, registro, &valor);
 
-	direccion = (uint32_t) valor;
+	unsigned char bytes[4];
 
-	leer_de_memoria(tcb->pid, direccion, bytes, buffer);
+	bytes[0] = (valor >> 24) & 0xFF;
+	bytes[1] = (valor >> 16) & 0xFF;
+	bytes[2] = (valor >> 8) & 0xFF;
+	bytes[3] = valor & 0xFF;
 
-	escribir_en_memoria(tcb->pid, tcb->cursor_stack, bytes, buffer);
+	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
 
-	tcb->cursor_stack = tcb->cursor_stack + bytes;
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes; // todo pensar si hace falta encapsular
 
 	return OK;
 }
@@ -470,14 +492,35 @@ resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 /*
  * 	TAKE [Número], [Registro]
  *
- * 	Desapila los primeros bytes, indicado por el número, del registro hacia el stack.
+ * 	Desapila los primeros bytes, indicado por el número, del stack hacia el registro.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
 resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
-	int32_t numero;
-	obtener_numero(tcb, &numero);
+	// todo validar que numero no sea mayor que 4
 	char registro;
+	int32_t cantidad_de_bytes;
+	int32_t valor;
+
+	obtener_numero(tcb, &cantidad_de_bytes);
 	obtener_registro(tcb, &registro);
+
+	unsigned char bytes[4];
+
+	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
+
+	tcb->cursor_stack = tcb->cursor_stack - cantidad_de_bytes; // todo pensar si hace falta encapsular
+
+	unsigned char buffer[4];
+
+	buffer[0] = bytes[3];
+	buffer[1] = bytes[2];
+	buffer[2] = bytes[1];
+	buffer[3] = bytes[0];
+
+	valor = *(int32_t *) buffer;
+
+	actualizar_valor_en_registro(tcb, registro, valor);
+
 	return OK;
 }
 
