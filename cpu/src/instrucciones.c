@@ -3,6 +3,8 @@
 // TODO sacar todas las comprobaciones de errores innecesarias
 
 /*
+ * 	LOAD [Registro], [Numero]
+ *
  * 	Carga en el registro el número dado
  */
 resultado_t load(tcb_t* tcb) {
@@ -14,6 +16,8 @@ resultado_t load(tcb_t* tcb) {
 }
 
 /*
+ * 	GETM [Registro], [Registro]
+ *
  * 	Carga en el primer registro el valor de memoria apuntado por el segundo registro
  */
 resultado_t getm(tcb_t* tcb) { // creo que no esta bien
@@ -31,6 +35,8 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 }
 
 /*
+ * 	SETM [Numero], [Registro], [Registro]
+ *
  * 	Pone tantos bytes desde el segundo registro hacia la memoria
  * 		apuntada por el primer registro
  */
@@ -64,6 +70,8 @@ resultado_t setm(tcb_t* tcb) {
 	return OK;
 }
 /*
+ * 	MOVR [Registro], [Registro]
+ *
  *	Copia el valor del segundo registro hacia el primero
  */
 resultado_t movr(tcb_t* tcb) {
@@ -99,6 +107,8 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) 
 }
 
 /*
+ * 	ADDR [Registro], [Registro]
+ *
  * 	Suma el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
@@ -112,6 +122,8 @@ resultado_t addr(tcb_t* tcb) {
 }
 
 /*
+ * 	SUBR [Registro], [Registro]
+ *
  * 	Resta el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
@@ -125,6 +137,8 @@ resultado_t subr(tcb_t* tcb) {
 }
 
 /*
+ * 	MULR [Registro], [Registro]
+ *
  * 	Multiplica el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
@@ -138,6 +152,8 @@ resultado_t mulr(tcb_t* tcb) {
 }
 
 /*
+ * 	MODR [Registro], [Registro]
+ *
  * 	Obtiene el resto de la división el valor del primer registro
  * 		con el del segundo registro.
  * 	El resultado de la operación se almacena en elregistro A.
@@ -152,6 +168,8 @@ resultado_t modr(tcb_t* tcb) {
 }
 
 /*
+ * 	DIVR [Registro], [Registro]
+ *
  * 	Divide el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en elregistro A.
  */
@@ -177,6 +195,8 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
 }
 
 /*
+ * 	INCR [Registro]
+ *
  * 	Incrementa una unidad al valor del registro.
  */
 resultado_t incr(tcb_t* tcb) {
@@ -189,7 +209,9 @@ resultado_t incr(tcb_t* tcb) {
 }
 
 /*
- * 	Incrementa una unidad al valor del registro.
+ * 	DECR [Registro]
+ *
+ * 	Decrementa una unidad al valor del registro.
  */
 resultado_t decr(tcb_t* tcb) {
 
@@ -220,6 +242,8 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 }
 
 /*
+ * 	COMP [Registro], [Registro]
+ *
  * 	Compara si el valor del primer registro es igual al del segundo.
  * 		De ser verdadero, se almacena el valor 1.
  * 		De lo contrario el valor 0.
@@ -237,6 +261,8 @@ resultado_t comp(tcb_t* tcb) {
 }
 
 /*
+ * 	CGEQ [Registro], [Registro]
+ *
  * 	Compara si el valor del primer registro es mayor o igual al del segundo.
  * 		De ser verdadero, se almacena el valor 1.
  * 		De lo contrario el valor 0.
@@ -254,6 +280,8 @@ resultado_t cgeq(tcb_t* tcb) {
 }
 
 /*
+ * 	CLEQ [Registro], [Registro]
+ *
  * 	Compara si el valor del primer registro es menor o igual al del segundo.
  * 		De ser verdadero, se almacena el valor 1.
  * 		De lo contrario el valor 0.
@@ -271,6 +299,8 @@ resultado_t cleq(tcb_t* tcb) {
 }
 
 /*
+ * 	GOTO [Registro]
+ *
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
@@ -302,6 +332,8 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
 }
 
 /*
+ * 	JMPZ [Numero]
+ *
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro,
  * 		solo si el valor del registro A es 0.
  * 	El valor es el desplazamiento desde el inicio del programa.
@@ -316,6 +348,8 @@ resultado_t jmpz(tcb_t* tcb) {
 }
 
 /*
+ * 	JPNZ [Numero]
+ *
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro,
  * 		solo si el valor del registro A no es 0.
  * 	El valor es el desplazamiento desde el inicio del programa.
@@ -330,6 +364,8 @@ resultado_t jpnz(tcb_t* tcb) {
 }
 
 /*
+ * 	INTE [Direccion]
+ *
  * 	Interrumpe la ejecución del programa para ejecutar la rutina del kernel
  * 		que se encuentra en la posición apuntada por la direccion.
  * 	El ensamblador admite ingresar una cadena indicando el nombre,
@@ -350,6 +386,8 @@ resultado_t flcl(tcb_t* tcb) { // TODO eliminar flcl
 }
 
 /*
+ * 	SHIF [Número], [Registro]
+ *
  * 	Desplaza los bits del registro, tantas veces como se indique en el número.
  * 		De ser desplazamiento positivo, se considera hacia la derecha.
  * 		De lo contrario hacia la izquierda.
@@ -376,6 +414,8 @@ resultado_t shif(tcb_t* tcb) {
 }
 
 /*
+ * 	NOPP
+ *
  * 	Consume un ciclo del CPU sin hacer nada
  */
 resultado_t nopp(tcb_t* tcb) {
@@ -383,6 +423,8 @@ resultado_t nopp(tcb_t* tcb) {
 }
 
 /*
+ *  PUSH [Número], [Registro]
+ *
  * 	Apila los primeros bytes, indicado por el número, del registro hacia el stack.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
@@ -408,6 +450,8 @@ resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 }
 
 /*
+ * 	TAKE [Número], [Registro]
+ *
  * 	Desapila los primeros bytes, indicado por el número, del registro hacia el stack.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
@@ -420,6 +464,8 @@ resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 }
 
 /*
+ * 	XXXX
+ *
  * 	Finaliza la ejecución.
  */
 resultado_t xxxx(tcb_t* tcb) {
@@ -427,6 +473,8 @@ resultado_t xxxx(tcb_t* tcb) {
 }
 
 /*
+ * 	MALC
+ *
  *	Reserva una cantidad de memoria especificada por el registro A.
  *	La direccion de esta se almacena en el registro A.
  *	Crea en la MSP un nuevo segmento del tamaño especificado
@@ -447,6 +495,8 @@ resultado_t malc(tcb_t* tcb) {
 }
 
 /*
+ * 	FREE
+ *
  * 	Libera la memoria apuntada por el registro A.
  * 	Solo se podrá liberar memoria alocada por la instrucción de MALC.
  * 	Destruye en la MSP el segmento indicado en el registro A.
@@ -463,6 +513,8 @@ resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada s
 }
 
 /*
+ * 	INNN
+ *
  * 	Pide por consola del programa que se ingrese un número,
  * 		con signo entre –2.147.483.648 y 2.147.483.647.
  * 	El mismo será almacenado en el registro A.
@@ -473,6 +525,8 @@ resultado_t innn(tcb_t* tcb) {
 }
 
 /*
+ * 	INNC
+ *
  * 	Pide por consola del programa que se ingrese una cadena no más larga de lo indicado
  * 		por el registro B.
  * 	La misma será almacenada en la posición de memoria apuntada por el registro A.
@@ -483,6 +537,8 @@ resultado_t innc(tcb_t* tcb) {
 }
 
 /*
+ * 	OUTN
+ *
  * 	Imprime por consola del programa el número, con signo almacenado en el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
@@ -491,6 +547,8 @@ resultado_t outn(tcb_t* tcb) {
 }
 
 /*
+ * 	OUTC
+ *
  * 	Imprime por consola del programa una cadena de tamaño indicado por el registro B
  * 		que se encuentra en la direccion apuntada por el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
@@ -500,6 +558,8 @@ resultado_t outc(tcb_t* tcb) {
 }
 
 /*
+ * 	CREA
+ *
  * 	Crea un hilo, hijo del TCB que ejecutó la llamada al sistema correspondiente.
  * 	El nuevo hilo tendrá su Program Counter apuntado al número almacenado en el registro B.
  * 	El identificador del nuevo hilo se almacena en el registro A.
@@ -521,6 +581,8 @@ resultado_t crea(tcb_t* tcb) {
 }
 
 /*
+ * 	JOIN
+ *
  * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
  * 		el hilo con el identificador almacenado en el registro A haya finalizado.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
@@ -530,6 +592,8 @@ resultado_t join(tcb_t* tcb) {
 }
 
 /*
+ * 	BLOK
+ *
  * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
  * 		el recurso apuntado por B se libere.
  * 	La evaluación y decisión de si el recurso está libre o no es hecha por
@@ -540,6 +604,8 @@ resultado_t blok(tcb_t* tcb) {
 }
 
 /*
+ * 	WAKE
+ *
  * 	Desbloquea al primer programa bloqueado por el recurso apuntado por B.
  * 	La evaluación y decisión de si el recurso está libre o no es hecha por
  * 		la llamada al sistema SIGNAL pre-compilada.
