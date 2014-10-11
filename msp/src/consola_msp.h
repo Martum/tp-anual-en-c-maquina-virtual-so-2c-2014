@@ -13,23 +13,23 @@
 // IMPRIMIR = en log y en pantalla
 
 /*
- *  crear_segmento(pid, tamanio)
+ *  crear_segment(pid, tamanio)
  *
  * 	Crea un segmento para el proceso pid (usa la funcion de crear_segmento de la interfaz).
  *  Imprime la direccion base del segmento creado.
  */
-void crear_segmento(uint32_t, uint32_t);
+void crear_segment(uint32_t, uint32_t);
 
 /*
- * destruir_segmento(pid, base)
+ * destruir_segment(pid, base)
  *
  * Destruye el segmento que esta en la direccion virtual base de la tabla de
  * segmentos del proceso pid. (usa la funcion destruir_segmento de la interfaz)
  */
-void destruir_segmento(uint32_t, direccion);
+void destruir_segment(uint32_t, direccion);
 
 /*
- * escribir_memoria(pid, direccion_virtual, tamanio, texto)
+ * escribir_memo(pid, direccion_virtual, tamanio, texto)
  *
  * Escribe en el proceso pid hasta tamanio bytes del texto comenzando
  * en la direccion_virtual.
@@ -37,16 +37,16 @@ void destruir_segmento(uint32_t, direccion);
  * entonces retorna un error de violacion de segmento.
  * (usa la funcion escribir_memoria de la interfaz)
  */
-void escribir_memoria(uint32_t, direccion, uint32_t, char*);
+void escribir_memo(uint32_t, direccion, uint32_t, char*);
 
 /*
- * leer_memoria(pid, direccion_virtual, tamanio)
+ * leer_memo(pid, direccion_virtual, tamanio)
  *
  * Imprime los bytes comenzando desde la direccon_logica para un proceso pid.
  * La cantidad de bytes a leer sera igual a tamanio.
  * (usa la funcion leer_memoria de la interfaz)
  */
-void leer_memoria(uint32_t, direccion, uint32_t);
+void leer_memo(uint32_t, direccion, uint32_t);
 
 /*
  * tabla_segmentos()
