@@ -42,7 +42,7 @@ void destruir_segmento(uint32_t pid, direccion base){
 
 
 //Falta lanzar mensaje de error y leer la memoria propiamente dicha
-uint32_t leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
+char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 {
 	bool hay_error= memoria_invalida(pid, direccion_logica) || excede_limite_segmento(direccion_logica, tamanio);
 
