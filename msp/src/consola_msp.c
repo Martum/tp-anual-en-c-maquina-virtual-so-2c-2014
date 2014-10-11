@@ -40,7 +40,7 @@ void crear_segment(uint32_t pid, uint32_t tamanio){
 }
 
 void destruir_segment(uint32_t pid, direccion base){
-
+	destruir_segmento(pid, base);
 }
 
 void escribir_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio, char* texto){
