@@ -36,7 +36,7 @@ int main(void){
 void crear_segment(uint32_t pid, uint32_t tamanio){
 	direccion dir = crear_segmento(pid, tamanio);
 	printf("Direccion del segmento creado: %d", dir);
-	// logueo la direccion
+	// falta el logueo de la direccion
 }
 
 void destruir_segment(uint32_t pid, direccion base){
@@ -48,7 +48,9 @@ void escribir_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio, 
 }
 
 void leer_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio){
-
+	char* texto_leido = leer_memoria(pid, direccion_virtual, tamanio);
+	printf("Texto leido: %s", texto_leido);
+	// falta el logueo del texto leido
 }
 
 void tabla_segmentos(){
