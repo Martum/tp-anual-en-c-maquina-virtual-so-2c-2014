@@ -44,7 +44,7 @@ void destruir_segment(uint32_t pid, direccion base){
 }
 
 void escribir_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio, char* texto){
-
+	escribir_memoria(pid, direccion_virtual, texto, tamanio);
 }
 
 void leer_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio){
