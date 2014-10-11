@@ -55,6 +55,6 @@ uint32_t leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio)
  * Si se intenta escribir en una direccion invalida o se exceden los limites del segmento
  * entonces retorna un error de violacion de segmento.
  */
-uint32_t escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio);
+void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio);
 
 #endif /* INTERFAZ_H_ */
