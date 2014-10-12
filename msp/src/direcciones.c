@@ -55,3 +55,15 @@ bool excede_limite_segmento(uint32_t direccion_logica, uint32_t tamanio)
 	return (direccion_logica>>20) < ((direccion_logica+tamanio)>>20);
 }
 
+uint32_t obtener_marco(uint32_t pid, direccion direccion_logica)
+{
+	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+
+	segmento_t* segmento= buscar_segmento_segun_id_en_lista_segmentos(direccion_logica>>20, proceso->segmentos);
+
+	uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;
+	pagina_t* pagina = buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas);
+
+	return pagina->marco;
+}
+

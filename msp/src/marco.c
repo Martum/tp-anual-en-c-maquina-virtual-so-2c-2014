@@ -33,3 +33,10 @@ marco_t* buscar_marco_libre()
 		}
 		return list_find(get_lista_marcos(), (void*) _is_marco_libre);
 }
+
+
+char* leer_marco(uint32_t base_marco_datos,uint32_t tamanio)
+{
+
+	return 0;
+}
