@@ -6,5 +6,11 @@
  */
 
 #include "configuraciones.h"
+#include <commons/config.h>
 
+t_config* configs;
 
+void cargar_configuraciones(void)
+{
+	configs = config_create("config_consola.txt");
+}
