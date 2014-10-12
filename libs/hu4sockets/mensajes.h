@@ -13,16 +13,18 @@
 
 typedef enum {
 	// Mensajes de la Consola al Kernel: 101 -> 150
-	NUEVO_PROGRAMA = 101,
+	SOY_PROGRAMA = 101,	// Se envia al conectarse
 	TERMINAR_CONEXION = 102,
 
 	// Mensajes del Kernel a la Consola: 151 -> 200
+	BIENVENIDO = 151,		// Se envia como respuesta a SOY_PROGRAMA (101) o a SOY_CPU (204)
 
 
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
 	MANDA_TCB = 202,
 	TOMA_RESULTADO = 203,
+	SOY_CPU = 204,		// Se envia al conectarse
 
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,

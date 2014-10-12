@@ -26,7 +26,7 @@ pthread_mutex_t mutex_conexiones_procesos = PTHREAD_MUTEX_INITIALIZER;
 t_list* conexiones_procesos;
 
 // SET para conexiones unasigned y de procesos
-fd_set readfds_unasigned_procesos;
+fd_set readfds_procesos;
 
 //---------------------
 
@@ -46,7 +46,7 @@ void _agregar_conexion_a_unasigned(sock_t* conexion)
 	pthread_mutex_lock(&mutex_conexiones_unsigned);
 
 	list_add(conexiones_unasigned, conexion);
-	FD_SET(conexion->fd, &readfds_unasigned_procesos);
+	FD_SET(conexion->fd, &readfds_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_unsigned);
 }
@@ -60,7 +60,7 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_lock(&mutex_conexiones_procesos);
 
 	list_add(conexiones_procesos, conexion_proceso);
-	FD_SET(conexion->fd, &readfds_unasigned_procesos);
+	FD_SET(conexion->fd, &readfds_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 }
@@ -97,45 +97,100 @@ void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 		*mayor_fd = nuevo_fd;
 }
 
-sock_t* _procesar_nueva_conexion(sock_t* principal)
+void _dar_bienvenida(sock_t* nueva_conexion)
 {
-	sock_t* nueva_conexion = aceptar_conexion(principal);
+	// Respondemos con BIENVENIDA
+	char* respuesta = malloc(tamanio_flagt());
+	flag_t resp = BIENVENIDO;
+	uint32_t i = tamanio_flagt();
 
-	_agregar_conexion_a_unasigned(nueva_conexion);
+	memcpy(respuesta, &resp, tamanio_flagt());
 
-	return nueva_conexion;
+	enviar(nueva_conexion, respuesta, &i);
+
+	free(respuesta);
+
 }
 
 /**
  * Se procesa un nuevo programa.
  * Tenemos que llamar a los metodos del loader.h y agregar el fd en donde corresponda
  */
-void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, int32_t fd)
+void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, sock_t* conexion)
 {
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
 	int32_t pid = procesar_nuevo_programa(codigo_beso, longitud);
 
-	// Buscamos en la lista de conexiones el sock_t
-	sock_t* conexion = buscar_conexion_unasigned_por_fd(fd);
-
 	// Si no se pudo alocar memoria, notificamos al proceso
 	if(pid == -1)
 	{	// TODO: HACER ESTA FUNCION
-		_informar_no_hay_memoria(fd);
-		_eliminar_conexion_de_unasigned(conexion->fd);
-		FD_CLR(conexion->fd, &readfds_unasigned_procesos);
+		_informar_no_hay_memoria(conexion);
 		return;
 	}
 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
+}
 
-	// Removemos la conexion de la lista de unasigneds
-	_eliminar_conexion_de_unasigned(conexion->fd);
+/**
+ * Procesa un nueva conexion entrante
+ *
+ * @RETURNS: Si es un PROGRAMA devuelve 1; si es un CPU devuelve 2.
+ * 			Deja en nueva_conexion el socket
+ */
+int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
+{
+	// Aceptamos conexion
+	nueva_conexion = aceptar_conexion(principal);
+	uint32_t i;
+	char* msg;
+
+	// Recibimos la identeificacion de la conexion
+	recibir(nueva_conexion, &msg, &i);
+	flag_t codop = codigo_operacion(msg);
+
+	int salida = 0;
+
+	switch(codop)
+	{
+		case SOY_PROGRAMA:
+			_dar_bienvenida(nueva_conexion);
+
+			// Recibimos el codigo BESO del programa
+			char* codigo_beso;
+			uint32_t len;
+
+			if(recibir(nueva_conexion, &codigo_beso, &len) == -1)
+			{// Si el mensaje no se recibe completo
+				_informar_mensaje_incompleto(nueva_conexion->fd);
+				free(codigo_beso);
+				break;
+			}
+
+			// Procesamos el nuevo programa
+			_procesar_conexion_nuevo_programa(codigo_beso, len, nueva_conexion);
+
+			free(codigo_beso);
+			salida = 1;
+			break;
+
+		case SOY_CPU:
+			//TODO: Progamar el comportamiento al recibir la conexion de un CPU
+			_dar_bienvenida(nueva_conexion);
+
+			salida = 2;
+			break;
+
+		default:
+			break;
+	}
+
+	free(msg);
+	return salida;
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
-void _atender_socket_unasigned_proceso(int32_t fd)
+void _atender_socket_proceso(int32_t fd)
 {
 	// Variables para el mensaje
 	// IMPORTANTE: NO LIBERAR MENSAJE DENTRO DE UNA FUNCION,
@@ -153,17 +208,16 @@ void _atender_socket_unasigned_proceso(int32_t fd)
 
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
+
 		// Creamos copia del puntero al mensaje y a su len
+		// Hay que usar estos dentro de las funciones,
+		// ya que tienen desplazado el mensaje
 		char* copia_mensaje = mensaje + tamanio_flagt();
 		uint32_t copia_len = len - tamanio_flagt();
 
 		// Vemos que operacion es
 		switch(cod_op)
 		{
-			case NUEVO_PROGRAMA:
-				_procesar_conexion_nuevo_programa(copia_mensaje, copia_len, fd);
-				break;
-
 
 			default:
 				_informar_mensaje_incompleto(fd);
@@ -191,11 +245,11 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
-	FD_ZERO(&readfds_unasigned_procesos);
-	FD_SET(principal->fd, &readfds_unasigned_procesos);
+	FD_ZERO(&readfds_procesos);
+	FD_SET(principal->fd, &readfds_procesos);
 
 	// Preparamos el SET
-	fd_set readfds = readfds_unasigned_procesos;
+	fd_set readfds = readfds_procesos;
 
 	while(1)
 	{
@@ -215,22 +269,21 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
-						sock_t* nueva_conexion = _procesar_nueva_conexion(principal);
-						_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
+						sock_t* nueva_conexion;
 
-						// Agrego la conexion a la lista de unasigned y al readfds
-						_agregar_conexion_a_unasigned(nueva_conexion);
+						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
+							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 					}
 					else
-					{// No es el socket principal, es un chiruso
-						_atender_socket_unasigned_proceso(i);
+					{// No es el socket principal, es un proceso
+						_atender_socket_proceso(i);
 					}
 				}
 			}
 		}
 
 		// Rearmamos el readfds
-		readfds = readfds_unasigned_procesos;
+		readfds = readfds_procesos;
 	}
 
 	return NULL;
@@ -240,6 +293,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 void* escuchar_cpus(void* otro_ente)
 {
 	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
+	// ESTE DEBE TENER UN TIMER QUE CADA X SEGUNDOS REARME EL FDS
 }
 
 void inicializar_listas_conexiones(void)
