@@ -34,8 +34,10 @@ respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t(char* chorro)
 	offset += sizeof(flag_t);
 	memcpy(&rta_nuevo_tcb->quantum, chorro + offset, sizeof(uint32_t));
 
+	rta_nuevo_tcb->tcb = malloc(sizeof(tcb_t));
+
 	offset += sizeof(uint32_t);
-	memcpy(&rta_nuevo_tcb->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
+	memcpy(rta_nuevo_tcb->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
 
 	return rta_nuevo_tcb;
 }
