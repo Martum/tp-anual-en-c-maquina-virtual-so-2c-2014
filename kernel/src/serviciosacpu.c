@@ -11,6 +11,8 @@
 #include "consola.h"
 //#include "serviciosacpu.h"
 
+//TODO: Comentado para que compile
+/*
 int crear_hilo(tcb_t* tcb, uint32_t tid)
 {
 	// Creamos TCB
@@ -25,6 +27,7 @@ int crear_hilo(tcb_t* tcb, uint32_t tid)
 
 	return -1;
 }
+*/
 
 void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 	//REVISAR. Utilizar el enviar y recibir para evitar espera activa.
@@ -35,7 +38,7 @@ void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 		pedido_leer_cadena(pid);
 	}
 }
-
+/*
 void* recibir_entrada_estandar(uint32_t pid, void* ){
 	codear;
 }
@@ -43,7 +46,7 @@ void* recibir_entrada_estandar(uint32_t pid, void* ){
 int salida_estandar(uint32_t pid, char* cadena){
 	return escribir(pid, cadena);
 }
-
+*/
 
 void bloquear(tcb_t* tcb, uint32_t recurso){
 	quitar_de_exec(tcb);
