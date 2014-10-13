@@ -22,13 +22,14 @@ int32_t main(int32_t argc, char** argv) {
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
+		if (pedir_tcb_con_serializacion(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
 			dictionary_destroy(dic_instrucciones);
 			cerrar_puertos();
 			printf("ERROR FALTAL: Fallo pedido de tcb\n");
 			return 0;
 		}
-		printf("%d", quantum);
+		printf("%d\n", quantum);
+		printf("%d\n", tcb.a);
 		break;
 
 		if (quantum < -1 || quantum == 0) {
