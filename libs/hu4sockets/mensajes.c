@@ -162,7 +162,46 @@ char* serializar_pedido_con_resultado_t(pedido_con_resultado_t* pedido_con_resul
 	memcpy(bytes + offset, &pedido_con_resultado->resultado, sizeof(resultado_t));
 
 	offset += sizeof(resultado_t);
-	memcpy(bytes + offset, serializar_tcb(&pedido_con_resultado->tcb), tamanio_tcb_serializado());
+	memcpy(bytes + offset, serializar_tcb(pedido_con_resultado->tcb), tamanio_tcb_serializado());
+
+	return bytes;
+}
+
+pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char* chorro){
+	pedido_de_crear_segmento_t* pedido_crear_segmento = malloc(sizeof(pedido_de_crear_segmento_t));
+
+	uint32_t offset = 0;
+	memcpy(&pedido_crear_segmento->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido_crear_segmento->pid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&pedido_crear_segmento->tamano, chorro + offset, sizeof(uint32_t));
+
+	return pedido_crear_segmento;
+}
+
+uint32_t tamanio_pedido_de_crear_segmento_t_serializado(){
+	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
+	t += sizeof(uint32_t);
+
+	return t;
+}
+
+char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t* pedido){
+	char* bytes = malloc(tamanio_pedido_de_crear_segmento_t_serializado());
+
+	uint32_t offset = 0;
+	memcpy(bytes+offset,&pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->tamano, sizeof(uint32_t));
 
 	return bytes;
 }
