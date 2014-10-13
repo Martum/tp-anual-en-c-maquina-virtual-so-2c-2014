@@ -20,8 +20,8 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 	void _lista_segmentos(segmento_t *segmento) {
 		printf("PID: %d \n", proceso->pid);
 		printf("Nro segmento: %d \n", segmento->id);
-		printf("Tamaño: %d \n ------------------ \n", segmento->tamanio);
-		printf("Dir virtual base de segmento: %d", direccion_virtual_base_de_segmento(segmento->id));
+		printf("Tamaño: %d \n", segmento->tamanio);
+		printf("Dir virtual base de segmento: %x \n ------------------ \n", direccion_virtual_base_de_segmento(segmento->id));
 		// agregar log de las cosas que hago printf
 	}
 	list_iterate(proceso->segmentos, (void*) _lista_segmentos);
@@ -30,6 +30,7 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 
 proceso_msp_t* crear_proceso_msp(){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
+	proceso->pid = list_size(get_lista_procesos());
 	list_add(get_lista_procesos(),proceso);
 	proceso->segmentos = list_create();
 	return proceso;

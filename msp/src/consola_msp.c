@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #include "consola_msp.h"
+#include "proceso_msp.h"
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
 #include "interfaz.h"
@@ -20,6 +21,13 @@ int main(void){
 	inicializar_lista_marcos();
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
+
+	proceso_msp_t* proc = crear_proceso_msp();
+	crear_segmento(proc->pid,382);
+	crear_segmento(proc->pid,693);
+	proceso_msp_t* proc2 = crear_proceso_msp();
+	crear_segmento(proc2->pid,256);
+	tabla_segmentos();
 
 	/*
 	 * ACA VOY A PODER RECIBIR INSTRUCCIONES PARA EJECUTAR LAS FUNCIONES QUE TENGO
@@ -54,7 +62,10 @@ void leer_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio){
 }
 
 void tabla_segmentos(){
-
+	void _listar_segmentos(proceso_msp_t* proceso) {
+		listar_segmentos_de_un_proceso(proceso);
+	}
+	list_iterate(get_lista_procesos(), (void*) _listar_segmentos);
 }
 
 void tabla_paginas(uint32_t pid){

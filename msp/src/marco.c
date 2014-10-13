@@ -37,6 +37,7 @@ marco_t* buscar_marco_libre()
 
 char* leer_marco(uint32_t base_marco_datos,uint32_t tamanio)
 {
-
+	//Debo tomar la base, sumarle el desplazamiento dentro de la pagina, asignarlo a un puntero
+	// y luego iterar hasta el tamaño
 	return 0;
 }

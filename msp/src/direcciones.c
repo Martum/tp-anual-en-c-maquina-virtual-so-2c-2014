@@ -51,11 +51,11 @@ bool memoria_invalida(uint32_t pid, uint32_t direccion_logica)
 
 bool excede_limite_segmento(uint32_t direccion_logica, uint32_t tamanio)
 {
-
+	//Tengo que cambiar todo
 	return (direccion_logica>>20) < ((direccion_logica+tamanio)>>20);
 }
 
-uint32_t obtener_marco(uint32_t pid, direccion direccion_logica)
+uint32_t obtener_base_marco(uint32_t pid, direccion direccion_logica)
 {
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
@@ -64,6 +64,8 @@ uint32_t obtener_marco(uint32_t pid, direccion direccion_logica)
 	uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;
 	pagina_t* pagina = buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas);
 
-	return pagina->marco;
+	uint32_t id_marco=pagina->marco;
+
+	return buscar_marco_segun_id(id_marco)->base;
 }
 
