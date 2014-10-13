@@ -9,6 +9,7 @@
 #include "estructuras.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <commons/log.h>
 
 void crear_marco_en_lista_de_marcos(t_list *marcos, uint32_t base_de_marcos)
 {

@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +13,7 @@
 #include <commons/collections/list.h>
 #include <commons/config.h>
 #include <commons/string.h>
+#include <commons/log.h>
 
 t_config* configs_msp;
 uint32_t memoria_fisica_total;
@@ -22,7 +24,7 @@ t_list* lista_marcos;
 t_list* indice_paginas;
 
 void cargar_configuraciones(){
-	configs_msp = config_create("config_msp.txt");
+	configs_msp = config_create("/utnso/workspace/tp-2014-2c-hardcodeameun4/msp/config_msp.txt");
 }
 
 uint32_t puerto(){
@@ -30,11 +32,15 @@ uint32_t puerto(){
 }
 
 uint32_t cantidad_memoria(){
-	return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
+	// cambiar
+	//return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
+	return 20;
 }
 
 uint32_t cantidad_swap(){
-	return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
+	// cambiar
+	// return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
+	return 5;
 }
 
 char* algoritmo_sustitucion_de_paginas(){
@@ -47,13 +53,18 @@ void inicializar_lista_procesos(){
 
 void inicializar_lista_marcos(){
 	lista_marcos = list_create();
-	uint32_t cant_marcos = cantidad_memoria();
-	int i;
+	uint32_t cant_marcos = 20; cantidad_memoria();
+	int i = 0;
+
 	for(i=0;i<cant_marcos;i++){
+
 		// pongo arbitrariamente 10000 como base de marcos, se puede cambiar
-		crear_marco_en_lista_de_marcos(lista_marcos,10000);
+		crear_marco_en_lista_de_marcos(lista_marcos,2000);
+
+
 	}
 }
+
 void inicializar_memoria_fisica_total(){
 	memoria_fisica_total = cantidad_memoria();
 }
