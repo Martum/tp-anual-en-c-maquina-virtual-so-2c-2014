@@ -37,7 +37,7 @@ char*  rta_nuevo_tcb(){
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
 
-	return serializar_respuesta_de_nuevo_tcb(rta);
+	return serializar_respuesta_de_nuevo_tcb_t(rta);
 }
 
 // FALTA EL WRAPPER QUE DESERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
@@ -46,6 +46,8 @@ char*  rta_nuevo_tcb(){
 void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	quitar_de_exec(tcb);
 
+	/*
+	 *
 	switch(resultado){
 	 	case FIN_QUANTUM:
 	 		agregar_a_ready(tcb);
@@ -63,6 +65,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	 	default:
 	 		break;
 
-	}
+	} */
 }
 

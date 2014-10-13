@@ -5,8 +5,8 @@
  *      Author: martin
  */
 
-#ifndef MEMORIA_H_
-#define MEMORIA_H_
+#ifndef MEMORIA22_H_
+#define MEMORIA22_H_
 
 #include <hu4sockets/tcb.h>
 
@@ -29,4 +29,4 @@ void destruir_segmento(uint32_t pid, direccion base_segmento);
  * @RETURNS: 0 en caso de exito; -1 si existe Segmentatio Fault
  */
 int32_t escribir_memoria(uint32_t pid, direccion base_segmento, char* chorro_bytes, uint32_t len);
-#endif /* MEMORIA_H_ */
+#endif /* MEMORIA22_H_ */

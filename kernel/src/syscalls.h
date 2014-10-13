@@ -8,7 +8,7 @@
 #ifndef SYSCALLS_H_
 #define SYSCALLS_H_
 
-#include "estructuras.h"
+#include <hu4sockets/mensajes.h>
 
 void recibir_syscall(tcb_t* tcb, direccion dir);
 

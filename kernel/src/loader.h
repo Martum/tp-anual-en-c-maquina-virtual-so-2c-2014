@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <hu4sockets/tcb.h>
 
+#include "memoria.h"
+
 
 /**
  * @RETURNS: Un nuevo PID que no esta en uso
