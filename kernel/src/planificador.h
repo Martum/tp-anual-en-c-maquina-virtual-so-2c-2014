@@ -10,8 +10,6 @@
 
 #include <hu4sockets/mensajes.h>
 
-void _planificar();
-
 // RETORNA EL PROXIMO TCB A EJECUTAR.
 respuesta_de_nuevo_tcb_t  _proximo_tcb();
 

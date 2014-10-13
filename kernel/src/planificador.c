@@ -6,13 +6,15 @@
  */
 
 #include "planificador.h"
+#include "configuraciones.h"
+#include "lstestados.h"
 #include <hu4sockets/mensajes.h>
 #include <hu4sockets/tcb.h>
+#include <stdlib.h>
 
-//TODO: Ver estos warnings
 tcb_t* _planificar(){
 
-	tcb_t* tcb;
+	tcb_t* tcb = malloc(sizeof(tcb_t));
 	if (hay_hilo_km_ready()){
 		tcb = quitar_de_ready_km();
 		agregar_a_exec(tcb);
@@ -24,17 +26,22 @@ tcb_t* _planificar(){
 	return tcb;
 }
 
+
 // FALTA EL WRAPPER QUE LLAME A ESTA FUNCION Y LE MANDE A LA CPU LO QUE RETORNA ESTO.
-respuesta_de_nuevo_tcb_t  _proximo_tcb(){
+// RECORDAR HACER EL FREE EN EL WRAPPER.
+respuesta_de_nuevo_tcb_t*  _proximo_tcb(){
 
 	//TODO: Cuidado aca, no se como lo usas, pero en el 99% de los casos
 	// las variables tienen que crearse con malloc, sobre todo si la devolves
 
-	respuesta_de_nuevo_tcb_t rta;
+	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
-	rta.tcb = _planificar();
-	rta.quantum = quantum();
-	rta.flag = TOMA_TCB;
+	tcb_t* tcb = _planificar();
+	rta->tcb = *tcb;
+	rta->quantum = quantum();
+	rta->flag = TOMA_TCB;
+
+	free(tcb);
 
 	return rta;
 }
@@ -46,7 +53,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 
 	switch(resultado){
 	 	case FIN_QUANTUM:
-	 		agregar_a_ready(tcb);_	//TODO: y este guion bajo?
+	 		agregar_a_ready(tcb);
 	 		break;
 
 	 	case BLOCK:
@@ -57,6 +64,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	 	case ERROR:
 	 	case FIN_EJECUCION:
 	 		agregar_a_exit(tcb);
+	 		break;
+	 	default:
 	 		break;
 
 	}
