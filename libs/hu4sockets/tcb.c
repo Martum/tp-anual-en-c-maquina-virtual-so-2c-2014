@@ -20,6 +20,55 @@ typedef struct tcb {
 	int32_t a, b, c, d, e, f;
 } tcb_t;
 
+tcb_t* deserializar_tcb(char* chorro)
+{
+	tcb_t* tcb = malloc(sizeof(tcb_t));
+
+	uint32_t offset = 0;
+	memcpy(&tcb->pid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&tcb->tid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&tcb->km, chorro + offset, sizeof(bool));
+
+	offset += sizeof(bool);
+	memcpy(&tcb->base_codigo, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
+	memcpy(&tcb->tamanio_codigo, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
+	memcpy(&tcb->pc, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
+	memcpy(&tcb->base_stack, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
+	memcpy(&tcb->cursor_stack, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
+	memcpy(&tcb->a, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&tcb->b, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&tcb->c, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&tcb->d, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&tcb->e, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&tcb->f, chorro + offset, sizeof(int32_t));
+
+	return tcb;
+}
+
 uint32_t tamanio_tcb_serializado()
 {
 	uint32_t t = 0;
@@ -77,6 +126,6 @@ char* serializar_tcb(tcb_t* tcb)
 	offset += sizeof(int32_t);
 	memcpy(bytes + offset, &tcb->f, sizeof(int32_t));
 
-
+	return bytes;
 }
 
