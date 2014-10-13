@@ -41,13 +41,19 @@ void agregar_segmento_a_proceso(segmento_t *segmento, proceso_msp_t *proceso){
 	segmento->id = list_size(proceso->segmentos)-1;
 }
 
-void listar_paginas(segmento_t *segmento){
+void listar_paginas_de_un_segmento(segmento_t *segmento){
 
 	void _lista_paginas(pagina_t *pagina) {
-		printf("Pagina: %d \n", pagina->id);
-		printf("Tiene marco: %d \n ------------------ \n", pagina->tiene_marco);
+		printf("Nro segmento: %d \n", segmento->id);
+		printf("Nro pagina: %d \n", pagina->id);
+		if(pagina->en_disco == true){
+			printf("La pagina esta en: %s \n ------------------ \n", "disco");
+		}else{
+			printf("La pagina esta en: %s \n ------------------ \n", "memoria");
+		}
 	}
 	list_iterate(segmento->paginas, (void*) _lista_paginas);
+	// falta agregar log de todo lo mismo que hago printf
 }
 
 uint32_t cantidad_paginas(uint32_t tamanio_en_bytes){
