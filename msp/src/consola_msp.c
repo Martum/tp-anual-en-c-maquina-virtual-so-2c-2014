@@ -24,7 +24,7 @@ int main(void){
 	inicializar_memoria_fisica_total();
 
 	// PRUEBA DE ESCRITORIO
-
+/*
 	proceso_msp_t* proc = crear_proceso_msp();
 	crear_segmento(proc->pid,382);
 	crear_segmento(proc->pid,693);
@@ -34,6 +34,8 @@ int main(void){
 
 	tabla_paginas(proc2->pid);
 
+	listar_marcos();
+*/
 	/*
 	 * ACA VOY A PODER RECIBIR INSTRUCCIONES PARA EJECUTAR LAS FUNCIONES QUE TENGO
 	 *
@@ -82,6 +84,18 @@ void tabla_paginas(uint32_t pid){
 }
 
 void listar_marcos(){
+	void _listar_marcos(marco_t* marco){
 
+		printf("Nro marco: %d \n", marco->id);
+
+		if(marco->ocupado){
+			printf("Esta ocupado: %s ", "SI");
+			printf("por el proceso con id %d", marco->id_proceso);
+		}else{
+			printf("Esta ocupado: %s \n", "NO");
+		}
+
+	}
+	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
 }
 
