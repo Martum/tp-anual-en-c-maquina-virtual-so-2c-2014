@@ -55,7 +55,7 @@ typedef struct respuesta {
 typedef struct pedido_con_resultado {
 	flag_t flag;
 	resultado_t resultado;
-	tcb_t tcb;
+	tcb_t* tcb;
 	int32_t informacion;
 } pedido_con_resultado_t;
 
@@ -128,5 +128,11 @@ uint32_t tamanio_pedido_t_serializado();
 respuesta_t* deserializar_respuesta_t(char*);
 char* serializar_respuesta_t(respuesta_t*);
 uint32_t tamanio_respuesta_t_serializado();
+
+pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char*);
+char* serializar_pedido_con_resultado_t(pedido_con_resultado_t*);
+uint32_t tamanio_pedido_con_resultado_t_serializado();
+
+
 
 #endif /* MENSAJES_H_ */
