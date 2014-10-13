@@ -34,10 +34,10 @@ typedef enum {
 	ESCRIBI_EN_MEMORIA = 304,
 
 	// Mensajes de Memoria al CPU: 351 -> 400
-	EXITO = 351,
-	TOMA_SEGMENTO = 352,
-	ERROR_MEMORIA_LLENA = 353,
-	ERROR_VIOLACION_DE_SEGMENTO = 354,
+	TOMA_SEGMENTO = 351,
+	RESPUESTA_DESTRUCCION = 352,
+	TOMA_BYTES = 353,
+	RESPUETA_ESCRITURA = 354,
 
 } flag_t;
 
@@ -47,11 +47,12 @@ typedef struct pedido {
 
 typedef struct respuesta {
 	flag_t flag;
+	resultado_t resultado;
 } respuesta_t;
 
 typedef struct pedido_con_resultado {
 	flag_t flag;
-	uint32_t resultado;
+	resultado_t resultado;
 	tcb_t tcb;
 	int32_t informacion;
 } pedido_con_resultado_t;
@@ -91,11 +92,13 @@ typedef struct pedido_de_escribir_en_memoria {
 
 typedef struct respuesta_de_crear_segmento {
 	flag_t flag;
+	resultado_t resultado;
 	direccion direccion_virtual;
 } respuesta_de_crear_segmento_t;
 
 typedef struct respuesta_de_leer_de_memoria {
 	flag_t flag;
+	resultado_t resultado;
 	char* bytes_leido;
 } respuesta_de_leer_de_memoria_t;
 
