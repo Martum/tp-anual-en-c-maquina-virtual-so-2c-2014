@@ -8,12 +8,9 @@
 #ifndef SERVICIOSACPU_H_
 #define SERVICIOSACPU_H_
 
+#include <hu4sockets/tcb.h>
+#include <stdint.h>
 
-/**
- * BORRAR?? creo que habiamos hecho este primero, despues el que devuelve int y nos olvidmaos de sacarlo.
- * Crea un TCB hilo en base al recibido y lo encola en RDY
- */
-void crear_hilo(tcb_t* tcb, uint32_t tid);
 
 /**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
