@@ -82,7 +82,7 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,pagina->id);
 
 	//Preparo el string que voy a escribir
-	char* string_a_escribir=string_itoa(leer_memoria(pid, direccion_logica, 256));
+	char* string_a_escribir=leer_memoria(pid, direccion_logica, 256);
 
 	//Escribo en el archivo
 	txt_write_in_file(arch, string_a_escribir);

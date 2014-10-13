@@ -16,5 +16,6 @@
 void crear_marco_en_lista_de_marcos(t_list *, uint32_t);
 marco_t* buscar_marco_segun_id(uint32_t);
 marco_t* buscar_marco_libre();
+char* leer_marco(uint32_t base_marco_datos, uint32_t tamanio);
 
 #endif /* MARCO_H_ */
