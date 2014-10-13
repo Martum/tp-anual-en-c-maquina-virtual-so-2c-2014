@@ -9,7 +9,6 @@
 #include <stdbool.h>
 
 #include "memoria.h"
-
 #include "loader.h"
 #include "configuraciones.h"
 

@@ -8,7 +8,6 @@
 #ifndef SERVICIOSACPU_H_
 #define SERVICIOSACPU_H_
 
-#include "estructuras.h"
 
 /**
  * BORRAR?? creo que habiamos hecho este primero, despues el que devuelve int y nos olvidmaos de sacarlo.
