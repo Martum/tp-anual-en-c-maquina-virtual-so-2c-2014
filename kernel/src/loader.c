@@ -8,8 +8,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "loader.h"
 #include "memoria.h"
+
+#include "loader.h"
 #include "configuraciones.h"
 
 uint32_t pid_global = 1;

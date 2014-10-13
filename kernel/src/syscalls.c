@@ -5,10 +5,15 @@
  *      Author: utnso
  */
 
+#include "syscall.h"
+#include <hu4sockets/mensajes.h>
+#include "lstestados.h"
 
 void recibir_syscall(tcb_t* tcb, direccion dir){
 	// FALTA TENER EN CUENTA LA DIRECCION. CREAR NUEVA ESTRUCTURA??
 	quitar_de_exec(tcb);
 	agregar_a_block(tcb);
-	agregar_a_syscalls(tcb);
+
+	// TODO: Comentado para que compile, hay que solucionarlo
+	//agregar_a_syscalls(tcb);
 }
