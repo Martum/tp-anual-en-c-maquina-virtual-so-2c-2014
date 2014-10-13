@@ -137,4 +137,10 @@ pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char*);
 char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t*);
 uint32_t tamanio_pedido_de_crear_segmento_t_serializado();
 
+pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(char*);
+char* serializar_pedido_de_destruir_segmento_t(pedido_de_destruir_segmento_t*);
+uint32_t tamanio_pedido_de_destruir_segmento_t_serializado();
+
+
+
 #endif /* MENSAJES_H_ */
