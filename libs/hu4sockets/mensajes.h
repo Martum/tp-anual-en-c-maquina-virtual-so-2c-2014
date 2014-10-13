@@ -61,7 +61,7 @@ typedef struct pedido_con_resultado {
 
 typedef struct respuesta_de_nuevo_tcb {
 	flag_t flag;
-	tcb_t tcb;
+	tcb_t* tcb;
 	uint32_t quantum;
 } respuesta_de_nuevo_tcb_t;
 
@@ -117,6 +117,7 @@ flag_t codigo_operacion(char* mensaje);
 uint32_t tamanio_flagt();
 
 
-respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t();
+respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb(char*);
+char* serializar_respuesta_de_nuevo_tcb(respuesta_de_nuevo_tcb_t*);
 
 #endif /* MENSAJES_H_ */
