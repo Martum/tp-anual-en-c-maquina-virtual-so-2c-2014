@@ -21,7 +21,7 @@ bool excede_limite_segmento(uint32_t direccion_logica, uint32_t tamanio);
 
 //A partir del pid y la direccion logica devuelve la base del marco en el que se encuentra
 // el dato pedido
-uint32_t obtener_marco(uint32_t pid, direccion direccion_logica);
+uint32_t obtener_base_marco(uint32_t pid, direccion direccion_logica);
 
 
 #endif /* DIRECCIONES_H_ */

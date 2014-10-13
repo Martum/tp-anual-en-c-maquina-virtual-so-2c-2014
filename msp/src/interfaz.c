@@ -53,7 +53,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	}
 	else
 	{
-		uint32_t base_marco_datos = obtener_marco(pid, direccion_logica);
+		uint32_t base_marco_datos = obtener_base_marco(pid, direccion_logica);
+
 		return leer_marco(base_marco_datos, tamanio);
 
 	}

@@ -12,9 +12,9 @@
 #include <hu4sockets/tcb.h>
 #include <stdlib.h>
 
-tcb_t* _planificar(){
+tcb_t* _proximo_tcb(){
 
-	tcb_t* tcb = malloc(sizeof(tcb_t));
+	tcb_t* tcb;
 	if (hay_hilo_km_ready()){
 		tcb = quitar_de_ready_km();
 		agregar_a_exec(tcb);
@@ -27,32 +27,27 @@ tcb_t* _planificar(){
 }
 
 
-// FALTA EL WRAPPER QUE LLAME A ESTA FUNCION, LA SERIALIZE Y
-// LE MANDE A LA CPU LO QUE RETORNA ESTO. ESTO VA EN MENSAJES.C
-// RECORDAR HACER EL FREE EN EL WRAPPER.
-respuesta_de_nuevo_tcb_t*  _proximo_tcb(){
-
-	//TODO: Cuidado aca, no se como lo usas, pero en el 99% de los casos
-	// las variables tienen que crearse con malloc, sobre todo si la devolves
+// FALTA EL FREE
+char*  rta_nuevo_tcb(){
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
-	tcb_t* tcb = _planificar();
-	rta->tcb = *tcb;
+	tcb_t* tcb = _proximo_tcb();
+	rta->tcb = tcb;
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
 
-	free(tcb);
-
-	return rta;
+	return serializar_respuesta_de_nuevo_tcb_t(rta);
 }
 
-// FALTA EL WRAPPER QUE DESSERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
+// FALTA EL WRAPPER QUE DESERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
 // QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN HU4SOCKETS
 // MENSAJES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	quitar_de_exec(tcb);
 
+	/*
+	 *
 	switch(resultado){
 	 	case FIN_QUANTUM:
 	 		agregar_a_ready(tcb);
@@ -70,6 +65,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	 	default:
 	 		break;
 
-	}
+	} */
 }
 

@@ -55,13 +55,13 @@ typedef struct respuesta {
 typedef struct pedido_con_resultado {
 	flag_t flag;
 	resultado_t resultado;
-	tcb_t tcb;
+	tcb_t* tcb;
 	int32_t informacion;
 } pedido_con_resultado_t;
 
 typedef struct respuesta_de_nuevo_tcb {
 	flag_t flag;
-	tcb_t tcb;
+	tcb_t* tcb;
 	uint32_t quantum;
 } respuesta_de_nuevo_tcb_t;
 
@@ -117,6 +117,24 @@ flag_t codigo_operacion(char* mensaje);
 uint32_t tamanio_flagt();
 
 
-respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t();
+respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t(char*);
+char* serializar_respuesta_de_nuevo_tcb_t(respuesta_de_nuevo_tcb_t*);
+uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado();
+
+pedido_t* deserializar_pedido_t(char*);
+char* serializar_pedido_t(pedido_t*);
+uint32_t tamanio_pedido_t_serializado();
+
+respuesta_t* deserializar_respuesta_t(char*);
+char* serializar_respuesta_t(respuesta_t*);
+uint32_t tamanio_respuesta_t_serializado();
+
+pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char*);
+char* serializar_pedido_con_resultado_t(pedido_con_resultado_t*);
+uint32_t tamanio_pedido_con_resultado_t_serializado();
+
+pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char*);
+char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t*);
+uint32_t tamanio_pedido_de_crear_segmento_t_serializado();
 
 #endif /* MENSAJES_H_ */

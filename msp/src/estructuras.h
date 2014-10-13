@@ -38,6 +38,7 @@ typedef struct marco{
 	uint32_t id;
 	bool ocupado;
 	direccion base;
+	uint32_t id_proceso;
 }marco_t;
 
 #endif /* ESTRUCTURAS_H_ */
