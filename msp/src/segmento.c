@@ -46,7 +46,7 @@ void listar_paginas_de_un_segmento(segmento_t *segmento){
 	void _lista_paginas(pagina_t *pagina) {
 		printf("Nro segmento: %d \n", segmento->id);
 		printf("Nro pagina: %d \n", pagina->id);
-		if(pagina->en_disco == true){
+		if(pagina->en_disco){
 			printf("La pagina esta en: %s \n ------------------ \n", "disco");
 		}else{
 			printf("La pagina esta en: %s \n ------------------ \n", "memoria");

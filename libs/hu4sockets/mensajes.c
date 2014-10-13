@@ -89,9 +89,32 @@ uint32_t tamanio_pedido_t_serializado()
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
-	t += sizeof(uint32_t);
-	t += sizeof(tcb_t);
 
+	return t;
+}
+
+
+respuesta_t* deserializar_respuesta_t(char* chorro){
+	respuesta_t* rta = malloc(sizeof(pedido_t));
+
+	uint32_t offset = 0;
+	memcpy(&rta->flag, chorro + offset, sizeof(flag_t));
+
+	return rta;
+}
+
+char* serializar_respuesta_t(respuesta_t* rta){
+	char* bytes = malloc(tamanio_pedido_t_serializado());
+
+	uint32_t offset = 0;
+	memcpy(bytes+offset,&rta->flag, sizeof(flag_t));
+
+	return bytes;
+}
+
+uint32_t tamanio_respuesta_t_serializado(){
+	uint32_t t = 0;
+	t += sizeof(flag_t);
 	return t;
 }
 
