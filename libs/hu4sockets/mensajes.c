@@ -23,8 +23,8 @@ uint32_t tamanio_flagt()
 }
 
 
-// FALTA FREE
-respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb(char* chorro)
+// FALTA FREE. LO USA SANTI
+respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t(char* chorro)
 {
 	respuesta_de_nuevo_tcb_t* rta_nuevo_tcb = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
@@ -40,7 +40,7 @@ respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb(char* chorro)
 	return rta_nuevo_tcb;
 }
 
-uint32_t tamanio_respuesta_de_nuevo_tcb_serializado()
+uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado()
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
@@ -50,9 +50,10 @@ uint32_t tamanio_respuesta_de_nuevo_tcb_serializado()
 	return t;
 }
 
-char* serializar_respuesta_de_nuevo_tcb(respuesta_de_nuevo_tcb_t* rta_nuevo_tcb)
+// LO USO YO. FALTA FREE
+char* serializar_respuesta_de_nuevo_tcb_t(respuesta_de_nuevo_tcb_t* rta_nuevo_tcb)
 {
-	char* bytes = malloc(tamanio_respuesta_de_nuevo_tcb_serializado());
+	char* bytes = malloc(tamanio_respuesta_de_nuevo_tcb_t_serializado());
 
 	uint32_t offset = 0;
 	memcpy(bytes+offset,&rta_nuevo_tcb->flag, sizeof(flag_t));
@@ -65,4 +66,36 @@ char* serializar_respuesta_de_nuevo_tcb(respuesta_de_nuevo_tcb_t* rta_nuevo_tcb)
 
 	return bytes;
 }
+
+pedido_t* deserializar_pedido_t(char* chorro){
+	pedido_t* pedido = malloc(sizeof(pedido_t));
+
+	uint32_t offset = 0;
+	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
+
+	return pedido;
+}
+
+char* serializar_pedido_t(pedido_t* pedido){
+	char* bytes = malloc(tamanio_pedido_t_serializado());
+
+	uint32_t offset = 0;
+	memcpy(bytes+offset,&pedido->flag, sizeof(flag_t));
+
+	return bytes;
+}
+
+uint32_t tamanio_pedido_t_serializado()
+{
+	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
+	t += sizeof(tcb_t);
+
+	return t;
+}
+
+
+
+
 

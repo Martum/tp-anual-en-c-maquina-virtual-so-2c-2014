@@ -27,22 +27,20 @@ tcb_t* _proximo_tcb(){
 }
 
 
-// FALTA EL WRAPPER QUE LLAME A ESTA FUNCION, LA SERIALIZE Y
-// LE MANDE A LA CPU LO QUE RETORNA ESTO. ESTO VA EN MENSAJES.C
-// RECORDAR HACER EL FREE EN EL WRAPPER.
-respuesta_de_nuevo_tcb_t*  _rta_nuevo_tcb(){
+// FALTA EL FREE
+char*  rta_nuevo_tcb(){
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
 	tcb_t* tcb = _proximo_tcb();
-	rta->tcb = *tcb;
+	rta->tcb = tcb;
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
 
-	return rta;
+	return serializar_respuesta_de_nuevo_tcb(rta);
 }
 
-// FALTA EL WRAPPER QUE DESSERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
+// FALTA EL WRAPPER QUE DESERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
 // QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN HU4SOCKETS
 // MENSAJES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb){

@@ -117,7 +117,12 @@ flag_t codigo_operacion(char* mensaje);
 uint32_t tamanio_flagt();
 
 
-respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb(char*);
-char* serializar_respuesta_de_nuevo_tcb(respuesta_de_nuevo_tcb_t*);
+respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t(char*);
+char* serializar_respuesta_de_nuevo_tcb_t(respuesta_de_nuevo_tcb_t*);
+uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado();
+
+pedido_t* deserializar_pedido_t(char*);
+char* serializar_pedido_t(pedido_t*);
+uint32_t tamanio_pedido_t_serializado();
 
 #endif /* MENSAJES_H_ */

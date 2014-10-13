@@ -10,8 +10,8 @@
 
 #include <hu4sockets/mensajes.h>
 
-// RETORNA EL PROXIMO TCB A EJECUTAR.
-//respuesta_de_nuevo_tcb_t  proximo_tcb();
+// Retorna el respuesta_de_nuevo_tcb_t* ya serializado.
+char*  rta_nuevo_tcb();
 
 // RECIBE UN TCB DEL CPU Y HACE LO QUE CORRESPONDA SEGUN EL RESULTADO.
 void recibir_tcb(resultado_t resultado, tcb_t* tcb);
