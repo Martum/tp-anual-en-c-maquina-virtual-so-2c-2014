@@ -218,6 +218,9 @@ void _atender_socket_proceso(int32_t fd)
 		// Vemos que operacion es
 		switch(cod_op)
 		{
+			case bla bla
+				foo(copia_mensaje(chorrobytes), copia_len(longitud del chorro))
+				break;
 
 			default:
 				_informar_mensaje_incompleto(fd);
