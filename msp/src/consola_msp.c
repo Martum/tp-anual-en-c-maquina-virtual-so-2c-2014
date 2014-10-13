@@ -13,6 +13,7 @@
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
 #include "interfaz.h"
+#include "segmento.h"
 
 
 int main(void){
@@ -22,12 +23,16 @@ int main(void){
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
 
+	// PRUEBA DE ESCRITORIO
+
 	proceso_msp_t* proc = crear_proceso_msp();
 	crear_segmento(proc->pid,382);
 	crear_segmento(proc->pid,693);
+
 	proceso_msp_t* proc2 = crear_proceso_msp();
 	crear_segmento(proc2->pid,256);
-	tabla_segmentos();
+
+	tabla_paginas(proc2->pid);
 
 	/*
 	 * ACA VOY A PODER RECIBIR INSTRUCCIONES PARA EJECUTAR LAS FUNCIONES QUE TENGO
@@ -69,7 +74,11 @@ void tabla_segmentos(){
 }
 
 void tabla_paginas(uint32_t pid){
-
+	void _listar_paginas(segmento_t* segmento) {
+		listar_paginas_de_un_segmento(segmento);
+	}
+	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+	list_iterate(proceso->segmentos, (void*) _listar_paginas);
 }
 
 void listar_marcos(){
