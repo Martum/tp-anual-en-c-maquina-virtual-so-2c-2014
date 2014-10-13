@@ -116,4 +116,7 @@ flag_t codigo_operacion(char* mensaje);
  */
 uint32_t tamanio_flagt();
 
+
+respuesta_de_nuevo_tcb_t* deserializar_respuesta_de_nuevo_tcb_t();
+
 #endif /* MENSAJES_H_ */
