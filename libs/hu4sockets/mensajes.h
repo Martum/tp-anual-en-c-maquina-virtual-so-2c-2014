@@ -79,7 +79,6 @@ typedef struct pedido_de_destruir_segmento {
 
 //// hasta aca llegue ////
 
-
 typedef struct pedido_de_leer_de_memoria {
 	flag_t flag;
 	uint32_t pid;
