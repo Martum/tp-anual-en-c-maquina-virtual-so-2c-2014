@@ -49,6 +49,27 @@ resultado_t _enviar_y_recibir(sock_t* socket, void* cuerpo_del_mensaje,
 	return OK;
 }
 
+resultado_t _enviar_y_recibir_con_serializacion(sock_t* socket,
+		char* chorro_a_enviar, uint32_t len_a_enviar, char* respuesta) {
+
+	// ENVIO EL MENSAJE
+	if (enviar(socket, chorro_a_enviar, &len_a_enviar) == -1)
+		return FALLO_COMUNICACION;
+
+	// PREPARO LA RESPUESTA
+	char* mensaje_recibido;
+	uint32_t len_devolucion;
+
+	// RECIBO LA RESPUESTA
+	if (recibir(socket, &mensaje_recibido, &len_devolucion) == -1)
+		return FALLO_COMUNICACION;
+
+	// DEVUELVE LA RESPUESTA
+	memcpy(respuesta, mensaje_recibido, len_devolucion);
+
+	return OK;
+}
+
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 	pedido_t cuerpo_del_mensaje;
 	respuesta_de_nuevo_tcb_t respuesta;
@@ -59,7 +80,30 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum) {
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-	*tcb = respuesta.tcb;
+	*tcb = *respuesta.tcb;
+	*quantum = respuesta.quantum;
+
+	return OK;
+}
+
+resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum) {
+	pedido_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = MANDA_TCB;
+
+	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta;
+
+	if (_enviar_y_recibir_con_serializacion(
+			kernel,
+			chorro_de_envio,
+			tamanio_pedido_t_serializado(),
+			chorro_de_respuesta
+			) == FALLO_COMUNICACION) {
+		return FALLO_PEDIDO_DE_TCB;
+	}
+
+	respuesta_de_nuevo_tcb_t respuesta = *deserializar_respuesta_de_nuevo_tcb_t(chorro_de_respuesta);
+	*tcb = *respuesta.tcb;
 	*quantum = respuesta.quantum;
 
 	return OK;
