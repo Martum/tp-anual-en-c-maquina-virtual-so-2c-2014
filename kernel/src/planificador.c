@@ -12,9 +12,9 @@
 #include <hu4sockets/tcb.h>
 #include <stdlib.h>
 
-tcb_t* _planificar(){
+tcb_t* _proximo_tcb(){
 
-	tcb_t* tcb = malloc(sizeof(tcb_t));
+	tcb_t* tcb;
 	if (hay_hilo_km_ready()){
 		tcb = quitar_de_ready_km();
 		agregar_a_exec(tcb);
@@ -30,19 +30,14 @@ tcb_t* _planificar(){
 // FALTA EL WRAPPER QUE LLAME A ESTA FUNCION, LA SERIALIZE Y
 // LE MANDE A LA CPU LO QUE RETORNA ESTO. ESTO VA EN MENSAJES.C
 // RECORDAR HACER EL FREE EN EL WRAPPER.
-respuesta_de_nuevo_tcb_t*  _proximo_tcb(){
-
-	//TODO: Cuidado aca, no se como lo usas, pero en el 99% de los casos
-	// las variables tienen que crearse con malloc, sobre todo si la devolves
+respuesta_de_nuevo_tcb_t*  _rta_nuevo_tcb(){
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
-	tcb_t* tcb = _planificar();
+	tcb_t* tcb = _proximo_tcb();
 	rta->tcb = *tcb;
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
-
-	free(tcb);
 
 	return rta;
 }
