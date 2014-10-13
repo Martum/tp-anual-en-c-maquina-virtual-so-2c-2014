@@ -519,6 +519,13 @@ resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 
 	valor = *(int32_t *) buffer;
 
+	/*
+		valor = buffer[0] |
+			((int32_t)buffer[1] << 8 ) |
+			((int32_t)buffer[2] << 16) |
+			((int32_t)buffer[3] << 24)
+	*/
+
 	actualizar_valor_en_registro(tcb, registro, valor);
 
 	return OK;
@@ -649,7 +656,7 @@ resultado_t crea(tcb_t* tcb) {
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t join(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_JOIN;
 }
 
 /*
@@ -661,7 +668,7 @@ resultado_t join(tcb_t* tcb) {
  * 		la llamada al sistema WAIT pre-compilada.
  */
 resultado_t blok(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_BLOQUEO;
 }
 
 /*
@@ -672,7 +679,7 @@ resultado_t blok(tcb_t* tcb) {
  * 		la llamada al sistema SIGNAL pre-compilada.
  */
 resultado_t wake(tcb_t* tcb) {
-	return OK;
+	return EXCEPCION_POR_DESBLOQUEO;
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic) {
