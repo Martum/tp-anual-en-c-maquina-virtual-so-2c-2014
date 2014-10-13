@@ -9,7 +9,7 @@
 #include "loader.h"
 #include "lstestados.h"
 #include "consola.h"
-//#include "serviciosacpu.h"
+#include "serviciosacpu.h"
 
 //TODO: Comentado para que compile
 /*

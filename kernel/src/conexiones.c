@@ -112,6 +112,16 @@ void _dar_bienvenida(sock_t* nueva_conexion)
 
 }
 
+void _informar_mensaje_incompleto(int32_t fd)
+{
+	//TODO: Programar
+}
+
+void _informar_no_hay_memoria(sock_t* conexion)
+{
+	//TODO: Progrmar
+}
+
 /**
  * Se procesa un nuevo programa.
  * Tenemos que llamar a los metodos del loader.h y agregar el fd en donde corresponda

@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 #include "memoria.h"
-
+#include "lstestados.h"
 #include "loader.h"
 #include "configuraciones.h"
 
