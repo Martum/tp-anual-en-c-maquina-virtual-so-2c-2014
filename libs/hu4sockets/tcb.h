@@ -26,4 +26,18 @@ typedef struct tcb {
 	int32_t a, b, c, d, e, f;
 } tcb_t;
 
+/**
+ * Serializa un TCB a Chorro de Bytes
+ * @RETURNS: El chorro de bytes para enviar por la red
+ */
+char* serializar_tcb(tcb_t* tcb);
+
+uint32_t tamanio_tcb_serializado();
+
+/**
+ * Deserializa un chorro de bytes a TCB
+ * @RETURNS: El TCB
+ */
+tcb_t* deserializar_tcb(char* tcb_chorreado);
+
 #endif /* TCB_H_ */
