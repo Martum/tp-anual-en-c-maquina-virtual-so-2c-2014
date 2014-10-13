@@ -125,4 +125,8 @@ pedido_t* deserializar_pedido_t(char*);
 char* serializar_pedido_t(pedido_t*);
 uint32_t tamanio_pedido_t_serializado();
 
+respuesta_t* deserializar_respuesta_t(char*);
+char* serializar_respuesta_t(respuesta_t*);
+uint32_t tamanio_respuesta_t_serializado();
+
 #endif /* MENSAJES_H_ */
