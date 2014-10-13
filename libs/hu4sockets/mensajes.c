@@ -45,7 +45,7 @@ uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado()
 	uint32_t t = 0;
 	t += sizeof(flag_t);
 	t += sizeof(uint32_t);
-	t += sizeof(tcb_t);
+	t += tamanio_tcb_serializado();
 
 	return t;
 }
@@ -62,7 +62,7 @@ char* serializar_respuesta_de_nuevo_tcb_t(respuesta_de_nuevo_tcb_t* rta_nuevo_tc
 	memcpy(bytes + offset, &rta_nuevo_tcb->quantum, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, serializar_tcb(rta_nuevo_tcb->tcb), sizeof(tcb_t));
+	memcpy(bytes + offset, serializar_tcb(rta_nuevo_tcb->tcb), tamanio_tcb_serializado());
 
 	return bytes;
 }
@@ -117,6 +117,54 @@ uint32_t tamanio_respuesta_t_serializado(){
 	t += sizeof(flag_t);
 	return t;
 }
+
+pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char* chorro){
+	pedido_con_resultado_t* pedido_con_resultado = malloc(sizeof(pedido_con_resultado_t));
+
+	uint32_t offset = 0;
+	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido_con_resultado->informacion, chorro + offset, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(&pedido_con_resultado->resultado, chorro + offset, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(&pedido_con_resultado->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
+
+	return pedido_con_resultado;
+}
+
+
+uint32_t tamanio_pedido_con_resultado_t_serializado(){
+	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(int32_t);
+	t += sizeof(resultado_t);
+	t += tamanio_tcb_serializado();
+
+	return t;
+}
+
+char* serializar_pedido_con_resultado_t(pedido_con_resultado_t* pedido_con_resultado){
+	char* bytes = malloc(tamanio_pedido_con_resultado_t_serializado());
+
+	uint32_t offset = 0;
+	memcpy(bytes+offset,&pedido_con_resultado->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido_con_resultado->informacion, sizeof(int32_t));
+
+	offset += sizeof(int32_t);
+	memcpy(bytes + offset, &pedido_con_resultado->resultado, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(bytes + offset, serializar_tcb(&pedido_con_resultado->tcb), tamanio_tcb_serializado());
+
+	return bytes;
+}
+
 
 
 
