@@ -38,7 +38,7 @@ bool memoria_invalida(uint32_t pid, uint32_t direccion_logica)
 				//Si la pagina que quiero leer no tiene marco, se lo asigno
 				if(!(pagina->tiene_marco))
 				{
-					asignar_marco(pagina);
+					asignar_marco(pagina, pid);
 				}
 				return false;
 
