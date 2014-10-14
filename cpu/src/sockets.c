@@ -155,8 +155,9 @@ resultado_t crear_segmento_con_serializacion(direccion pid, uint32_t bytes,
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
-	pedido_de_crear_segmento_t respuesta =
-		*deserializar_pedido_de_crear_segmento_t(chorro_de_respuesta);
+	respuesta_de_crear_segmento_t respuesta =
+		*deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
+	*direccion = respuesta.direccion_virtual;
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
