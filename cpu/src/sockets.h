@@ -53,6 +53,8 @@ resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum);
  */
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion);
 
+resultado_t crear_segmento_con_serializacion(direccion pid, uint32_t bytes, direccion* direccion);
+
 /*
  * @DESC: Le pide a memoria que destruya un segmento
  * @RETURNS:
@@ -60,6 +62,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion);
  * 		FALLO_DESTRUCCION_DE_SEGMENTO si hubo problemas al destruir el segmento
  */
 resultado_t destruir_segmento(direccion pid, direccion direccion);
+
+resultado_t destruir_segmento_con_serializacion(direccion pid, direccion direccion);
 
 /*
  * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
@@ -69,6 +73,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion);
  */
 resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
+resultado_t leer_de_memoria_con_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+
 /*
  * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
  * @RETURNS:
@@ -77,6 +83,8 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, 
  */
 resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
+resultado_t escribir_en_memoria_con_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+
 /*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
  * @RETURNS:
@@ -84,6 +92,8 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t byt
  * 		FALLO_COMUNICACION si no pudo mandar bien el mensaje
  */
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
+
+resultado_t informar_a_kernel_de_finalizacion_con_serializacion(tcb_t tcb, resultado_t res);
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
