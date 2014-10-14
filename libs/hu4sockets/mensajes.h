@@ -159,4 +159,8 @@ respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(char
 char* serializar_respuesta_de_leer_de_memoria_t(respuesta_de_leer_de_memoria_t*);
 uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado();
 
+respuesta_de_crear_segmento_t* deserializar_respuesta_de_crear_segmento_t(char*);
+char* serializar_respuesta_de_crear_segmento_t(respuesta_de_crear_segmento_t*);
+uint32_t tamanio_respuesta_de_crear_segmento_t_serializado();
+
 #endif /* MENSAJES_H_ */
