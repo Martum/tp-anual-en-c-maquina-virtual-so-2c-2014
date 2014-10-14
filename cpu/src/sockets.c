@@ -165,6 +165,25 @@ resultado_t crear_segmento_con_serializacion(direccion pid, uint32_t bytes,
 	return OK;
 }
 
+// todo agregar frees
+resultado_t destruir_segmento_con_serializacion(direccion pid,
+	direccion direccion)
+{
+	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
+	cuerpo_del_mensaje.pid = pid;
+	cuerpo_del_mensaje.direccion_virtual = direccion;
+
+	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_pedido_de_destruir_segmento_t_serializado());
+
+	return _enviar_y_recibir_con_serializacion(memoria, chorro_de_envio,
+		tamanio_pedido_de_destruir_segmento_t_serializado(),
+		chorro_de_respuesta);
+}
+
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
@@ -196,6 +215,37 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	return OK;
 }
 
+resultado_t leer_de_memoria_con_serializacion(direccion pid,
+	direccion direccion, uint32_t bytes, void* buffer)
+{
+	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
+	cuerpo_del_mensaje.pid = pid;
+	cuerpo_del_mensaje.direccion_virtual = direccion;
+	cuerpo_del_mensaje.tamano = bytes;
+
+	char* chorro_de_envio = serializar_pedido_de_leer_de_memoria_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_pedido_de_leer_de_memoria_t_serializado());
+
+	if (_enviar_y_recibir_con_serializacion(memoria, chorro_de_envio,
+		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+		return FALLO_CREACION_DE_SEGMENTO;
+	}
+
+	respuesta_de_leer_de_memoria_t respuesta =
+		*deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
+
+	memcpy(buffer, respuesta.bytes_leido, sizeof(respuesta.bytes_leido)); // todo cambiar el sizeof por un campo mas en el struct
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
+}
+
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t bytes, void* buffer)
 {
@@ -209,6 +259,27 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 
 	return _enviar_y_recibir(memoria, &cuerpo_del_mensaje,
 		sizeof(pedido_de_escribir_en_memoria_t), &respuesta);
+}
+
+// todo agregar frees
+resultado_t escribir_en_memoria_con_serializacion(direccion pid,
+	direccion direccion, uint32_t bytes, void* buffer)
+{
+	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
+	cuerpo_del_mensaje.pid = pid;
+	cuerpo_del_mensaje.direccion_virtual = direccion;
+	cuerpo_del_mensaje.bytes_a_escribir = (char*) buffer;
+	cuerpo_del_mensaje.tamano = bytes;
+
+	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_pedido_de_escribir_en_memoria_t_serializado());
+
+	return _enviar_y_recibir_con_serializacion(memoria, chorro_de_envio,
+		tamanio_pedido_de_escribir_en_memoria_t_serializado(),
+		chorro_de_respuesta);
 }
 
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
@@ -229,6 +300,30 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		sizeof(pedido_con_resultado_t), &respuesta);
 }
 
+resultado_t informar_a_kernel_de_finalizacion_con_serializacion(tcb_t tcb,
+	resultado_t res)
+{
+	pedido_con_resultado_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.tcb = &tcb;
+	cuerpo_del_mensaje.resultado = res;
+
+	if (res == EXCEPCION_POR_INTERRUPCION) {
+		int32_t valor;
+		obtener_numero(&tcb, &valor);
+		cuerpo_del_mensaje.informacion = valor;
+	}
+
+	char* chorro_de_envio = serializar_pedido_con_resultado_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_pedido_con_resultado_t_serializado());
+
+	return _enviar_y_recibir_con_serializacion(kernel, chorro_de_envio,
+		tamanio_pedido_con_resultado_t_serializado(),
+		chorro_de_respuesta);
+}
+
 void cerrar_puertos()
 {
 	cerrar_liberar(memoria);
@@ -243,7 +338,7 @@ void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer)
 
 void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion)
 {
-	_obtener(tcb, instruccion, sizeof(instruccion));
+	_obtener(tcb, instruccion, sizeof(instruccion_t));
 }
 
 void obtener_registro(tcb_t* tcb, char* registro)
