@@ -43,7 +43,7 @@ resultado_t conectar_con_kernel();
  */
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
 
-resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum);
+resultado_t pedir_tcb_sin_serializacion(tcb_t* tcb, int32_t* quantum);
 
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento
@@ -53,7 +53,7 @@ resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum);
  */
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion);
 
-resultado_t crear_segmento_con_serializacion(direccion pid, uint32_t bytes, direccion* direccion);
+resultado_t crear_segmento_sinserializacion(direccion pid, uint32_t bytes, direccion* direccion);
 
 /*
  * @DESC: Le pide a memoria que destruya un segmento
@@ -63,7 +63,7 @@ resultado_t crear_segmento_con_serializacion(direccion pid, uint32_t bytes, dire
  */
 resultado_t destruir_segmento(direccion pid, direccion direccion);
 
-resultado_t destruir_segmento_con_serializacion(direccion pid, direccion direccion);
+resultado_t destruir_segmento_sin_serializacion(direccion pid, direccion direccion);
 
 /*
  * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
@@ -73,7 +73,7 @@ resultado_t destruir_segmento_con_serializacion(direccion pid, direccion direcci
  */
 resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
-resultado_t leer_de_memoria_con_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t leer_de_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
@@ -83,7 +83,7 @@ resultado_t leer_de_memoria_con_serializacion(direccion pid, direccion direccion
  */
 resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
-resultado_t escribir_en_memoria_con_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t escribir_en_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
@@ -93,7 +93,7 @@ resultado_t escribir_en_memoria_con_serializacion(direccion pid, direccion direc
  */
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
 
-resultado_t informar_a_kernel_de_finalizacion_con_serializacion(tcb_t tcb, resultado_t res);
+resultado_t informar_a_kernel_de_finalizacion_sin_serializacion(tcb_t tcb, resultado_t res);
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
