@@ -87,7 +87,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes,
 	char* chorro_de_envio = serializar_pedido_de_crear_segmento_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_pedido_de_crear_segmento_t_serializado());
+		tamanio_respuesta_de_crear_segmento_t_serializado());
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
@@ -117,7 +117,7 @@ resultado_t destruir_segmento(direccion pid,
 	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_pedido_de_destruir_segmento_t_serializado());
+		tamanio_respuesta_t_serializado());
 
 	return _enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
@@ -136,7 +136,7 @@ resultado_t leer_de_memoria(direccion pid,
 	char* chorro_de_envio = serializar_pedido_de_leer_de_memoria_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_pedido_de_leer_de_memoria_t_serializado());
+		tamanio_respuesta_de_leer_de_memoria_t_serializado());
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
@@ -169,7 +169,7 @@ resultado_t escribir_en_memoria(direccion pid,
 	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_pedido_de_escribir_en_memoria_t_serializado());
+		tamanio_respuesta_t_serializado());
 
 	return _enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(),
@@ -193,7 +193,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_pedido_con_resultado_t_serializado());
+		tamanio_respuesta_t_serializado());
 
 	return _enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta);
