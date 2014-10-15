@@ -26,6 +26,7 @@ resultado_t conectar_con_memoria()
 resultado_t conectar_con_kernel()
 {
 	return _conectar(&kernel, NULL, 4559);
+	// todo mandar mensaje con SOY_CPU
 }
 
 resultado_t _enviar_y_recibir(sock_t* socket,
@@ -176,6 +177,7 @@ resultado_t escribir_en_memoria(direccion pid,
 		chorro_de_respuesta);
 }
 
+// todo agregar frees
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
 	resultado_t res)
 {
@@ -196,10 +198,10 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
 void cerrar_puertos()
 {
 	cerrar_liberar(memoria);
-	cerrar_liberar(kernel);
+	cerrar_liberar(kernel); // todo agregar mensaje de DESCONEXION_CPU
 }
 
-void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer)
+void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer) // todo cambiar firma (primero tamano despues buffer)
 {
 	leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar);
 	tcb->pc = tcb->pc + bytes_a_leer;

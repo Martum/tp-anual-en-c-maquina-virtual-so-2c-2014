@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+// todo cambiar todos los fallos y errores y excepciones por ERROR_EN_EJECUCION
+
 /*
  * 	LOAD [Registro], [Numero]
  *
