@@ -26,6 +26,15 @@ typedef enum {
 	TOMA_RESULTADO = 203,
 	SOY_CPU = 204,		// Se envia al conectarse
 
+	// Servicios expuestos a la CPU
+	INTERRUPCION = 205,
+	ENTRADA_ESTANDAR = 206,
+	SALIDA_ESTANDAR = 207,
+	CREAR_HILO = 208,
+	JOIN = 209,
+	BLOQUEAR = 210,
+	DESPERTAR = 211,
+
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
 
@@ -105,6 +114,57 @@ typedef struct respuesta_de_leer_de_memoria {
 	resultado_t resultado;
 	char* bytes_leido;
 } respuesta_de_leer_de_memoria_t;
+
+// MENSAJES DE SERVICIOS EXPUESTOS A LA CPU
+
+typedef struct pedido_interrupcion {
+	flag_t flag;
+	tcb_t* tcb;
+	direccion direccion_de_memoria;
+} pedido_interrupcion_t;
+
+typedef struct pedido_entrada_estandar {
+	flag_t flag;
+	uint32_t pid;
+	uint16_t identificador_de_tipo;
+} pedido_entrada_estandar_t;
+
+typedef struct pedido_salida_estadar {
+	flag_t flag;
+	uint32_t pid;
+	uint32_t tamanio;
+	char* cadena_de_texto;
+} pedido_salida_estandar_t;
+
+typedef struct pedido_crear_hilo {
+	flag_t flag;
+	tcb_t* tcb;
+} pedido_crear_hilo_t;
+
+typedef struct pedido_join {
+	flag_t flag;
+	uint32_t tid_llamador;
+	uint32_t tid_esperador;
+} pedido_join_t;
+
+typedef struct pedido_bloquear {
+	flag_t flag;
+	tcb_t* tcb;
+	uint32_t identificador_de_recurso;
+} pedido_bloquear_t;
+
+typedef struct pedido_despertar {
+	flag_t flag;
+	uint32_t identificador_de_recurso;
+} pedido_despertar_t;
+
+// RESPUESTAS DE SERVICIOS EXPUESTOS A LA CPU
+
+typedef struct respuesta_entrada_estandar {
+	flag_t flag;
+	uint32_t tamanio;
+	char* cadena;
+} respuesta_entrada_estandar_t;
 
 /**
  * Mensaje es el chorro de bytes recibidos a traves del socket.
