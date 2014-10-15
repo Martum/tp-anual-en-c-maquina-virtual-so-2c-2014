@@ -15,7 +15,7 @@
 #include <commons/string.h>
 #include <commons/log.h>
 
-t_config* configs_msp;
+t_config* config_msp;
 uint32_t memoria_fisica_total;
 t_list* lista_procesos;
 t_list* lista_marcos;
@@ -24,17 +24,22 @@ t_list* lista_marcos;
 t_list* indice_paginas;
 
 void cargar_configuraciones(){
-	configs_msp = config_create("/utnso/workspace/tp-2014-2c-hardcodeameun4/msp/config_msp.txt");
+	config_msp = config_create("/msp/config_msp.txt");
 }
 
+void destruir_configuraciones(){
+	config_destroy(config_msp);
+}
+
+// /utnso/workspace/tp-2014-2c-hardcodeameun4/msp/
 uint32_t puerto(){
-	return config_get_int_value(configs_msp, "PUERTO");
+	return config_get_int_value(config_msp, "PUERTO");
 }
 
 uint32_t cantidad_memoria(){
 	// cambiar
-	//return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
-	return 20;
+	return config_get_int_value(config_msp, "CANTIDAD_MEMORIA");
+    //return 20;
 }
 
 uint32_t cantidad_swap(){
@@ -44,7 +49,7 @@ uint32_t cantidad_swap(){
 }
 
 char* algoritmo_sustitucion_de_paginas(){
-	return config_get_string_value(configs_msp, "SUST_PAGS");
+	return config_get_string_value(config_msp, "SUST_PAGS");
 }
 
 void inicializar_lista_procesos(){
