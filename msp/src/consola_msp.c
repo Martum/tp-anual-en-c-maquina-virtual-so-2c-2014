@@ -15,6 +15,7 @@
 #include "interfaz.h"
 #include "segmento.h"
 
+// #include <commons/log.h>
 
 int main(void){
 
@@ -24,13 +25,14 @@ int main(void){
 				log_debug(logger, "dale viejio");
 	*/
 
-	// printf("%d",cantidad_memoria());
-
 	cargar_configuraciones();
 	inicializar_lista_procesos();
 	inicializar_lista_marcos();
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
+
+//	printf("%d",cantidad_memoria());
+//	printf("%d",cantidad_swap());
 
 	printf("Bienvenido a la MSP! \n\n");
 	printf("Instrucciones disponibles: \n");
@@ -44,28 +46,18 @@ int main(void){
 	printf("Esperando instrucciones ... \n");
 
 
-
-	// PRUEBA DE ESCRITORIO
-/*
-	proceso_msp_t* proc = crear_proceso_msp();
-	crear_segmento(proc->pid,382);
-	crear_segmento(proc->pid,693);
-
-	proceso_msp_t* proc2 = crear_proceso_msp();
-	crear_segmento(proc2->pid,256);
-
-	tabla_paginas(proc2->pid);
-
-	listar_marcos();
-*/
 	/*
 	 * ACA VOY A PODER RECIBIR INSTRUCCIONES PARA EJECUTAR LAS FUNCIONES QUE TENGO
 	 *
 	 * TENGO QUE MATCHEAR CADA LLAMADO CON UNA FUNCION
 	 */
 
+/*	while(1){
 
+	}
+*/
 
+	destruir_configuraciones();
 	return 0;
 }
 

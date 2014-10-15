@@ -15,7 +15,7 @@
 #include <commons/string.h>
 #include <commons/log.h>
 
-t_config* config_msp;
+t_config* configs_msp;
 uint32_t memoria_fisica_total;
 t_list* lista_procesos;
 t_list* lista_marcos;
@@ -24,32 +24,32 @@ t_list* lista_marcos;
 t_list* indice_paginas;
 
 void cargar_configuraciones(){
-	config_msp = config_create("/msp/config_msp.txt");
+	configs_msp = config_create("/home/utnso/workspace/tp-2014-2c-hardcodeameun4/msp/configs_msp.cfg");
 }
 
 void destruir_configuraciones(){
-	config_destroy(config_msp);
+	config_destroy(configs_msp);
 }
 
 // /utnso/workspace/tp-2014-2c-hardcodeameun4/msp/
 uint32_t puerto(){
-	return config_get_int_value(config_msp, "PUERTO");
+	return config_get_int_value(configs_msp, "PUERTO");
 }
 
 uint32_t cantidad_memoria(){
 	// cambiar
-	return config_get_int_value(config_msp, "CANTIDAD_MEMORIA");
+	return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
     //return 20;
 }
 
 uint32_t cantidad_swap(){
 	// cambiar
-	// return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
-	return 5;
+	return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
+//	return 5;
 }
 
 char* algoritmo_sustitucion_de_paginas(){
-	return config_get_string_value(config_msp, "SUST_PAGS");
+	return config_get_string_value(configs_msp, "SUST_PAGS");
 }
 
 void inicializar_lista_procesos(){
@@ -58,7 +58,7 @@ void inicializar_lista_procesos(){
 
 void inicializar_lista_marcos(){
 	lista_marcos = list_create();
-	uint32_t cant_marcos = 20; cantidad_memoria();
+	uint32_t cant_marcos = cantidad_memoria();
 	int i = 0;
 
 	for(i=0;i<cant_marcos;i++){
