@@ -581,7 +581,7 @@ resultado_t take(tcb_t* tcb)
  */
 resultado_t xxxx(tcb_t* tcb)
 {
-	return TERMINO;
+	return FIN_EJECUCION;
 }
 
 // todo verificar que las instrucciones de sistema solo las pueda ejecutar el tcb k
