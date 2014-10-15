@@ -5,7 +5,8 @@
  *
  * 	Carga en el registro el número dado
  */
-resultado_t load(tcb_t* tcb) {
+resultado_t load(tcb_t* tcb)
+{
 	char registro;
 	int32_t numero;
 
@@ -20,7 +21,8 @@ resultado_t load(tcb_t* tcb) {
  *
  * 	Carga en el primer registro el valor de memoria apuntado por el segundo registro
  */
-resultado_t getm(tcb_t* tcb) { // creo que no esta bien
+resultado_t getm(tcb_t* tcb)
+{ // creo que no esta bien
 	char registro1;
 	char registro2;
 	int32_t valor;
@@ -29,7 +31,7 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
@@ -41,7 +43,8 @@ resultado_t getm(tcb_t* tcb) { // creo que no esta bien
  * 	Pone tantos bytes desde el segundo registro hacia la memoria
  * 		apuntada por el primer registro
  */
-resultado_t setm(tcb_t* tcb) {
+resultado_t setm(tcb_t* tcb)
+{
 	int32_t numero;
 	char registro1;
 	char registro2;
@@ -53,10 +56,10 @@ resultado_t setm(tcb_t* tcb) {
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	direccion direccion1 = valor1;
@@ -76,7 +79,8 @@ resultado_t setm(tcb_t* tcb) {
  *
  *	Copia el valor del segundo registro hacia el primero
  */
-resultado_t movr(tcb_t* tcb) {
+resultado_t movr(tcb_t* tcb)
+{
 	char registro1;
 	char registro2;
 	int32_t valor;
@@ -85,13 +89,14 @@ resultado_t movr(tcb_t* tcb) {
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro2, &valor)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
-resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) {
+resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
+{
 	char registro1;
 	char registro2;
 	int32_t valor1;
@@ -101,10 +106,10 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) 
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
@@ -116,9 +121,11 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t)) 
  * 	Suma el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t addr(tcb_t* tcb) {
+resultado_t addr(tcb_t* tcb)
+{
 
-	int32_t sumar(int32_t valor1, int32_t valor2) {
+	int32_t sumar(int32_t valor1, int32_t valor2)
+	{
 		return valor1 + valor2;
 	}
 
@@ -131,9 +138,11 @@ resultado_t addr(tcb_t* tcb) {
  * 	Resta el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t subr(tcb_t* tcb) {
+resultado_t subr(tcb_t* tcb)
+{
 
-	int32_t restar(int32_t valor1, int32_t valor2) {
+	int32_t restar(int32_t valor1, int32_t valor2)
+	{
 		return valor1 - valor2;
 	}
 
@@ -146,9 +155,11 @@ resultado_t subr(tcb_t* tcb) {
  * 	Multiplica el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t mulr(tcb_t* tcb) {
+resultado_t mulr(tcb_t* tcb)
+{
 
-	int32_t multiplicar(int32_t valor1, int32_t valor2) {
+	int32_t multiplicar(int32_t valor1, int32_t valor2)
+	{
 		return valor1 * valor2;
 	}
 
@@ -162,9 +173,11 @@ resultado_t mulr(tcb_t* tcb) {
  * 		con el del segundo registro.
  * 	El resultado de la operación se almacena en elregistro A.
  */
-resultado_t modr(tcb_t* tcb) {
+resultado_t modr(tcb_t* tcb)
+{
 
-	int32_t modulo(int32_t valor1, int32_t valor2) {
+	int32_t modulo(int32_t valor1, int32_t valor2)
+	{
 		return valor1 % valor2;
 	}
 
@@ -177,7 +190,8 @@ resultado_t modr(tcb_t* tcb) {
  * 	Divide el valor del primer registro con el del segundo registro.
  * 	El resultado de la operación se almacena en elregistro A.
  */
-resultado_t divr(tcb_t* tcb) {
+resultado_t divr(tcb_t* tcb)
+{
 	char registro1;
 	char registro2;
 	int32_t valor1;
@@ -187,10 +201,10 @@ resultado_t divr(tcb_t* tcb) {
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	if (valor2 == 0)
@@ -199,14 +213,15 @@ resultado_t divr(tcb_t* tcb) {
 	return actualizar_valor_en_registro(tcb, 'a', valor1 / valor2);
 }
 
-resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
+resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
+{
 	char registro;
 	int32_t valor;
 
 	obtener_registro(tcb, &registro);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
@@ -217,9 +232,11 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t)) {
  *
  * 	Incrementa una unidad al valor del registro.
  */
-resultado_t incr(tcb_t* tcb) {
+resultado_t incr(tcb_t* tcb)
+{
 
-	int32_t sumar_1(int32_t valor) {
+	int32_t sumar_1(int32_t valor)
+	{
 		return valor++;
 	}
 
@@ -231,9 +248,11 @@ resultado_t incr(tcb_t* tcb) {
  *
  * 	Decrementa una unidad al valor del registro.
  */
-resultado_t decr(tcb_t* tcb) {
+resultado_t decr(tcb_t* tcb)
+{
 
-	int32_t restar_1(int32_t valor) {
+	int32_t restar_1(int32_t valor)
+	{
 		return valor--;
 	}
 
@@ -241,7 +260,8 @@ resultado_t decr(tcb_t* tcb) {
 }
 
 resultado_t _funcion_comparacion(tcb_t* tcb,
-		int32_t comparador(int32_t, int32_t)) {
+	int32_t comparador(int32_t, int32_t))
+{
 	char registro1;
 	char registro2;
 	int32_t valor1;
@@ -251,10 +271,10 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_de_registro(tcb, registro1, &valor1)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 	if (obtener_valor_de_registro(tcb, registro2, &valor2)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
@@ -268,9 +288,11 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
  * 		De lo contrario el valor 0.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t comp(tcb_t* tcb) {
+resultado_t comp(tcb_t* tcb)
+{
 
-	int32_t comparador(int32_t valor1, int32_t valor2) {
+	int32_t comparador(int32_t valor1, int32_t valor2)
+	{
 		if (valor1 == valor2)
 			return 1;
 		return 0;
@@ -287,9 +309,11 @@ resultado_t comp(tcb_t* tcb) {
  * 		De lo contrario el valor 0.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t cgeq(tcb_t* tcb) {
+resultado_t cgeq(tcb_t* tcb)
+{
 
-	int32_t comparador(int32_t valor1, int32_t valor2) {
+	int32_t comparador(int32_t valor1, int32_t valor2)
+	{
 		if (valor1 >= valor2)
 			return 1;
 		return 0;
@@ -306,9 +330,11 @@ resultado_t cgeq(tcb_t* tcb) {
  * 		De lo contrario el valor 0.
  * 	El resultado de la operación se almacena en el registro A.
  */
-resultado_t cleq(tcb_t* tcb) {
+resultado_t cleq(tcb_t* tcb)
+{
 
-	int32_t comparador(int32_t valor1, int32_t valor2) {
+	int32_t comparador(int32_t valor1, int32_t valor2)
+	{
 		if (valor1 <= valor2)
 			return 1;
 		return 0;
@@ -323,7 +349,8 @@ resultado_t cleq(tcb_t* tcb) {
  * 	Altera el flujo de ejecución para ejecutar la instrucción apuntada por el registro.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
-resultado_t _goto(tcb_t* tcb) {
+resultado_t _goto(tcb_t* tcb)
+{
 	char registro;
 	int32_t valor;
 	direccion base_de_codigo;
@@ -332,13 +359,14 @@ resultado_t _goto(tcb_t* tcb) {
 	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	return actualizar_pc(tcb, base_de_codigo + valor);
 }
 
-resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
+resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
+{
 	int32_t offset;
 	int32_t valor;
 	direccion base_de_codigo;
@@ -360,9 +388,11 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t)) {
  * 		solo si el valor del registro A es 0.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
-resultado_t jmpz(tcb_t* tcb) {
+resultado_t jmpz(tcb_t* tcb)
+{
 
-	int32_t condicion(int32_t valor) {
+	int32_t condicion(int32_t valor)
+	{
 		return valor != 0;
 	}
 
@@ -376,9 +406,11 @@ resultado_t jmpz(tcb_t* tcb) {
  * 		solo si el valor del registro A no es 0.
  * 	El valor es el desplazamiento desde el inicio del programa.
  */
-resultado_t jpnz(tcb_t* tcb) {
+resultado_t jpnz(tcb_t* tcb)
+{
 
-	int32_t condicion(int32_t valor) {
+	int32_t condicion(int32_t valor)
+	{
 		return valor == 0;
 	}
 
@@ -398,8 +430,15 @@ resultado_t jpnz(tcb_t* tcb) {
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  * 	Notar que el hilo en cuestión debe bloquearse tras una interrupción.
  */
-resultado_t inte(tcb_t* tcb) {
+resultado_t inte(tcb_t* tcb)
+{
 	return EXCEPCION_POR_INTERRUPCION;
+
+	/*
+	 * Mandar un mensaje al kernel pidiendole que haga tal interrupcion
+	 * Esperar una respuesta con el tcb actualizados
+	 *
+	 */
 }
 
 /*
@@ -409,7 +448,8 @@ resultado_t inte(tcb_t* tcb) {
  * 		De ser desplazamiento positivo, se considera hacia la derecha.
  * 		De lo contrario hacia la izquierda.
  */
-resultado_t shif(tcb_t* tcb) {
+resultado_t shif(tcb_t* tcb)
+{
 	int32_t bits_a_desplazar;
 	char registro;
 	int32_t valor, valor_desplazado;
@@ -418,7 +458,7 @@ resultado_t shif(tcb_t* tcb) {
 	obtener_registro(tcb, &registro);
 
 	if (obtener_valor_de_registro(tcb, registro, &valor)
-			== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
 	if (bits_a_desplazar > 0) {
@@ -435,7 +475,8 @@ resultado_t shif(tcb_t* tcb) {
  *
  * 	Consume un ciclo del CPU sin hacer nada
  */
-resultado_t nopp(tcb_t* tcb) {
+resultado_t nopp(tcb_t* tcb)
+{
 	return OK;
 }
 
@@ -445,7 +486,8 @@ resultado_t nopp(tcb_t* tcb) {
  * 	Apila los primeros bytes, indicado por el número, del valor del registro hacia el stack.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
-resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
+resultado_t push(tcb_t* tcb)
+{ // TODO dar un vistazo porque no se si esta bien
 
 	/*
 	 CASO DE USO:
@@ -495,8 +537,9 @@ resultado_t push(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
  * 	Desapila los primeros bytes, indicado por el número, del stack hacia el registro.
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
-resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
-	// todo validar que numero no sea mayor que 4
+resultado_t take(tcb_t* tcb)
+{ // TODO dar un vistazo porque no se si esta bien
+// todo validar que numero no sea mayor que 4
 	char registro;
 	int32_t cantidad_de_bytes;
 	int32_t valor;
@@ -520,11 +563,11 @@ resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
 	valor = *(int32_t *) buffer;
 
 	/*
-		valor = buffer[0] |
-			((int32_t)buffer[1] << 8 ) |
-			((int32_t)buffer[2] << 16) |
-			((int32_t)buffer[3] << 24)
-	*/
+	 valor = buffer[0] |
+	 ((int32_t)buffer[1] << 8 ) |
+	 ((int32_t)buffer[2] << 16) |
+	 ((int32_t)buffer[3] << 24)
+	 */
 
 	actualizar_valor_en_registro(tcb, registro, valor);
 
@@ -536,7 +579,8 @@ resultado_t take(tcb_t* tcb) { // TODO dar un vistazo porque no se si esta bien
  *
  * 	Finaliza la ejecución.
  */
-resultado_t xxxx(tcb_t* tcb) {
+resultado_t xxxx(tcb_t* tcb)
+{
 	return TERMINO;
 }
 
@@ -550,14 +594,15 @@ resultado_t xxxx(tcb_t* tcb) {
  *	Crea en la MSP un nuevo segmento del tamaño especificado
  *		asociado al programa en ejecución.
  */
-resultado_t malc(tcb_t* tcb) {
+resultado_t malc(tcb_t* tcb)
+{
 	int32_t bytes;
 
 	obtener_valor_de_registro(tcb, 'a', &bytes);
 
 	direccion direccion;
 	if (crear_segmento(tcb->pid, bytes, &direccion)
-			== FALLO_CREACION_DE_SEGMENTO)
+		== FALLO_CREACION_DE_SEGMENTO)
 		return FALLO_CREACION_DE_SEGMENTO;
 
 	return actualizar_valor_en_registro(tcb, 'a', direccion);
@@ -570,7 +615,8 @@ resultado_t malc(tcb_t* tcb) {
  * 	Solo se podrá liberar memoria alocada por la instrucción de MALC.
  * 	Destruye en la MSP el segmento indicado en el registro A.
  */
-resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada sea por instruccion MALC
+resultado_t _free(tcb_t* tcb)
+{ // todo falta verificar que la memoria alocada sea por instruccion MALC
 	int32_t valor;
 
 	obtener_valor_de_registro(tcb, 'a', &valor);
@@ -588,8 +634,15 @@ resultado_t _free(tcb_t* tcb) { // todo falta verificar que la memoria alocada s
  * 	El mismo será almacenado en el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
-resultado_t innn(tcb_t* tcb) {
+resultado_t innn(tcb_t* tcb)
+{
 	return EXCEPCION_POR_INGRESO_TEXTO;
+
+	/*
+	 * Mandar mensaje a kernel diciendole que pida una cadena de texto
+	 * Esperar que kernel te devuelva la cadena
+	 *
+	 */
 }
 
 /*
@@ -600,8 +653,15 @@ resultado_t innn(tcb_t* tcb) {
  * 	La misma será almacenada en la posición de memoria apuntada por el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
-resultado_t innc(tcb_t* tcb) {
+resultado_t innc(tcb_t* tcb)
+{
 	return EXCEPCION_POR_INGRESO_TEXTO_CON_TAMANO;
+
+	/*
+	 * Mandar mensaje a kernel diciendole que pida una cadena de texto con determinado valor
+	 * Esperar que kernel te devuelva la cadena
+	 *
+	 */
 }
 
 /*
@@ -610,8 +670,15 @@ resultado_t innc(tcb_t* tcb) {
  * 	Imprime por consola del programa el número, con signo almacenado en el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
-resultado_t outn(tcb_t* tcb) {
+resultado_t outn(tcb_t* tcb)
+{
 	return EXCEPCION_POR_IMPRIMIR_TEXTO;
+
+	/*
+	 * Mandar mensaje a kernel diciendole que muestre un mensaje por pantalla
+	 * Esperar a que kernel te diga que salio bien
+	 *
+	 */
 }
 
 /*
@@ -621,8 +688,13 @@ resultado_t outn(tcb_t* tcb) {
  * 		que se encuentra en la direccion apuntada por el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
-resultado_t outc(tcb_t* tcb) {
+resultado_t outc(tcb_t* tcb)
+{
 	return EXCEPCION_POR_IMPRIMIR_TEXTO_CON_TAMANO;
+
+	/* Mandar mensaje a kernel diciendole que muestre un mensaje por pantalla
+	 * Esperar a que kernel te diga que salio bien
+	 */
 }
 
 /*
@@ -644,8 +716,14 @@ resultado_t outc(tcb_t* tcb) {
  * 			con el TCB recién generado.
  * 	De no tener espacio para crear el segmento de stack, deberá abortar el programa.
  */
-resultado_t crea(tcb_t* tcb) {
+resultado_t crea(tcb_t* tcb)
+{
 	return OK;
+
+	/*	Crear un tcb nuevo (sin el codigo)
+	 * 	Mandar tcb a kernel
+	 * 	Esperar que te devuelva un ok
+	 */
 }
 
 /*
@@ -655,8 +733,13 @@ resultado_t crea(tcb_t* tcb) {
  * 		el hilo con el identificador almacenado en el registro A haya finalizado.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
-resultado_t join(tcb_t* tcb) {
+resultado_t join(tcb_t* tcb)
+{
 	return EXCEPCION_POR_JOIN;
+
+	/* Mandar mensaje a kernel
+	 * Esperar que te devuelva un ok
+	 */
 }
 
 /*
@@ -667,8 +750,13 @@ resultado_t join(tcb_t* tcb) {
  * 	La evaluación y decisión de si el recurso está libre o no es hecha por
  * 		la llamada al sistema WAIT pre-compilada.
  */
-resultado_t blok(tcb_t* tcb) {
+resultado_t blok(tcb_t* tcb)
+{
 	return EXCEPCION_POR_BLOQUEO;
+
+	/* Mandar mensaje a kernel
+	 * Esperar que te devuelva un ok
+	 */
 }
 
 /*
@@ -678,11 +766,17 @@ resultado_t blok(tcb_t* tcb) {
  * 	La evaluación y decisión de si el recurso está libre o no es hecha por
  * 		la llamada al sistema SIGNAL pre-compilada.
  */
-resultado_t wake(tcb_t* tcb) {
+resultado_t wake(tcb_t* tcb)
+{
 	return EXCEPCION_POR_DESBLOQUEO;
+
+	/* Mandar mensaje a kernel
+	 * Esperar que te devuelva un ok
+	 */
 }
 
-void cargar_diccionario_de_instrucciones(t_dictionary* dic) {
+void cargar_diccionario_de_instrucciones(t_dictionary* dic)
+{
 	dictionary_put(dic, "LOAD", load);
 	dictionary_put(dic, "GETM", getm);
 	dictionary_put(dic, "SETM", setm);
