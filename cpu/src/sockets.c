@@ -184,12 +184,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
 	cuerpo_del_mensaje.tcb = &tcb;
 	cuerpo_del_mensaje.resultado = res;
 
-	if (res == EXCEPCION_POR_INTERRUPCION) {
-		int32_t valor;
-		obtener_numero(&tcb, &valor);
-		cuerpo_del_mensaje.informacion = valor;
-	}
-
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
@@ -342,12 +336,6 @@ resultado_t informar_a_kernel_de_finalizacion_sin_serializacion(tcb_t tcb,
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.tcb = &tcb;
 	cuerpo_del_mensaje.resultado = res;
-
-	if (res == EXCEPCION_POR_INTERRUPCION) {
-		int32_t valor;
-		obtener_numero(&tcb, &valor);
-		cuerpo_del_mensaje.informacion = valor;
-	}
 
 	return _enviar_y_recibir_sin_serializacion(kernel, &cuerpo_del_mensaje,
 		sizeof(pedido_con_resultado_t), &respuesta);
