@@ -10,7 +10,7 @@ int32_t main(int32_t argc, char** argv) {
 		return 0;
 	}
 
-	printf("Se pudo conectar a memoria y kernel\n");
+	printf("Se pudo conectar a memoria y kernel\n"); // todo convertir a log
 
 	tcb_t tcb;
 	t_dictionary* dic_instrucciones = dictionary_create();
@@ -25,7 +25,7 @@ int32_t main(int32_t argc, char** argv) {
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
 			dictionary_destroy(dic_instrucciones);
 			cerrar_puertos();
-			printf("ERROR FALTAL: Fallo pedido de tcb\n");
+			printf("ERROR FALTAL: Fallo pedido de tcb\n");  // todo no deberia romper sino avisar a kernel
 			return 0;
 		}
 		printf("%d\n", quantum);
@@ -36,7 +36,7 @@ int32_t main(int32_t argc, char** argv) {
 			dictionary_destroy(dic_instrucciones);
 			cerrar_puertos();
 			printf("ERROR FALTAL: Quantum invalido. Aborto\n");
-			break;
+			break; // todo no deberia romper si no avisar a kernel
 		} // aca paso algo raro porque no deberia mandarte un quantum negativo o igual a 0
 
 		while ((quantum > 0 || quantum == -1) && res == OK) { // Quantum -1 significa que es el kernel
