@@ -55,7 +55,7 @@ typedef struct respuesta {
 typedef struct pedido_con_resultado {
 	flag_t flag;
 	resultado_t resultado;
-	tcb_t tcb;
+	tcb_t* tcb;
 	int32_t informacion;
 } pedido_con_resultado_t;
 
@@ -76,6 +76,8 @@ typedef struct pedido_de_destruir_segmento {
 	uint32_t pid;
 	direccion direccion_virtual;
 } pedido_de_destruir_segmento_t;
+
+//// hasta aca llegue ////
 
 typedef struct pedido_de_leer_de_memoria {
 	flag_t flag;
@@ -124,5 +126,37 @@ uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado();
 pedido_t* deserializar_pedido_t(char*);
 char* serializar_pedido_t(pedido_t*);
 uint32_t tamanio_pedido_t_serializado();
+
+respuesta_t* deserializar_respuesta_t(char*);
+char* serializar_respuesta_t(respuesta_t*);
+uint32_t tamanio_respuesta_t_serializado();
+
+pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char*);
+char* serializar_pedido_con_resultado_t(pedido_con_resultado_t*);
+uint32_t tamanio_pedido_con_resultado_t_serializado();
+
+pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char*);
+char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t*);
+uint32_t tamanio_pedido_de_crear_segmento_t_serializado();
+
+pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(char*);
+char* serializar_pedido_de_destruir_segmento_t(pedido_de_destruir_segmento_t*);
+uint32_t tamanio_pedido_de_destruir_segmento_t_serializado();
+
+pedido_de_leer_de_memoria_t* deserializar_pedido_de_leer_de_memoria_t(char*);
+char* serializar_pedido_de_leer_de_memoria_t(pedido_de_leer_de_memoria_t*);
+uint32_t tamanio_pedido_de_leer_de_memoria_t_serializado();
+
+pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(char*);
+char* serializar_pedido_de_escribir_en_memoria_t(pedido_de_escribir_en_memoria_t*);
+uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado();
+
+pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(char*);
+char* serializar_pedido_de_destruir_segmento_t(pedido_de_destruir_segmento_t*);
+uint32_t tamanio_pedido_de_destruir_segmento_t_serializado();
+
+respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(char*);
+char* serializar_respuesta_de_leer_de_memoria_t(respuesta_de_leer_de_memoria_t*);
+uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado();
 
 #endif /* MENSAJES_H_ */

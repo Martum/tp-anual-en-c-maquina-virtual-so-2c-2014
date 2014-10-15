@@ -31,9 +31,9 @@ void quitar_de_exec(tcb_t* tcb);
 
 void quitar_de_block(tcb_t* tcb);
 
-void agregar_a_cola_recurso(uint32_t recurso, tcb_t* tcb);
+void agregar_a_cola_recurso(char* recurso, tcb_t* tcb);
 
-tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso);
+tcb_t* quitar_primero_de_cola_recurso(char* recurso);
 
 bool hay_hilo_km_ready();
 

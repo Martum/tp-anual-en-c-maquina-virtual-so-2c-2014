@@ -43,6 +43,8 @@ resultado_t conectar_con_kernel();
  */
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
 
+resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum);
+
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento
  * @RETURNS:
