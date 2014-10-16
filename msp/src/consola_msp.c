@@ -43,7 +43,7 @@ int main(void){
 	printf(" - Tabla de Segmentos \n");
 	printf(" - Tabla de Paginas: pid \n");
 	printf(" - Listar Marcos \n\n");
-	printf("Esperando instrucciones ... \n");
+	printf("Esperando instrucciones ... \n\n");
 
 	_dar_instrucciones();
 
@@ -75,41 +75,50 @@ void _dar_instrucciones(){
 int _matcheo_cadena_con_funcion(char *cadena){
 
 	// obtengo el nombre de la funcion
-	char** nombre_funcion = string_split(cadena, ":");
+	char** funcion = string_split(cadena, ":");
 
-// 	printf("%s",nombre_funcion[0]);
+ 	char* nombre_funcion = funcion[0];
+ 	char* lista_parametros = funcion[1];
 
-	if(strcmp(nombre_funcion[0],"Crear Segmento")==0){
-		char** parametros = string_split(nombre_funcion[1], ",");
-		crear_segment(atoi(parametros[0]), atoi(parametros[1]));
+	if(strcmp(nombre_funcion,"Crear Segmento")==0){
+		char** parametros = string_split(lista_parametros, ",");
+		crear_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
 	}
 
-	if(strcmp(nombre_funcion[0],"Destruir Segmento")==0){
-
+	if(strcmp(nombre_funcion,"Destruir Segmento")==0){
+		char** parametros = string_split(lista_parametros, ",");
+		destruir_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
 	}
 
-	if(strcmp(nombre_funcion[0],"Escribir Memoria")==0){
-
-	}
-
-	if(strcmp(nombre_funcion[0],"Leer Memoria")==0){
-
-	}
-
-	if(strcmp(nombre_funcion[0],"Tabla de Segmentos")==0){
+	if(strcmp(nombre_funcion,"Escribir Memoria")==0){
 
 	}
 
-	if(strcmp(nombre_funcion[0],"Tabla de Paginas")==0){
+	if(strcmp(nombre_funcion,"Leer Memoria")==0){
 
 	}
 
-	if(strcmp(nombre_funcion[0],"Listar Marcos")==0){
+	if(strcmp(nombre_funcion,"Tabla de Segmentos")==0){
 
 	}
 
+	if(strcmp(nombre_funcion,"Tabla de Paginas")==0){
+
+	}
+
+	if(strcmp(nombre_funcion,"Listar Marcos")==0){
+
+	}
 
 	return 1;
+}
+
+int _parametro_int(char* param){
+	return atoi(string_substring_from(param,1));
+}
+
+char* _parametro_string(char* param){
+	return string_substring_from(param,1);
 }
 
 void crear_segment(uint32_t pid, uint32_t tamanio){
