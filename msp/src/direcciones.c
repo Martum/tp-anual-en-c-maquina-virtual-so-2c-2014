@@ -14,10 +14,6 @@
 
 bool memoria_invalida(uint32_t pid, uint32_t direccion_logica)
 {
-	//ACA PUEDE LLEGAR A ROMPER SI LA FUNCION NO DEVUELVE NULL COMO SE ESPERA QUE HAGA
-	//NO SE PUEDE PROBAR EN ESTA INSTANCIA POR ESO SE DEJA A LA SUERTE
-	//EN CADA IF PASA LO MISMO
-
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 	if(proceso != NULL)
 	{
@@ -49,10 +45,31 @@ bool memoria_invalida(uint32_t pid, uint32_t direccion_logica)
 	return true;
 }
 
-bool excede_limite_segmento(uint32_t direccion_logica, uint32_t tamanio)
+bool excede_limite_segmento(uint32_t pid, uint32_t direccion_logica, uint32_t tamanio)
 {
-	//Tengo que cambiar todo
-	return (direccion_logica>>20) < ((direccion_logica+tamanio)>>20);
+	//Desarmo la direccion logica y obtengo el proceso, el segmento, la pagina y el desplazamiento
+	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+	segmento_t* segmento= buscar_segmento_segun_id_en_lista_segmentos(direccion_logica>>20, proceso->segmentos);
+	uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;
+	uint16_t desplazamiento = div(direccion_logica,0x100).rem;
+
+
+	//Checkeo que si no entra en una pagina, haya otras paginas donde pueda entrar.
+	if((desplazamiento+tamanio)>256)
+	{
+		uint32_t tamanio_restante= (tamanio+desplazamiento)-256;
+		while(tamanio_restante>0)
+		{
+			if(!hay_siguiente_pagina(id_pagina, segmento->paginas))
+			{
+				return true;
+			}
+			tamanio_restante= (tamanio_restante)-4096;
+
+		}
+
+	}
+	return false;
 }
 
 uint32_t obtener_base_marco(uint32_t pid, direccion direccion_logica)

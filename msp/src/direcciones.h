@@ -17,7 +17,7 @@
 bool memoria_invalida(uint32_t pid, uint32_t direccion_logica);
 
 //Checkea si al sumarle el tamanio a la direccion se supera el limite del segmento
-bool excede_limite_segmento(uint32_t direccion_logica, uint32_t tamanio);
+bool excede_limite_segmento(uint32_t pid, uint32_t direccion_logica, uint32_t tamanio);
 
 //A partir del pid y la direccion logica devuelve la base del marco en el que se encuentra
 // el dato pedido
