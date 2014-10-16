@@ -74,3 +74,6 @@ void tabla_paginas(uint32_t);
  * info relacionada a a los algorimos de reemplazo de paginas (lru y clock)
  */
 void listar_marcos();
+
+
+void _dar_instrucciones();

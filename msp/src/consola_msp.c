@@ -5,9 +5,9 @@
  *      Author: utnso
  */
 #include <stdlib.h>
-#include "estructuras.h"
 #include <stdio.h>
-
+#include <string.h>
+#include "estructuras.h"
 #include "consola_msp.h"
 #include "proceso_msp.h"
 #include "configuraciones.h"
@@ -52,13 +52,25 @@ int main(void){
 	 * TENGO QUE MATCHEAR CADA LLAMADO CON UNA FUNCION
 	 */
 
-/*	while(1){
+	_dar_instrucciones();
 
-	}
-*/
 
 	destruir_configuraciones();
 	return 0;
+}
+
+void _dar_instrucciones(){
+	char cadena[350] = "";
+
+	scanf("%[^\n]%*c",cadena);
+
+	if(strcmp(cadena,"Cerrar")== 0){
+		printf("Cerrando consola MSP ... \n");
+		return;
+	}else{
+		printf("la cadena es: %s \n", cadena);
+		_dar_instrucciones();
+	}
 }
 
 
@@ -112,4 +124,5 @@ void listar_marcos(){
 	}
 	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
 }
+
 

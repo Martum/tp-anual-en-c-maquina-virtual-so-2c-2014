@@ -31,7 +31,6 @@ void destruir_configuraciones(){
 	config_destroy(configs_msp);
 }
 
-// /utnso/workspace/tp-2014-2c-hardcodeameun4/msp/
 uint32_t puerto(){
 	return config_get_int_value(configs_msp, "PUERTO");
 }
