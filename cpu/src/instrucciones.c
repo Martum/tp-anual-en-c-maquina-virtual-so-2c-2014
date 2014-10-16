@@ -671,7 +671,7 @@ resultado_t innn(tcb_t* tcb)
 
 	comunicar_entrada_estandar(tcb, 31, buffer);
 
-	int32_t numero_ingresado = *buffer;
+	int32_t numero_ingresado = *buffer; // todo probar esto que no se si funciona
 
 	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 }
@@ -686,13 +686,16 @@ resultado_t innn(tcb_t* tcb)
  */
 resultado_t innc(tcb_t* tcb)
 {
-	return EXCEPCION_POR_INGRESO_TEXTO_CON_TAMANO;
+	int32_t valor_del_registro;
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro);
 
-	/*
-	 * Mandar mensaje a kernel diciendole que pida una cadena de texto con determinado valor
-	 * Esperar que kernel te devuelva la cadena
-	 *
-	 */
+	char* buffer = malloc(valor_del_registro);
+
+	comunicar_entrada_estandar(tcb, valor_del_registro, buffer);
+
+	int32_t numero_ingresado = *buffer; // todo probar esto que no se si funciona
+
+	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 }
 
 /*
