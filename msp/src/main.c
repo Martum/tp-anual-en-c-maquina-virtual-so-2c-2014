@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <pthread.h>
+
+#include "main.h"
 #include "estructuras.h"
 #include "configuraciones.h"
 #include "consola_msp.h"
@@ -19,6 +22,22 @@ int main(void){
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
 
+	// Creo hilos
+	pthread_t consola_msp_thread;
+	pthread_create(&consola_msp_thread, NULL, escuchar_consola_msp, NULL);
+	pthread_t conexiones_cpus_thread;
+	pthread_create(&conexiones_cpus_thread, NULL, escuchar_cpus, NULL);
+
+	// Esperamos a que ambos terminen
+	pthread_join(consola_msp_thread, NULL);
+	pthread_join(conexiones_cpus_thread, NULL);
+
+	destruir_configuraciones();
+	return 0;
+}
+
+void* escuchar_consola_msp(void* otro_ente)
+{
 	printf("Bienvenido a la MSP! \n\n");
 	printf("Instrucciones disponibles: \n");
 	printf(" - Crear Segmento: pid, tamaño \n");
@@ -33,6 +52,12 @@ int main(void){
 
 	_dar_instrucciones_por_consola();
 
-	destruir_configuraciones();
-	return 0;
+	return NULL;
+}
+
+void* escuchar_cpus(void* otro_ente)
+{
+	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
+
+	return NULL;
 }
