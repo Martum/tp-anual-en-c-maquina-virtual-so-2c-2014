@@ -119,4 +119,11 @@ void obtener_registro(tcb_t* tcb, char* registro);
  */
 void obtener_numero(tcb_t* tcb, int32_t* numero);
 
+void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer);
+void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar, char* buffer);
+void comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
+void comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador);
+void comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
+void comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
+
 #endif /* MEMORIA_H_ */
