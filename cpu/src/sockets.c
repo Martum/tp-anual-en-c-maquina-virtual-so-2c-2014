@@ -29,8 +29,8 @@ resultado_t conectar_con_kernel()
 	// todo mandar mensaje con SOY_CPU
 }
 
-resultado_t _enviar_y_recibir(sock_t* socket,
-	char* chorro_a_enviar, uint32_t len_a_enviar, char* respuesta)
+resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
+	uint32_t len_a_enviar, char* respuesta)
 {
 
 	// ENVIO EL MENSAJE
@@ -77,8 +77,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	return OK;
 }
 
-resultado_t crear_segmento(direccion pid, uint32_t bytes,
-	direccion* direccion)
+resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 {
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
@@ -106,9 +105,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes,
 	return OK;
 }
 
-// todo agregar frees
-resultado_t destruir_segmento(direccion pid,
-	direccion direccion)
+resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
@@ -117,16 +114,22 @@ resultado_t destruir_segmento(direccion pid,
 
 	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
 		&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(
-		tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
-	return _enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
-		chorro_de_respuesta);
+		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		return FALLO_DESTRUCCION_DE_SEGMENTO;
+	}
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-resultado_t leer_de_memoria(direccion pid,
-	direccion direccion, uint32_t bytes, void* buffer)
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
+	void* buffer)
 {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
@@ -156,9 +159,8 @@ resultado_t leer_de_memoria(direccion pid,
 	return OK;
 }
 
-// todo agregar frees
-resultado_t escribir_en_memoria(direccion pid,
-	direccion direccion, uint32_t bytes, void* buffer)
+resultado_t escribir_en_memoria(direccion pid, direccion direccion,
+	uint32_t bytes, void* buffer)
 {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
@@ -169,17 +171,21 @@ resultado_t escribir_en_memoria(direccion pid,
 
 	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
 		&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(
-		tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
-	return _enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(),
-		chorro_de_respuesta);
+		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		return FALLO_ESCRITURA_EN_MEMORIA;
+	}
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-// todo agregar frees
-resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
-	resultado_t res)
+resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -188,11 +194,18 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb,
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(
-		tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
-	return _enviar_y_recibir(kernel, chorro_de_envio,
-		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta);
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
+		tamanio_pedido_con_resultado_t_serializado(),
+		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		return FALLO_INFORME_A_KERNEL;
+	}
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
 void cerrar_puertos()
@@ -201,9 +214,11 @@ void cerrar_puertos()
 	cerrar_liberar(kernel); // todo agregar mensaje de DESCONEXION_CPU
 }
 
-void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer) // todo cambiar firma (primero tamano despues buffer)
+// todo cambiar firma (primero tamano despues buffer)
+void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer)
 {
 	leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar);
+	// TODO: validacion
 	tcb->pc = tcb->pc + bytes_a_leer;
 }
 
@@ -253,8 +268,8 @@ resultado_t pedir_tcb_sin_serializacion(tcb_t* tcb, int32_t* quantum)
 	respuesta_de_nuevo_tcb_t respuesta;
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
-	if (_enviar_y_recibir_sin_serializacion(kernel, &cuerpo_del_mensaje, sizeof(pedido_t),
-		&respuesta) == FALLO_COMUNICACION) {
+	if (_enviar_y_recibir_sin_serializacion(kernel, &cuerpo_del_mensaje,
+		sizeof(pedido_t), &respuesta) == FALLO_COMUNICACION) {
 		return FALLO_PEDIDO_DE_TCB;
 	}
 

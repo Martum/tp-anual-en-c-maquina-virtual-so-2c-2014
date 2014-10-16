@@ -516,8 +516,7 @@ void _push(int32_t cantidad_de_bytes, unsigned char bytes[4], tcb_t* tcb)
  * 	Modifica el valor del registro cursor de stack de forma acorde.
  */
 resultado_t push(tcb_t* tcb)
-{ // TODO dar un vistazo porque no se si esta bien
-
+{
 	/*
 	 CASO DE USO:
 
@@ -641,7 +640,9 @@ resultado_t malc(tcb_t* tcb)
  * 	Destruye en la MSP el segmento indicado en el registro A.
  */
 resultado_t _free(tcb_t* tcb)
-{ // todo falta verificar que la memoria alocada sea por instruccion MALC
+{
+	// todo falta verificar que la memoria alocada sea por instruccion MALC
+
 	int32_t valor_del_registro;
 
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
