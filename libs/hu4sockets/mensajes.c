@@ -409,4 +409,236 @@ uint32_t tamanio_respuesta_de_crear_segmento_t_serializado()
 	return t;
 }
 
-// FIN DE PEDIDO DE DESTRUIR SEGMETNO
+// FIN DE PEDIDO DE CREAR SEGMENTO
+
+
+// COMIENZO DE RESPUESTA DE CREAR SEGMENTO
+
+char* serializar_pedido_interrupcion_t(
+	pedido_interrupcion_t* pedido)
+{
+	char* bytes = malloc(tamanio_respuesta_de_crear_segmento_t_serializado());
+
+	return bytes;
+}
+
+pedido_interrupcion_t* deserializar_pedido_interrupcion_t(
+	char* chorro)
+{
+	pedido_interrupcion_t* pedido_destruir_segmento = malloc(
+		sizeof(respuesta_de_crear_segmento_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_interrupcion_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE INTERRUPCION
+
+
+// COMIENZO DE PEDIDO DE ENTRADA ESTANDAR
+
+char* serializar_pedido_entrada_estandar_t(
+	pedido_entrada_estandar_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_entrada_estandar_t_serializado());
+
+	return bytes;
+}
+
+pedido_entrada_estandar_t* deserializar_pedido_entrada_estandar_t(
+	char* chorro)
+{
+	pedido_entrada_estandar_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_entrada_estandar_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_entrada_estandar_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE ENTRADA ESTANDAR
+
+
+// COMIENZO DE PEDIDO DE SALIDA ESTANDAR
+
+char* serializar_pedido_salida_estandar_t(
+	pedido_salida_estandar_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_salida_estandar_t_serializado());
+
+	return bytes;
+}
+
+pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(
+	char* chorro)
+{
+	pedido_salida_estandar_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_salida_estandar_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_salida_estandar_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE SALIDA ESTANDAR
+
+
+// COMIENZO DE PEDIDO DE CREAR HILO
+
+char* serializar_pedido_crear_hilo_t(
+	pedido_crear_hilo_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_crear_hilo_t_serializado());
+
+	return bytes;
+}
+
+pedido_crear_hilo_t* deserializar_pedido_crear_hilo_t(
+	char* chorro)
+{
+	pedido_crear_hilo_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_crear_hilo_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_crear_hilo_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE CREAR HILO
+
+
+// COMIENZO DE PEDIDO DE JOIN
+
+char* serializar_pedido_join_t(
+	pedido_join_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_join_t_serializado());
+
+	return bytes;
+}
+
+pedido_join_t* deserializar_pedido_join_t(
+	char* chorro)
+{
+	pedido_join_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_join_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_join_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE JOIN
+
+
+// COMIENZO DE PEDIDO DE BLOQUEAR
+
+char* serializar_pedido_bloquear_t(
+	pedido_bloquear_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_bloquear_t_serializado());
+
+	return bytes;
+}
+
+pedido_bloquear_t* deserializar_pedido_bloquear_t(
+	char* chorro)
+{
+	pedido_bloquear_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_bloquear_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_bloquear_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE BLOQUEAR
+
+
+// COMIENZO DE PEDIDO DE DESPERTAR
+
+char* serializar_pedido_despertar_t(
+	pedido_despertar_t* pedido)
+{
+	char* bytes = malloc(tamanio_pedido_despertar_t_serializado());
+
+	return bytes;
+}
+
+pedido_despertar_t* deserializar_pedido_despertar_t(
+	char* chorro)
+{
+	pedido_despertar_t* pedido_destruir_segmento = malloc(
+		sizeof(pedido_despertar_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_pedido_despertar_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO DE DESPERTAR
+
+
+// COMIENZO DE RESPUESTA DE ENTRADA ESTANDAR
+
+char* serializar_respuesta_entrada_estandar_t(
+	respuesta_entrada_estandar_t* pedido)
+{
+	char* bytes = malloc(tamanio_respuesta_entrada_estandar_t_serializado());
+
+	return bytes;
+}
+
+respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(
+	char* chorro)
+{
+	respuesta_entrada_estandar_t* pedido_destruir_segmento = malloc(
+		sizeof(respuesta_entrada_estandar_t));
+
+	return pedido_destruir_segmento;
+}
+
+uint32_t tamanio_respuesta_entrada_estandar_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE RESPUESTA DE ENTRADA ESTANDAR

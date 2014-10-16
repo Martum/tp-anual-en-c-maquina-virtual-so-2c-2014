@@ -219,4 +219,36 @@ respuesta_de_crear_segmento_t* deserializar_respuesta_de_crear_segmento_t(char*)
 char* serializar_respuesta_de_crear_segmento_t(respuesta_de_crear_segmento_t*);
 uint32_t tamanio_respuesta_de_crear_segmento_t_serializado();
 
+pedido_interrupcion_t* deserializar_pedido_interrupcion_t(char*);
+char* serializar_pedido_interrupcion_t(pedido_interrupcion_t*);
+uint32_t tamanio_pedido_interrupcion_t_serializado();
+
+pedido_entrada_estandar_t* deserializar_pedido_entrada_estandar_t(char*);
+char* serializar_pedido_entrada_estandar_t(pedido_entrada_estandar_t*);
+uint32_t tamanio_pedido_entrada_estandar_t_serializado();
+
+pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(char*);
+char* serializar_pedido_salida_estandar_t(pedido_salida_estandar_t*);
+uint32_t tamanio_pedido_salida_estandar_t_serializado();
+
+pedido_crear_hilo_t* deserializar_pedido_crear_hilo_t(char*);
+char* serializar_pedido_crear_hilo_t(pedido_crear_hilo_t*);
+uint32_t tamanio_pedido_crear_hilo_t_serializado();
+
+pedido_join_t* deserializar_pedido_join_t(char*);
+char* serializar_pedido_join_t(pedido_join_t*);
+uint32_t tamanio_pedido_join_t_serializado();
+
+pedido_bloquear_t* deserializar_pedido_bloquear_t(char*);
+char* serializar_pedido_bloquear_t(pedido_bloquear_t*);
+uint32_t tamanio_pedido_bloquear_t_serializado();
+
+pedido_despertar_t* deserializar_pedido_despertar_t(char*);
+char* serializar_pedido_despertar_t(pedido_despertar_t*);
+uint32_t tamanio_pedido_despertar_t_serializado();
+
+respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(char*);
+char* serializar_respuesta_entrada_estandar_t(respuesta_entrada_estandar_t*);
+uint32_t tamanio_respuesta_entrada_estandar_t_serializado();
+
 #endif /* MENSAJES_H_ */
