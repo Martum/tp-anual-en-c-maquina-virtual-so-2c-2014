@@ -12,12 +12,17 @@
 #define MENSAJES_H_
 
 typedef enum {
+	// Mensajes del Kernel a Todos: 51 -> 100
+	MENSAJE_INCOMPLETO = 51,
+	RECIBIDO_OK = 52,
+
 	// Mensajes de la Consola al Kernel: 101 -> 150
 	SOY_PROGRAMA = 101,	// Se envia al conectarse
 	TERMINAR_CONEXION = 102,
 
 	// Mensajes del Kernel a la Consola: 151 -> 200
 	BIENVENIDO = 151,		// Se envia como respuesta a SOY_PROGRAMA (101) o a SOY_CPU (204)
+	SIN_MEMORIA = 152,
 
 
 	// Mensajes del CPU al Kernel: 201 -> 250

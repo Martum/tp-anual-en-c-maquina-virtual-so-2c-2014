@@ -15,10 +15,11 @@
 #include "configuraciones.h"
 
 typedef enum {
-	OK,
-	SIN_MEMORIA,	// Sin memoria para el programa
-	OTROS_ERRORES,
-	NO_SE_ENVIO_CODIGO
+	BOK,
+	BSIN_MEMORIA,	// Sin memoria para el programa
+	BOTROS_ERRORES,
+	BNO_SE_ENVIO_CODIGO,
+	BMENSAJE_INCOMPLETO
 
 } errores_t;
 
@@ -68,22 +69,27 @@ int main(int argc, char **argv)
 
 	switch(e)
 	{
-		case SIN_MEMORIA:
+		case BSIN_MEMORIA:
 			printf("No hay memoria disponible");
 			salida = -3;
 			break;
 
-		case OTROS_ERRORES:
+		case BOTROS_ERRORES:
 			printf("Ocurrio un error desconocido");
 			salida = -4;
 			break;
 
-		case NO_SE_ENVIO_CODIGO:
+		case BNO_SE_ENVIO_CODIGO:
 			printf("No se pudo enviar el codigo");
 			salida = -5;
 			break;
 
-		case OK:
+		case BMENSAJE_INCOMPLETO:
+			printf("No se recibio el mensaje completamente");
+			salida = -6; //TODO: Aca convendria reenviar...
+			break;
+
+		case BOK:
 			// TODO: Creamos THREAD para escuchar al kernel
 			free(codigo_beso);
 
@@ -122,32 +128,54 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	conectar(socket_kernel);
 
 	// Enviamos mensaje de identificacion
-	char* mensaje = malloc(sizeof(flag_t));
+	char* mensaje = malloc(tamanio_flagt());
 	uint32_t len;
 	flag_t f = SOY_PROGRAMA;
-	memcpy(mensaje, &f, sizeof(flag_t));
+	memcpy(mensaje, &f, tamanio_flagt());
 
 	enviar(socket_kernel, mensaje, &len);
 	free(mensaje);
 
 	// Recibimos la bienvenida
 	recibir(socket_kernel, &mensaje, &len);
-	memcpy(&f, mensaje, sizeof(flag_t));
+	memcpy(&f, mensaje, tamanio_flagt());
 
 	if(f != BIENVENIDO)
 	{// Si no somos bienvenidos
 		free(mensaje);
-		return OTROS_ERRORES;
+		return BOTROS_ERRORES;
 	}
 
 	// Enviamos el codigo BESO
 	if(enviar(socket_kernel, codigo_beso, &size) == -1)
 	{
 		free(mensaje);
-		abortar_ejecucion();
-		return NO_SE_ENVIO_CODIGO;
+		return BNO_SE_ENVIO_CODIGO;
+	}
+
+	// Recibimos la respuesta
+	recibir(socket_kernel, &mensaje, &len);
+	memcpy(&f, mensaje, tamanio_flagt());
+
+	errores_t salida;
+	switch(f)
+	{
+		case SIN_MEMORIA:
+			salida = BSIN_MEMORIA;
+			break;
+
+		case MENSAJE_INCOMPLETO:
+			salida = BMENSAJE_INCOMPLETO;
+			break;
+
+		case RECIBIDO_OK:
+			salida = BOK;
+			break;
+
+		default:
+			break;
 	}
 
 	free(mensaje);
-	return OK;
+	return salida;
 }

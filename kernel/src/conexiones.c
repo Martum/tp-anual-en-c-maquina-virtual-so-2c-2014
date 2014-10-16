@@ -97,29 +97,52 @@ void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 		*mayor_fd = nuevo_fd;
 }
 
-void _dar_bienvenida(sock_t* nueva_conexion)
+void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
-	// Respondemos con BIENVENIDA
 	char* respuesta = malloc(tamanio_flagt());
-	flag_t resp = BIENVENIDO;
+	flag_t resp = flag;
 	uint32_t i = tamanio_flagt();
 
 	memcpy(respuesta, &resp, tamanio_flagt());
 
-	enviar(nueva_conexion, respuesta, &i);
+	enviar(conxion, respuesta, &i);
 
 	free(respuesta);
-
 }
 
-void _informar_mensaje_incompleto(int32_t fd)
+/**
+ * Se da la bienvenida al Proceso o al CPU
+ */
+void _dar_bienvenida(sock_t* nueva_conexion)
 {
-	//TODO: Programar
+	// Respondemos con BIENVENIDA
+	_enviar_flagt(nueva_conexion, BIENVENIDO);
 }
 
+/**
+ * Se comunica al proceso que se recibio OK el mensaje
+ */
+void _enviar_ok(sock_t* conexion)
+{
+	_enviar_flagt(conexion, RECIBIDO_OK);
+
+}
+
+/**
+ * Informa al destinatario que el mensaje no se recibio correctamente
+ * Usar solo si el destinatario esta esperando una confirmacion de recepcion
+ */
+void _informar_mensaje_incompleto(sock_t* conexion)
+{
+	_enviar_flagt(conexion, MENSAJE_INCOMPLETO);
+}
+
+/**
+ * Se informa al Proceso que no hay memoria para iniciarlo
+ */
 void _informar_no_hay_memoria(sock_t* conexion)
 {
-	//TODO: Progrmar
+	_enviar_flagt(conexion, SIN_MEMORIA);
 }
 
 /**
@@ -172,10 +195,12 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 
 			if(recibir(nueva_conexion, &codigo_beso, &len) == -1)
 			{// Si el mensaje no se recibe completo
-				_informar_mensaje_incompleto(nueva_conexion->fd);
+				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(nueva_conexion->fd));
 				free(codigo_beso);
 				break;
 			}
+
+			_enviar_ok(nueva_conexion);
 
 			// Procesamos el nuevo programa
 			_procesar_conexion_nuevo_programa(codigo_beso, len, nueva_conexion);
@@ -233,12 +258,12 @@ void _atender_socket_proceso(int32_t fd)
 				break;*/
 
 			default:
-				_informar_mensaje_incompleto(fd);
+				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
 				break;
 		}
 	}
 	else
-		_informar_mensaje_incompleto(fd);
+		_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
 
 	// Liberamos el buffer
 	free(mensaje);
@@ -357,22 +382,4 @@ sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 
 	return conexion->socket;
-}
-
-sock_t* buscar_conexion_unasigned_por_fd(int32_t fd)
-{
-	// Funcion de busqueda
-	bool buscar_unasigned(void* elemento)
-	{
-		sock_t* conexion = (sock_t*) elemento;
-
-		return conexion->fd == fd;
-	}
-
-	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_unsigned);
-	sock_t* conexion = list_find(conexiones_unasigned, buscar_unasigned);
-	pthread_mutex_unlock(&mutex_conexiones_unsigned);
-
-	return conexion;
 }
