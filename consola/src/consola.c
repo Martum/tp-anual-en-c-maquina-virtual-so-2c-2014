@@ -182,6 +182,7 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 
 void escuchar_kernel()
 {
+
 	while(1)
 	{
 

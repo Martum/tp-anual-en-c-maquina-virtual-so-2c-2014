@@ -9,10 +9,11 @@
 #include <commons/config.h>
 
 t_config* configs_kernel;
+char* path = "/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/kernel/config_kernel.txt";
 
 void cargar_configuraciones(void)
 {
-	configs_kernel = config_create("config_kernel.txt");
+	configs_kernel = config_create(path);
 }
 
 uint32_t tamanio_stack()
