@@ -443,6 +443,15 @@ resultado_t inte(tcb_t* tcb)
 	 */
 }
 
+void _desplazar_bits(int32_t bits_a_desplazar, int32_t* valor)
+{
+	if (bits_a_desplazar > 0) {
+		*valor = *valor >> bits_a_desplazar;
+	} else {
+		*valor = *valor << bits_a_desplazar;
+	}
+}
+
 /*
  * 	SHIF [Número], [Registro]
  *
@@ -452,9 +461,9 @@ resultado_t inte(tcb_t* tcb)
  */
 resultado_t shif(tcb_t* tcb)
 {
-	int32_t bits_a_desplazar;
 	char registro;
-	int32_t valor, valor_desplazado;
+	int32_t bits_a_desplazar;
+	int32_t valor;
 
 	obtener_numero(tcb, &bits_a_desplazar);
 	obtener_registro(tcb, &registro);
@@ -463,13 +472,9 @@ resultado_t shif(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	if (bits_a_desplazar > 0) {
-		valor_desplazado = valor >> bits_a_desplazar;
-	} else {
-		valor_desplazado = valor << bits_a_desplazar;
-	}
+	_desplazar_bits(bits_a_desplazar, &valor);
 
-	return actualizar_valor_en_registro(tcb, registro, valor_desplazado);
+	return actualizar_valor_en_registro(tcb, registro, valor);
 }
 
 /*
