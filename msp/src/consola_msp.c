@@ -21,38 +21,8 @@
 #include <commons/string.h>
 // #include <commons/log.h>
 
-int main(void){
 
-	/* EJEMPLO DE LOG
-	 * t_log* logger = log_create("logs.txt", "LOG",true, LOG_LEVEL_INFO);
-				log_info(logger, "LOG A NIVEL %s", "INFO");
-				log_debug(logger, "dale viejio");
-	*/
-
-	cargar_configuraciones();
-	inicializar_lista_procesos();
-	inicializar_lista_marcos();
-	inicializar_indice_paginas();
-	inicializar_memoria_fisica_total();
-
-	printf("Bienvenido a la MSP! \n\n");
-	printf("Instrucciones disponibles: \n");
-	printf(" - Crear Segmento: pid, tamaño \n");
-	printf(" - Destruir Segmento: pid, dir_base \n");
-	printf(" - Escribir Memoria: pid, dir_virtual, tamaño, texto \n");
-	printf(" - Leer Memoria: pid, dir_virtual, tamaño \n");
-	printf(" - Tabla de Segmentos \n");
-	printf(" - Tabla de Paginas: pid \n");
-	printf(" - Listar Marcos \n\n");
-	printf("Esperando instrucciones ... \n\n");
-
-	_dar_instrucciones();
-
-	destruir_configuraciones();
-	return 0;
-}
-
-void _dar_instrucciones(){
+void _dar_instrucciones_por_consola(){
 	char cadena[350] = "";
 
 	scanf("%[^\n]%*c",cadena);
@@ -69,7 +39,7 @@ void _dar_instrucciones(){
 			printf("Instruccion invalida \n");
 		}
 
-		_dar_instrucciones();
+		_dar_instrucciones_por_consola();
 	}
 }
 
