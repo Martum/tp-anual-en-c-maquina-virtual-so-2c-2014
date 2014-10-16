@@ -96,22 +96,35 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 	}
 
 	if(strcmp(nombre_funcion,"Escribir Memoria")==0){
+		char** parametros = string_split(lista_parametros, ",");
+		escribir_memo(_parametro_int(parametros[0]),
+						_parametro_int(parametros[1]),
+						_parametro_int(parametros[2]),
+						_parametro_string(parametros[3]));
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Leer Memoria")==0){
+		char** parametros = string_split(lista_parametros, ",");
+		leer_memo(_parametro_int(parametros[0]),
+					_parametro_int(parametros[1]),
+					_parametro_int(parametros[2]));
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Tabla de Segmentos")==0){
+		tabla_segmentos();
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Tabla de Paginas")==0){
+		char** parametros = string_split(lista_parametros, ",");
+		tabla_paginas(_parametro_int(parametros[0]));
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Listar Marcos")==0){
+		listar_marcos();
 		matchea = true;
 	}
 
