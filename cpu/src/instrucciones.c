@@ -728,7 +728,8 @@ resultado_t outc(tcb_t* tcb)
 
 	char* buffer = malloc(valor_del_registro_B);
 
-	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B, buffer);
+	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
+		buffer);
 
 	comunicar_salida_estandar(tcb, valor_del_registro_B, buffer);
 
@@ -739,7 +740,7 @@ resultado_t outc(tcb_t* tcb)
 
 void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack)
 {
-
+	// todo programar
 }
 
 void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
@@ -807,12 +808,9 @@ resultado_t crea(tcb_t* tcb)
 	// COPIO EL STACK DEL HILO 1 AL HILO 2
 	_clonar_stack(&nuevo_tcb, tcb);
 
-	return OK;
+	comunicar_nuevo_tcb(&nuevo_tcb);
 
-	/*
-	 * 	Mandar tcb a kernel
-	 * 	Esperar que te devuelva un ok
-	 */
+	return OK;
 }
 
 /*
@@ -824,11 +822,12 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
-	return EXCEPCION_POR_JOIN;
+	int32_t valor_del_registro_A;
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
-	/* Mandar mensaje a kernel
-	 * Esperar que te devuelva un ok
-	 */
+	comunicar_join(tcb->tid, valor_del_registro_A); // todo fijarse el orden de los tid
+
+	return OK;
 }
 
 /*
@@ -841,11 +840,14 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
-	return EXCEPCION_POR_BLOQUEO;
+	// todo fijarse si el apuntado por b es direccion de memoria o valor
 
-	/* Mandar mensaje a kernel
-	 * Esperar que te devuelva un ok
-	 */
+	int32_t valor_del_registro_B;
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
+
+	comunicar_bloquear(tcb, valor_del_registro_B);
+
+	return OK;
 }
 
 /*
@@ -857,11 +859,14 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
-	return EXCEPCION_POR_DESBLOQUEO;
+	// todo fijarse si el apuntado por b es direccion de memoria o valor
 
-	/* Mandar mensaje a kernel
-	 * Esperar que te devuelva un ok
-	 */
+	int32_t valor_del_registro_B;
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
+
+	comunicar_despertar(tcb, valor_del_registro_B);
+
+	return OK;
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic)
