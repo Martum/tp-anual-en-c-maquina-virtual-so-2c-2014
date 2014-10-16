@@ -706,13 +706,11 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t outn(tcb_t* tcb)
 {
-	return EXCEPCION_POR_IMPRIMIR_TEXTO;
+	int32_t valor_del_registro_A;
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
-	/*
-	 * Mandar mensaje a kernel diciendole que muestre un mensaje por pantalla
-	 * Esperar a que kernel te diga que salio bien
-	 *
-	 */
+	// pasar a bytes
+	return OK;
 }
 
 /*
@@ -724,11 +722,19 @@ resultado_t outn(tcb_t* tcb)
  */
 resultado_t outc(tcb_t* tcb)
 {
-	return EXCEPCION_POR_IMPRIMIR_TEXTO_CON_TAMANO;
+	int32_t valor_del_registro_A, valor_del_registro_B;
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
-	/* Mandar mensaje a kernel diciendole que muestre un mensaje por pantalla
-	 * Esperar a que kernel te diga que salio bien
-	 */
+	char* buffer = malloc(valor_del_registro_B);
+
+	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B, buffer);
+
+	comunicar_salida_estandar(tcb, valor_del_registro_B, buffer);
+
+	free(buffer);
+
+	return OK;
 }
 
 void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack)
