@@ -45,7 +45,16 @@ void destruir_segmento(uint32_t pid, direccion base){
 //Falta lanzar mensaje de error y leer la memoria propiamente dicha
 char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 {
-	bool hay_error= memoria_invalida(pid, direccion_logica) || excede_limite_segmento(pid,direccion_logica, tamanio);
+	//Estan inicializados con verdura para que no tire warnings
+	//En la siguiente funcion se le asignas los valores correctos
+	proceso_msp_t* proceso=NULL;
+	segmento_t* segmento=NULL;
+	pagina_t* pagina=NULL;
+	uint16_t desplazamiento=0;
+
+	bool memoria_invalida=descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+
+	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
 	if(hay_error)
 	{
@@ -54,8 +63,9 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	else
 	{
 		uint32_t base_marco_datos = obtener_base_marco(pid, direccion_logica);
-
-		return leer_marco(base_marco_datos, tamanio);
+		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
+		uint32_t base_lectura = base_marco_datos+desplazamiento;
+		return leer_marco(base_lectura, tamanio);
 
 	}
 
