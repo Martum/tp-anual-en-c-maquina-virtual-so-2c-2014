@@ -699,6 +699,10 @@ resultado_t outc(tcb_t* tcb)
 	 */
 }
 
+void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack) {
+
+}
+
 /*
  * 	CREA
  *
@@ -720,9 +724,34 @@ resultado_t outc(tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
+	int32_t nuevo_pc;
+	obtener_valor_de_registro(tcb, 'b', &nuevo_pc);
+
+	// COPIO EL TCB AL NUEVO TCB TAL CUAL
+	tcb_t nuevo_tcb;
+	memcpy(&nuevo_tcb, tcb, sizeof(tcb_t));
+
+	// LE CAMBIO ALGUNOS VALORES SEGÚN LOS REQUERIMIENTOS
+	nuevo_tcb.pc = nuevo_pc;
+	nuevo_tcb.tid = tcb->tid + 1; // TODO: corroborar que no exista otro tcb con ese tid
+	nuevo_tcb.km = false;
+
+	uint32_t tamano_stack;
+	_pedir_a_kernel_tamano_stack(&tamano_stack);
+
+	// COPIO EL STACK DEL HILO 1 AL HILO 2
+	direccion nueva_base_stack;
+	crear_segmento(nuevo_tcb.pid, tamano_stack, &nueva_base_stack);
+	nuevo_tcb.base_stack = nueva_base_stack;
+	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
+	char* buffer = malloc(ocupacion_stack);
+	leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer);
+	escribir_en_memoria(nuevo_tcb.pid, nuevo_tcb.base_stack, ocupacion_stack, buffer);
+	nuevo_tcb.cursor_stack = nuevo_tcb.base_stack + ocupacion_stack;
+
 	return OK;
 
-	/*	Crear un tcb nuevo (sin el codigo)
+	/*
 	 * 	Mandar tcb a kernel
 	 * 	Esperar que te devuelva un ok
 	 */
