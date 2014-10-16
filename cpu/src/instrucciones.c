@@ -39,6 +39,15 @@ resultado_t getm(tcb_t* tcb)
 	return actualizar_valor_en_registro(tcb, registro1, valor);
 }
 
+void _copiar_valores(int32_t numero, direccion direccion1,
+	direccion direccion2, tcb_t* tcb)
+{
+	char* buffer = malloc(numero);
+	leer_de_memoria(tcb->pid, direccion1, numero, buffer);
+	escribir_en_memoria(tcb->pid, direccion2, numero, buffer);
+	free(buffer);
+}
+
 /*
  * 	SETM [Numero], [Registro], [Registro]
  *
@@ -47,13 +56,13 @@ resultado_t getm(tcb_t* tcb)
  */
 resultado_t setm(tcb_t* tcb)
 {
-	int32_t numero;
+	int32_t cantidad_de_bytes_a_copiar;
 	char registro1;
 	char registro2;
 	int32_t valor1;
 	int32_t valor2;
 
-	obtener_numero(tcb, &numero);
+	obtener_numero(tcb, &cantidad_de_bytes_a_copiar);
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
@@ -67,12 +76,7 @@ resultado_t setm(tcb_t* tcb)
 	direccion direccion1 = valor1;
 	direccion direccion2 = valor2;
 
-	char* buffer = malloc(numero);
-
-	leer_de_memoria(tcb->pid, direccion1, numero, buffer);
-	escribir_en_memoria(tcb->pid, direccion2, numero, buffer);
-
-	free(buffer);
+	_copiar_valores(cantidad_de_bytes_a_copiar, direccion1, direccion2, tcb);
 
 	return OK;
 }
