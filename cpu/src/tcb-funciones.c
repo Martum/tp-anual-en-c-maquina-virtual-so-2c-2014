@@ -64,9 +64,12 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
 
-resultado_t actualizar_pc(tcb_t* tcb, int32_t valor) {
-	tcb->pc = valor;
-	return OK;
+void actualizar_pc(tcb_t* tcb, direccion direccion) {
+	tcb->pc = direccion;
+}
+
+void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes) {
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes; // todo pensar si no debe devolver FALLO si es menor a base
 }
 
 void obtener_pc(tcb_t* tcb, direccion* pc) {

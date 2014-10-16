@@ -377,7 +377,9 @@ resultado_t _goto(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_pc(tcb, base_de_codigo + valor_del_registro);
+	actualizar_pc(tcb, base_de_codigo + valor_del_registro);
+
+	return OK;
 }
 
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
@@ -393,7 +395,9 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 	if (condicion(valor_del_registro))
 		return OK;
 
-	return actualizar_pc(tcb, base_de_codigo + offset);
+	actualizar_pc(tcb, base_de_codigo + offset);
+
+	return OK;
 }
 
 /*
@@ -500,18 +504,18 @@ resultado_t nopp(tcb_t* tcb)
 	return OK;
 }
 
-void _dividir_en_bytes(unsigned char bytes[4], int32_t valor_del_registro)
+void _dividir_en_bytes(unsigned char bytes[4], int32_t numero)
 {
-	bytes[0] = (valor_del_registro >> 24) & 0xFF;
-	bytes[1] = (valor_del_registro >> 16) & 0xFF;
-	bytes[2] = (valor_del_registro >> 8) & 0xFF;
-	bytes[3] = valor_del_registro & 0xFF;
+	bytes[0] = (numero >> 24) & 0xFF;
+	bytes[1] = (numero >> 16) & 0xFF;
+	bytes[2] = (numero >> 8) & 0xFF;
+	bytes[3] = numero & 0xFF;
 }
 
-void _push(int32_t cantidad_de_bytes, unsigned char bytes[4], tcb_t* tcb)
+void _push(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
 	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
-	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes; // todo pensar si hace falta encapsular
+	actualizar_cursor_stack(tcb, cantidad_de_bytes);
 }
 
 /*
@@ -541,27 +545,30 @@ resultado_t push(tcb_t* tcb)
 
 	 */
 
-	// todo validar que numero no sea mayor que 4
 	char registro;
 	unsigned char bytes[4];
 	int32_t cantidad_de_bytes;
-	int32_t valor_del_registro;
+	int32_t valor_a_pushear;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
+
+	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
+		return ERROR_EN_EJECUCION;
+
 	obtener_registro(tcb, &registro);
-	obtener_valor_del_registro(tcb, registro, &valor_del_registro);
+	obtener_valor_del_registro(tcb, registro, &valor_a_pushear);
 
-	_dividir_en_bytes(bytes, valor_del_registro);
+	_dividir_en_bytes(bytes, valor_a_pushear);
 
-	_push(cantidad_de_bytes, bytes, tcb);
+	_push(tcb, cantidad_de_bytes, bytes);
 
 	return OK;
 }
 
-void _pop(int32_t cantidad_de_bytes, unsigned char bytes[4], tcb_t* tcb)
+void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
 	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
-	tcb->cursor_stack = tcb->cursor_stack - cantidad_de_bytes; // todo pensar si hace falta encapsular
+	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
 }
 
 void _unir_bytes(int32_t* valor, unsigned char buffer[4])
@@ -585,16 +592,20 @@ void _unir_bytes(int32_t* valor, unsigned char buffer[4])
  */
 resultado_t take(tcb_t* tcb)
 {
-// todo validar que numero no sea mayor que 4
 	char registro;
 	unsigned char bytes[4];
 	int32_t cantidad_de_bytes;
 	int32_t valor;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
+
+	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
+		return ERROR_EN_EJECUCION;
+
 	obtener_registro(tcb, &registro);
 
-	_pop(cantidad_de_bytes, bytes, tcb);
+
+	_pop(tcb, cantidad_de_bytes, bytes);
 
 	_unir_bytes(&valor, bytes);
 

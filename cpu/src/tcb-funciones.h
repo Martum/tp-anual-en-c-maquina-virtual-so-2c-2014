@@ -30,7 +30,7 @@ void liberar_tcb(tcb_t* tcb);
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
-		int32_t numero);
+	int32_t numero);
 /*
  * @DESC: Obtiene el valor del registro de la tcb.
  * @RETURNS:
@@ -38,13 +38,19 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
 resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
-		int32_t* numero);
+	int32_t* numero);
 
 /**
  * @DESC: Actualiza el valor del pc con el valor.
- * @RETURNS: siempre OK
+ * @RETURNS:
  */
-resultado_t actualizar_pc(tcb_t* tcb, int32_t valor);
+void actualizar_pc(tcb_t* tcb, direccion direccion);
+
+/**
+ * @DESC: Actualiza el valor del cursor del stack en cantidad de bytes.
+ * @RETURNS:
+ */
+void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
 
 /**
  * @DESC: Obtiene el valor del pc de la tcb.
