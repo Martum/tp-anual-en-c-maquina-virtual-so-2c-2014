@@ -119,6 +119,8 @@ void obtener_registro(tcb_t* tcb, char* registro);
  */
 void obtener_numero(tcb_t* tcb, int32_t* numero);
 
+void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
+
 void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer);
 void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar, char* buffer);
 void comunicar_nuevo_tcb(tcb_t* nuevo_tcb);

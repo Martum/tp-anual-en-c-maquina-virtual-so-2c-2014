@@ -512,7 +512,7 @@ void _dividir_en_bytes(unsigned char bytes[4], int32_t numero)
 
 void _push(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
-	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
+	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, cantidad_de_bytes);
 }
 
@@ -565,7 +565,7 @@ resultado_t push(tcb_t* tcb)
 
 void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
-	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes); // todo agregar validacion
+	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
 }
 
@@ -768,11 +768,6 @@ resultado_t outc(tcb_t* tcb)
 	return OK;
 }
 
-void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack)
-{
-	// todo programar
-}
-
 void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
 	memcpy(&*nuevo_tcb, tcb, sizeof(tcb_t));
@@ -782,7 +777,7 @@ void _crear_stack(tcb_t* nuevo_tcb)
 {
 	uint32_t tamano_stack;
 	direccion nueva_base_stack;
-	_pedir_a_kernel_tamano_stack(&tamano_stack);
+	pedir_al_kernel_tamanio_stack(&tamano_stack);
 	crear_segmento(nuevo_tcb->pid, tamano_stack, &nueva_base_stack);
 	nuevo_tcb->base_stack = nueva_base_stack;
 }
