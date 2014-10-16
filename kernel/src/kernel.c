@@ -25,19 +25,19 @@ int jose = 5;
 
 int main(void) {
 	// - Levanta las configuraciones del archivo
-	//cargar_configuraciones();
+	cargar_configuraciones();
 
 	// - Inicializa las listas del Planificador
-	//inicializar_listas();
+	inicializar_listas_estados_tcb();
 
 	// - Inicailiza las listas de conexiones socketeras
-	//inicializar_listas_conexiones();
+	inicializar_listas_conexiones();
 
 	// - Conectar con la memoria (agregar funcion en conexiones.h)
 
-	// - Crear thread para esperar_conexiones()
+	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
 
-	// - Crear threar para esperar_conexiones_unsigned()
+	// - Crear threar para escuchar_cpus()
 
 	printf("Bienvenido al Kernel");
 	return EXIT_SUCCESS;

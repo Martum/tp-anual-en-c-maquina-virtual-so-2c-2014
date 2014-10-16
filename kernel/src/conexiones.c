@@ -332,12 +332,12 @@ void* escuchar_cpus(void* otro_ente)
 {
 	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
 	// ESTE DEBE TENER UN TIMER QUE CADA X SEGUNDOS REARME EL FDS
+
+	return NULL;
 }
 
 void inicializar_listas_conexiones(void)
 {
-	conexiones_unasigned = list_create();
-	//pthread_mutex_init(&mutex_conexiones_unsigned, NULL);
 
 	conexiones_cpu = list_create();
 	//pthread_mutex_init(&mutex_conexiones_cpu, NULL);
