@@ -77,6 +77,6 @@ void listar_marcos();
 
 
 void _dar_instrucciones();
-int _matcheo_cadena_con_funcion(char*);
+bool _matcheo_cadena_con_funcion(char*);
 int _parametro_int(char* param);
 char* _parametro_string(char* param);

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "estructuras.h"
 #include "consola_msp.h"
@@ -72,7 +73,7 @@ void _dar_instrucciones(){
 	}
 }
 
-int _matcheo_cadena_con_funcion(char *cadena){
+bool _matcheo_cadena_con_funcion(char *cadena){
 
 	// obtengo el nombre de la funcion
 	char** funcion = string_split(cadena, ":");
@@ -80,37 +81,41 @@ int _matcheo_cadena_con_funcion(char *cadena){
  	char* nombre_funcion = funcion[0];
  	char* lista_parametros = funcion[1];
 
+ 	bool matchea = false;
+
 	if(strcmp(nombre_funcion,"Crear Segmento")==0){
 		char** parametros = string_split(lista_parametros, ",");
 		crear_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Destruir Segmento")==0){
 		char** parametros = string_split(lista_parametros, ",");
 		destruir_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Escribir Memoria")==0){
-
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Leer Memoria")==0){
-
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Tabla de Segmentos")==0){
-
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Tabla de Paginas")==0){
-
+		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Listar Marcos")==0){
-
+		matchea = true;
 	}
 
-	return 1;
+	return matchea;
 }
 
 int _parametro_int(char* param){
