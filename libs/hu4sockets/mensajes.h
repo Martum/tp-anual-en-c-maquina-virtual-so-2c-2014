@@ -23,6 +23,10 @@ typedef enum {
 	// Mensajes del Kernel a la Consola: 151 -> 200
 	BIENVENIDO = 151,		// Se envia como respuesta a SOY_PROGRAMA (101) o a SOY_CPU (204)
 	SIN_MEMORIA = 152,
+	MORITE = 153,			// Que muera la consola
+	PEDI_CADENA = 154,		// Pedir una Cadena al usuario
+	PEDI_ENTERO = 155,		// Pedir un Entero al usuario
+	MOSTRA_CADENA = 156,
 
 
 	// Mensajes del CPU al Kernel: 201 -> 250

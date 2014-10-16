@@ -39,9 +39,8 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size);
 
 /**
  * Escucha por conexiones del KERNEL.
- * Corre en un THREAD
  */
-void* escuchar_kernel(void*);
+void escuchar_kernel();
 
 int main(int argc, char **argv)
 {
@@ -90,13 +89,14 @@ int main(int argc, char **argv)
 			break;
 
 		case BOK:
-			// TODO: Creamos THREAD para escuchar al kernel
 			free(codigo_beso);
-
+			escuchar_kernel();
+			return 0;
 			break;
 	}
 
 	free(codigo_beso);
+	cerrar_liberar(socket_kernel);
 	return salida;
 }
 
@@ -178,4 +178,12 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 
 	free(mensaje);
 	return salida;
+}
+
+void escuchar_kernel()
+{
+	while(1)
+	{
+
+	}
 }
