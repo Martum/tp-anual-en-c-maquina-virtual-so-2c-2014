@@ -18,7 +18,7 @@ resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto) {
 }
 
 resultado_t conectar_con_memoria() {
-	return _conectar(&memoria, NULL, 4557);
+	return _conectar(&memoria, NULL, 4560);
 }
 
 resultado_t conectar_con_kernel() {
@@ -91,7 +91,7 @@ resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum) {
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
 	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
-	char* chorro_de_respuesta;
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_de_nuevo_tcb_t_serializado());
 
 	if (_enviar_y_recibir_con_serializacion(
 			kernel,
@@ -105,6 +105,9 @@ resultado_t pedir_tcb_con_serializacion(tcb_t* tcb, int32_t* quantum) {
 	respuesta_de_nuevo_tcb_t respuesta = *deserializar_respuesta_de_nuevo_tcb_t(chorro_de_respuesta);
 	*tcb = *respuesta.tcb;
 	*quantum = respuesta.quantum;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
 
 	return OK;
 }

@@ -63,3 +63,13 @@ void asignar_marco(pagina_t* pagina, uint32_t pid)
 
 }
 
+bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas)
+{
+	pagina_t* encontro_pagina=list_get(lista_paginas, id_pagina+1);
+	if(encontro_pagina==NULL)
+	{
+		return false;
+	}
+	return true;
+}
+

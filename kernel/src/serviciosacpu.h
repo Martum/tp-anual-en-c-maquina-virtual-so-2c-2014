@@ -11,6 +11,7 @@
 #include <hu4sockets/tcb.h>
 #include <stdint.h>
 
+
 /**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
  * Devuelve 0 en caso de exito o -1 en caso de no haber memoria disponible.
