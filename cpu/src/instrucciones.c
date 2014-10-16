@@ -604,7 +604,6 @@ resultado_t take(tcb_t* tcb)
 
 	obtener_registro(tcb, &registro);
 
-
 	_pop(tcb, cantidad_de_bytes, bytes);
 
 	_unir_bytes(&valor, bytes);
@@ -624,8 +623,6 @@ resultado_t xxxx(tcb_t* tcb)
 	return FIN_EJECUCION;
 }
 
-// todo verificar que las instrucciones de sistema solo las pueda ejecutar el tcb k
-
 /*
  * 	MALC
  *
@@ -636,6 +633,10 @@ resultado_t xxxx(tcb_t* tcb)
  */
 resultado_t malc(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	int32_t bytes;
 
 	obtener_valor_del_registro(tcb, 'a', &bytes);
@@ -657,6 +658,10 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	// todo falta verificar que la memoria alocada sea por instruccion MALC
 
 	int32_t valor_del_registro;
@@ -678,6 +683,10 @@ resultado_t _free(tcb_t* tcb)
  */
 resultado_t innn(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	char* buffer = malloc(sizeof(char) * 31);
 
 	comunicar_entrada_estandar(tcb, 31, buffer);
@@ -697,6 +706,10 @@ resultado_t innn(tcb_t* tcb)
  */
 resultado_t innc(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	int32_t valor_del_registro;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro);
 
@@ -717,6 +730,10 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t outn(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	int32_t valor_del_registro_A;
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
@@ -733,6 +750,10 @@ resultado_t outn(tcb_t* tcb)
  */
 resultado_t outc(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	int32_t valor_del_registro_A, valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
@@ -799,6 +820,10 @@ void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	tcb_t nuevo_tcb;
 
 	int32_t nuevo_pc;
@@ -833,6 +858,10 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	int32_t valor_del_registro_A;
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
@@ -851,6 +880,10 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	// todo fijarse si el apuntado por b es direccion de memoria o valor
 
 	int32_t valor_del_registro_B;
@@ -870,6 +903,10 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
+	if (tcb->km == false) {
+		return ERROR_EN_EJECUCION;
+	}
+
 	// todo fijarse si el apuntado por b es direccion de memoria o valor
 
 	int32_t valor_del_registro_B;
