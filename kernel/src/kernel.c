@@ -11,11 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <commons/config.h>
-#include <commons/collections/list.h>
 #include "configuraciones.h"
 #include "lstestados.h"
 #include "loader.h"
+#include "conexiones.h"
 #include <pthread.h>
 
 #include <hu4sockets/sockets.h>
@@ -36,9 +35,18 @@ int main(void) {
 	// - Conectar con la memoria (agregar funcion en conexiones.h)
 
 	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
+	pthread_t* conexiones_procesos_thread;
+	pthread_create(conexiones_procesos_thread, NULL, escuchar_conexiones_entrantes_y_procesos, NULL);
 
 	// - Crear threar para escuchar_cpus()
+	pthread_t* conexiones_cpus_thread;
+	pthread_create(conexiones_cpus_thread, NULL, escuchar_cpus, NULL);
 
 	printf("Bienvenido al Kernel");
+
+	// Esperamos a que ambos terminen
+	pthread_join(*conexiones_procesos_thread, NULL);
+	pthread_join(*conexiones_cpus_thread, NULL);
+
 	return EXIT_SUCCESS;
 }
