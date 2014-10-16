@@ -4,9 +4,11 @@
  *  Created on: 17/09/2014
  *      Author: utnso
  */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "estructuras.h"
 #include "consola_msp.h"
 #include "proceso_msp.h"
@@ -15,6 +17,7 @@
 #include "interfaz.h"
 #include "segmento.h"
 
+#include <commons/string.h>
 // #include <commons/log.h>
 
 int main(void){
@@ -31,9 +34,6 @@ int main(void){
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
 
-//	printf("%d",cantidad_memoria());
-//	printf("%d",cantidad_swap());
-
 	printf("Bienvenido a la MSP! \n\n");
 	printf("Instrucciones disponibles: \n");
 	printf(" - Crear Segmento: pid, tamaño \n");
@@ -45,15 +45,7 @@ int main(void){
 	printf(" - Listar Marcos \n\n");
 	printf("Esperando instrucciones ... \n");
 
-
-	/*
-	 * ACA VOY A PODER RECIBIR INSTRUCCIONES PARA EJECUTAR LAS FUNCIONES QUE TENGO
-	 *
-	 * TENGO QUE MATCHEAR CADA LLAMADO CON UNA FUNCION
-	 */
-
 	_dar_instrucciones();
-
 
 	destruir_configuraciones();
 	return 0;
@@ -68,11 +60,57 @@ void _dar_instrucciones(){
 		printf("Cerrando consola MSP ... \n");
 		return;
 	}else{
-		printf("la cadena es: %s \n", cadena);
+		// printf("la cadena es: %s \n", cadena);
+
+		int resultado = _matcheo_cadena_con_funcion(cadena);
+
+		if(!resultado){
+			printf("Instruccion invalida \n");
+		}
+
 		_dar_instrucciones();
 	}
 }
 
+int _matcheo_cadena_con_funcion(char *cadena){
+
+	// obtengo el nombre de la funcion
+	char** nombre_funcion = string_split(cadena, ":");
+
+// 	printf("%s",nombre_funcion[0]);
+
+	if(strcmp(nombre_funcion[0],"Crear Segmento")==0){
+		char** parametros = string_split(nombre_funcion[1], ",");
+		crear_segment(atoi(parametros[0]), atoi(parametros[1]));
+	}
+
+	if(strcmp(nombre_funcion[0],"Destruir Segmento")==0){
+
+	}
+
+	if(strcmp(nombre_funcion[0],"Escribir Memoria")==0){
+
+	}
+
+	if(strcmp(nombre_funcion[0],"Leer Memoria")==0){
+
+	}
+
+	if(strcmp(nombre_funcion[0],"Tabla de Segmentos")==0){
+
+	}
+
+	if(strcmp(nombre_funcion[0],"Tabla de Paginas")==0){
+
+	}
+
+	if(strcmp(nombre_funcion[0],"Listar Marcos")==0){
+
+	}
+
+
+	return 1;
+}
 
 void crear_segment(uint32_t pid, uint32_t tamanio){
 	direccion dir = crear_segmento(pid, tamanio);

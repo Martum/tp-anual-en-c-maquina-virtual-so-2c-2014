@@ -77,3 +77,4 @@ void listar_marcos();
 
 
 void _dar_instrucciones();
+int _matcheo_cadena_con_funcion(char*);
