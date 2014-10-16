@@ -1,7 +1,5 @@
 #include "instrucciones.h"
 
-// todo cambiar todos los fallos y errores y excepciones por ERROR_EN_EJECUCION
-
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -34,7 +32,7 @@ resultado_t getm(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	char* buffer = malloc(sizeof(char));
 	leer_de_memoria(tcb->pid, valor_del_registro, 1, buffer);
@@ -73,10 +71,10 @@ resultado_t setm(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	direccion direccion1 = valor_del_registro_1;
 	direccion direccion2 = valor_del_registro_2;
@@ -101,7 +99,7 @@ resultado_t movr(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
 }
@@ -118,10 +116,10 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	return actualizar_valor_del_registro(tcb, 'a',
 		operacion(valor_del_registro_1, valor_del_registro_2));
@@ -214,13 +212,13 @@ resultado_t divr(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	if (valor_del_registro_2 == 0)
-		return EXCEPCION_DIVISION_POR_CERO;
+		return ERROR_EN_EJECUCION;
 
 	return actualizar_valor_del_registro(tcb, 'a',
 		valor_del_registro_1 / valor_del_registro_2);
@@ -235,7 +233,7 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	return actualizar_valor_del_registro(tcb, 'a',
 		operacion(valor_del_registro));
@@ -286,10 +284,10 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	return actualizar_valor_del_registro(tcb, 'a',
 		comparador(valor_del_registro_1, valor_del_registro_2));
@@ -375,7 +373,7 @@ resultado_t _goto(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	actualizar_pc(tcb, base_de_codigo + valor_del_registro);
 
@@ -487,7 +485,7 @@ resultado_t shif(tcb_t* tcb)
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_de_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
+		return ERROR_EN_EJECUCION;
 
 	_desplazar_bits(bits_a_desplazar, &valor_de_registro);
 
