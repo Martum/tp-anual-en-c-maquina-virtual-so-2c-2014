@@ -703,6 +703,30 @@ void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack) {
 
 }
 
+void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
+{
+	memcpy(&*nuevo_tcb, tcb, sizeof(tcb_t));
+}
+
+void _crear_stack(tcb_t* nuevo_tcb)
+{
+	uint32_t tamano_stack;
+	direccion nueva_base_stack;
+	_pedir_a_kernel_tamano_stack(&tamano_stack);
+	crear_segmento(nuevo_tcb->pid, tamano_stack, &nueva_base_stack);
+	nuevo_tcb->base_stack = nueva_base_stack;
+}
+
+void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
+{
+	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
+	char* buffer = malloc(ocupacion_stack);
+	leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer);
+	escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack, ocupacion_stack,
+		buffer);
+	nuevo_tcb->cursor_stack = nuevo_tcb->base_stack + ocupacion_stack;
+}
+
 /*
  * 	CREA
  *
@@ -724,30 +748,25 @@ void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack) {
  */
 resultado_t crea(tcb_t* tcb)
 {
+	tcb_t nuevo_tcb;
+
 	int32_t nuevo_pc;
 	obtener_valor_de_registro(tcb, 'b', &nuevo_pc);
 
 	// COPIO EL TCB AL NUEVO TCB TAL CUAL
-	tcb_t nuevo_tcb;
-	memcpy(&nuevo_tcb, tcb, sizeof(tcb_t));
+	_clonar_tcb(&nuevo_tcb, tcb);
 
 	// LE CAMBIO ALGUNOS VALORES SEGÚN LOS REQUERIMIENTOS
 	nuevo_tcb.pc = nuevo_pc;
 	nuevo_tcb.tid = tcb->tid + 1; // TODO: corroborar que no exista otro tcb con ese tid
 	nuevo_tcb.km = false;
+	actualizar_valor_en_registro(tcb, 'a', nuevo_tcb.tid);
 
-	uint32_t tamano_stack;
-	_pedir_a_kernel_tamano_stack(&tamano_stack);
+	// CREA UN NUEVO STACK PARA EL HILO 2
+	_crear_stack(&nuevo_tcb);
 
 	// COPIO EL STACK DEL HILO 1 AL HILO 2
-	direccion nueva_base_stack;
-	crear_segmento(nuevo_tcb.pid, tamano_stack, &nueva_base_stack);
-	nuevo_tcb.base_stack = nueva_base_stack;
-	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
-	char* buffer = malloc(ocupacion_stack);
-	leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer);
-	escribir_en_memoria(nuevo_tcb.pid, nuevo_tcb.base_stack, ocupacion_stack, buffer);
-	nuevo_tcb.cursor_stack = nuevo_tcb.base_stack + ocupacion_stack;
+	_clonar_stack(&nuevo_tcb, tcb);
 
 	return OK;
 
