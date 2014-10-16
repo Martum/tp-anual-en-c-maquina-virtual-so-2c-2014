@@ -29,7 +29,7 @@ void liberar_tcb(tcb_t* tcb);
  * 		OK si _todo sale bien
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro,
+resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 		int32_t numero);
 /*
  * @DESC: Obtiene el valor del registro de la tcb.
@@ -37,7 +37,7 @@ resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro,
  * 		OK si _todo sale bien
  * 		NO_ENCONTRO_EL_REGISTRO si se le paso un registro que no exista.
  */
-resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
+resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 		int32_t* numero);
 
 /**

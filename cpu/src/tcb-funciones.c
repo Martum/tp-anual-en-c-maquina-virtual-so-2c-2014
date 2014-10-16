@@ -15,7 +15,7 @@ void liberar_tcb(tcb_t* tcb) {
 	free(tcb);
 }
 
-resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t numero) {
+resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro, int32_t numero) {
 	if ('a' == registro) {
 		tcb->a = numero;
 		return OK;
@@ -39,7 +39,7 @@ resultado_t actualizar_valor_en_registro(tcb_t* tcb, char registro, int32_t nume
 	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
 
-resultado_t obtener_valor_de_registro(tcb_t* tcb, char registro,
+resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 		int32_t* numero) {
 	if ('a' == registro) {
 		*numero = tcb->a;

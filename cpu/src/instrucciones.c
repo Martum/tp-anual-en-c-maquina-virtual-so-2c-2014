@@ -15,7 +15,7 @@ resultado_t load(tcb_t* tcb)
 	obtener_registro(tcb, &registro);
 	obtener_numero(tcb, &numero);
 
-	return actualizar_valor_en_registro(tcb, registro, numero);
+	return actualizar_valor_del_registro(tcb, registro, numero);
 }
 
 /*
@@ -27,24 +27,24 @@ resultado_t getm(tcb_t* tcb)
 { // creo que no esta bien
 	char registro1;
 	char registro2;
-	int32_t valor;
+	int32_t valor_del_registro;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro2, &valor)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_en_registro(tcb, registro1, valor);
+	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
 }
 
-void _copiar_valores(int32_t numero, direccion direccion1,
-	direccion direccion2, tcb_t* tcb)
+void _copiar_valores(int32_t numero, direccion direccion1, direccion direccion2,
+	tcb_t* tcb)
 {
 	char* buffer = malloc(numero);
-	leer_de_memoria(tcb->pid, direccion1, numero, buffer);
-	escribir_en_memoria(tcb->pid, direccion2, numero, buffer);
+	leer_de_memoria(tcb->pid, direccion2, numero, buffer);
+	escribir_en_memoria(tcb->pid, direccion1, numero, buffer);
 	free(buffer);
 }
 
@@ -59,22 +59,22 @@ resultado_t setm(tcb_t* tcb)
 	int32_t cantidad_de_bytes_a_copiar;
 	char registro1;
 	char registro2;
-	int32_t valor1;
-	int32_t valor2;
+	int32_t valor_del_registro_1;
+	int32_t valor_del_registro_2;
 
 	obtener_numero(tcb, &cantidad_de_bytes_a_copiar);
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro1, &valor1)
+	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
-	if (obtener_valor_de_registro(tcb, registro2, &valor2)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	direccion direccion1 = valor1;
-	direccion direccion2 = valor2;
+	direccion direccion1 = valor_del_registro_1;
+	direccion direccion2 = valor_del_registro_2;
 
 	_copiar_valores(cantidad_de_bytes_a_copiar, direccion1, direccion2, tcb);
 
@@ -89,36 +89,37 @@ resultado_t movr(tcb_t* tcb)
 {
 	char registro1;
 	char registro2;
-	int32_t valor;
+	int32_t valor_del_registro;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro2, &valor)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_en_registro(tcb, registro1, valor);
+	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
 }
 
 resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
 {
 	char registro1;
 	char registro2;
-	int32_t valor1;
-	int32_t valor2;
+	int32_t valor_del_registro_1;
+	int32_t valor_del_registro_2;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro1, &valor1)
+	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
-	if (obtener_valor_de_registro(tcb, registro2, &valor2)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_en_registro(tcb, 'a', operacion(valor1, valor2));
+	return actualizar_valor_del_registro(tcb, 'a',
+		operacion(valor_del_registro_1, valor_del_registro_2));
 }
 
 /*
@@ -200,37 +201,38 @@ resultado_t divr(tcb_t* tcb)
 {
 	char registro1;
 	char registro2;
-	int32_t valor1;
-	int32_t valor2;
+	int32_t valor_del_registro_1;
+	int32_t valor_del_registro_2;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro1, &valor1)
+	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
-	if (obtener_valor_de_registro(tcb, registro2, &valor2)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	if (valor2 == 0)
+	if (valor_del_registro_2 == 0)
 		return EXCEPCION_DIVISION_POR_CERO;
 
-	return actualizar_valor_en_registro(tcb, 'a', valor1 / valor2);
+	return actualizar_valor_del_registro(tcb, 'a',
+		valor_del_registro_1 / valor_del_registro_2);
 }
 
 resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 {
 	char registro;
-	int32_t valor;
+	int32_t valor_del_registro;
 
 	obtener_registro(tcb, &registro);
 
-	if (obtener_valor_de_registro(tcb, registro, &valor)
+	if (obtener_valor_del_registro(tcb, registro, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_en_registro(tcb, 'a', operacion(valor));
+	return actualizar_valor_del_registro(tcb, 'a', operacion(valor_del_registro));
 }
 
 /*
@@ -270,20 +272,21 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 {
 	char registro1;
 	char registro2;
-	int32_t valor1;
-	int32_t valor2;
+	int32_t valor_del_registro_1;
+	int32_t valor_del_registro_2;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_de_registro(tcb, registro1, &valor1)
+	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
-	if (obtener_valor_de_registro(tcb, registro2, &valor2)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_en_registro(tcb, 'a', comparador(valor1, valor2));
+	return actualizar_valor_del_registro(tcb, 'a',
+		comparador(valor_del_registro_1, valor_del_registro_2));
 }
 
 /*
@@ -358,30 +361,30 @@ resultado_t cleq(tcb_t* tcb)
 resultado_t _goto(tcb_t* tcb)
 {
 	char registro;
-	int32_t valor;
+	int32_t valor_del_registro;
 	direccion base_de_codigo;
 
 	obtener_registro(tcb, &registro);
 	obtener_base_de_codigo(tcb, &base_de_codigo);
 
-	if (obtener_valor_de_registro(tcb, registro, &valor)
+	if (obtener_valor_del_registro(tcb, registro, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_pc(tcb, base_de_codigo + valor);
+	return actualizar_pc(tcb, base_de_codigo + valor_del_registro);
 }
 
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
 	int32_t offset;
-	int32_t valor;
+	int32_t valor_del_registro;
 	direccion base_de_codigo;
 
 	obtener_numero(tcb, &offset);
-	obtener_valor_de_registro(tcb, 'a', &valor);
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
 	obtener_base_de_codigo(tcb, &base_de_codigo);
 
-	if (condicion(valor))
+	if (condicion(valor_del_registro))
 		return OK;
 
 	return actualizar_pc(tcb, base_de_codigo + offset);
@@ -467,18 +470,18 @@ resultado_t shif(tcb_t* tcb)
 {
 	char registro;
 	int32_t bits_a_desplazar;
-	int32_t valor;
+	int32_t valor_de_registro;
 
 	obtener_numero(tcb, &bits_a_desplazar);
 	obtener_registro(tcb, &registro);
 
-	if (obtener_valor_de_registro(tcb, registro, &valor)
+	if (obtener_valor_del_registro(tcb, registro, &valor_de_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	_desplazar_bits(bits_a_desplazar, &valor);
+	_desplazar_bits(bits_a_desplazar, &valor_de_registro);
 
-	return actualizar_valor_en_registro(tcb, registro, valor);
+	return actualizar_valor_del_registro(tcb, registro, valor_de_registro);
 }
 
 /*
@@ -526,7 +529,7 @@ resultado_t push(tcb_t* tcb)
 
 	obtener_numero(tcb, &cantidad_de_bytes);
 	obtener_registro(tcb, &registro);
-	obtener_valor_de_registro(tcb, registro, &valor);
+	obtener_valor_del_registro(tcb, registro, &valor);
 
 	unsigned char bytes[4];
 
@@ -580,7 +583,7 @@ resultado_t take(tcb_t* tcb)
 	 ((int32_t)buffer[3] << 24)
 	 */
 
-	actualizar_valor_en_registro(tcb, registro, valor);
+	actualizar_valor_del_registro(tcb, registro, valor);
 
 	return OK;
 }
@@ -609,14 +612,14 @@ resultado_t malc(tcb_t* tcb)
 {
 	int32_t bytes;
 
-	obtener_valor_de_registro(tcb, 'a', &bytes);
+	obtener_valor_del_registro(tcb, 'a', &bytes);
 
 	direccion direccion;
 	if (crear_segmento(tcb->pid, bytes, &direccion)
 		== FALLO_CREACION_DE_SEGMENTO)
 		return FALLO_CREACION_DE_SEGMENTO;
 
-	return actualizar_valor_en_registro(tcb, 'a', direccion);
+	return actualizar_valor_del_registro(tcb, 'a', direccion);
 }
 
 /*
@@ -628,11 +631,11 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 { // todo falta verificar que la memoria alocada sea por instruccion MALC
-	int32_t valor;
+	int32_t valor_del_registro;
 
-	obtener_valor_de_registro(tcb, 'a', &valor);
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
 
-	direccion direccion = valor;
+	direccion direccion = valor_del_registro;
 
 	return destruir_segmento(tcb->pid, direccion);
 }
@@ -708,7 +711,8 @@ resultado_t outc(tcb_t* tcb)
 	 */
 }
 
-void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack) {
+void _pedir_a_kernel_tamano_stack(uint32_t* tamano_stack)
+{
 
 }
 
@@ -760,7 +764,7 @@ resultado_t crea(tcb_t* tcb)
 	tcb_t nuevo_tcb;
 
 	int32_t nuevo_pc;
-	obtener_valor_de_registro(tcb, 'b', &nuevo_pc);
+	obtener_valor_del_registro(tcb, 'b', &nuevo_pc);
 
 	// COPIO EL TCB AL NUEVO TCB TAL CUAL
 	_clonar_tcb(&nuevo_tcb, tcb);
@@ -769,7 +773,7 @@ resultado_t crea(tcb_t* tcb)
 	nuevo_tcb.pc = nuevo_pc;
 	nuevo_tcb.tid = tcb->tid + 1; // TODO: corroborar que no exista otro tcb con ese tid
 	nuevo_tcb.km = false;
-	actualizar_valor_en_registro(tcb, 'a', nuevo_tcb.tid);
+	actualizar_valor_del_registro(tcb, 'a', nuevo_tcb.tid);
 
 	// CREA UN NUEVO STACK PARA EL HILO 2
 	_crear_stack(&nuevo_tcb);
