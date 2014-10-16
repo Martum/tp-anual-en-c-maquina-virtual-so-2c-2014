@@ -9,7 +9,7 @@
 #include <commons/config.h>
 
 t_config* configs_kernel;
-char* path = "/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/kernel/config_kernel.txt";
+char* path = "/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/kernel/config_kernel.cfg";
 
 void cargar_configuraciones(void)
 {
