@@ -24,7 +24,7 @@ resultado_t load(tcb_t* tcb)
  * 	Carga en el primer registro el valor de memoria apuntado por el segundo registro
  */
 resultado_t getm(tcb_t* tcb)
-{ // creo que no esta bien
+{
 	char registro1;
 	char registro2;
 	int32_t valor_del_registro;
@@ -36,7 +36,12 @@ resultado_t getm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 
-	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
+	char* buffer = malloc(sizeof(char));
+	leer_de_memoria(tcb->pid, valor_del_registro, 1, buffer);
+	int32_t valor_de_memoria = *buffer;
+	free(buffer);
+
+	return actualizar_valor_del_registro(tcb, registro1, valor_de_memoria);
 }
 
 void _copiar_valores(int32_t numero, direccion direccion1, direccion direccion2,
