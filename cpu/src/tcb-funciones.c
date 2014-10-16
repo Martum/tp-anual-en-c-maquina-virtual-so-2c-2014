@@ -7,14 +7,6 @@
 
 #include "tcb-funciones.h"
 
-tcb_t* crear_tcb() {
-	return (tcb_t*) malloc(sizeof(tcb_t));
-}
-
-void liberar_tcb(tcb_t* tcb) {
-	free(tcb);
-}
-
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro, int32_t numero) {
 	if ('a' == registro) {
 		tcb->a = numero;

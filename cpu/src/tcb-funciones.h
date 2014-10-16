@@ -12,18 +12,6 @@
 #define TCB_FUNCIONES_H_
 
 /*
- * @DESC: Crea un espacio de memoria para la tcb
- * @RETURNS: el puntero al espacio de memoria creado
- */
-tcb_t* crear_tcb();
-
-/*
- * @DESC: Libera el espacio de memoria de la tcb
- * @RETURNS: nada
- */
-void liberar_tcb(tcb_t* tcb);
-
-/*
  * @DESC: Actualiza el valor del registro de la tcb con el numero.
  * @RETURNS:
  * 		OK si _todo sale bien
