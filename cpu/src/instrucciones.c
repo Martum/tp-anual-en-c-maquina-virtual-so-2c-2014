@@ -573,8 +573,8 @@ void _unir_bytes(int32_t* valor, unsigned char buffer[4])
 	 buffer[3] = bytes[0];
 	 valor = *(int32_t *) buffer;
 	 */
-	*valor = buffer[0] | ((int32_t) buffer[1] << 8) | ((int32_t) buffer[2] << 16)
-		| ((int32_t) buffer[3] << 24);
+	*valor = buffer[0] | ((int32_t) buffer[1] << 8)
+		| ((int32_t) buffer[2] << 16) | ((int32_t) buffer[3] << 24);
 }
 
 /*
@@ -661,19 +661,19 @@ resultado_t _free(tcb_t* tcb)
  * 	INNN
  *
  * 	Pide por consola del programa que se ingrese un número,
- * 		con signo entre –2.147.483.648 y 2.147.483.647.
+ * 		con signo entre –2.147.483.648 y 2.147.483.647. (31 bytes)
  * 	El mismo será almacenado en el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
 resultado_t innn(tcb_t* tcb)
 {
-	return EXCEPCION_POR_INGRESO_TEXTO;
+	char* buffer = malloc(sizeof(char) * 31);
 
-	/*
-	 * Mandar mensaje a kernel diciendole que pida una cadena de texto
-	 * Esperar que kernel te devuelva la cadena
-	 *
-	 */
+	comunicar_entrada_estandar(tcb, 31, buffer);
+
+	int32_t numero_ingresado = *buffer;
+
+	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 }
 
 /*
