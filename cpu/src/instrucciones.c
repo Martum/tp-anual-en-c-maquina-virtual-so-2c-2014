@@ -724,16 +724,18 @@ resultado_t innc(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro;
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro);
+	int32_t valor_del_registro_A;
+	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
+	int32_t valor_del_registro_B;
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
-	char* buffer = malloc(valor_del_registro);
+	char* buffer = malloc(valor_del_registro_B);
 
-	comunicar_entrada_estandar(tcb, valor_del_registro, buffer);
+	comunicar_entrada_estandar(tcb, valor_del_registro_B, buffer);
 
-	int32_t numero_ingresado = *buffer; // todo probar esto que no se si funciona
+	escribir_en_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B, buffer);
 
-	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
+	return OK;
 }
 
 /*
