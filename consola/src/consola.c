@@ -129,7 +129,7 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 
 	// Enviamos mensaje de identificacion
 	char* mensaje = malloc(tamanio_flagt());
-	uint32_t len;
+	uint32_t len = tamanio_flagt();
 	flag_t f = SOY_PROGRAMA;
 	memcpy(mensaje, &f, tamanio_flagt());
 
