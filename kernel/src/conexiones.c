@@ -148,27 +148,28 @@ void _informar_no_hay_memoria(sock_t* conexion)
 /**
  * Se procesa un nuevo programa.
  * Tenemos que llamar a los metodos del loader.h y agregar el fd en donde corresponda
+ * @RETURNS: -1 en caso de no haber memoria suficiente; 0 en caso de exito
  */
-void _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, sock_t* conexion)
+int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, sock_t* conexion)
 {
 	// Recordar agregar el fd al set master de procesos, y el registro a la lista
 	int32_t pid = procesar_nuevo_programa(codigo_beso, longitud);
 
 	// Si no se pudo alocar memoria, notificamos al proceso
 	if(pid == -1)
-	{	// TODO: HACER ESTA FUNCION
-		_informar_no_hay_memoria(conexion);
-		return;
-	}
+		return -1;
 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
+
+	return 0;
 }
 
 /**
  * Procesa un nueva conexion entrante
  *
- * @RETURNS: Si es un PROGRAMA devuelve 1; si es un CPU devuelve 2.
+ * @RETURNS: Si es un PROGRAMA devuelve 1; si es un CPU devuelve 2; si no se
+ * 			acepta la conexion devuelve -1
  * 			Deja en nueva_conexion el socket
  */
 int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
@@ -187,6 +188,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 	switch(codop)
 	{
 		case SOY_PROGRAMA:
+			salida = 1;
 			_dar_bienvenida(nueva_conexion);
 
 			// Recibimos el codigo BESO del programa
@@ -200,13 +202,18 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 				break;
 			}
 
-			_enviar_ok(nueva_conexion);
-
 			// Procesamos el nuevo programa
-			_procesar_conexion_nuevo_programa(codigo_beso, len, nueva_conexion);
+			if(_procesar_conexion_nuevo_programa(codigo_beso, len, nueva_conexion) == -1)
+			{// Si no hay memoria, informamos y seteamos salida con -1
+				_informar_no_hay_memoria(nueva_conexion);
+				salida = -1;
+			}
+			else
+			{// Esta OK
+				_enviar_ok(nueva_conexion);
+			}
 
 			free(codigo_beso);
-			salida = 1;
 			break;
 
 		case SOY_CPU:
@@ -294,12 +301,12 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 		// Escuchamos el universo
 		int rs = select(mayor_fd+1, &readfds, NULL, NULL, NULL);
 
-		if(rs != -1)
+		if(rs > 0)
 		{
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;
-			for(i = 0; i < copia_mayor_fd; i++)
+			for(i = 0; i < (copia_mayor_fd+1); i++)
 			{
 				// Si el socket se puede leer
 				if(FD_ISSET(i, &readfds))
@@ -308,7 +315,6 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
-
 						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
 							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 					}
