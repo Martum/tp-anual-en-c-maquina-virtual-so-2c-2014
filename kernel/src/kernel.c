@@ -20,13 +20,6 @@
 #include <hu4sockets/sockets.h>
 
 int jose = 5;
-void* test11 (void* c)
-{
-	printf("SISI");
-	printf("NONO");
-
-	return NULL;
-}
 
 int main(void) {
 	printf("- Comienza el Kernel\n");
@@ -48,7 +41,7 @@ int main(void) {
 
 	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
 	pthread_t conexiones_procesos_thread;
-	//pthread_create(&conexiones_procesos_thread, NULL, escuchar_conexiones_entrantes_y_procesos, NULL);
+	pthread_create(&conexiones_procesos_thread, NULL, escuchar_conexiones_entrantes_y_procesos, NULL);
 	printf("- Creado Thread para escuchar Procesos\n");
 
 
