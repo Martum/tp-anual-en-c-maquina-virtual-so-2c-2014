@@ -14,7 +14,7 @@
  * 	@DESC: Forma un int a partir de un array de cuatro bytes
  * 	@RETURN:
  */
-void unir_bytes(int32_t* valor, unsigned char buffer[4]);
+void unir_bytes(int32_t* valor, unsigned char buffer[3]);
 
 /*
  * 	@DESC: Divide un int en cuatro bytes

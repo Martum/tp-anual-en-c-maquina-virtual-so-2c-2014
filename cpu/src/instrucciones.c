@@ -691,7 +691,7 @@ resultado_t _free(tcb_t* tcb)
  * 	INNN
  *
  * 	Pide por consola del programa que se ingrese un número,
- * 		con signo entre –2.147.483.648 y 2.147.483.647. (31 bytes)
+ * 		con signo entre –2.147.483.648 y 2.147.483.647. (32 bits) (4 bytes)
  * 	El mismo será almacenado en el registro A.
  * 	Invoca al servicio correspondiente en el proceso Kernel.
  */
@@ -701,11 +701,13 @@ resultado_t innn(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	char* buffer = malloc(sizeof(char) * 31);
+	unsigned char* buffer = malloc(sizeof(char) * 4);
 
-	comunicar_entrada_estandar(tcb, 31, buffer);
+	comunicar_entrada_estandar(tcb, 4, buffer);
 
-	int32_t numero_ingresado = *buffer; // todo probar esto que no se si funciona
+	int32_t numero_ingresado;
+
+	unir_bytes(&numero_ingresado, buffer);
 
 	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 }
@@ -729,11 +731,13 @@ resultado_t innc(tcb_t* tcb)
 	int32_t valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
-	char* buffer = malloc(valor_del_registro_B);
+	unsigned char* buffer = malloc(valor_del_registro_B);
 
 	comunicar_entrada_estandar(tcb, valor_del_registro_B, buffer);
 
 	escribir_en_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B, buffer);
+
+	free(buffer);
 
 	return OK;
 }
