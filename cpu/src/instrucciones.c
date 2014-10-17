@@ -621,8 +621,8 @@ void _unir_bytes(int32_t* valor, unsigned char buffer[4])
 	 buffer[3] = bytes[0];
 	 valor = *(int32_t *) buffer;
 	 */
-	*valor = buffer[0] | ((int32_t) buffer[1] << 8)
-		| ((int32_t) buffer[2] << 16) | ((int32_t) buffer[3] << 24);
+	*valor = buffer[3] | ((int32_t) buffer[2] << 8)
+		| ((int32_t) buffer[1] << 16) | ((int32_t) buffer[0] << 24);
 }
 
 /*
