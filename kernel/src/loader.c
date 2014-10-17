@@ -5,6 +5,8 @@
  *      Author: martin
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -26,9 +28,17 @@ uint32_t dame_nuevo_tid()
 	return tid_global++;
 }
 
+void mostraresto(char* c, uint32_t l)
+{
+	/*char* c2 = malloc(l+1);
+	memcpy(c2, c, l);
+	c2[l] = '\0';*/
+
+	printf("El mensaje es: %c\n", *c);
+}
 
 int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
-{
+{ mostraresto(codigo_beso, len);
 	tcb_t* tcb = crear_tcb(dame_nuevo_pid(), dame_nuevo_tid());
 	tcb->tamanio_codigo = len;
 

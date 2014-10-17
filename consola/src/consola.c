@@ -110,14 +110,14 @@ char* cargar_beso(char* path, uint32_t* len)
 
 	// Obtenemos el size del archivo
 	fseek(archivo, 0L, SEEK_END);
-	uint32_t size = ftell(archivo) - 1;
+	*len = ftell(archivo) - 1;
 	fseek(archivo, 0L, SEEK_SET);
 
 	// Alocamos espacio suficiente
-	char* codigo = malloc(size);
+	char* codigo = malloc(*len);
 
 	// Leemos el archivo
-	fread(codigo, sizeof(char), size, archivo);
+	fread(codigo, sizeof(char), *len, archivo);
 
 	return codigo;
 }

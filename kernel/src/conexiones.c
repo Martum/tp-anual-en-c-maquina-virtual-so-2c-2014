@@ -286,7 +286,9 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
 						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
-							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);	// Es Programa
+						{// Es programa y salio all ok
+							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
+						}
 						else
 						{// Es CPU
 							//TODO: Aca el quehacer cuando la conexion es CPU
