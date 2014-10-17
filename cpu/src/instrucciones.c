@@ -42,6 +42,9 @@ resultado_t getm(tcb_t* tcb)
 	return actualizar_valor_del_registro(tcb, registro1, valor_de_memoria);
 }
 
+/*
+ * 	Escribe en memoria en direccion2 tantos bytes como numero. Los bytes los lee de la direccion 1
+ */
 void _copiar_valores(int32_t numero, direccion direccion1, direccion direccion2,
 	tcb_t* tcb)
 {
@@ -104,6 +107,12 @@ resultado_t movr(tcb_t* tcb)
 	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
 }
 
+/*
+ * 	Lee dos bytes desde el pc del tcb.
+ * 	Cada byte es una letra de un registro.
+ * 	Busca el valor del registro.
+ * 	Efectua operacion con ambos valores y los guarda en registro 'a'.
+ */
 resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
 {
 	char registro1;
@@ -224,6 +233,12 @@ resultado_t divr(tcb_t* tcb)
 		valor_del_registro_1 / valor_del_registro_2);
 }
 
+/*
+ * 	Lee un bytes desde el pc del tcb.
+ * 	El byte es una letra de un registro.
+ * 	Busca el valor del registro.
+ * 	Efectua operacion con el valor y lo guarda en registro 'a'.
+ */
 resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 {
 	char registro;
@@ -271,6 +286,12 @@ resultado_t decr(tcb_t* tcb)
 	return _funcion_incr_decr(tcb, restar_1);
 }
 
+/*
+ * 	Lee dos bytes desde el pc del tcb.
+ * 	Cada byte es una letra de un registro.
+ * 	Busca el valor del registro.
+ * 	Efectua comparacion con ambos valores y los guarda en registro 'a'.
+ */
 resultado_t _funcion_comparacion(tcb_t* tcb,
 	int32_t comparador(int32_t, int32_t))
 {
@@ -380,6 +401,12 @@ resultado_t _goto(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	Lee 4 bytes desde el pc del tcb.
+ * 	Los cuatro bytes conforman un numero.
+ * 	Efectua condicion el valor del registro 'a'.
+ * 	Si cumple la condicion, actualiza el valor del pc del tcb en base codigo + numero leido
+ */
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
 	int32_t offset;
@@ -458,6 +485,10 @@ resultado_t inte(tcb_t* tcb)
 	 */
 }
 
+/*
+ * 	Si numero es negativo, corre tantos bytes para la izquierda
+ * 	Si numero es positivo, corre tantos bytes para la derecha (0 es positivo)
+ */
 void _desplazar_bits(int32_t bits_a_desplazar, int32_t* valor)
 {
 	if (bits_a_desplazar > 0) {
@@ -502,6 +533,9 @@ resultado_t nopp(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	Divide un int en cuatro bytes y los guarda en el array bytes.
+ */
 void _dividir_en_bytes(unsigned char bytes[4], int32_t numero)
 {
 	bytes[0] = (numero >> 24) & 0xFF;
@@ -510,6 +544,9 @@ void _dividir_en_bytes(unsigned char bytes[4], int32_t numero)
 	bytes[3] = numero & 0xFF;
 }
 
+/*
+ * 	Agrega los bytes al stack del tcb y actualiza el cursor del stack.
+ */
 void _push(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
 	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
@@ -563,12 +600,18 @@ resultado_t push(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	Obtiene tantos cantidad_de_bytes del stack y actualiza el cursor
+ */
 void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
 	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
 }
 
+/*
+ * 	Forma un int a partir de un array de cuatro bytes
+ */
 void _unir_bytes(int32_t* valor, unsigned char buffer[4])
 {
 	/*
@@ -768,11 +811,17 @@ resultado_t outc(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	Copia en nuevo_tcb todos los valores del tcb
+ */
 void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
 	memcpy(&*nuevo_tcb, tcb, sizeof(tcb_t));
 }
 
+/*
+ * 	Crea un stack para el nuevo_tcb y se lo asigna
+ */
 void _crear_stack(tcb_t* nuevo_tcb)
 {
 	uint32_t tamano_stack;
@@ -782,6 +831,9 @@ void _crear_stack(tcb_t* nuevo_tcb)
 	nuevo_tcb->base_stack = nueva_base_stack;
 }
 
+/*
+ * 	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+ */
 void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
 	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
