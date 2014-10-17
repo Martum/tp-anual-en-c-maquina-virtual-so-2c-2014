@@ -1,9 +1,17 @@
-#include <commons/collections/dictionary.h>
-#include "tcb-funciones.h"
-#include "sockets.h"
+/*
+ * operaciones-con-bits.h
+ *
+ *  Created on: 17/10/2014
+ *      Author: utnso
+ */
 
 #ifndef INSTRUCCIONES_H_
 #define INSTRUCCIONES_H_
+
+#include <commons/collections/dictionary.h>
+#include "tcb-funciones.h"
+#include "sockets.h"
+#include "operaciones-con-bits.h"
 
 resultado_t load(tcb_t* tcb);
 resultado_t getm(tcb_t* tcb);

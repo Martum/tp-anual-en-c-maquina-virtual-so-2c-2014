@@ -534,17 +534,6 @@ resultado_t nopp(tcb_t* tcb)
 }
 
 /*
- * 	Divide un int en cuatro bytes y los guarda en el array bytes.
- */
-void _dividir_en_bytes(unsigned char bytes[4], int32_t numero)
-{
-	bytes[0] = (numero >> 24) & 0xFF;
-	bytes[1] = (numero >> 16) & 0xFF;
-	bytes[2] = (numero >> 8) & 0xFF;
-	bytes[3] = numero & 0xFF;
-}
-
-/*
  * 	Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */
 void _push(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
@@ -593,7 +582,7 @@ resultado_t push(tcb_t* tcb)
 	obtener_registro(tcb, &registro);
 	obtener_valor_del_registro(tcb, registro, &valor_a_pushear);
 
-	_dividir_en_bytes(bytes, valor_a_pushear);
+	dividir_en_bytes(valor_a_pushear, bytes);
 
 	_push(tcb, cantidad_de_bytes, bytes);
 
@@ -607,22 +596,6 @@ void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 {
 	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
-}
-
-/*
- * 	Forma un int a partir de un array de cuatro bytes
- */
-void _unir_bytes(int32_t* valor, unsigned char buffer[4])
-{
-	/*
-	 buffer[0] = bytes[3];
-	 buffer[1] = bytes[2];
-	 buffer[2] = bytes[1];
-	 buffer[3] = bytes[0];
-	 valor = *(int32_t *) buffer;
-	 */
-	*valor = buffer[3] | ((int32_t) buffer[2] << 8)
-		| ((int32_t) buffer[1] << 16) | ((int32_t) buffer[0] << 24);
 }
 
 /*
@@ -647,7 +620,7 @@ resultado_t take(tcb_t* tcb)
 
 	_pop(tcb, cantidad_de_bytes, bytes);
 
-	_unir_bytes(&valor, bytes);
+	unir_bytes(&valor, bytes);
 
 	actualizar_valor_del_registro(tcb, registro, valor);
 
