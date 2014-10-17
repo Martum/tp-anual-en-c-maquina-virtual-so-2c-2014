@@ -247,7 +247,7 @@ void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer)
 }
 
 void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
-	char* buffer)
+	unsigned char* buffer)
 {
 	// todo programar
 }
