@@ -17,10 +17,6 @@
 #include <hu4sockets/mensajes.h>
 #include "loader.h"
 
-// Lista y mutex para conexiones sin asignar (recien recibidas)
-pthread_mutex_t mutex_conexiones_unsigned = PTHREAD_MUTEX_INITIALIZER;
-t_list* conexiones_unasigned;
-
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t mutex_conexiones_procesos = PTHREAD_MUTEX_INITIALIZER;
 t_list* conexiones_procesos;
@@ -41,16 +37,6 @@ fd_set readfds_cpus;
 pthread_mutex_t mutex_conexion_memoria = PTHREAD_MUTEX_INITIALIZER;
 sock_t* conexion_memoria;
 
-void _agregar_conexion_a_unasigned(sock_t* conexion)
-{
-	pthread_mutex_lock(&mutex_conexiones_unsigned);
-
-	list_add(conexiones_unasigned, conexion);
-	FD_SET(conexion->fd, &readfds_procesos);
-
-	pthread_mutex_unlock(&mutex_conexiones_unsigned);
-}
-
 void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 {
 	conexion_proceso_t* conexion_proceso = malloc(sizeof(conexion_proceso_t));
@@ -63,22 +49,6 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	FD_SET(conexion->fd, &readfds_procesos);
 
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
-}
-
-void _eliminar_conexion_de_unasigned(int32_t fd)
-{
-	bool buscar_unasigned(void* elemento)
-	{
-		sock_t* conexion = (sock_t*) elemento;
-
-		return conexion->fd == fd;
-	}
-
-	pthread_mutex_lock(&mutex_conexiones_unsigned);
-
-	list_remove_by_condition(conexiones_unasigned, buscar_unasigned);
-
-	pthread_mutex_unlock(&mutex_conexiones_unsigned);
 }
 
 void _agregar_conexion_a_cpu(sock_t* conexion)
@@ -316,7 +286,11 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
 						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
-							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
+							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);	// Es Programa
+						else
+						{// Es CPU
+							//TODO: Aca el quehacer cuando la conexion es CPU
+						}
 					}
 					else
 					{// No es el socket principal, es un proceso
