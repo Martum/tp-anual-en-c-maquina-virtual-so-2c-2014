@@ -10,25 +10,6 @@
 sock_t* memoria;
 sock_t* kernel;
 
-resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
-{
-	*socket = crear_socket_hablador(ip, puerto);
-	if (conectar(*socket) == -1)
-		return FALLO_CONEXION;
-	return OK;
-}
-
-resultado_t conectar_con_memoria()
-{
-	return _conectar(&memoria, NULL, 4560);
-}
-
-resultado_t conectar_con_kernel()
-{
-	return _conectar(&kernel, NULL, 4559);
-	// todo mandar mensaje con SOY_CPU
-}
-
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	uint32_t len_a_enviar, char* respuesta)
 {
@@ -51,6 +32,60 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	return OK;
 }
 
+resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
+{
+	*socket = crear_socket_hablador(ip, puerto);
+	if (conectar(*socket) == -1)
+		return FALLO_CONEXION;
+	return OK;
+}
+
+resultado_t conectar_con_memoria()
+{
+	return _conectar(&memoria, NULL, 4560);
+}
+
+resultado_t _mandar_soy_cpu_a_kernel()
+{
+	pedido_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = SOY_CPU;
+
+	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK) {
+		return FALLO_COMUNICACION;
+	}
+
+	return OK;
+}
+
+resultado_t conectar_con_kernel()
+{
+	if (_conectar(&kernel, NULL, 4559) == FALLO_CONEXION)
+		return FALLO_CONEXION;
+
+	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
+		return FALLO_CONEXION;
+
+	return OK;
+}
+
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 {
 	pedido_t cuerpo_del_mensaje;
@@ -63,6 +98,10 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
@@ -92,6 +131,10 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
@@ -119,6 +162,10 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 	}
 
@@ -145,6 +192,10 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
@@ -176,6 +227,10 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_ESCRITURA_EN_MEMORIA;
 	}
 
@@ -199,6 +254,10 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
 		return FALLO_INFORME_A_KERNEL;
 	}
 

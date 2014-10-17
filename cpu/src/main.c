@@ -26,6 +26,7 @@ int32_t main(int32_t argc, char** argv)
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 			resultado = ERROR_EN_EJECUCION;
 
+		// TODO eliminar (no es mas necesario)
 		/*
 		 dictionary_destroy(dic_instrucciones);
 		 cerrar_puertos();
@@ -41,6 +42,7 @@ int32_t main(int32_t argc, char** argv)
 		if ((quantum <= 0) && !tcb.km)
 			resultado = ERROR_EN_EJECUCION;
 
+		// TODO eliminar (no es mas necesario)
 		/*
 		 dictionary_destroy(dic_instrucciones);
 		 cerrar_puertos();
