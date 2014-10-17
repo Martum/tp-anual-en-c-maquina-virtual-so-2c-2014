@@ -536,7 +536,7 @@ resultado_t nopp(tcb_t* tcb)
 /*
  * 	Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */
-void _push(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
+void _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
 	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, cantidad_de_bytes);
@@ -570,7 +570,7 @@ resultado_t push(tcb_t* tcb)
 	 */
 
 	char registro;
-	unsigned char bytes[4];
+	char bytes[4];
 	int32_t cantidad_de_bytes;
 	int32_t valor_a_pushear;
 
@@ -592,7 +592,7 @@ resultado_t push(tcb_t* tcb)
 /*
  * 	Obtiene tantos cantidad_de_bytes del stack y actualiza el cursor
  */
-void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
+void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
 	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
 	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
@@ -607,7 +607,7 @@ void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, unsigned char bytes[4])
 resultado_t take(tcb_t* tcb)
 {
 	char registro;
-	unsigned char bytes[4];
+	char bytes[4];
 	int32_t cantidad_de_bytes;
 	int32_t valor;
 
@@ -701,7 +701,7 @@ resultado_t innn(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	unsigned char* buffer = malloc(sizeof(char) * 4);
+	char* buffer = malloc(sizeof(char) * 4);
 
 	comunicar_entrada_estandar(tcb, 4, buffer);
 
@@ -731,7 +731,7 @@ resultado_t innc(tcb_t* tcb)
 	int32_t valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
-	unsigned char* buffer = malloc(valor_del_registro_B);
+	char* buffer = malloc(valor_del_registro_B);
 
 	comunicar_entrada_estandar(tcb, valor_del_registro_B, buffer);
 
@@ -757,7 +757,7 @@ resultado_t outn(tcb_t* tcb)
 	int32_t valor_del_registro_A;
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
-	unsigned char buffer[4];
+	char buffer[4];
 	dividir_en_bytes(valor_del_registro_A, buffer);
 
 	comunicar_salida_estandar(tcb, 4, buffer);
@@ -782,7 +782,7 @@ resultado_t outc(tcb_t* tcb)
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
-	unsigned char* buffer = malloc(valor_del_registro_B);
+	char* buffer = malloc(valor_del_registro_B);
 
 	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
 		buffer);

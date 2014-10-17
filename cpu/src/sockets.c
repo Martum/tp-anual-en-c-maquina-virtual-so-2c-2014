@@ -241,13 +241,13 @@ void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack) {
 	// todo programar
 }
 
-void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, unsigned char* buffer)
+void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer)
 {// todo programar
 
 }
 
 void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
-	unsigned char* buffer)
+	char* buffer)
 {
 	// todo programar
 }
