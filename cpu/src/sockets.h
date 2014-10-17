@@ -12,6 +12,7 @@
 #include "hu4sockets/sockets.h"
 #include "hu4sockets/mensajes.h"
 #include "instrucciones-estructuras.h"
+#include "operaciones-con-bits.h"
 
 
 #ifndef MEMORIA_H_
@@ -71,7 +72,7 @@ resultado_t destruir_segmento_sin_serializacion(direccion pid, direccion direcci
  * 		OK si pudo conectarse y trajo bien los datos
  * 		FALLO_LECTURA_DE_MEMORIA si hubo problemas al traer los datos
  */
-resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, char* buffer);
 
 resultado_t leer_de_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
@@ -81,7 +82,7 @@ resultado_t leer_de_memoria_sin_serializacion(direccion pid, direccion direccion
  * 		OK si pudo conectarse y escribir los datos
  * 		FALLO_ESCRITURA_EN_MEMORIA si hubo problemas al escribir los datos
  */
-resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, char* buffer);
 
 resultado_t escribir_en_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
 
@@ -105,7 +106,7 @@ void cerrar_puertos();
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
  * @RETURNS:
  */
-void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion);
+void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc y actualiza el registro.

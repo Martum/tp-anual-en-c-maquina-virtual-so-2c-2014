@@ -49,7 +49,7 @@ int32_t main(int32_t argc, char** argv)
 		 */
 
 		while ((quantum > 0 || tcb.km) && resultado == OK) {
-			obtener_instruccion(&tcb, &instruccion);
+			obtener_instruccion(&tcb, instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			resultado = funcion(&tcb);
 			quantum--;

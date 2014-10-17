@@ -129,7 +129,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 }
 
 resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
-	void* buffer)
+	char* buffer)
 {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
@@ -151,7 +151,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	respuesta_de_leer_de_memoria_t respuesta =
 		*deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
 
-	memcpy(buffer, respuesta.bytes_leido, sizeof(respuesta.bytes_leido)); // todo cambiar el sizeof por un campo mas en el struct
+	memcpy(buffer, respuesta.bytes_leido, bytes);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
@@ -160,13 +160,13 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 }
 
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
-	uint32_t bytes, void* buffer)
+	uint32_t bytes, char* buffer)
 {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
-	cuerpo_del_mensaje.bytes_a_escribir = (char*) buffer;
+	cuerpo_del_mensaje.bytes_a_escribir = buffer;
 	cuerpo_del_mensaje.tamano = bytes;
 
 	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
@@ -214,17 +214,16 @@ void cerrar_puertos()
 	cerrar_liberar(kernel); // todo agregar mensaje de DESCONEXION_CPU
 }
 
-// todo cambiar firma (primero tamano despues buffer)
-void _obtener(tcb_t* tcb, void* memoria_a_actualizar, uint32_t bytes_a_leer)
+void _obtener(tcb_t* tcb, char* memoria_a_actualizar, uint32_t bytes_a_leer)
 {
 	leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar);
-	// TODO: validacion
 	tcb->pc = tcb->pc + bytes_a_leer;
 }
 
-void obtener_instruccion(tcb_t* tcb, instruccion_t* instruccion)
+void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
 	_obtener(tcb, instruccion, sizeof(instruccion_t));
+	instruccion[4] = '\0';
 }
 
 void obtener_registro(tcb_t* tcb, char* registro)
@@ -234,15 +233,18 @@ void obtener_registro(tcb_t* tcb, char* registro)
 
 void obtener_numero(tcb_t* tcb, int32_t* numero)
 {
-	_obtener(tcb, numero, sizeof(int32_t));
+	char buffer[3];
+	_obtener(tcb, buffer, sizeof(int32_t));
+	unir_bytes(numero, buffer);
 }
 
-void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack) {
+void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
+{
 	// todo programar
 }
 
 void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer)
-{// todo programar
+{ // todo programar
 
 }
 
