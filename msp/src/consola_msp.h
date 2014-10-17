@@ -79,6 +79,7 @@ void listar_marcos();
 /*
  * Funciones para el manejo de ejecutar funciones escribiendo desde la consola
  */
+void* escuchar_consola_msp(void*);
 void _dar_instrucciones_por_consola();
 bool _matcheo_cadena_con_funcion(char*);
 int _parametro_int(char* param);
