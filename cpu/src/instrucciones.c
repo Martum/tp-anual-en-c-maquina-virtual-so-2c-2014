@@ -463,7 +463,7 @@ void _desplazar_bits(int32_t bits_a_desplazar, int32_t* valor)
 	if (bits_a_desplazar > 0) {
 		*valor = *valor >> bits_a_desplazar;
 	} else {
-		*valor = *valor << bits_a_desplazar;
+		*valor = *valor << abs(bits_a_desplazar);
 	}
 }
 
