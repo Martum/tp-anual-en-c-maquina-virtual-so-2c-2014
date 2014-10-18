@@ -110,14 +110,14 @@ char* cargar_beso(char* path, uint32_t* len)
 
 	// Obtenemos el size del archivo
 	fseek(archivo, 0L, SEEK_END);
-	uint32_t size = ftell(archivo) - 1;
+	*len = ftell(archivo) - 1;
 	fseek(archivo, 0L, SEEK_SET);
 
 	// Alocamos espacio suficiente
-	char* codigo = malloc(size);
+	char* codigo = malloc(*len);
 
 	// Leemos el archivo
-	fread(codigo, sizeof(char), size, archivo);
+	fread(codigo, sizeof(char), *len, archivo);
 
 	return codigo;
 }
@@ -129,7 +129,7 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 
 	// Enviamos mensaje de identificacion
 	char* mensaje = malloc(tamanio_flagt());
-	uint32_t len;
+	uint32_t len = tamanio_flagt();
 	flag_t f = SOY_PROGRAMA;
 	memcpy(mensaje, &f, tamanio_flagt());
 

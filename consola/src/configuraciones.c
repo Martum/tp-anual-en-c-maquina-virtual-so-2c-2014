@@ -9,10 +9,11 @@
 #include <commons/config.h>
 
 t_config* configs;
+char* path = "/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/consola/config_consola.cfg";
 
 void cargar_configuraciones(void)
 {
-	configs = config_create("config_consola.txt");
+	configs = config_create(path);
 }
 
 char* ip_kernel()

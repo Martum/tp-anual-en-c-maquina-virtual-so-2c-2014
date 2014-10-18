@@ -9,7 +9,6 @@
 #define CONEXIONES_H_
 
 #include <hu4sockets/sockets.h>
-#include <sys/poll.h>
 
 typedef struct conexion_cpu {
 	sock_t* socket;
