@@ -13,9 +13,14 @@ resultado_t load(tcb_t* tcb)
 	obtener_registro(tcb, &registro);
 	obtener_numero(tcb, &numero);
 
-	return actualizar_valor_del_registro(tcb, registro, numero);
+	if (actualizar_valor_del_registro(tcb, registro, numero)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
 }
 
+// TODO
 /*
  * 	GETM [Registro], [Registro]
  *
@@ -37,20 +42,25 @@ resultado_t getm(tcb_t* tcb)
 	char* buffer = malloc(sizeof(char));
 	leer_de_memoria(tcb->pid, valor_del_registro, 1, buffer);
 	int32_t valor_de_memoria = *buffer;
-	free(buffer);
+	free(buffer); // TODO pensar si conviene encapsular
 
-	return actualizar_valor_del_registro(tcb, registro1, valor_de_memoria);
+	if (actualizar_valor_del_registro(tcb, registro1, valor_de_memoria)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
 }
 
 /*
- * 	Escribe en memoria en direccion2 tantos bytes como numero. Los bytes los lee de la direccion 1
+ * 	Escribe en memoria en direccion hacia tantos bytes como cantidad_de_bytes.
+ * 	Los bytes los lee de la direccion desde.
  */
-void _copiar_valores(int32_t numero, direccion direccion1, direccion direccion2,
-	tcb_t* tcb)
+void _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
+	direccion hacia, tcb_t* tcb)
 {
-	char* buffer = malloc(numero);
-	leer_de_memoria(tcb->pid, direccion2, numero, buffer);
-	escribir_en_memoria(tcb->pid, direccion1, numero, buffer);
+	char* buffer = malloc(cantidad_de_bytes);
+	leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer);
+	escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer);
 	free(buffer);
 }
 
@@ -79,13 +89,14 @@ resultado_t setm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	direccion direccion1 = valor_del_registro_1;
-	direccion direccion2 = valor_del_registro_2;
+	direccion hacia = valor_del_registro_1;
+	direccion desde = valor_del_registro_2;
 
-	_copiar_valores(cantidad_de_bytes_a_copiar, direccion1, direccion2, tcb);
+	_copiar_valores(cantidad_de_bytes_a_copiar, desde, hacia, tcb);
 
 	return OK;
 }
+
 /*
  * 	MOVR [Registro], [Registro]
  *
@@ -95,16 +106,20 @@ resultado_t movr(tcb_t* tcb)
 {
 	char registro1;
 	char registro2;
-	int32_t valor_del_registro;
+	int32_t valor_del_registro_2;
 
 	obtener_registro(tcb, &registro1);
 	obtener_registro(tcb, &registro2);
 
-	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro)
+	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	return actualizar_valor_del_registro(tcb, registro1, valor_del_registro);
+	if (actualizar_valor_del_registro(tcb, registro1, valor_del_registro_2)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
 }
 
 /*
@@ -130,8 +145,10 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	return actualizar_valor_del_registro(tcb, 'a',
+	actualizar_valor_del_registro(tcb, 'a',
 		operacion(valor_del_registro_1, valor_del_registro_2));
+
+	return OK;
 }
 
 /*
@@ -203,6 +220,7 @@ resultado_t modr(tcb_t* tcb)
 	return _funcion_operacion(tcb, modulo);
 }
 
+// TODO
 /*
  * 	DIVR [Registro], [Registro]
  *
@@ -211,6 +229,8 @@ resultado_t modr(tcb_t* tcb)
  */
 resultado_t divr(tcb_t* tcb)
 {
+	// TODO pensar en una combinacion con funcion_operacion, agregando una condicion
+
 	char registro1;
 	char registro2;
 	int32_t valor_del_registro_1;
@@ -229,8 +249,10 @@ resultado_t divr(tcb_t* tcb)
 	if (valor_del_registro_2 == 0)
 		return ERROR_EN_EJECUCION;
 
-	return actualizar_valor_del_registro(tcb, 'a',
+	actualizar_valor_del_registro(tcb, 'a',
 		valor_del_registro_1 / valor_del_registro_2);
+
+	return OK;
 }
 
 /*
@@ -250,8 +272,9 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	return actualizar_valor_del_registro(tcb, 'a',
-		operacion(valor_del_registro));
+	actualizar_valor_del_registro(tcb, 'a', operacion(valor_del_registro));
+
+	return OK;
 }
 
 /*
@@ -310,8 +333,10 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	return actualizar_valor_del_registro(tcb, 'a',
+	actualizar_valor_del_registro(tcb, 'a',
 		comparador(valor_del_registro_1, valor_del_registro_2));
+
+	return OK;
 }
 
 /*
@@ -387,14 +412,15 @@ resultado_t _goto(tcb_t* tcb)
 {
 	char registro;
 	int32_t valor_del_registro;
-	direccion base_de_codigo;
 
 	obtener_registro(tcb, &registro);
-	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_del_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
+
+	direccion base_de_codigo;
+	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	actualizar_pc(tcb, base_de_codigo + valor_del_registro);
 
@@ -411,14 +437,16 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
 	int32_t offset;
 	int32_t valor_del_registro;
-	direccion base_de_codigo;
 
 	obtener_numero(tcb, &offset);
+
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
-	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	if (condicion(valor_del_registro))
 		return OK;
+
+	direccion base_de_codigo;
+	obtener_base_de_codigo(tcb, &base_de_codigo);
 
 	actualizar_pc(tcb, base_de_codigo + offset);
 
@@ -461,6 +489,7 @@ resultado_t jpnz(tcb_t* tcb)
 	return _funcion_de_salto(tcb, condicion);
 }
 
+// TODO programar
 /*
  * 	INTE [Direccion]
  *
@@ -486,19 +515,6 @@ resultado_t inte(tcb_t* tcb)
 }
 
 /*
- * 	Si numero es negativo, corre tantos bytes para la izquierda
- * 	Si numero es positivo, corre tantos bytes para la derecha (0 es positivo)
- */
-void _desplazar_bits(int32_t bits_a_desplazar, int32_t* valor)
-{
-	if (bits_a_desplazar > 0) {
-		*valor = *valor >> bits_a_desplazar;
-	} else {
-		*valor = *valor << abs(bits_a_desplazar);
-	}
-}
-
-/*
  * 	SHIF [Número], [Registro]
  *
  * 	Desplaza los bits del registro, tantas veces como se indique en el número.
@@ -518,9 +534,11 @@ resultado_t shif(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	_desplazar_bits(bits_a_desplazar, &valor_de_registro);
+	desplazar_bits(bits_a_desplazar, &valor_de_registro);
 
-	return actualizar_valor_del_registro(tcb, registro, valor_de_registro);
+	actualizar_valor_del_registro(tcb, registro, valor_de_registro);
+
+	return OK;
 }
 
 /*
@@ -575,12 +593,14 @@ resultado_t push(tcb_t* tcb)
 	int32_t valor_a_pushear;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
+	obtener_registro(tcb, &registro);
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
-	obtener_registro(tcb, &registro);
-	obtener_valor_del_registro(tcb, registro, &valor_a_pushear);
+	if (obtener_valor_del_registro(tcb, registro, &valor_a_pushear)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
 
 	dividir_en_bytes(valor_a_pushear, bytes);
 
@@ -612,17 +632,18 @@ resultado_t take(tcb_t* tcb)
 	int32_t valor;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
+	obtener_registro(tcb, &registro);
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
-
-	obtener_registro(tcb, &registro);
 
 	_pop(tcb, cantidad_de_bytes, bytes);
 
 	unir_bytes(&valor, bytes);
 
-	actualizar_valor_del_registro(tcb, registro, valor);
+	if (actualizar_valor_del_registro(tcb, registro, valor)
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -652,17 +673,20 @@ resultado_t malc(tcb_t* tcb)
 	}
 
 	int32_t bytes;
+	direccion direccion;
 
 	obtener_valor_del_registro(tcb, 'a', &bytes);
 
-	direccion direccion;
 	if (crear_segmento(tcb->pid, bytes, &direccion)
 		== FALLO_CREACION_DE_SEGMENTO)
 		return FALLO_CREACION_DE_SEGMENTO;
 
-	return actualizar_valor_del_registro(tcb, 'a', direccion);
+	actualizar_valor_del_registro(tcb, 'a', direccion);
+
+	return OK;
 }
 
+// TODO falta verificar que la memoria alocada sea por instruccion MALC
 /*
  * 	FREE
  *
@@ -676,8 +700,6 @@ resultado_t _free(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// todo falta verificar que la memoria alocada sea por instruccion MALC
-
 	int32_t valor_del_registro;
 
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
@@ -687,6 +709,7 @@ resultado_t _free(tcb_t* tcb)
 	return destruir_segmento(tcb->pid, direccion);
 }
 
+// TODO
 /*
  * 	INNN
  *
@@ -701,17 +724,19 @@ resultado_t innn(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	char* buffer = malloc(sizeof(char) * 4);
-
-	comunicar_entrada_estandar(tcb, 4, buffer);
-
 	int32_t numero_ingresado;
 
+	char* buffer = malloc(sizeof(char) * 4);
+	comunicar_entrada_estandar(tcb, 4, buffer);
 	unir_bytes(&numero_ingresado, buffer);
+	free(buffer); // TODO pensar en encapsular
 
-	return actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
+	actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
+
+	return OK;
 }
 
+// TODO
 /*
  * 	INNC
  *
@@ -732,16 +757,15 @@ resultado_t innc(tcb_t* tcb)
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
 	char* buffer = malloc(valor_del_registro_B);
-
 	comunicar_entrada_estandar(tcb, valor_del_registro_B, buffer);
-
-	escribir_en_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B, buffer);
-
-	free(buffer);
+	escribir_en_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
+		buffer); // TODO agregar validacion
+	free(buffer); // TODO pensar en encapsular
 
 	return OK;
 }
 
+// TODO
 /*
  * 	OUTN
  *
@@ -757,14 +781,15 @@ resultado_t outn(tcb_t* tcb)
 	int32_t valor_del_registro_A;
 	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
 
-	char buffer[4];
+	char buffer[4]; // TODO preguntar si los arrays se tienen que liberar
 	dividir_en_bytes(valor_del_registro_A, buffer);
+	comunicar_salida_estandar(tcb, 4, buffer); // TODO pensar en encapsular
 
-	comunicar_salida_estandar(tcb, 4, buffer);
 
 	return OK;
 }
 
+// TODO
 /*
  * 	OUTC
  *
@@ -783,13 +808,10 @@ resultado_t outc(tcb_t* tcb)
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
 
 	char* buffer = malloc(valor_del_registro_B);
-
 	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
-		buffer);
-
+		buffer); // TODO agregar validacion
 	comunicar_salida_estandar(tcb, valor_del_registro_B, buffer);
-
-	free(buffer);
+	free(buffer); // TODO pensar en encapsular
 
 	return OK;
 }
@@ -814,19 +836,27 @@ void _crear_stack(tcb_t* nuevo_tcb)
 	nuevo_tcb->base_stack = nueva_base_stack;
 }
 
+// TODO
 /*
  * 	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
  */
 void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
 	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
+
 	char* buffer = malloc(ocupacion_stack);
+
 	leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer);
+
 	escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack, ocupacion_stack,
 		buffer);
-	nuevo_tcb->cursor_stack = nuevo_tcb->base_stack + ocupacion_stack;
+
+	nuevo_tcb->cursor_stack = nuevo_tcb->base_stack + ocupacion_stack; // TODO pensar en encapsular
+
+	free(buffer);
 }
 
+// TODO
 /*
  * 	CREA
  *
@@ -854,31 +884,37 @@ resultado_t crea(tcb_t* tcb)
 
 	tcb_t nuevo_tcb;
 
-	int32_t nuevo_pc;
-	obtener_valor_del_registro(tcb, 'b', &nuevo_pc);
+	// Obtengo el nuevo valor del pc
+	int32_t valor_del_registro_B;
+	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
+	direccion nuevo_pc = valor_del_registro_B;
 
-	// COPIO EL TCB AL NUEVO TCB TAL CUAL
+	// Copio tcb a nuevo_tcb, tal cual
 	_clonar_tcb(&nuevo_tcb, tcb);
 
-	// LE CAMBIO ALGUNOS VALORES SEGÚN LOS REQUERIMIENTOS
-	nuevo_tcb.pc = nuevo_pc;
-	nuevo_tcb.tid = tcb->tid + 1; // TODO: corroborar que no exista otro tcb con ese tid
-	nuevo_tcb.km = false;
+	// Actualizo el nuevo_tcb con los nuevos valores
+	actualizar_pc(&nuevo_tcb, nuevo_pc);
+	nuevo_tcb.tid = tcb->tid + 1; // TODO: corroborar que no exista otro tcb con ese tid TODO encapsular
+	nuevo_tcb.km = false; // TODO encapsular
+
+	// Guardo el nuevo tid en el registro 'a'
 	actualizar_valor_del_registro(tcb, 'a', nuevo_tcb.tid);
 
-	// CREA UN NUEVO STACK PARA EL HILO 2
+	// Creo un nuevo stack para el nuevo_tcb
 	_crear_stack(&nuevo_tcb);
 
-	// COPIO EL STACK DEL HILO 1 AL HILO 2
+	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
 	_clonar_stack(&nuevo_tcb, tcb);
 
+	// Le mando el nuevo tcb al kernel para planificar
 	comunicar_nuevo_tcb(&nuevo_tcb);
 
 	return OK;
 }
 
+// TODO
 /*
- * 	JOIN
+* * 	JOIN
  *
  * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
  * 		el hilo con el identificador almacenado en el registro A haya finalizado.
@@ -890,14 +926,15 @@ resultado_t join(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro_A;
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
+	int32_t identificador_almacenado_en_A;
+	obtener_valor_del_registro(tcb, 'a', &identificador_almacenado_en_A);
 
-	comunicar_join(tcb->tid, valor_del_registro_A); // todo fijarse el orden de los tid
+	comunicar_join(tcb->tid, identificador_almacenado_en_A); // todo fijarse el orden de los tid
 
 	return OK;
 }
 
+// TODO
 /*
  * 	BLOK
  *
@@ -912,7 +949,7 @@ resultado_t blok(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// todo fijarse si el apuntado por b es direccion de memoria o valor
+	// TODO fijarse si el apuntado por b es direccion de memoria o valor
 
 	int32_t valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
@@ -922,6 +959,7 @@ resultado_t blok(tcb_t* tcb)
 	return OK;
 }
 
+// TODO
 /*
  * 	WAKE
  *
