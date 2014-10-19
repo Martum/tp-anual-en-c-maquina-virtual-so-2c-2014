@@ -13,6 +13,11 @@
 
 
 /**
+ * Genera un nuevo ID para CPU
+ */
+uint32_t dame_nuevo_id_cpu();
+
+/**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
  * Devuelve 0 en caso de exito o -1 en caso de no haber memoria disponible.
  */

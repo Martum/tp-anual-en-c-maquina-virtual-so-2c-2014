@@ -17,6 +17,7 @@
 #include <hu4sockets/mensajes.h>
 #include "loader.h"
 #include <sys/time.h>
+#include "cpu.h"
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -84,15 +85,14 @@ void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 
 void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
-	char* respuesta = malloc(tamanio_flagt());
-	flag_t resp = flag;
+	char* msg = malloc(tamanio_flagt());
 	uint32_t i = tamanio_flagt();
 
-	memcpy(respuesta, &resp, tamanio_flagt());
+	memcpy(msg, &flag, tamanio_flagt());
 
-	enviar(conxion, respuesta, &i);
+	enviar(conxion, msg, &i);
 
-	free(respuesta);
+	free(msg);
 }
 
 /**
@@ -168,7 +168,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 	recibir(nueva_conexion, &msg, &i);
 	flag_t codop = codigo_operacion(msg);
 
-	int salida = 0;
+	int32_t salida = -1;
 
 	switch(codop)
 	{
@@ -202,13 +202,13 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 			break;
 
 		case SOY_CPU:
-			//TODO: Progamar el comportamiento al recibir la conexion de un CPU
-			_dar_bienvenida(nueva_conexion);
-
-
-			// TODO: Recordar agregarlo a la lista correspondiente
-			// TODO: Recordar recalcular el nuevo MAYOR_FD_CPU
 			salida = 2;
+
+			// Agregamos el CPU a la lista
+			_agregar_conexion_a_cpu(nueva_conexion, dame_nuevo_id_cpu());
+
+			// Le damos la bienvenida
+			_dar_bienvenida(nueva_conexion);
 			break;
 
 		default:
@@ -303,7 +303,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
-						sock_t* nueva_conexion;
+						sock_t* nueva_conexion = NULL;
 						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
 						{// Es programa y salio all ok
 							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
@@ -311,6 +311,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 						else
 						{// Es CPU
 							//TODO: Aca el quehacer cuando la conexion es CPU
+							_recalcular_mayor_fd(&MAYOR_FD_CPU, nueva_conexion->fd);
 						}
 					}
 					else
