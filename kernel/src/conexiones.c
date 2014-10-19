@@ -33,6 +33,8 @@ t_list* conexiones_cpu;
 // SET para conexiones cpu
 fd_set readfds_cpus;
 
+//--------------------
+
 // Socket y mutex de la conexion con memoria
 pthread_mutex_t mutex_conexion_memoria = PTHREAD_MUTEX_INITIALIZER;
 sock_t* conexion_memoria;
@@ -51,10 +53,14 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_unlock(&mutex_conexiones_procesos);
 }
 
-void _agregar_conexion_a_cpu(sock_t* conexion)
+void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 {
+	conexion_cpu_t* conexion_cpu = malloc(sizeof(conexion_cpu_t));
+	conexion_cpu->socket = conexion;
+	conexion_cpu->id = id;
+
 	pthread_mutex_lock(&mutex_conexiones_cpu);
-	//TODO: Agregar un struct para wrappear las conexiones a los cpus con un ID
+
 	list_add(conexiones_cpu, conexion);
 	FD_SET(conexion->fd, &readfds_cpus);
 

@@ -23,7 +23,7 @@ typedef struct conexion_procesos {
 /**
  * Agrega una conexion a la lista de conexiones de CPU
  */
-void _agregar_conexion_a_cpu(sock_t*);
+void _agregar_conexion_a_cpu(sock_t*, uint32_t id);
 
 /**
  * Agrega una conexion a la lista de conexiones de Procesos
