@@ -18,53 +18,59 @@
 #include "loader.h"
 
 // Lista y mutex para conexiones de procesos
-pthread_mutex_t mutex_conexiones_procesos = PTHREAD_MUTEX_INITIALIZER;
-t_list* conexiones_procesos;
+pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
+t_list* CONEXIONES_PROCESOS;
 
 // SET para conexiones unasigned y de procesos
-fd_set readfds_procesos;
+fd_set READFDS_PROCESOS;
 
 //---------------------
 
 // Lista y mutex para conexiones cpu
-pthread_mutex_t mutex_conexiones_cpu = PTHREAD_MUTEX_INITIALIZER;
-t_list* conexiones_cpu;
+pthread_mutex_t MUTEX_CONEXIONES_CPU = PTHREAD_MUTEX_INITIALIZER;
+t_list* CONEXIONES_CPU;
 
 // SET para conexiones cpu
-fd_set readfds_cpus;
+fd_set READFDS_CPUS;
 
 //--------------------
 
 // Socket y mutex de la conexion con memoria
-pthread_mutex_t mutex_conexion_memoria = PTHREAD_MUTEX_INITIALIZER;
-sock_t* conexion_memoria;
+pthread_mutex_t MUTEX_CONEXION_MEMORIA = PTHREAD_MUTEX_INITIALIZER;
+sock_t* CONEXION_MEMORIA;
 
+/**
+ * Agrega una conexion a la lista de conexiones de Procesos
+ */
 void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 {
 	conexion_proceso_t* conexion_proceso = malloc(sizeof(conexion_proceso_t));
 	conexion_proceso->pid = pid;
 	conexion_proceso->socket = conexion;
 
-	pthread_mutex_lock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
 
-	list_add(conexiones_procesos, conexion_proceso);
-	FD_SET(conexion->fd, &readfds_procesos);
+	list_add(CONEXIONES_PROCESOS, conexion_proceso);
+	FD_SET(conexion->fd, &READFDS_PROCESOS);
 
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 }
 
+/**
+ * Agrega una conexion a la lista de conexiones de CPU
+ */
 void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 {
 	conexion_cpu_t* conexion_cpu = malloc(sizeof(conexion_cpu_t));
 	conexion_cpu->socket = conexion;
 	conexion_cpu->id = id;
 
-	pthread_mutex_lock(&mutex_conexiones_cpu);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
 
-	list_add(conexiones_cpu, conexion);
-	FD_SET(conexion->fd, &readfds_cpus);
+	list_add(CONEXIONES_CPU, conexion);
+	FD_SET(conexion->fd, &READFDS_CPUS);
 
-	pthread_mutex_unlock(&mutex_conexiones_cpu);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 }
 
 void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
@@ -266,11 +272,11 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
-	FD_ZERO(&readfds_procesos);
-	FD_SET(principal->fd, &readfds_procesos);
+	FD_ZERO(&READFDS_PROCESOS);
+	FD_SET(principal->fd, &READFDS_PROCESOS);
 
 	// Preparamos el SET
-	fd_set readfds = readfds_procesos;
+	fd_set readfds = READFDS_PROCESOS;
 
 	while(1)
 	{
@@ -309,7 +315,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 		}
 
 		// Rearmamos el readfds
-		readfds = readfds_procesos;
+		readfds = READFDS_PROCESOS;
 	}
 
 	return NULL;
@@ -327,10 +333,10 @@ void* escuchar_cpus(void* otro_ente)
 void inicializar_listas_conexiones(void)
 {
 
-	conexiones_cpu = list_create();
+	CONEXIONES_CPU = list_create();
 	//pthread_mutex_init(&mutex_conexiones_cpu, NULL);
 
-	conexiones_procesos = list_create();
+	CONEXIONES_PROCESOS = list_create();
 	//pthread_mutex_init(&mutex_conexiones_procesos, NULL);
 
 	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
@@ -347,9 +353,9 @@ sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 	}
 
 	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_procesos);
-	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 
 	return conexion->socket;
 }
@@ -365,9 +371,9 @@ sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
 	}
 
 	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_procesos);
-	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 
 	return conexion->socket;
 }

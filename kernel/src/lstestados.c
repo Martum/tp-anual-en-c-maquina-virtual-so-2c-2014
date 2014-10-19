@@ -15,53 +15,53 @@
 /*t_queue* exec;
 t_queue* block;*/
 
-t_queue* ready[2];
-t_queue* exit_cola;
-t_list* exec;
-t_list* block;
-t_dictionary* dic_colas_espera_recursos;
-t_queue* syscalls_cola;
+t_queue* READY[2];
+t_queue* EXIT_COLA;
+t_list* EXEC;
+t_list* BLOCK;
+t_dictionary* DIC_COLAS_ESPERA_RECURSOS;
+t_queue* SYSCALLS_COLA;
 
 void inicializar_listas_estados_tcb() {
 
-	exit_cola = queue_create();
-	syscalls_cola = queue_create();
+	EXIT_COLA = queue_create();
+	SYSCALLS_COLA = queue_create();
 
-	ready[0] = queue_create();
-	ready[1] = queue_create();
+	READY[0] = queue_create();
+	READY[1] = queue_create();
 
-	exec = list_create();
-	block = list_create();
+	EXEC = list_create();
+	BLOCK = list_create();
 
-	dic_colas_espera_recursos = dictionary_create();
+	DIC_COLAS_ESPERA_RECURSOS = dictionary_create();
 
 	//TODO: FALTA INICIALIZAR EL DICCIONARIO DE COLAS DE ESPERA DE RECURSOS.
 }
 
 
 void agregar_a_ready(tcb_t* tcb) {
-	queue_push(ready[!tcb->km], tcb);
+	queue_push(READY[!tcb->km], tcb);
 	// Aca deberíamos llamar al planificador.
 }
 
 bool hay_hilo_km_ready(){
-	return !queue_is_empty(ready[0]);
+	return !queue_is_empty(READY[0]);
 }
 
 void agregar_a_block(tcb_t* tcb) {
-	list_add(block, tcb);
+	list_add(BLOCK, tcb);
 }
 
 void agregar_a_syscalls_cola(tcb_t* tcb) {
-	queue_push(syscalls_cola, tcb);
+	queue_push(SYSCALLS_COLA, tcb);
 }
 
 void agregar_a_exec(tcb_t* tcb) {
-	list_add(exec, tcb);
+	list_add(EXEC, tcb);
 }
 
 void agregar_a_exit_cola(tcb_t* tcb) {
-	queue_push(exit_cola, tcb);
+	queue_push(EXIT_COLA, tcb);
 }
 
 void quitar_de_exec(tcb_t* tcb) {
@@ -70,7 +70,7 @@ void quitar_de_exec(tcb_t* tcb) {
 		return tcb->tid == ((tcb_t*) elemento)->tid;
 	}
 
-	list_remove_by_condition(exec, _igual_tid );
+	list_remove_by_condition(EXEC, _igual_tid );
 }
 
 void quitar_de_block(tcb_t* tcb) {
@@ -79,25 +79,25 @@ void quitar_de_block(tcb_t* tcb) {
 		return tcb->tid == ((tcb_t*) elemento)->tid;
 	}
 
-	list_remove_by_condition(block, _igual_tid);
+	list_remove_by_condition(BLOCK, _igual_tid);
 }
 
 void agregar_a_cola_recurso(char* recurso, tcb_t* tcb) {
-	queue_push((t_queue*)dictionary_get(dic_colas_espera_recursos, recurso), tcb);
+	queue_push((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), tcb);
 }
 
 void quitar_de_syscalls_cola(tcb_t* tcb) {
-	queue_pop(syscalls_cola);
+	queue_pop(SYSCALLS_COLA);
 }
 
 tcb_t* quitar_primero_de_cola_recurso(char* recurso){
-	return queue_pop((t_queue*)dictionary_get(dic_colas_espera_recursos, recurso));
+	return queue_pop((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso));
 }
 
 tcb_t* quitar_de_ready_km(){
-	return queue_pop(ready[0]);
+	return queue_pop(READY[0]);
 }
 
 tcb_t* quitar_de_ready(){
-	return queue_pop(ready[1]);
+	return queue_pop(READY[1]);
 }
