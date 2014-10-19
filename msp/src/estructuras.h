@@ -37,7 +37,7 @@ typedef struct proceso_msp{
 typedef struct marco{
 	uint32_t id;
 	bool ocupado;
-	direccion base;
+	char* base;
 	uint32_t id_proceso;
 }marco_t;
 
