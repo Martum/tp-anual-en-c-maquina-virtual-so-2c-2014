@@ -16,6 +16,7 @@
 #include "conexiones.h"
 #include <hu4sockets/mensajes.h>
 #include "loader.h"
+#include <sys/time.h>
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -32,6 +33,8 @@ t_list* CONEXIONES_CPU;
 
 // SET para conexiones cpu
 fd_set READFDS_CPUS;
+
+int32_t MAYOR_FD_CPU = -1;
 
 //--------------------
 
@@ -202,6 +205,9 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 			//TODO: Progamar el comportamiento al recibir la conexion de un CPU
 			_dar_bienvenida(nueva_conexion);
 
+
+			// TODO: Recordar agregarlo a la lista correspondiente
+			// TODO: Recordar recalcular el nuevo MAYOR_FD_CPU
 			salida = 2;
 			break;
 
@@ -259,7 +265,7 @@ void _atender_socket_proceso(int32_t fd)
 
 }
 
-void _atender_socket_cpu(int32_t fd)
+void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
 	//TODO: Atendeme el socket maestro
 }
@@ -269,6 +275,11 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 {
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);
+
+	// Seteamos el timer
+	struct timeval timer;
+	timer.tv_sec = 5;
+	timer.tv_usec = 0;
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
@@ -281,10 +292,10 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 	while(1)
 	{
 		// Escuchamos el universo
-		int rs = select(mayor_fd+1, &readfds, NULL, NULL, NULL);
+		int rs = select(mayor_fd+1, &readfds, NULL, NULL, &timer);
 
 		if(rs > 0)
-		{
+		{// Podemos leer
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;
@@ -316,6 +327,10 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 		// Rearmamos el readfds
 		readfds = READFDS_PROCESOS;
+
+		// Reseteamos el timer
+		timer.tv_sec = 5;
+		timer.tv_usec = 0;
 	}
 
 	return NULL;
@@ -326,6 +341,48 @@ void* escuchar_cpus(void* otro_ente)
 {
 	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
 	// ESTE DEBE TENER UN TIMER QUE CADA X SEGUNDOS REARME EL FDS
+
+	// Seteamos el timer
+	struct timeval timer;
+	timer.tv_sec = 5;
+	timer.tv_usec = 0;
+
+	// Inicializamos el readfds maestro y el mayor
+	int32_t mayor_fd = MAYOR_FD_CPU;
+	FD_ZERO(&READFDS_CPUS);
+
+	// Seteamos el readfds
+	fd_set readfds = READFDS_CPUS;
+
+	while(1)
+	{
+		int rs = select(mayor_fd+1, &readfds, NULL, NULL, &timer);
+
+		if(rs > 0)
+		{// Podemos leer
+			// Vemos si hay sockets para leer
+			int32_t i;
+			int32_t copia_mayor_fd = mayor_fd;
+			for(i = 0; i < (copia_mayor_fd+1); i++)
+			{
+				if(FD_ISSET(i, &readfds))
+				{// Atendemos al socket
+					// TODO: Conviene buscar el struct de conexion aca y pasarselo a la funcion directamente
+					_atender_socket_cpu(i);
+				}
+			}
+		}
+
+		// Reseteamos el timer
+		timer.tv_sec = 5;
+		timer.tv_usec = 0;
+
+		// Rearmamos el readfds
+		readfds = READFDS_CPUS;
+
+		// Seteamos el nuevo mayor (si es que hay)
+		mayor_fd = MAYOR_FD_CPU;
+	}
 
 	return NULL;
 }
@@ -340,6 +397,23 @@ void inicializar_listas_conexiones(void)
 	//pthread_mutex_init(&mutex_conexiones_procesos, NULL);
 
 	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
+}
+
+conexion_proceso_t* buscar_proceso_por_fd(int32_t fd)
+{
+	bool buscar_proceso(void* elemento)
+	{
+		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
+
+		return conexion->socket->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
+
+	return conexion;
 }
 
 sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
@@ -362,18 +436,5 @@ sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 
 sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
 {
-	// Funcion de busqueda
-	bool buscar_proceso(void* elemento)
-	{
-		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
-
-		return conexion->socket->fd == fd;
-	}
-
-	// Buscamos...
-	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
-	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
-	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
-
-	return conexion->socket;
+	return buscar_proceso_por_fd(fd)->socket;
 }

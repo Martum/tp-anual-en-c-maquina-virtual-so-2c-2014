@@ -47,6 +47,13 @@ void inicializar_listas_conexiones(void);
 sock_t* buscar_conexion_proceso_por_pid(uint32_t pid);
 
 /**
+ * Busca el conexion_proceso_t* correspondiente a un proceso por su FD
+ *
+ * @RETURNS: El conexion_proceso_t* del proceso
+ */
+conexion_proceso_t* buscar_proceso_por_fd(int32_t fd);
+
+/**
  * Busca el sock_t* correspondiente a un proceso por su FD
  *
  * @RETURNS: El sock_t* del proceso correspondiente al FD
