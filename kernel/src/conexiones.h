@@ -39,6 +39,9 @@ void* escuchar_cpus(void* p);
  */
 void inicializar_listas_conexiones(void);
 
+
+// ********* BUSQUEDA DE PROCESOS ***************
+
 /**
  * Busca el sock_t* correspondiende a un proceso por su PID
  *
@@ -59,5 +62,23 @@ conexion_proceso_t* buscar_proceso_por_fd(int32_t fd);
  * @RETURNS: El sock_t* del proceso correspondiente al FD
  */
 sock_t* buscar_conexion_proceso_por_fd(int32_t fd);
+
+
+// ********* BUSQUEDA DE CPUs ***************
+
+/**
+ * Busca el sock_t* del CPU correspondiente al ID
+ */
+sock_t* buscar_conexion_cpu_por_id(uint32_t id);
+
+/**
+ * Busca el conexion_cpu_t* del CPU correspondiente al FD
+ */
+conexion_cpu_t* buscar_cpu_por_fd(int32_t fd);
+
+/**
+ * Busca el sock_t* del CPU correspondiente al FD
+ */
+sock_t* buscar_conexion_cpu_por_fd(int32_t fd);
 
 #endif /* CONEXIONES_H_ */

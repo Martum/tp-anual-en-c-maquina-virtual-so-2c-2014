@@ -220,7 +220,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
-void _atender_socket_proceso(int32_t fd)
+void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 {
 	// Variables para el mensaje
 	// IMPORTANTE: NO LIBERAR MENSAJE DENTRO DE UNA FUNCION,
@@ -228,12 +228,8 @@ void _atender_socket_proceso(int32_t fd)
 	char* mensaje;
 	uint32_t len;
 
-	// Creamos un socket fantasma con el fd
-	sock_t socket_fantasma;
-	socket_fantasma.fd = fd;
-
 	// Recibimos el mensaje y obtenemos el codigo operacion
-	int32_t resultado = recibir(&socket_fantasma, &mensaje, &len);
+	int32_t resultado = recibir(conexion_proceso->socket, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
 	if(resultado == 0)
@@ -253,12 +249,12 @@ void _atender_socket_proceso(int32_t fd)
 				break;*/
 
 			default:
-				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
+				_informar_mensaje_incompleto(conexion_proceso->socket);
 				break;
 		}
 	}
 	else
-		_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
+		_informar_mensaje_incompleto(conexion_proceso->socket);
 
 	// Liberamos el buffer
 	free(mensaje);
@@ -319,7 +315,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					}
 					else
 					{// No es el socket principal, es un proceso
-						_atender_socket_proceso(i);
+						_atender_socket_proceso(buscar_proceso_por_fd(i));
 					}
 				}
 			}
@@ -367,8 +363,7 @@ void* escuchar_cpus(void* otro_ente)
 			{
 				if(FD_ISSET(i, &readfds))
 				{// Atendemos al socket
-					// TODO: Conviene buscar el struct de conexion aca y pasarselo a la funcion directamente
-					_atender_socket_cpu(i);
+					_atender_socket_cpu(buscar_cpu_por_fd(i));
 				}
 			}
 		}
@@ -399,22 +394,8 @@ void inicializar_listas_conexiones(void)
 	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
 }
 
-conexion_proceso_t* buscar_proceso_por_fd(int32_t fd)
-{
-	bool buscar_proceso(void* elemento)
-	{
-		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
 
-		return conexion->socket->fd == fd;
-	}
-
-	// Buscamos...
-	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
-	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
-	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
-
-	return conexion;
-}
+// ********* BUSQUEDA DE PROCESOS ***************
 
 sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 {
@@ -434,7 +415,67 @@ sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 	return conexion->socket;
 }
 
+conexion_proceso_t* buscar_proceso_por_fd(int32_t fd)
+{
+	bool buscar_proceso(void* elemento)
+	{
+		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
+
+		return conexion->socket->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
+
+	return conexion;
+}
+
 sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
 {
 	return buscar_proceso_por_fd(fd)->socket;
+}
+
+
+// ********* BUSQUEDA DE CPUs ***************
+
+sock_t* buscar_conexion_cpu_por_id(uint32_t id)
+{
+	// Funcion de busqueda
+	bool buscar_cpu(void* elemento)
+	{
+		conexion_cpu_t* conexion = (conexion_cpu_t*) elemento;
+
+		return conexion->id == id;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_CPU, buscar_cpu);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
+
+	return conexion->socket;
+}
+
+conexion_cpu_t* buscar_cpu_por_fd(int32_t fd)
+{
+	bool buscar_cpu(void* elemento)
+	{
+		conexion_cpu_t* conexion = (conexion_cpu_t*) elemento;
+
+		return conexion->socket->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
+	conexion_cpu_t* conexion = list_find(CONEXIONES_CPU, buscar_cpu);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
+
+	return conexion;
+}
+
+sock_t* buscar_conexion_cpu_por_fd(int32_t fd)
+{
+	return buscar_cpu_por_fd(fd)->socket;
 }
