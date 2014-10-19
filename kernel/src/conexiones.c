@@ -336,9 +336,6 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 // Corre en un THREAD
 void* escuchar_cpus(void* otro_ente)
 {
-	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
-	// ESTE DEBE TENER UN TIMER QUE CADA X SEGUNDOS REARME EL FDS
-
 	// Seteamos el timer
 	struct timeval timer;
 	timer.tv_sec = 5;
