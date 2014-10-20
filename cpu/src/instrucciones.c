@@ -59,13 +59,17 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
 	direccion hacia, tcb_t* tcb)
 {
 	char* buffer = malloc(cantidad_de_bytes);
+
 	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
 	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
 		== FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
 	free(buffer);
+
 	return OK;
 }
 
@@ -433,8 +437,7 @@ resultado_t _goto(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	direccion base_de_codigo;
-	obtener_base_de_codigo(tcb, &base_de_codigo);
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 
 	actualizar_pc(tcb, base_de_codigo + valor_del_registro);
 
@@ -459,8 +462,7 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 	if (condicion(valor_del_registro))
 		return OK;
 
-	direccion base_de_codigo;
-	obtener_base_de_codigo(tcb, &base_de_codigo);
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 
 	actualizar_pc(tcb, base_de_codigo + offset);
 

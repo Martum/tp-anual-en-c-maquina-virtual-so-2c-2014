@@ -74,12 +74,7 @@ void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes; // todo pensar si no debe devolver FALLO si es menor a base
 }
 
-void obtener_pc(tcb_t* tcb, direccion* pc)
+direccion obtener_base_de_codigo(tcb_t* tcb)
 {
-	*pc = tcb->pc;
-}
-
-void obtener_base_de_codigo(tcb_t* tcb, direccion* base)
-{
-	*base = tcb->base_codigo;
+	return tcb->base_codigo;
 }
