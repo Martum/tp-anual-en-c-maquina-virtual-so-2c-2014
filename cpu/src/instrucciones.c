@@ -1,7 +1,5 @@
 #include "instrucciones.h"
 
-// TODO agregar validacion a leer y escribir en memoria
-
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -41,7 +39,9 @@ resultado_t getm(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	char buffer;
-	leer_de_memoria(tcb->pid, valor_del_registro, 1, &buffer);
+	if (leer_de_memoria(tcb->pid, valor_del_registro, 1, &buffer)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 	int32_t valor_de_memoria = buffer;
 
 	if (actualizar_valor_del_registro(tcb, registro1, valor_de_memoria)
@@ -55,13 +55,22 @@ resultado_t getm(tcb_t* tcb)
  * 	Escribe en memoria en direccion hacia tantos bytes como cantidad_de_bytes.
  * 	Los bytes los lee de la direccion desde.
  */
-void _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
+resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
 	direccion hacia, tcb_t* tcb)
 {
 	char* buffer = malloc(cantidad_de_bytes);
-	leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer);
-	escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer);
+
+	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
+		== FALLO_ESCRITURA_EN_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
 	free(buffer);
+
+	return OK;
 }
 
 /*
@@ -92,9 +101,7 @@ resultado_t setm(tcb_t* tcb)
 	direccion hacia = valor_del_registro_1;
 	direccion desde = valor_del_registro_2;
 
-	_copiar_valores(cantidad_de_bytes_a_copiar, desde, hacia, tcb);
-
-	return OK;
+	return _copiar_valores(cantidad_de_bytes_a_copiar, desde, hacia, tcb);
 }
 
 /*
@@ -430,8 +437,7 @@ resultado_t _goto(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	direccion base_de_codigo;
-	obtener_base_de_codigo(tcb, &base_de_codigo);
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 
 	actualizar_pc(tcb, base_de_codigo + valor_del_registro);
 
@@ -456,8 +462,7 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 	if (condicion(valor_del_registro))
 		return OK;
 
-	direccion base_de_codigo;
-	obtener_base_de_codigo(tcb, &base_de_codigo);
+	direccion base_de_codigo = obtener_base_de_codigo(tcb);
 
 	actualizar_pc(tcb, base_de_codigo + offset);
 
@@ -565,10 +570,13 @@ resultado_t nopp(tcb_t* tcb)
 /*
  * 	Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */
-void _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
+resultado_t _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
-	escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
+	if (escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes,
+		bytes) == FALLO_ESCRITURA_EN_MEMORIA)
+		return ERROR_EN_EJECUCION;
 	actualizar_cursor_stack(tcb, cantidad_de_bytes);
+	return OK;
 }
 
 /*
@@ -615,18 +623,19 @@ resultado_t push(tcb_t* tcb)
 
 	dividir_en_bytes(valor_a_pushear, bytes);
 
-	_push(tcb, cantidad_de_bytes, bytes);
-
-	return OK;
+	return _push(tcb, cantidad_de_bytes, bytes);
 }
 
 /*
  * 	Obtiene tantos cantidad_de_bytes del stack y actualiza el cursor
  */
-void _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
+resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
-	leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes);
+	if (leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
+	return OK;
 }
 
 /*
@@ -648,7 +657,8 @@ resultado_t take(tcb_t* tcb)
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
-	_pop(tcb, cantidad_de_bytes, bytes);
+	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
 
 	unir_bytes(&valor, bytes);
 
@@ -717,7 +727,10 @@ resultado_t _free(tcb_t* tcb)
 
 	direccion direccion = valor_del_registro;
 
-	return destruir_segmento(tcb->pid, direccion);
+	if (destruir_segmento(tcb->pid, direccion) == FALLO_DESTRUCCION_DE_SEGMENTO)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
 }
 
 void _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
@@ -751,14 +764,16 @@ resultado_t innn(tcb_t* tcb)
 	return OK;
 }
 
-void _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
+resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 	int32_t direccion)
 {
 	char* buffer = malloc(cantidad_de_bytes);
 	comunicar_entrada_estandar(tcb, cantidad_de_bytes, buffer);
-	escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes,
-		buffer);
+	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes, buffer)
+		== FALLO_ESCRITURA_EN_MEMORIA)
+		return ERROR_EN_EJECUCION;
 	free(buffer);
+	return OK;
 }
 
 /*
@@ -780,9 +795,8 @@ resultado_t innc(tcb_t* tcb)
 	int32_t cantidad_de_bytes;
 	obtener_valor_del_registro(tcb, 'b', &cantidad_de_bytes);
 
-	_pedir_por_consola_cadena(tcb, cantidad_de_bytes, direccion_de_almacenamiento);
-
-	return OK;
+	return _pedir_por_consola_cadena(tcb, cantidad_de_bytes,
+		direccion_de_almacenamiento);
 }
 
 // TODO preguntar si los arrays se tienen que liberar
@@ -813,14 +827,16 @@ resultado_t outn(tcb_t* tcb)
 	return OK;
 }
 
-void _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
+resultado_t _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 	int32_t direccion_de_cadena)
 {
 	char* buffer = malloc(cantidad_de_bytes);
-	leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
-		buffer);
+	if (leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
+		buffer) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 	comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer);
 	free(buffer);
+	return OK;
 }
 
 /*
@@ -840,10 +856,8 @@ resultado_t outc(tcb_t* tcb)
 	obtener_valor_del_registro(tcb, 'a', &direccion_de_la_cadena);
 	obtener_valor_del_registro(tcb, 'b', &cantidade_de_bytes);
 
-	_imprimir_por_consola_cadena(tcb, cantidade_de_bytes,
+	return _imprimir_por_consola_cadena(tcb, cantidade_de_bytes,
 		direccion_de_la_cadena);
-
-	return OK;
 }
 
 /*
@@ -857,32 +871,40 @@ void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
 /*
  * 	Crea un stack para el nuevo_tcb y se lo asigna
  */
-void _crear_stack(tcb_t* nuevo_tcb)
+resultado_t _crear_stack(tcb_t* nuevo_tcb)
 {
 	uint32_t tamano_stack;
 	direccion nueva_base_stack;
 	pedir_al_kernel_tamanio_stack(&tamano_stack);
-	crear_segmento(nuevo_tcb->pid, tamano_stack, &nueva_base_stack);
+	if (crear_segmento(nuevo_tcb->pid, tamano_stack, &nueva_base_stack)
+		== FALLO_CREACION_DE_SEGMENTO)
+		return ERROR_EN_EJECUCION;
 	nuevo_tcb->base_stack = nueva_base_stack;
+	return OK;
 }
 
 /*
  * 	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
  */
-void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
+resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
 	uint32_t ocupacion_stack = tcb->cursor_stack - tcb->base_stack;
 
 	char* buffer = malloc(ocupacion_stack);
 
-	leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer);
+	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
-	escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack, ocupacion_stack,
-		buffer);
+	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
+		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	actualizar_cursor_stack(tcb, ocupacion_stack);
 
 	free(buffer);
+
+	return OK;
 }
 
 /*
@@ -929,10 +951,12 @@ resultado_t crea(tcb_t* tcb)
 	actualizar_valor_del_registro(tcb, 'a', nuevo_tcb.tid);
 
 	// Creo un nuevo stack para el nuevo_tcb
-	_crear_stack(&nuevo_tcb);
+	if (_crear_stack(&nuevo_tcb) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
 
 	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
-	_clonar_stack(&nuevo_tcb, tcb);
+	if (_clonar_stack(&nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
 
 	// Le mando el nuevo tcb al kernel para planificar
 	comunicar_nuevo_tcb(&nuevo_tcb);

@@ -59,7 +59,10 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 
 	 	case DESCONEXION_CPU:
 	 	case ERROR:
+	 	agregar_a_exit(tcb);
+	 		break;
 	 	case FIN_EJECUCION:
+	 	// TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
 	 		agregar_a_exit(tcb);
 	 		break;
 	 	default:

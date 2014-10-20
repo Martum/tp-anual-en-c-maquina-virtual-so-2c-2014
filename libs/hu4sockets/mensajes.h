@@ -61,6 +61,11 @@ typedef enum {
 
 } flag_t;
 
+typedef enum {
+	ENTERO = 1,
+	CADENA = 2
+} idetificador_tipo_t;
+
 typedef struct pedido {
 	flag_t flag;
 } pedido_t;
@@ -134,7 +139,7 @@ typedef struct pedido_interrupcion {
 typedef struct pedido_entrada_estandar {
 	flag_t flag;
 	uint32_t pid;
-	uint16_t identificador_de_tipo;
+	idetificador_tipo_t identificador_de_tipo;
 } pedido_entrada_estandar_t;
 
 typedef struct pedido_salida_estadar {

@@ -47,15 +47,9 @@ void actualizar_km(tcb_t* tcb, bool nuevo_km);
 void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
 
 /**
- * @DESC: Obtiene el valor del pc de la tcb.
- * @RETURNS:
- */
-void obtener_pc(tcb_t* tcb, direccion* pc);
-
-/**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.
  * @RETURNS:
  */
-void obtener_base_de_codigo(tcb_t* tcb, direccion* base);
+direccion obtener_base_de_codigo(tcb_t* tcb);
 
 #endif /* TCB_FUNCIONES_H_ */
