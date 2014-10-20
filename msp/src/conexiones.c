@@ -4,6 +4,7 @@
 
 #include "configuraciones.h"
 #include "conexiones.h"
+#include "interfaz.h"
 
 #include <commons/collections/list.h>
 
@@ -117,7 +118,8 @@ void* escuchar_conexiones(void* otro_ente){
 					}else{
 
 						// No es el socket principal, es un proceso
-						_atender_socket(buscar_conexion_por_fd(i));
+						// int tipo_msg =
+								_atender_socket(buscar_conexion_por_fd(i));
 
 					}
 				}
@@ -149,29 +151,81 @@ int _atender_socket(conexion_t* conexion){
 		case CREAME_UN_SEGMENTO:
 			salida = 1;
 
-			// programar aqui
+			pedido_de_crear_segmento_t* pedido_crear = deserializar_pedido_de_crear_segmento_t(msg);
 
+			direccion dir_base = crear_segmento(pedido_crear->pid, pedido_crear->tamano);
+
+			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
+			respuesta->direccion_virtual = dir_base;
+			// respuesta->resultado = ...
+			// respuesta->flag = ...
+			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+
+			uint32_t* len = malloc(sizeof(uint32_t));
+			*(len) = tamanio_respuesta_de_crear_segmento_t_serializado();
+			enviar(conexion->socket,msg_respuesta, len);
+			free(len);
+			free(pedido_crear);
+			free(respuesta);
+			free(msg_respuesta);
 			break;
 
 		case DESTRUI_SEGMENTO:
 			salida = 2;
 
-			// programar aqui
+		//	pedido_de_destruir_segmento_t* pedido_borrar = deserializar_pedido_de_destruir_segmento_t(msg);
 
+
+		/*
+
+			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
+			respuesta->direccion_virtual = dir_base;
+			// respuesta->resultado = ...
+			// respuesta->flag = ...
+			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+
+			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
+			free(respuesta);
+			free(msg_respuesta);
+*/
 			break;
 
 		case LEE_DE_MEMORIA:
 			salida = 3;
 
-			// programar aqui
+		/*	pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(msg);
 
+			direccion dir_base = crear_segmento(pedido->pid, pedido->tamano);
+
+			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
+			respuesta->direccion_virtual = dir_base;
+			// respuesta->resultado = ...
+			// respuesta->flag = ...
+			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+
+			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
+			free(respuesta);
+			free(msg_respuesta);
+*/
 			break;
 
 		case ESCRIBI_EN_MEMORIA:
 			salida = 4;
+/*
+			pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(msg);
 
-			// programar aqui
+			direccion dir_base = crear_segmento(pedido->pid, pedido->tamano);
 
+			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
+			respuesta->direccion_virtual = dir_base;
+			// respuesta->resultado = ...
+			// respuesta->flag = ...
+			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+
+			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
+			free(respuesta);
+			free(msg_respuesta);
+*/
 			break;
 
 		default:
