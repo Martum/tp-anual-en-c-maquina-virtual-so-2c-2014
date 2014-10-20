@@ -10,7 +10,7 @@
 #include "lstestados.h"
 
 void recibir_syscall(tcb_t* tcb, direccion dir){
-	// FALTA TENER EN CUENTA LA DIRECCION. CREAR NUEVA ESTRUCTURA??
+	// poner la dir en tcb.pc
 	quitar_de_exec(tcb);
 	agregar_a_block(tcb);
 

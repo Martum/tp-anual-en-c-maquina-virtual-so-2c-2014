@@ -19,6 +19,7 @@ t_queue* READY[2];
 t_queue* EXIT_COLA;
 t_list* EXEC;
 t_list* BLOCK;
+t_queue* BLOCK_ESPERA_KM; // hacer getter y setters.
 t_dictionary* DIC_COLAS_ESPERA_RECURSOS;
 t_queue* SYSCALLS_COLA;
 

@@ -27,7 +27,7 @@ tcb_t* _proximo_tcb(){
 }
 
 
-// FALTA EL FREE
+// TODO: FALTA EL FREE. Vos... el que me llama... hacelo!
 char*  rta_nuevo_tcb(){
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
@@ -40,9 +40,8 @@ char*  rta_nuevo_tcb(){
 	return serializar_respuesta_de_nuevo_tcb_t(rta);
 }
 
-// FALTA EL WRAPPER QUE DESERIALIZE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
-// QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN HU4SOCKETS
-// MENSAJES.C
+// FALTA EL WRAPPER QUE DESERIALICE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
+// QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN UN SUPER CASE EN CONEXIONES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb){
 	quitar_de_exec(tcb);
 
