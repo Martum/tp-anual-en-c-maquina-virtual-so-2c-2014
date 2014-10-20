@@ -81,7 +81,17 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio){
+void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio)
+{
+	//Estan inicializados con verdura para que no tire warnings
+	//En la siguiente funcion se le asignas los valores correctos
+	proceso_msp_t* proceso=NULL;
+	segmento_t* segmento=NULL;
+	pagina_t* pagina=NULL;
+	uint16_t desplazamiento=0;
+	descomposicion_direccion_logica(direccon_logica,pid,proceso,segmento, pagina,desplazamiento);
+
+
 
 }
 
