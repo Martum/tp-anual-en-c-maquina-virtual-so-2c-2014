@@ -421,7 +421,19 @@ uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado(uint32_t tamano)
 char* serializar_respuesta_de_leer_de_memoria_t(
 	respuesta_de_leer_de_memoria_t* pedido)
 {
-	char* bytes = malloc(tamanio_respuesta_de_leer_de_memoria_t_serializado());
+	char* bytes = malloc(tamanio_respuesta_de_leer_de_memoria_t_serializado(pedido->tamano));
+
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->resultado, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(bytes + offset, &pedido->tamano, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->bytes_leido, pedido->tamano);
 
 	return bytes;
 }
@@ -429,17 +441,33 @@ char* serializar_respuesta_de_leer_de_memoria_t(
 respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(
 	char* chorro)
 {
-	respuesta_de_leer_de_memoria_t* pedido_destruir_segmento = malloc(
-		sizeof(respuesta_de_leer_de_memoria_t));
+	respuesta_de_leer_de_memoria_t* pedido = malloc(sizeof(respuesta_de_leer_de_memoria_t));
 
-	return pedido_destruir_segmento;
+	uint32_t offset = 0;
+	memcpy(&pedido->flag, chorro + offset,
+		sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido->resultado, chorro + offset, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(&pedido->tamano, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&pedido->bytes_leido, chorro + offset, pedido->tamano);
+
+	return pedido;
 }
 
-uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado()
+uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado(uint32_t tamano)
 {
 	uint32_t t = 0;
+		t += sizeof(flag_t);
+		t += sizeof(resultado_t);
+		t += sizeof(uint32_t);
+		t += tamano;
 
-	return t;
+		return t;
 }
 
 // FIN DE RESPUESTA DE LEER DE MEMORIA

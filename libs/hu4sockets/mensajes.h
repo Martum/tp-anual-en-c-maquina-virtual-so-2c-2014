@@ -95,8 +95,6 @@ typedef struct pedido_de_destruir_segmento {
 	direccion direccion_virtual;
 } pedido_de_destruir_segmento_t;
 
-//// hasta aca llegue ////
-
 typedef struct pedido_de_leer_de_memoria {
 	flag_t flag;
 	uint32_t pid;
@@ -121,6 +119,7 @@ typedef struct respuesta_de_crear_segmento {
 typedef struct respuesta_de_leer_de_memoria {
 	flag_t flag;
 	resultado_t resultado;
+	uint32_t tamano;
 	char* bytes_leido;
 } respuesta_de_leer_de_memoria_t;
 
@@ -219,6 +218,8 @@ uint32_t tamanio_pedido_de_leer_de_memoria_t_serializado();
 pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(char*);
 char* serializar_pedido_de_escribir_en_memoria_t(pedido_de_escribir_en_memoria_t*);
 uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado();
+
+//
 
 respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(char*);
 char* serializar_respuesta_de_leer_de_memoria_t(respuesta_de_leer_de_memoria_t*);
