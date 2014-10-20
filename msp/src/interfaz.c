@@ -56,15 +56,14 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 
 	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
+	char* datos="";
 	if(hay_error)
 	{
 		//LANZAR ERROR
 	}
 	else
 	{
-
 		bool mas_paginas = true;
-		char* datos="";
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		while((tamanio==0)&&(mas_paginas))
@@ -76,7 +75,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 
 	}
 
-	return 0;
+	return datos;
 }
 
 
