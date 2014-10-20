@@ -5,7 +5,6 @@
  *      Author: utnso
  */
 
-// TODO agregar valores de archivo de configuracion
 // TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
 
 #include "sockets.h"
@@ -45,7 +44,7 @@ resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
 
 resultado_t conectar_con_memoria()
 {
-	return _conectar(&memoria, NULL, 4560);
+	return _conectar(&memoria, ip_msp(), puerto_msp());
 }
 
 resultado_t _mandar_soy_cpu_a_kernel()
@@ -80,7 +79,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	if (_conectar(&kernel, "192.168.1.139", 18257) == FALLO_CONEXION)
+	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
