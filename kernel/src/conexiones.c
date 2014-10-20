@@ -157,15 +157,15 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
  * 			acepta la conexion devuelve -1
  * 			Deja en nueva_conexion el socket
  */
-int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
+int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 {
 	// Aceptamos conexion
-	nueva_conexion = aceptar_conexion(principal);
+	*nueva_conexion = aceptar_conexion(principal);
 	uint32_t i;
 	char* msg;
 
 	// Recibimos la identeificacion de la conexion
-	recibir(nueva_conexion, &msg, &i);
+	recibir(*nueva_conexion, &msg, &i);
 	flag_t codop = codigo_operacion(msg);
 
 	int32_t salida = -1;
@@ -174,28 +174,28 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 	{
 		case SOY_PROGRAMA:
 			salida = 1;
-			_dar_bienvenida(nueva_conexion);
+			_dar_bienvenida(*nueva_conexion);
 
 			// Recibimos el codigo BESO del programa
 			char* codigo_beso;
 			uint32_t len;
 
-			if(recibir(nueva_conexion, &codigo_beso, &len) == -1)
+			if(recibir(*nueva_conexion, &codigo_beso, &len) == -1)
 			{// Si el mensaje no se recibe completo
-				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(nueva_conexion->fd));
+				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
 				free(codigo_beso);
 				break;
 			}
 
 			// Procesamos el nuevo programa
-			if(_procesar_conexion_nuevo_programa(codigo_beso, len, nueva_conexion) == -1)
+			if(_procesar_conexion_nuevo_programa(codigo_beso, len, *nueva_conexion) == -1)
 			{// Si no hay memoria, informamos y seteamos salida con -1
-				_informar_no_hay_memoria(nueva_conexion);
+				_informar_no_hay_memoria(*nueva_conexion);
 				salida = -1;
 			}
 			else
 			{// Esta OK
-				_enviar_ok(nueva_conexion);
+				_enviar_ok(*nueva_conexion);
 			}
 
 			free(codigo_beso);
@@ -205,10 +205,10 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 			salida = 2;
 
 			// Agregamos el CPU a la lista
-			_agregar_conexion_a_cpu(nueva_conexion, dame_nuevo_id_cpu());
+			_agregar_conexion_a_cpu(*nueva_conexion, dame_nuevo_id_cpu());
 
 			// Le damos la bienvenida
-			_dar_bienvenida(nueva_conexion);
+			_dar_bienvenida(*nueva_conexion);
 			break;
 
 		default:
@@ -304,7 +304,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion = NULL;
-						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
+						if(_procesar_nueva_conexion(principal, &nueva_conexion) == 1)
 						{// Es programa y salio all ok
 							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 						}

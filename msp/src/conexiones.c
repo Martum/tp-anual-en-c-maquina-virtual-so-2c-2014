@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "configuraciones.h"
-#include "conexiones_cpu.h"
+#include "conexiones.h"
 
 #include <commons/collections/list.h>
 
@@ -13,21 +13,21 @@
 #include <pthread.h>
 
 
-pthread_mutex_t mutex_conexiones_cpus = PTHREAD_MUTEX_INITIALIZER;
-t_list* lista_conexiones_cpu;
-fd_set readfds_cpus;
+pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
+t_list* lista_conexiones;
+fd_set readfds;
 
 void inicializar_lista_conexiones_cpu(){
-	lista_conexiones_cpu = list_create();
+	lista_conexiones = list_create();
 }
 
 void _agregar_conexion_a_cpu(sock_t* conexion){
-	pthread_mutex_lock(&mutex_conexiones_cpus);
+	pthread_mutex_lock(&mutex_conexiones);
 	//TODO: Agregar un struct para wrappear las conexiones a los cpus con un ID
-	list_add(lista_conexiones_cpu, conexion);
-	FD_SET(conexion->fd, &readfds_cpus);
+	list_add(lista_conexiones, conexion);
+	FD_SET(conexion->fd, &readfds);
 
-	pthread_mutex_unlock(&mutex_conexiones_cpus);
+	pthread_mutex_unlock(&mutex_conexiones);
 }
 
 void _enviar_flagt(sock_t* conexion, flag_t flag){
@@ -55,10 +55,8 @@ void _informar_te_doy_bytes(sock_t* conexion){
 }
 
 void _informar_respuesta_escritura(sock_t* conexion){
-	// NO SE PORQUE NO ME COMPILA ESTE FLAG
-	// _enviar_flagt(conexion, RESPUESTA_ESCRITURA);
+	_enviar_flagt(conexion, RESPUESTA_ESCRITURA);
 }
-
 
 sock_t* buscar_conexion_cpu_por_fd(int32_t fd){
 	// Funcion de busqueda
@@ -68,9 +66,9 @@ sock_t* buscar_conexion_cpu_por_fd(int32_t fd){
 	}
 
 	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_cpus);
-	conexion_cpu_t* conexion = list_find(lista_conexiones_cpu, buscar_cpu);
-	pthread_mutex_unlock(&mutex_conexiones_cpus);
+	pthread_mutex_lock(&mutex_conexiones);
+	conexion_cpu_t* conexion = list_find(lista_conexiones, buscar_cpu);
+	pthread_mutex_unlock(&mutex_conexiones);
 
 	return conexion->socket;
 }
@@ -82,15 +80,15 @@ void* escuchar_cpus(void* otro_ente){
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
-	FD_ZERO(&readfds_cpus);
-	FD_SET(principal->fd, &readfds_cpus);
+	FD_ZERO(&readfds);
+	FD_SET(principal->fd, &readfds);
 
 	// Preparamos el SET
-	fd_set readfds = readfds_cpus;
+	fd_set readfdset = readfds;
 
 	while(1){
 		// Escuchamos el universo
-		int rs = select(mayor_fd+1, &readfds, NULL, NULL, NULL);
+		int rs = select(mayor_fd+1, &readfdset, NULL, NULL, NULL);
 
 		if(rs != -1){
 			// Vemos si hay sockets para leer
@@ -100,7 +98,7 @@ void* escuchar_cpus(void* otro_ente){
 			for(i = 0; i < (copia_mayor_fd+1); i++){
 
 				// Si el socket se puede leer
-				if(FD_ISSET(i, &readfds)){
+				if(FD_ISSET(i, &readfdset)){
 
 					if(i == principal->fd){
 						// Es el socket principal, new connection knocking
@@ -118,7 +116,7 @@ void* escuchar_cpus(void* otro_ente){
 		}
 
 		// Rearmamos el readfds
-		readfds = readfds_cpus;
+		readfdset = readfds;
 	}
 	return NULL;
 }
