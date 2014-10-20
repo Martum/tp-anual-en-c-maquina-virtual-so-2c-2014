@@ -836,7 +836,6 @@ void _crear_stack(tcb_t* nuevo_tcb)
 	nuevo_tcb->base_stack = nueva_base_stack;
 }
 
-// TODO
 /*
  * 	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
  */
@@ -851,7 +850,7 @@ void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack, ocupacion_stack,
 		buffer);
 
-	nuevo_tcb->cursor_stack = nuevo_tcb->base_stack + ocupacion_stack; // TODO pensar en encapsular
+	actualizar_cursor_stack(tcb, ocupacion_stack);
 
 	free(buffer);
 }

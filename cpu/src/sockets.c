@@ -51,7 +51,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	cuerpo_del_mensaje.flag = SOY_CPU;
 
 	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(tamanio_pedido_t_serializado());
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
@@ -63,12 +63,12 @@ resultado_t _mandar_soy_cpu_a_kernel()
 		return FALLO_COMUNICACION;
 	}
 
-	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+	pedido_t respuesta = *deserializar_pedido_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK) { // TODO arreglar con kernel cual va a ser el mensaje de devolucion
+	if (respuesta.flag != BIENVENIDO) { // TODO arreglar con kernel cual va a ser el mensaje de devolucion
 		return FALLO_COMUNICACION;
 	}
 
@@ -77,7 +77,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	if (_conectar(&kernel, NULL, 4559) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
+	if (_conectar(&kernel, "192.168.1.139", 18257) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
