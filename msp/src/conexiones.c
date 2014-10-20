@@ -155,39 +155,51 @@ int _atender_socket(conexion_t* conexion){
 
 			direccion dir_base = crear_segmento(pedido_crear->pid, pedido_crear->tamano);
 
-			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
-			respuesta->direccion_virtual = dir_base;
+			respuesta_de_crear_segmento_t* respuesta_crear = malloc(sizeof(respuesta_de_crear_segmento_t));
+			respuesta_crear->direccion_virtual = dir_base;
 			// respuesta->resultado = ...
-			// respuesta->flag = ...
-			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+			respuesta_crear->flag = TOMA_SEGMENTO;
 
-			uint32_t* len = malloc(sizeof(uint32_t));
-			*(len) = tamanio_respuesta_de_crear_segmento_t_serializado();
-			enviar(conexion->socket,msg_respuesta, len);
-			free(len);
+/*						,
+						TOMA_BYTES
+						RESPUESTA_ESCRITURA
+						*/
+			char* msg_respuesta_crear = serializar_respuesta_de_crear_segmento_t(respuesta_crear);
+
+			uint32_t* len_msg_crear = malloc(sizeof(uint32_t));
+			*(len_msg_crear) = tamanio_respuesta_de_crear_segmento_t_serializado();
+
+			enviar(conexion->socket,msg_respuesta_crear, len_msg_crear);
+
+			free(len_msg_crear);
 			free(pedido_crear);
-			free(respuesta);
-			free(msg_respuesta);
+			free(respuesta_crear);
+			free(msg_respuesta_crear);
+
 			break;
 
 		case DESTRUI_SEGMENTO:
 			salida = 2;
 
-		//	pedido_de_destruir_segmento_t* pedido_borrar = deserializar_pedido_de_destruir_segmento_t(msg);
+			pedido_de_destruir_segmento_t* pedido_borrar = deserializar_pedido_de_destruir_segmento_t(msg);
 
+			destruir_segmento(pedido_borrar->pid, pedido_borrar->direccion_virtual);
 
-		/*
+			respuesta_t * respuesta_borrar = malloc(sizeof(respuesta_t));
+			respuesta_borrar->flag = RESPUESTA_DESTRUCCION;
+			// respuesta_borrar->resultado = ...
+			char* msg_respuesta_borrar = serializar_respuesta_t(respuesta_borrar);
 
-			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
-			respuesta->direccion_virtual = dir_base;
-			// respuesta->resultado = ...
-			// respuesta->flag = ...
-			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+			uint32_t* len_msg_borrar = malloc(sizeof(uint32_t));
+			*(len_msg_borrar) = tamanio_respuesta_t_serializado();
 
-			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
-			free(respuesta);
-			free(msg_respuesta);
-*/
+			enviar(conexion->socket,msg_respuesta_borrar, len_msg_borrar);
+
+			free(len_msg_borrar);
+			free(pedido_borrar);
+			free(respuesta_borrar);
+			free(msg_respuesta_borrar);
+
 			break;
 
 		case LEE_DE_MEMORIA:
