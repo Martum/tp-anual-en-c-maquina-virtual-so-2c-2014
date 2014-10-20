@@ -46,8 +46,6 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 {
 	uint16_t id_pagina = pagina->id;
 
-
-
 	//Si no entra en una pagina, checkeo si hay otras paginas donde pueda entrar.
 	if((desplazamiento+tamanio)>256)
 	{
@@ -58,7 +56,7 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 			{
 				return true;
 			}
-			tamanio_restante= (tamanio_restante)-4096;
+			tamanio_restante= (tamanio_restante)-256;
 
 		}
 
@@ -66,18 +64,5 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 	return false;
 }
 
-uint32_t obtener_base_marco(uint32_t pid, direccion direccion_logica)
-{
-	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
-	segmento_t* segmento= buscar_segmento_segun_id_en_lista_segmentos(direccion_logica>>20, proceso->segmentos);
-
-	uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;
-	pagina_t* pagina = buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas);
-
-	uint32_t id_marco=pagina->marco;
-
-
-	return (buscar_marco_segun_id(id_marco)->base);
-}
 
