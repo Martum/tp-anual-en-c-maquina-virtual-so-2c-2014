@@ -35,6 +35,12 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 void actualizar_pc(tcb_t* tcb, direccion direccion);
 
 /**
+ * @DESC: Actualiza el valor del km con el nuevo_km.
+ * @RETURNS:
+ */
+void actualizar_km(tcb_t* tcb, bool nuevo_km);
+
+/**
  * @DESC: Actualiza el valor del cursor del stack en cantidad de bytes.
  * @RETURNS:
  */

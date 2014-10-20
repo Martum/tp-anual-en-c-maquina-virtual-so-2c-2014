@@ -925,7 +925,7 @@ resultado_t crea(tcb_t* tcb)
 	// Actualizo el nuevo_tcb con los nuevos valores
 	actualizar_pc(&nuevo_tcb, nuevo_pc);
 	nuevo_tcb.tid = -1; // Se setea en -1 para que el kernel lo asigne
-	nuevo_tcb.km = false; // TODO encapsular
+	actualizar_km(tcb, false);
 
 	// Guardo el nuevo tid en el registro 'a'
 	actualizar_valor_del_registro(tcb, 'a', nuevo_tcb.tid);
