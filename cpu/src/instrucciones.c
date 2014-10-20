@@ -244,7 +244,6 @@ resultado_t modr(tcb_t* tcb)
 	return _funcion_operacion(tcb, modulo, condicion);
 }
 
-// TODO
 /*
  * 	DIVR [Registro], [Registro]
  *
@@ -886,7 +885,6 @@ void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	free(buffer);
 }
 
-// TODO
 /*
  * 	CREA
  *
@@ -959,7 +957,7 @@ resultado_t join(tcb_t* tcb)
 	int32_t identificador_almacenado_en_A;
 	obtener_valor_del_registro(tcb, 'a', &identificador_almacenado_en_A);
 
-	comunicar_join(tcb->tid, identificador_almacenado_en_A); // todo fijarse el orden de los tid
+	comunicar_join(tcb->tid, identificador_almacenado_en_A);
 
 	return OK;
 }

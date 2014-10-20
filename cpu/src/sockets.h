@@ -13,7 +13,7 @@
 #include "hu4sockets/mensajes.h"
 #include "instrucciones-estructuras.h"
 #include "operaciones-con-bits.h"
-
+#include "configuraciones.h"
 
 #ifndef MEMORIA_H_
 #define MEMORIA_H_

@@ -52,13 +52,13 @@ int salida_estandar(uint32_t pid, char* cadena){
 }
 */
 
-void bloquear(tcb_t* tcb, uint32_t recurso){
+void bloquear(tcb_t* tcb, char* recurso){
 	quitar_de_exec(tcb);
 	agregar_a_block(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }
 
-void despertar(uint32_t recurso){
+void despertar(char* recurso){
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
 	quitar_de_block(tcb);
 	agregar_a_ready(tcb);

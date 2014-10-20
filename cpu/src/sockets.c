@@ -5,6 +5,8 @@
  *      Author: utnso
  */
 
+// TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
+
 #include "sockets.h"
 
 sock_t* memoria;
@@ -32,8 +34,9 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	return OK;
 }
 
-resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
+resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
+	printf("%s", ip);
 	*socket = crear_socket_hablador(ip, puerto);
 	if (conectar(*socket) == -1)
 		return FALLO_CONEXION;
@@ -42,7 +45,7 @@ resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
 
 resultado_t conectar_con_memoria()
 {
-	return _conectar(&memoria, NULL, 4560);
+	return _conectar(&memoria, ip_msp(), puerto_msp());
 }
 
 resultado_t _mandar_soy_cpu_a_kernel()
@@ -68,7 +71,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.flag != BIENVENIDO) { // TODO arreglar con kernel cual va a ser el mensaje de devolucion
+	if (respuesta.flag != BIENVENIDO) {
 		return FALLO_COMUNICACION;
 	}
 
@@ -77,7 +80,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	if (_conectar(&kernel, "127.0.0.1", 18257) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
+	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
@@ -116,7 +119,6 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	return OK;
 }
 
-// TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 {
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
@@ -141,6 +143,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	respuesta_de_crear_segmento_t respuesta =
 		*deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
+
 	*direccion = respuesta.direccion_virtual;
 
 	free(chorro_de_envio);
