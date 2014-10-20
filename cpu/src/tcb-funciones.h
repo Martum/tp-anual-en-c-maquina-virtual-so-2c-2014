@@ -44,7 +44,7 @@ void actualizar_km(tcb_t* tcb, bool nuevo_km);
  * @DESC: Actualiza el valor del cursor del stack en cantidad de bytes.
  * @RETURNS:
  */
-void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
+resultado_t actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
 
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.

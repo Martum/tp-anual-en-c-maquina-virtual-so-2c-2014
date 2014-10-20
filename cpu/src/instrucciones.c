@@ -575,7 +575,11 @@ resultado_t _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 	if (escribir_en_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes,
 		bytes) == FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
-	actualizar_cursor_stack(tcb, cantidad_de_bytes);
+
+	if (actualizar_cursor_stack(tcb, cantidad_de_bytes)
+		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
+
 	return OK;
 }
 
@@ -634,7 +638,11 @@ resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 	if (leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
-	actualizar_cursor_stack(tcb, -cantidad_de_bytes);
+
+	if (actualizar_cursor_stack(tcb, -cantidad_de_bytes)
+		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
+
 	return OK;
 }
 
@@ -900,7 +908,9 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_cursor_stack(tcb, ocupacion_stack);
+	if (actualizar_cursor_stack(tcb, ocupacion_stack)
+		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
 
 	free(buffer);
 
