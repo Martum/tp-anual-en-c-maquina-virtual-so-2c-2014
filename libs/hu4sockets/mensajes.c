@@ -825,21 +825,34 @@ char* serializar_pedido_despertar_t(
 {
 	char* bytes = malloc(tamanio_pedido_despertar_t_serializado());
 
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->identificador_de_recurso, sizeof(uint32_t));
+
 	return bytes;
 }
 
 pedido_despertar_t* deserializar_pedido_despertar_t(
 	char* chorro)
 {
-	pedido_despertar_t* pedido_destruir_segmento = malloc(
-		sizeof(pedido_despertar_t));
+	pedido_despertar_t* pedido = malloc(sizeof(pedido_despertar_t));
 
-	return pedido_destruir_segmento;
+	uint32_t offset = 0;
+	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(tcb_t);
+	memcpy(&pedido->identificador_de_recurso, chorro + offset, sizeof(uint32_t));
+
+	return pedido;
 }
 
 uint32_t tamanio_pedido_despertar_t_serializado()
 {
 	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
 
 	return t;
 }
