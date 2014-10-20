@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+// TODO agregar validacion a leer y escribir en memoria
+
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -138,8 +140,8 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
-		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)F
-	return ERROR_EN_EJECUCION;
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -719,7 +721,14 @@ resultado_t _free(tcb_t* tcb)
 	return destruir_segmento(tcb->pid, direccion);
 }
 
-// TODO
+void _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
+{
+	char* buffer = malloc(sizeof(char) * 4);
+	comunicar_entrada_estandar(tcb, 4, buffer);
+	unir_bytes(numero_ingresado, buffer);
+	free(buffer);
+}
+
 /*
  * 	INNN
  *
@@ -736,17 +745,23 @@ resultado_t innn(tcb_t* tcb)
 
 	int32_t numero_ingresado;
 
-	char* buffer = malloc(sizeof(char) * 4);
-	comunicar_entrada_estandar(tcb, 4, buffer);
-	unir_bytes(&numero_ingresado, buffer);
-	free(buffer); // TODO pensar en encapsular
+	_pedir_por_consola_numero(tcb, &numero_ingresado);
 
 	actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 
 	return OK;
 }
 
-// TODO
+void _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
+	int32_t direccion)
+{
+	char* buffer = malloc(cantidad_de_bytes);
+	comunicar_entrada_estandar(tcb, cantidad_de_bytes, buffer);
+	escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes,
+		buffer);
+	free(buffer);
+}
+
 /*
  * 	INNC
  *
@@ -761,16 +776,12 @@ resultado_t innc(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro_A;
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
-	int32_t valor_del_registro_B;
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
+	int32_t direccion_de_almacenamiento;
+	obtener_valor_del_registro(tcb, 'a', &direccion_de_almacenamiento);
+	int32_t cantidad_de_bytes;
+	obtener_valor_del_registro(tcb, 'b', &cantidad_de_bytes);
 
-	char* buffer = malloc(valor_del_registro_B);
-	comunicar_entrada_estandar(tcb, valor_del_registro_B, buffer);
-	escribir_en_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
-		buffer); // TODO agregar validacion
-	free(buffer); // TODO pensar en encapsular
+	_pedir_por_consola_cadena(tcb, cantidad_de_bytes, direccion_de_almacenamiento);
 
 	return OK;
 }
