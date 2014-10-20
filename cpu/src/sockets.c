@@ -68,7 +68,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK) {
+	if (respuesta.resultado != OK) { // TODO arreglar con kernel cual va a ser el mensaje de devolucion
 		return FALLO_COMUNICACION;
 	}
 
@@ -77,7 +77,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	if (_conectar(&kernel, NULL, 4559) == FALLO_CONEXION)
+	if (_conectar(&kernel, NULL, 4559) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
@@ -116,6 +116,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	return OK;
 }
 
+// TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 {
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
@@ -148,6 +149,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	return OK;
 }
 
+// TODO agregar lectura de respuesta
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
@@ -210,6 +212,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	return OK;
 }
 
+// TODO agregar lectura de respuesta
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t bytes, char* buffer)
 {
@@ -240,11 +243,12 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	return OK;
 }
 
+// TODO agregar lectura de respuesta
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
-	cuerpo_del_mensaje.tcb = &tcb;
+	cuerpo_del_mensaje.tcb = &tcb; // TODO no estoy seguro de que esto funcione
 	cuerpo_del_mensaje.resultado = res;
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(

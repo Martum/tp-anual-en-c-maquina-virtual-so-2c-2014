@@ -23,7 +23,7 @@ int32_t main(int32_t argc, char** argv)
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	while (1) {
-		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
+		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) // TODO preguntar que pasa si no puedo obtener un TCB
 			resultado = ERROR_EN_EJECUCION;
 
 		// TODO eliminar (no es mas necesario)
@@ -60,7 +60,7 @@ int32_t main(int32_t argc, char** argv)
 		if (resultado == OK)
 			resultado = FIN_QUANTUM;
 
-		informar_a_kernel_de_finalizacion(tcb, resultado);
+		informar_a_kernel_de_finalizacion(tcb, resultado); // TODO preguntar que pasa si esto falla
 	}
 
 	dictionary_destroy(dic_instrucciones);
