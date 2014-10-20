@@ -62,10 +62,10 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	}
 	else
 	{
-		uint32_t base_marco_datos = obtener_base_marco(pid, direccion_logica);
+		/*
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
-		uint32_t base_lectura = base_marco_datos+desplazamiento;
-		return leer_marco(base_lectura, tamanio);
+		marco_t marco = buscar_marco_segun_id(pagina->marco)
+		return leer_marco(marco->datos, desplazamiento,tamanio);*/
 
 	}
 
