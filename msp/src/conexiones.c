@@ -7,6 +7,7 @@
 #include "interfaz.h"
 
 #include <commons/collections/list.h>
+#include <commons/string.h>
 
 #include <hu4sockets/mensajes.h>
 #include <hu4sockets/sockets.h>
@@ -161,7 +162,7 @@ int _atender_socket(conexion_t* conexion){
 			respuesta_crear->flag = TOMA_SEGMENTO;
 
 /*						,
-						TOMA_BYTES
+
 						RESPUESTA_ESCRITURA
 						*/
 			char* msg_respuesta_crear = serializar_respuesta_de_crear_segmento_t(respuesta_crear);
@@ -205,20 +206,27 @@ int _atender_socket(conexion_t* conexion){
 		case LEE_DE_MEMORIA:
 			salida = 3;
 
-		/*	pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(msg);
+			pedido_de_leer_de_memoria_t* pedido_leer = deserializar_pedido_de_leer_de_memoria_t(msg);
 
-			direccion dir_base = crear_segmento(pedido->pid, pedido->tamano);
+			char* bytes = leer_memoria(pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano);
 
-			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
-			respuesta->direccion_virtual = dir_base;
-			// respuesta->resultado = ...
-			// respuesta->flag = ...
-			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+			respuesta_de_leer_de_memoria_t * respuesta_leer = malloc(sizeof(respuesta_de_leer_de_memoria_t));
+			respuesta_leer->flag = TOMA_BYTES;
+			respuesta_leer->bytes_leido = bytes;
+			// respuesta_leer->resultado = ...
+			// respuesta_leer->tamano = (uint32_t)string_length(bytes);
 
-			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
-			free(respuesta);
-			free(msg_respuesta);
-*/
+			char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
+
+			uint32_t* len_msg_leer = malloc(sizeof(uint32_t));
+			*(len_msg_leer) = tamanio_respuesta_de_leer_de_memoria_t_serializado();
+
+			enviar(conexion->socket,msg_respuesta_leer, len_msg_leer);
+
+			free(len_msg_leer);
+			free(pedido_leer);
+			free(respuesta_leer);
+			free(msg_respuesta_leer);
 			break;
 
 		case ESCRIBI_EN_MEMORIA:
