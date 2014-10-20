@@ -11,6 +11,8 @@ int32_t main(int32_t argc, char** argv)
 //		return 0;
 //	}
 
+	cargar_configuraciones(); // TODO fijarse que pasa si no puede cargar las configuraciones
+
 	if (conectar_con_kernel() == FALLO_CONEXION) {
 		printf("ERROR FALTAL");
 		return 0;
