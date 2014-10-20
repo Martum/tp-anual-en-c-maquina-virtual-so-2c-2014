@@ -9,8 +9,12 @@
 
 t_config* configs_cpu;
 
-void cargar_configuraciones(){
+resultado_t cargar_configuraciones(){
 	configs_cpu = config_create("/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/configs_cpu.cfg");
+	if (config_keys_amount(configs_cpu) == 0) {
+		return FALLO_CARGA_DE_CONFIGURACIONES;
+	}
+	return OK;
 }
 
 void destruir_configuraciones(){

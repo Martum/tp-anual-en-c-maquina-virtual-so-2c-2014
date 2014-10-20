@@ -10,8 +10,9 @@
 
 #include <stdint.h>
 #include <commons/config.h>
+#include <hu4sockets/resultados.h>
 
-void cargar_configuraciones();
+resultado_t cargar_configuraciones();
 void destruir_configuraciones();
 
 char* ip_kernel();
