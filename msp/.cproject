@@ -39,7 +39,7 @@
 									<listOptionValue builtIn="false" value="commons"/>
 								</option>
 								<option id="gnu.c.link.option.paths.560535727" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:hu4sockets/Debug}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1367385040" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
