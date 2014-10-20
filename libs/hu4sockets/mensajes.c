@@ -584,7 +584,7 @@ char* serializar_pedido_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->identificador_de_tipo, sizeof(uint16_t));
+	memcpy(bytes + offset, &pedido->identificador_de_tipo, sizeof(idetificador_tipo_t));
 
 	return bytes;
 }
@@ -601,7 +601,7 @@ pedido_entrada_estandar_t* deserializar_pedido_entrada_estandar_t(
 	memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(&pedido->identificador_de_tipo, chorro + offset, sizeof(uint16_t));
+	memcpy(&pedido->identificador_de_tipo, chorro + offset, sizeof(idetificador_tipo_t));
 
 	return pedido;
 }
@@ -611,7 +611,7 @@ uint32_t tamanio_pedido_entrada_estandar_t_serializado()
 	uint32_t t = 0;
 	t += sizeof(flag_t);
 	t += sizeof(uint32_t);
-	t += sizeof(uint16_t);
+	t += sizeof(idetificador_tipo_t);
 
 	return t;
 }

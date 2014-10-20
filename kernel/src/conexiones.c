@@ -71,7 +71,7 @@ void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 
 	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
 
-	list_add(CONEXIONES_CPU, conexion);
+	list_add(CONEXIONES_CPU, conexion_cpu);
 	FD_SET(conexion->fd, &READFDS_CPUS);
 
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);

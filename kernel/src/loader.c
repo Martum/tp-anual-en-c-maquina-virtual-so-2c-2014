@@ -28,17 +28,8 @@ uint32_t dame_nuevo_tid()
 	return tid_global++;
 }
 
-void mostraresto(char* c, uint32_t l)
-{
-	/*char* c2 = malloc(l+1);
-	memcpy(c2, c, l);
-	c2[l] = '\0';*/
-
-	printf("El mensaje es: %c\n", *c);
-}
-
 int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
-{ mostraresto(codigo_beso, len);
+{
 	tcb_t* tcb = crear_tcb(dame_nuevo_pid(), dame_nuevo_tid());
 	tcb->tamanio_codigo = len;
 
@@ -95,14 +86,15 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 	return tcb;
 }
 
-// DEPRECATED
-/*int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
+
+int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 {
 	tcb_hijo->tamanio_codigo = tcb_padre->tamanio_codigo;
 
-	direccion stack = crear_segmento(tcb_padre->pid, tamanio_stack());
+	direccion stack;
+	int32_t res = crear_segmento(tcb_padre->pid, tamanio_stack(), &stack);
 
-	if(stack != -1)
+	if(res != -1)
 	{
 		tcb_hijo->base_codigo = tcb_padre->base_codigo;
 		tcb_hijo->pc = tcb_padre->pc;
@@ -115,4 +107,4 @@ tcb_t* crear_tcb(uint32_t pid, uint32_t tid)
 
 	return -1;
 
-}*/
+}

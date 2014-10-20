@@ -23,7 +23,7 @@ typedef enum {
 
 } errores_t;
 
-sock_t* socket_kernel;
+sock_t* SOCKET_KERNEL;
 
 /**
  * Carga el codigo BESO a memoria
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 	}
 
 	free(codigo_beso);
-	cerrar_liberar(socket_kernel);
+	cerrar_liberar(SOCKET_KERNEL);
 	return salida;
 }
 
@@ -124,8 +124,8 @@ char* cargar_beso(char* path, uint32_t* len)
 
 errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 {
-	socket_kernel = crear_socket_hablador(ip_kernel(), puerto_kernel());
-	conectar(socket_kernel);
+	SOCKET_KERNEL = crear_socket_hablador(ip_kernel(), puerto_kernel());
+	conectar(SOCKET_KERNEL);
 
 	// Enviamos mensaje de identificacion
 	char* mensaje = malloc(tamanio_flagt());
@@ -133,11 +133,11 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	flag_t f = SOY_PROGRAMA;
 	memcpy(mensaje, &f, tamanio_flagt());
 
-	enviar(socket_kernel, mensaje, &len);
+	enviar(SOCKET_KERNEL, mensaje, &len);
 	free(mensaje);
 
 	// Recibimos la bienvenida
-	recibir(socket_kernel, &mensaje, &len);
+	recibir(SOCKET_KERNEL, &mensaje, &len);
 	memcpy(&f, mensaje, tamanio_flagt());
 
 	if(f != BIENVENIDO)
@@ -147,14 +147,14 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	}
 
 	// Enviamos el codigo BESO
-	if(enviar(socket_kernel, codigo_beso, &size) == -1)
+	if(enviar(SOCKET_KERNEL, codigo_beso, &size) == -1)
 	{
 		free(mensaje);
 		return BNO_SE_ENVIO_CODIGO;
 	}
 
 	// Recibimos la respuesta
-	recibir(socket_kernel, &mensaje, &len);
+	recibir(SOCKET_KERNEL, &mensaje, &len);
 	memcpy(&f, mensaje, tamanio_flagt());
 
 	errores_t salida;
@@ -180,11 +180,40 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	return salida;
 }
 
+void salida_estandar(pedido_salida_estandar_t* salida)
+{
+	// TODO: Seguir aca
+
+	free(salida);
+}
+
+void procesar_conexion(char* mensaje, uint32_t len)
+{
+	flag_t codop = codigo_operacion(mensaje);
+
+	switch(codop)
+	{
+		case ENTRADA_ESTANDAR:
+
+			break;
+
+		case SALIDA_ESTANDAR:
+			salida_estandar(deserializar_pedido_salida_estandar_t(mensaje));
+			break;
+	}
+}
+
 void escuchar_kernel()
 {
-
+	char* mensaje;
+	uint32_t len;
 	while(1)
 	{
+		if(recibir(SOCKET_KERNEL, &mensaje, &len) == 0)
+		{
+			procesar_conexion(mensaje, len);
+		}
 
+		free(mensaje);
 	}
 }

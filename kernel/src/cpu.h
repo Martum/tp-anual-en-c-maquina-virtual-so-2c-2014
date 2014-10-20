@@ -21,7 +21,7 @@ uint32_t dame_nuevo_id_cpu();
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
  * Devuelve 0 en caso de exito o -1 en caso de no haber memoria disponible.
  */
-int crear_hilo(tcb_t* tcb, uint32_t tid);
+int crear_hilo(tcb_t* tcb);
 
 
 /**
@@ -47,11 +47,11 @@ int salida_estandar(uint32_t pid, char* cadena_a_escribir);
 /*
  * Envia el hilo a block, lo encola en la cola de espera del recurso.
  */
-void bloquear(tcb_t* tcb, uint32_t recurso);
+void bloquear(tcb_t* tcb, char* recurso);
 
 /*
  * Remueve el primer hilo de la cola de espera del recurso y lo manda a ready.
  */
-void despertar(uint32_t recurso);
+void despertar(char* recurso);
 
 #endif /* SERVICIOSACPU_H_ */

@@ -40,10 +40,10 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len);
 tcb_t* crear_tcb(uint32_t pid, uint32_t tid);
 
 
-// DEPRECATED
+
 /**
  * Copia un TCB asignandole un nuevo Segmento de Stack
  */
-//int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo);
+int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo);
 
 #endif /* LOADER_H_ */
