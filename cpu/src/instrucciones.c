@@ -244,7 +244,6 @@ resultado_t modr(tcb_t* tcb)
 	return _funcion_operacion(tcb, modulo, condicion);
 }
 
-// TODO
 /*
  * 	DIVR [Registro], [Registro]
  *
@@ -886,7 +885,6 @@ void _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	free(buffer);
 }
 
-// TODO
 /*
  * 	CREA
  *
