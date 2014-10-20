@@ -62,10 +62,17 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	}
 	else
 	{
-		/*
+
+		bool mas_paginas = true;
+		char* datos="";
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
-		marco_t marco = buscar_marco_segun_id(pagina->marco)
-		return leer_marco(marco->datos, desplazamiento,tamanio);*/
+		marco_t* marco = buscar_marco_segun_id(pagina->marco);
+		while((tamanio==0)&&(mas_paginas))
+		{
+			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
+			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
+		}
+
 
 	}
 

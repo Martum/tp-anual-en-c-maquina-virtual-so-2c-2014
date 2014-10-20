@@ -37,9 +37,22 @@ marco_t* buscar_marco_libre()
 }
 
 
-char* leer_marco(uint32_t base_marco_datos,uint32_t tamanio)
+char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
 {
-	//Debo tomar la base, sumarle el desplazamiento dentro de la pagina, asignarlo a un puntero
-	// y luego iterar hasta el tamaño
-	return 0;
+	uint32_t tamanio_aux = tamanio;
+	if((256-desplazamiento-tamanio)<0)
+	{
+		tamanio_aux= 256-desplazamiento;
+		mas_paginas=true;
+	}
+	else
+	{
+		mas_paginas=false;
+	}
+
+	tamanio=tamanio-tamanio_aux;
+	//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento
+	desplazamiento=0;
+
+	return string_substring(datos_marco,desplazamiento,tamanio_aux);
 }
