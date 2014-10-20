@@ -161,10 +161,6 @@ int _atender_socket(conexion_t* conexion){
 			// respuesta->resultado = ...
 			respuesta_crear->flag = TOMA_SEGMENTO;
 
-/*						,
-
-						RESPUESTA_ESCRITURA
-						*/
 			char* msg_respuesta_crear = serializar_respuesta_de_crear_segmento_t(respuesta_crear);
 
 			uint32_t* len_msg_crear = malloc(sizeof(uint32_t));
@@ -231,21 +227,29 @@ int _atender_socket(conexion_t* conexion){
 
 		case ESCRIBI_EN_MEMORIA:
 			salida = 4;
-/*
-			pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(msg);
 
-			direccion dir_base = crear_segmento(pedido->pid, pedido->tamano);
+			pedido_de_escribir_en_memoria_t* pedido_escribir = deserializar_pedido_de_escribir_en_memoria_t(msg);
 
-			respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
-			respuesta->direccion_virtual = dir_base;
-			// respuesta->resultado = ...
-			// respuesta->flag = ...
-			char* msg_respuesta = serializar_respuesta_de_crear_segmento_t(respuesta);
+			escribir_memoria(pedido_escribir->pid,
+							pedido_escribir->direccion_virtual,
+							pedido_escribir->bytes_a_escribir,
+							pedido_escribir->tamano);
 
-			enviar(conexion->socket,msg_respuesta, tamanio_respuesta_de_crear_segmento_t_serializado());
-			free(respuesta);
-			free(msg_respuesta);
-*/
+			respuesta_t* respuesta_escribir = malloc(sizeof(respuesta_t));
+			respuesta_escribir->flag = RESPUESTA_ESCRITURA;
+			// respuesta_escribir->resultado = ...;
+
+			char* msg_respuesta_escribir = serializar_respuesta_t(respuesta_escribir);
+
+			uint32_t* len_msg_escribir = malloc(sizeof(uint32_t));
+			*(len_msg_escribir) = tamanio_respuesta_t_serializado();
+
+			enviar(conexion->socket,msg_respuesta_escribir, len_msg_escribir);
+
+			free(len_msg_escribir);
+			free(pedido_escribir);
+			free(respuesta_escribir);
+			free(msg_respuesta_escribir);
 			break;
 
 		default:
