@@ -34,8 +34,9 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	return OK;
 }
 
-resultado_t _conectar(sock_t** socket, char* ip, int32_t puerto)
+resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
+	printf("%s", ip);
 	*socket = crear_socket_hablador(ip, puerto);
 	if (conectar(*socket) == -1)
 		return FALLO_CONEXION;
