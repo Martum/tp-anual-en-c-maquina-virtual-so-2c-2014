@@ -20,7 +20,6 @@ resultado_t load(tcb_t* tcb)
 	return OK;
 }
 
-// TODO
 /*
  * 	GETM [Registro], [Registro]
  *
@@ -39,10 +38,9 @@ resultado_t getm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	char* buffer = malloc(sizeof(char));
-	leer_de_memoria(tcb->pid, valor_del_registro, 1, buffer);
-	int32_t valor_de_memoria = *buffer;
-	free(buffer); // TODO pensar si conviene encapsular
+	char buffer;
+	leer_de_memoria(tcb->pid, valor_del_registro, 1, &buffer);
+	int32_t valor_de_memoria = buffer;
 
 	if (actualizar_valor_del_registro(tcb, registro1, valor_de_memoria)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
