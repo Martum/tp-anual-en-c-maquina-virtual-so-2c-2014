@@ -10,32 +10,17 @@
 
 #include <hu4sockets/sockets.h>
 
+// Struct para conexiones CPU
 typedef struct conexion_cpu {
 	sock_t* socket;
 	uint32_t id;
 } conexion_cpu_t;
 
+// Struct para conexiones Procesos
 typedef struct conexion_procesos {
 	sock_t* socket;
 	uint32_t pid;
 } conexion_proceso_t;
-
-/**
- * Agrega una conexion a la lista de conexiones de CPU
- */
-void _agregar_conexion_a_cpu(sock_t*);
-
-/**
- * Agrega una conexion a la lista de conexiones de Procesos
- */
-void _agregar_conexion_a_procesos(sock_t*, uint32_t pid);
-
-
-/**
- * Lee del socket lo que la conexion unasigned tiene para decir,
- * y la mueve a la lista que corresponde
- */
-void _conexion_unasigned_lista(sock_t* conexion);
 
 /**
  * Escucha por conexiones entrantes nuevas y por contactos desde procesos
@@ -54,6 +39,9 @@ void* escuchar_cpus(void* p);
  */
 void inicializar_listas_conexiones(void);
 
+
+// ********* BUSQUEDA DE PROCESOS ***************
+
 /**
  * Busca el sock_t* correspondiende a un proceso por su PID
  *
@@ -62,17 +50,35 @@ void inicializar_listas_conexiones(void);
 sock_t* buscar_conexion_proceso_por_pid(uint32_t pid);
 
 /**
+ * Busca el conexion_proceso_t* correspondiente a un proceso por su FD
+ *
+ * @RETURNS: El conexion_proceso_t* del proceso
+ */
+conexion_proceso_t* buscar_proceso_por_fd(int32_t fd);
+
+/**
  * Busca el sock_t* correspondiente a un proceso por su FD
  *
  * @RETURNS: El sock_t* del proceso correspondiente al FD
  */
 sock_t* buscar_conexion_proceso_por_fd(int32_t fd);
 
+
+// ********* BUSQUEDA DE CPUs ***************
+
 /**
- * Busca el sock_t* correspondiente a una conexion por su FD
- *
- * @RETURNS: El sock_t* de la conexion unasigned correspondiente al FD
+ * Busca el sock_t* del CPU correspondiente al ID
  */
-sock_t* buscar_conexion_unasigned_por_fd(int32_t fd);
+sock_t* buscar_conexion_cpu_por_id(uint32_t id);
+
+/**
+ * Busca el conexion_cpu_t* del CPU correspondiente al FD
+ */
+conexion_cpu_t* buscar_cpu_por_fd(int32_t fd);
+
+/**
+ * Busca el sock_t* del CPU correspondiente al FD
+ */
+sock_t* buscar_conexion_cpu_por_fd(int32_t fd);
 
 #endif /* CONEXIONES_H_ */

@@ -9,7 +9,9 @@
 #include "loader.h"
 #include "lstestados.h"
 #include "consola.h"
-#include "serviciosacpu.h"
+#include "cpu.h"
+
+uint32_t ID_CPU_GLOBAL = 1;
 
 //TODO: Comentado para que compile
 /*
@@ -28,6 +30,11 @@ int crear_hilo(tcb_t* tcb, uint32_t tid)
 	return -1;
 }
 */
+
+uint32_t dame_nuevo_id_cpu()
+{
+	return ID_CPU_GLOBAL++;
+}
 
 void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 	//REVISAR. Utilizar el enviar y recibir para evitar espera activa.

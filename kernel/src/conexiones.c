@@ -16,49 +16,65 @@
 #include "conexiones.h"
 #include <hu4sockets/mensajes.h>
 #include "loader.h"
+#include <sys/time.h>
+#include "cpu.h"
 
 // Lista y mutex para conexiones de procesos
-pthread_mutex_t mutex_conexiones_procesos = PTHREAD_MUTEX_INITIALIZER;
-t_list* conexiones_procesos;
+pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
+t_list* CONEXIONES_PROCESOS;
 
 // SET para conexiones unasigned y de procesos
-fd_set readfds_procesos;
+fd_set READFDS_PROCESOS;
 
 //---------------------
 
 // Lista y mutex para conexiones cpu
-pthread_mutex_t mutex_conexiones_cpu = PTHREAD_MUTEX_INITIALIZER;
-t_list* conexiones_cpu;
+pthread_mutex_t MUTEX_CONEXIONES_CPU = PTHREAD_MUTEX_INITIALIZER;
+t_list* CONEXIONES_CPU;
 
 // SET para conexiones cpu
-fd_set readfds_cpus;
+fd_set READFDS_CPUS;
+
+int32_t MAYOR_FD_CPU = -1;
+
+//--------------------
 
 // Socket y mutex de la conexion con memoria
-pthread_mutex_t mutex_conexion_memoria = PTHREAD_MUTEX_INITIALIZER;
-sock_t* conexion_memoria;
+pthread_mutex_t MUTEX_CONEXION_MEMORIA = PTHREAD_MUTEX_INITIALIZER;
+sock_t* CONEXION_MEMORIA;
 
+/**
+ * Agrega una conexion a la lista de conexiones de Procesos
+ */
 void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 {
 	conexion_proceso_t* conexion_proceso = malloc(sizeof(conexion_proceso_t));
 	conexion_proceso->pid = pid;
 	conexion_proceso->socket = conexion;
 
-	pthread_mutex_lock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
 
-	list_add(conexiones_procesos, conexion_proceso);
-	FD_SET(conexion->fd, &readfds_procesos);
+	list_add(CONEXIONES_PROCESOS, conexion_proceso);
+	FD_SET(conexion->fd, &READFDS_PROCESOS);
 
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 }
 
-void _agregar_conexion_a_cpu(sock_t* conexion)
+/**
+ * Agrega una conexion a la lista de conexiones de CPU
+ */
+void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 {
-	pthread_mutex_lock(&mutex_conexiones_cpu);
-	//TODO: Agregar un struct para wrappear las conexiones a los cpus con un ID
-	list_add(conexiones_cpu, conexion);
-	FD_SET(conexion->fd, &readfds_cpus);
+	conexion_cpu_t* conexion_cpu = malloc(sizeof(conexion_cpu_t));
+	conexion_cpu->socket = conexion;
+	conexion_cpu->id = id;
 
-	pthread_mutex_unlock(&mutex_conexiones_cpu);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
+
+	list_add(CONEXIONES_CPU, conexion);
+	FD_SET(conexion->fd, &READFDS_CPUS);
+
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 }
 
 void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
@@ -69,15 +85,14 @@ void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 
 void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
-	char* respuesta = malloc(tamanio_flagt());
-	flag_t resp = flag;
+	char* msg = malloc(tamanio_flagt());
 	uint32_t i = tamanio_flagt();
 
-	memcpy(respuesta, &resp, tamanio_flagt());
+	memcpy(msg, &flag, tamanio_flagt());
 
-	enviar(conxion, respuesta, &i);
+	enviar(conxion, msg, &i);
 
-	free(respuesta);
+	free(msg);
 }
 
 /**
@@ -153,7 +168,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 	recibir(nueva_conexion, &msg, &i);
 	flag_t codop = codigo_operacion(msg);
 
-	int salida = 0;
+	int32_t salida = -1;
 
 	switch(codop)
 	{
@@ -187,10 +202,13 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 			break;
 
 		case SOY_CPU:
-			//TODO: Progamar el comportamiento al recibir la conexion de un CPU
-			_dar_bienvenida(nueva_conexion);
-
 			salida = 2;
+
+			// Agregamos el CPU a la lista
+			_agregar_conexion_a_cpu(nueva_conexion, dame_nuevo_id_cpu());
+
+			// Le damos la bienvenida
+			_dar_bienvenida(nueva_conexion);
 			break;
 
 		default:
@@ -202,7 +220,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 }
 
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
-void _atender_socket_proceso(int32_t fd)
+void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 {
 	// Variables para el mensaje
 	// IMPORTANTE: NO LIBERAR MENSAJE DENTRO DE UNA FUNCION,
@@ -210,12 +228,8 @@ void _atender_socket_proceso(int32_t fd)
 	char* mensaje;
 	uint32_t len;
 
-	// Creamos un socket fantasma con el fd
-	sock_t socket_fantasma;
-	socket_fantasma.fd = fd;
-
 	// Recibimos el mensaje y obtenemos el codigo operacion
-	int32_t resultado = recibir(&socket_fantasma, &mensaje, &len);
+	int32_t resultado = recibir(conexion_proceso->socket, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
 	if(resultado == 0)
@@ -235,19 +249,19 @@ void _atender_socket_proceso(int32_t fd)
 				break;*/
 
 			default:
-				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
+				_informar_mensaje_incompleto(conexion_proceso->socket);
 				break;
 		}
 	}
 	else
-		_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd(fd));
+		_informar_mensaje_incompleto(conexion_proceso->socket);
 
 	// Liberamos el buffer
 	free(mensaje);
 
 }
 
-void _atender_socket_cpu(int32_t fd)
+void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
 	//TODO: Atendeme el socket maestro
 }
@@ -258,21 +272,26 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);
 
+	// Seteamos el timer
+	struct timeval timer;
+	timer.tv_sec = 5;
+	timer.tv_usec = 0;
+
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
-	FD_ZERO(&readfds_procesos);
-	FD_SET(principal->fd, &readfds_procesos);
+	FD_ZERO(&READFDS_PROCESOS);
+	FD_SET(principal->fd, &READFDS_PROCESOS);
 
 	// Preparamos el SET
-	fd_set readfds = readfds_procesos;
+	fd_set readfds = READFDS_PROCESOS;
 
 	while(1)
 	{
 		// Escuchamos el universo
-		int rs = select(mayor_fd+1, &readfds, NULL, NULL, NULL);
+		int rs = select(mayor_fd+1, &readfds, NULL, NULL, &timer);
 
 		if(rs > 0)
-		{
+		{// Podemos leer
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;
@@ -284,7 +303,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
-						sock_t* nueva_conexion;
+						sock_t* nueva_conexion = NULL;
 						if(_procesar_nueva_conexion(principal, nueva_conexion) == 1)
 						{// Es programa y salio all ok
 							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
@@ -292,18 +311,23 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 						else
 						{// Es CPU
 							//TODO: Aca el quehacer cuando la conexion es CPU
+							_recalcular_mayor_fd(&MAYOR_FD_CPU, nueva_conexion->fd);
 						}
 					}
 					else
 					{// No es el socket principal, es un proceso
-						_atender_socket_proceso(i);
+						_atender_socket_proceso(buscar_proceso_por_fd(i));
 					}
 				}
 			}
 		}
 
 		// Rearmamos el readfds
-		readfds = readfds_procesos;
+		readfds = READFDS_PROCESOS;
+
+		// Reseteamos el timer
+		timer.tv_sec = 5;
+		timer.tv_usec = 0;
 	}
 
 	return NULL;
@@ -312,8 +336,46 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 // Corre en un THREAD
 void* escuchar_cpus(void* otro_ente)
 {
-	// TODO: SIMILAR A LA SUPERIOR PERO PARA ESCUCHAR CPUS
-	// ESTE DEBE TENER UN TIMER QUE CADA X SEGUNDOS REARME EL FDS
+	// Seteamos el timer
+	struct timeval timer;
+	timer.tv_sec = 5;
+	timer.tv_usec = 0;
+
+	// Inicializamos el readfds maestro y el mayor
+	int32_t mayor_fd = MAYOR_FD_CPU;
+	FD_ZERO(&READFDS_CPUS);
+
+	// Seteamos el readfds
+	fd_set readfds = READFDS_CPUS;
+
+	while(1)
+	{
+		int rs = select(mayor_fd+1, &readfds, NULL, NULL, &timer);
+
+		if(rs > 0)
+		{// Podemos leer
+			// Vemos si hay sockets para leer
+			int32_t i;
+			int32_t copia_mayor_fd = mayor_fd;
+			for(i = 0; i < (copia_mayor_fd+1); i++)
+			{
+				if(FD_ISSET(i, &readfds))
+				{// Atendemos al socket
+					_atender_socket_cpu(buscar_cpu_por_fd(i));
+				}
+			}
+		}
+
+		// Reseteamos el timer
+		timer.tv_sec = 5;
+		timer.tv_usec = 0;
+
+		// Rearmamos el readfds
+		readfds = READFDS_CPUS;
+
+		// Seteamos el nuevo mayor (si es que hay)
+		mayor_fd = MAYOR_FD_CPU;
+	}
 
 	return NULL;
 }
@@ -321,14 +383,17 @@ void* escuchar_cpus(void* otro_ente)
 void inicializar_listas_conexiones(void)
 {
 
-	conexiones_cpu = list_create();
+	CONEXIONES_CPU = list_create();
 	//pthread_mutex_init(&mutex_conexiones_cpu, NULL);
 
-	conexiones_procesos = list_create();
+	CONEXIONES_PROCESOS = list_create();
 	//pthread_mutex_init(&mutex_conexiones_procesos, NULL);
 
 	//pthread_mutex_init(&mutex_conexion_memoria, NULL);
 }
+
+
+// ********* BUSQUEDA DE PROCESOS ***************
 
 sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 {
@@ -341,16 +406,15 @@ sock_t* buscar_conexion_proceso_por_pid(uint32_t pid)
 	}
 
 	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_procesos);
-	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 
 	return conexion->socket;
 }
 
-sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
+conexion_proceso_t* buscar_proceso_por_fd(int32_t fd)
 {
-	// Funcion de busqueda
 	bool buscar_proceso(void* elemento)
 	{
 		conexion_proceso_t* conexion = (conexion_proceso_t*) elemento;
@@ -359,9 +423,57 @@ sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
 	}
 
 	// Buscamos...
-	pthread_mutex_lock(&mutex_conexiones_procesos);
-	conexion_proceso_t* conexion = list_find(conexiones_procesos, buscar_proceso);
-	pthread_mutex_unlock(&mutex_conexiones_procesos);
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_PROCESOS, buscar_proceso);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
+
+	return conexion;
+}
+
+sock_t* buscar_conexion_proceso_por_fd(int32_t fd)
+{
+	return buscar_proceso_por_fd(fd)->socket;
+}
+
+
+// ********* BUSQUEDA DE CPUs ***************
+
+sock_t* buscar_conexion_cpu_por_id(uint32_t id)
+{
+	// Funcion de busqueda
+	bool buscar_cpu(void* elemento)
+	{
+		conexion_cpu_t* conexion = (conexion_cpu_t*) elemento;
+
+		return conexion->id == id;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
+	conexion_proceso_t* conexion = list_find(CONEXIONES_CPU, buscar_cpu);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 
 	return conexion->socket;
+}
+
+conexion_cpu_t* buscar_cpu_por_fd(int32_t fd)
+{
+	bool buscar_cpu(void* elemento)
+	{
+		conexion_cpu_t* conexion = (conexion_cpu_t*) elemento;
+
+		return conexion->socket->fd == fd;
+	}
+
+	// Buscamos...
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
+	conexion_cpu_t* conexion = list_find(CONEXIONES_CPU, buscar_cpu);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
+
+	return conexion;
+}
+
+sock_t* buscar_conexion_cpu_por_fd(int32_t fd)
+{
+	return buscar_cpu_por_fd(fd)->socket;
 }
