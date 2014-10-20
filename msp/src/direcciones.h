@@ -22,9 +22,7 @@ bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, pr
 //Checkea si al sumarle el tamanio a la direccion se supera el limite del segmento
 bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina_t* pagina, uint16_t desplazamiento, uint32_t tamanio);
 
-//A partir del pid y la direccion logica devuelve la base del marco en el que se encuentra
-// el dato pedido
-uint32_t obtener_base_marco(uint32_t pid, direccion direccion_logica);
+
 
 
 

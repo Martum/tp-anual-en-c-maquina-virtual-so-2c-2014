@@ -37,8 +37,9 @@ segmento_t *crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t tamanio_
 }
 
 void agregar_segmento_a_proceso(segmento_t *segmento, proceso_msp_t *proceso){
+	segmento_t* segmento_auxiliar = (segmento_t*)list_take(proceso->segmentos,list_size(proceso->segmentos));
+	segmento->id = (segmento_auxiliar->id)+1;
 	list_add(proceso->segmentos,segmento);
-	segmento->id = list_size(proceso->segmentos)-1;
 }
 
 void listar_paginas_de_un_segmento(segmento_t *segmento){
