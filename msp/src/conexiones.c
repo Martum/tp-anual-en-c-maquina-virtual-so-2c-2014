@@ -21,11 +21,16 @@ void inicializar_lista_conexiones_cpu(){
 	lista_conexiones = list_create();
 }
 
-void _agregar_conexion_a_cpu(sock_t* conexion){
+void _agregar_conexion(sock_t* conexion_socket, uint32_t id){
+
+	conexion_t* conexion = malloc(sizeof(conexion_t));
+	conexion->socket = conexion_socket;
+	conexion->id = id;
+
 	pthread_mutex_lock(&mutex_conexiones);
-	//TODO: Agregar un struct para wrappear las conexiones a los cpus con un ID
+
 	list_add(lista_conexiones, conexion);
-	FD_SET(conexion->fd, &readfds);
+	FD_SET(conexion->socket->fd, &readfds);
 
 	pthread_mutex_unlock(&mutex_conexiones);
 }
@@ -58,22 +63,23 @@ void _informar_respuesta_escritura(sock_t* conexion){
 	_enviar_flagt(conexion, RESPUESTA_ESCRITURA);
 }
 
-sock_t* buscar_conexion_cpu_por_fd(int32_t fd){
+conexion_t* buscar_conexion_por_fd(int32_t fd){
+
 	// Funcion de busqueda
-	bool buscar_cpu(void* elemento){
-		conexion_cpu_t* conexion = (conexion_cpu_t*) elemento;
+	bool buscar_conex(void* elemento){
+		conexion_t* conexion = (conexion_t*) elemento;
 		return (conexion->socket->fd) == fd;
 	}
 
 	// Buscamos...
 	pthread_mutex_lock(&mutex_conexiones);
-	conexion_cpu_t* conexion = list_find(lista_conexiones, buscar_cpu);
+	conexion_t* conexion = list_find(lista_conexiones, buscar_conex);
 	pthread_mutex_unlock(&mutex_conexiones);
 
-	return conexion->socket;
+	return conexion;
 }
 
-void* escuchar_cpus(void* otro_ente){
+void* escuchar_conexiones(void* otro_ente){
 
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);
@@ -90,7 +96,8 @@ void* escuchar_cpus(void* otro_ente){
 		// Escuchamos el universo
 		int rs = select(mayor_fd+1, &readfdset, NULL, NULL, NULL);
 
-		if(rs != -1){
+		if(rs > 0){
+
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;
@@ -101,15 +108,17 @@ void* escuchar_cpus(void* otro_ente){
 				if(FD_ISSET(i, &readfdset)){
 
 					if(i == principal->fd){
-						// Es el socket principal, new connection knocking
-					//	sock_t* nueva_conexion;
 
-					//	if(_procesar_nueva_conexion(principal, nueva_conexion) == 1){
-				//			_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
-			//			}
+						// Es el socket principal, new connection knocking
+						sock_t* nueva_conexion;
+						nueva_conexion = aceptar_conexion(principal);
+						_procesar_nueva_conexion(nueva_conexion);
+
 					}else{
+
 						// No es el socket principal, es un proceso
-					//	_atender_socket_cpu(i);
+						_atender_socket(buscar_conexion_por_fd(i));
+
 					}
 				}
 			}
@@ -121,21 +130,22 @@ void* escuchar_cpus(void* otro_ente){
 	return NULL;
 }
 
-int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
-{
-	// Aceptamos conexion
-	nueva_conexion = aceptar_conexion(principal);
-	uint32_t i;
-	char* msg;
+void _procesar_nueva_conexion(sock_t* nueva_conexion){
+	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
+	_agregar_conexion(nueva_conexion, ultima_conex->id + 1);
+}
 
-	// Recibimos la identeificacion de la conexion
-	recibir(nueva_conexion, &msg, &i);
+int _atender_socket(conexion_t* conexion){
+	char* msg;
+	uint32_t len;
+	// Recibimos la identificacion de la conexion
+	recibir(conexion->socket, &msg, &len);
 	flag_t codop = codigo_operacion(msg);
 
 	int salida = 0;
 
-	switch(codop)
-	{
+	switch(codop){
+
 		case CREAME_UN_SEGMENTO:
 			salida = 1;
 
@@ -167,7 +177,5 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t* nueva_conexion)
 		default:
 			break;
 	}
-
-	free(msg);
 	return salida;
 }

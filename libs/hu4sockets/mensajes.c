@@ -682,21 +682,36 @@ char* serializar_pedido_crear_hilo_t(
 {
 	char* bytes = malloc(tamanio_pedido_crear_hilo_t_serializado());
 
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, serializar_tcb(pedido->tcb), tamanio_tcb_serializado());
+
 	return bytes;
 }
 
 pedido_crear_hilo_t* deserializar_pedido_crear_hilo_t(
 	char* chorro)
 {
-	pedido_crear_hilo_t* pedido_destruir_segmento = malloc(
-		sizeof(pedido_crear_hilo_t));
+	pedido_crear_hilo_t* pedido = malloc(
+			sizeof(pedido_crear_hilo_t));
 
-	return pedido_destruir_segmento;
+	uint32_t offset = 0;
+	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	pedido->tcb = malloc(sizeof(tcb_t));
+	memcpy(pedido->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
+
+	return pedido;
 }
 
 uint32_t tamanio_pedido_crear_hilo_t_serializado()
 {
 	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += tamanio_tcb_serializado();
 
 	return t;
 }
@@ -711,21 +726,41 @@ char* serializar_pedido_join_t(
 {
 	char* bytes = malloc(tamanio_pedido_join_t_serializado());
 
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->tid_llamador, sizeof(uint32_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->tid_esperador, sizeof(uint32_t));
+
 	return bytes;
 }
 
 pedido_join_t* deserializar_pedido_join_t(
 	char* chorro)
 {
-	pedido_join_t* pedido_destruir_segmento = malloc(
-		sizeof(pedido_join_t));
+	pedido_join_t* pedido = malloc(sizeof(pedido_join_t));
 
-	return pedido_destruir_segmento;
+	uint32_t offset = 0;
+	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido->tid_llamador, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido->tid_esperador, chorro + offset, sizeof(uint32_t));
+
+	return pedido;
 }
 
 uint32_t tamanio_pedido_join_t_serializado()
 {
 	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
+	t += sizeof(uint32_t);
 
 	return t;
 }
