@@ -5,9 +5,14 @@ int32_t main(int32_t argc, char** argv)
 
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
-	if (conectar_con_memoria() == FALLO_CONEXION
-		|| conectar_con_kernel() == FALLO_CONEXION) { // TODO informar por pantalla y log
-		printf("ERROR FALTAL: Fallo la conexion\n");
+//	if (conectar_con_memoria() == FALLO_CONEXION
+//		|| conectar_con_kernel() == FALLO_CONEXION) { // TODO informar por pantalla y log
+//		printf("ERROR FALTAL: Fallo la conexion\n");
+//		return 0;
+//	}
+
+	if (conectar_con_kernel() == FALLO_CONEXION) {
+		printf("ERROR FALTAL");
 		return 0;
 	}
 
@@ -22,8 +27,13 @@ int32_t main(int32_t argc, char** argv)
 
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
+	// TODO eliminar (solo para pruebas)
+	cerrar_puertos();
+
+	return 0;
+
 	while (1) {
-		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
+		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) // TODO preguntar que pasa si no puedo obtener un TCB
 			resultado = ERROR_EN_EJECUCION;
 
 		// TODO eliminar (no es mas necesario)
@@ -60,7 +70,7 @@ int32_t main(int32_t argc, char** argv)
 		if (resultado == OK)
 			resultado = FIN_QUANTUM;
 
-		informar_a_kernel_de_finalizacion(tcb, resultado);
+		informar_a_kernel_de_finalizacion(tcb, resultado); // TODO preguntar que pasa si esto falla
 	}
 
 	dictionary_destroy(dic_instrucciones);

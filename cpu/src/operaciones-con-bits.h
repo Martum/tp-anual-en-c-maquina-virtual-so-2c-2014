@@ -9,6 +9,7 @@
 #define OPERACIONES_CON_BITS_H_
 
 #include <stdint.h>
+#include <stdlib.h>
 
 /*
  * 	@DESC: Forma un int a partir de un array de cuatro bytes
@@ -21,5 +22,12 @@ void unir_bytes(int32_t* valor, char buffer[3]);
  * 	@RETURN:
  */
 void dividir_en_bytes(int32_t valor, char bytes[3]);
+
+/*
+ * 	@DESC: Desplaza bits_a_desplazar bits en valor
+ * 		Si numero es negativo, para la izquierda
+ * 		Si numero es positivo, para la derecha (0 es positivo)
+ */
+void desplazar_bits(int32_t bits_a_desplazar, int32_t* valor);
 
 #endif /* OPERACIONES_CON_BITS_H_ */
