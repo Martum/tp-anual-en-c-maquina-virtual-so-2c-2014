@@ -786,7 +786,14 @@ resultado_t innc(tcb_t* tcb)
 	return OK;
 }
 
-// TODO
+// TODO preguntar si los arrays se tienen que liberar
+void _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
+{
+	char buffer[4];
+	dividir_en_bytes(numero, buffer);
+	comunicar_salida_estandar(tcb, 4, buffer);
+}
+
 /*
  * 	OUTN
  *
@@ -799,17 +806,24 @@ resultado_t outn(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro_A;
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
+	int32_t numero_a_enviar;
+	obtener_valor_del_registro(tcb, 'a', &numero_a_enviar);
 
-	char buffer[4]; // TODO preguntar si los arrays se tienen que liberar
-	dividir_en_bytes(valor_del_registro_A, buffer);
-	comunicar_salida_estandar(tcb, 4, buffer); // TODO pensar en encapsular
+	_imprimir_por_consola_numero(tcb, numero_a_enviar);
 
 	return OK;
 }
 
-// TODO
+void _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
+	int32_t direccion_de_cadena)
+{
+	char* buffer = malloc(cantidad_de_bytes);
+	leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
+		buffer);
+	comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer);
+	free(buffer);
+}
+
 /*
  * 	OUTC
  *
@@ -823,15 +837,12 @@ resultado_t outc(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro_A, valor_del_registro_B;
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro_A);
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
+	int32_t direccion_de_la_cadena, cantidade_de_bytes;
+	obtener_valor_del_registro(tcb, 'a', &direccion_de_la_cadena);
+	obtener_valor_del_registro(tcb, 'b', &cantidade_de_bytes);
 
-	char* buffer = malloc(valor_del_registro_B);
-	leer_de_memoria(tcb->pid, valor_del_registro_A, valor_del_registro_B,
-		buffer); // TODO agregar validacion
-	comunicar_salida_estandar(tcb, valor_del_registro_B, buffer);
-	free(buffer); // TODO pensar en encapsular
+	_imprimir_por_consola_cadena(tcb, cantidade_de_bytes,
+		direccion_de_la_cadena);
 
 	return OK;
 }
