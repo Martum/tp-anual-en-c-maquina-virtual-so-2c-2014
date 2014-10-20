@@ -66,6 +66,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
+		pagina->bit_referencia=1;
 		while((tamanio==0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo

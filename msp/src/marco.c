@@ -39,6 +39,7 @@ marco_t* buscar_marco_libre()
 
 char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
 {
+
 	uint32_t tamanio_aux = tamanio;
 	if((256-desplazamiento-tamanio)<0)
 	{
