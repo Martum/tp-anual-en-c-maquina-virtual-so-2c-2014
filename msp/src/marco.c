@@ -58,3 +58,8 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, b
 
 	return string_substring(datos_marco,desplazamiento,tamanio_aux);
 }
+
+void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
+{
+
+}
