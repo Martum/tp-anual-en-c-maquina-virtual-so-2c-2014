@@ -126,7 +126,8 @@ resultado_t movr(tcb_t* tcb)
  * 	Busca el valor del registro.
  * 	Efectua operacion con ambos valores y los guarda en registro 'a'.
  */
-resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
+resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
+	int32_t condicion(int32_t))
 {
 	char registro1;
 	char registro2;
@@ -137,10 +138,13 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t))
 	obtener_registro(tcb, &registro2);
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
-		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return ERROR_EN_EJECUCION;
+		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)F
+	return ERROR_EN_EJECUCION;
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
+		return ERROR_EN_EJECUCION;
+
+	if (condicion(valor_del_registro_2))
 		return ERROR_EN_EJECUCION;
 
 	actualizar_valor_del_registro(tcb, 'a',
@@ -163,7 +167,12 @@ resultado_t addr(tcb_t* tcb)
 		return valor1 + valor2;
 	}
 
-	return _funcion_operacion(tcb, sumar);
+	int32_t condicion(int32_t valor1)
+	{
+		return false;
+	}
+
+	return _funcion_operacion(tcb, sumar, condicion);
 }
 
 /*
@@ -180,7 +189,12 @@ resultado_t subr(tcb_t* tcb)
 		return valor1 - valor2;
 	}
 
-	return _funcion_operacion(tcb, restar);
+	int32_t condicion(int32_t valor1)
+	{
+		return false;
+	}
+
+	return _funcion_operacion(tcb, restar, condicion);
 }
 
 /*
@@ -197,7 +211,12 @@ resultado_t mulr(tcb_t* tcb)
 		return valor1 * valor2;
 	}
 
-	return _funcion_operacion(tcb, multiplicar);
+	int32_t condicion(int32_t valor1)
+	{
+		return false;
+	}
+
+	return _funcion_operacion(tcb, multiplicar, condicion);
 }
 
 /*
@@ -215,7 +234,12 @@ resultado_t modr(tcb_t* tcb)
 		return valor1 % valor2;
 	}
 
-	return _funcion_operacion(tcb, modulo);
+	int32_t condicion(int32_t valor1)
+	{
+		return false;
+	}
+
+	return _funcion_operacion(tcb, modulo, condicion);
 }
 
 // TODO
@@ -227,30 +251,18 @@ resultado_t modr(tcb_t* tcb)
  */
 resultado_t divr(tcb_t* tcb)
 {
-	// TODO pensar en una combinacion con funcion_operacion, agregando una condicion
 
-	char registro1;
-	char registro2;
-	int32_t valor_del_registro_1;
-	int32_t valor_del_registro_2;
+	int32_t division(int32_t valor1, int32_t valor2)
+	{
+		return valor1 / valor2;
+	}
 
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	int32_t condicion(int32_t valor)
+	{
+		return valor == 0;
+	}
 
-	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
-		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return ERROR_EN_EJECUCION;
-	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
-		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
-		return ERROR_EN_EJECUCION;
-
-	if (valor_del_registro_2 == 0)
-		return ERROR_EN_EJECUCION;
-
-	actualizar_valor_del_registro(tcb, 'a',
-		valor_del_registro_1 / valor_del_registro_2);
-
-	return OK;
+	return _funcion_operacion(tcb, division, condicion);
 }
 
 /*
@@ -783,7 +795,6 @@ resultado_t outn(tcb_t* tcb)
 	dividir_en_bytes(valor_del_registro_A, buffer);
 	comunicar_salida_estandar(tcb, 4, buffer); // TODO pensar en encapsular
 
-
 	return OK;
 }
 
@@ -911,7 +922,7 @@ resultado_t crea(tcb_t* tcb)
 
 // TODO
 /*
-* * 	JOIN
+ * * 	JOIN
  *
  * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
  * 		el hilo con el identificador almacenado en el registro A haya finalizado.
