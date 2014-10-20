@@ -28,9 +28,9 @@ int32_t main(int32_t argc, char** argv)
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	// TODO eliminar (solo para pruebas)
-	cerrar_puertos();
-
-	return 0;
+//	cerrar_puertos();
+//
+//	return 0;
 
 	while (1) {
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) // TODO preguntar que pasa si no puedo obtener un TCB

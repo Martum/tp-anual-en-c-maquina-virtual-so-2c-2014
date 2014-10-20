@@ -77,7 +77,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	if (_conectar(&kernel, "192.168.1.139", 18257) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
+	if (_conectar(&kernel, "127.0.0.1", 18257) == FALLO_CONEXION) // TODO cambiar NULL y 4559 por valores del archivo de configuracion
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
