@@ -63,6 +63,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	}
 	else
 	{
+		//NO SE CAMBIA DE MARCO TERRIBLE ERROR
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
@@ -81,7 +82,39 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio){
+void escribir_memoria(uint32_t pid, direccion direccion_logica, char* bytes_a_escribir, uint32_t tamanio)
+{
+	//Estan inicializados con verdura para que no tire warnings
+	//En la siguiente funcion se le asignas los valores correctos
+	proceso_msp_t* proceso=NULL;
+	segmento_t* segmento=NULL;
+	pagina_t* pagina=NULL;
+	uint16_t desplazamiento=0;
+
+	bool memoria_invalida=descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+
+	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
+
+
+	if(hay_error)
+	{
+		//LANZAR ERROR
+	}
+	else
+	{
+		//NO CAMBIA EL MARCO TERRIBLE BUG
+		bool mas_paginas = true;
+		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
+		marco_t* marco = buscar_marco_segun_id(pagina->marco);
+		pagina->bit_referencia=1;
+		while((tamanio==0)&&(mas_paginas))
+		{
+			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
+			escribir_marco(marco->datos, desplazamiento,tamanio, bytes_a_escribir, mas_paginas);
+		}
+
+
+	}
 
 }
 

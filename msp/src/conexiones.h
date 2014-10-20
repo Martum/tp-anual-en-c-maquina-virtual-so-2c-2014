@@ -27,4 +27,9 @@ void _informar_respuesta_destruccion_segmento(sock_t* conexion);
 void _informar_te_doy_bytes(sock_t* conexion);
 void _informar_respuesta_escritura(sock_t* conexion);
 
+void _atiendo_crear_segmento(conexion_t*, char*);
+void _atiendo_destruir_segmento(conexion_t*, char*);
+void _atiendo_leer_memoria(conexion_t*, char*);
+void _atiendo_escribir_memoria(conexion_t*, char*);
+
 #endif /* CONEXIONES_CPU_H_ */

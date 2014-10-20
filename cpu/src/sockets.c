@@ -201,7 +201,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
 
-		return FALLO_CREACION_DE_SEGMENTO;
+		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
 	respuesta_de_leer_de_memoria_t respuesta =
