@@ -1,6 +1,7 @@
 #include "instrucciones.h"
 
 // TODO agregar validacion a los comunicar
+// TODO agregar validacion a los obtener
 
 /*
  * 	LOAD [Registro], [Numero]
@@ -708,7 +709,7 @@ resultado_t malc(tcb_t* tcb)
 	return OK;
 }
 
-// TODO agregar validacion que la memoria alocada sea por instruccion MALC
+// TODO avisar a MSP que tiene que avisarme si la memoria no se pudo destruir
 /*
  * 	FREE
  *
@@ -793,7 +794,6 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
 	comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
 		&cantidad_de_bytes_leidos, buffer, CADENA);
 
-	// TODO pensar si hay que escribir en memoria la cantidad_de_bytes o solamente los que ingreso el usuario
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
 		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
@@ -827,7 +827,6 @@ resultado_t innc(tcb_t* tcb)
 		direccion_de_almacenamiento);
 }
 
-// TODO preguntar si los arrays se tienen que liberar. Preguntar la diferencia con hacer calloc
 /*
  *	@DESC: Le manda al kernel el numero para que lo imprima por consola.
  */
@@ -1045,12 +1044,10 @@ resultado_t blok(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// TODO preguntar si el apuntado por b es direccion de memoria o valor
+	int32_t id_recurso;
+	obtener_valor_del_registro(tcb, 'b', &id_recurso);
 
-	int32_t valor_del_registro_B;
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
-
-	comunicar_bloquear(tcb, valor_del_registro_B);
+	comunicar_bloquear(tcb, id_recurso);
 
 	return OK;
 }
@@ -1068,12 +1065,10 @@ resultado_t wake(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// todo preguntar si el apuntado por b es direccion de memoria o valor
+	int32_t id_recurso;
+	obtener_valor_del_registro(tcb, 'b', &id_recurso);
 
-	int32_t valor_del_registro_B;
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
-
-	comunicar_despertar(tcb, valor_del_registro_B);
+	comunicar_despertar(tcb, id_recurso);
 
 	return OK;
 }
