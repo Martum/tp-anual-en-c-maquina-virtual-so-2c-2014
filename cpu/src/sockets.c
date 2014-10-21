@@ -5,7 +5,8 @@
  *      Author: utnso
  */
 
-// TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
+// TODO arreglar con MSP los mensajes de errores
+// TODO agregar validaciones a los obtener
 #include "sockets.h"
 
 sock_t* memoria;
@@ -250,7 +251,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
-	cuerpo_del_mensaje.tcb = &tcb; // TODO no estoy seguro de que esto funcione
+	cuerpo_del_mensaje.tcb = &tcb;
 	cuerpo_del_mensaje.resultado = res;
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
@@ -303,10 +304,9 @@ void obtener_numero(tcb_t* tcb, int32_t* numero)
 	unir_bytes(numero, buffer);
 }
 
-// TODO arreglar con kernel este mensaje
+// TODO arreglar con kernel este mensaje tamanio stack
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
-	// todo programar
 }
 
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos,

@@ -43,6 +43,7 @@ typedef enum {
 	FIN_EJECUCION = 152,
 	DESCONEXION_CPU = 153,
 	ERROR_EN_EJECUCION = 154,
+	FIN_INTERRUPCION = 155,
 
 } resultado_t;
 

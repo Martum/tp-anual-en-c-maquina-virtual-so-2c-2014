@@ -507,7 +507,7 @@ resultado_t jpnz(tcb_t* tcb)
 	return _funcion_de_salto(tcb, condicion);
 }
 
-// TODO programar
+// TODO avisar a kernel sobre la implementacion
 /*
  * 	INTE [Direccion]
  *
@@ -524,12 +524,6 @@ resultado_t jpnz(tcb_t* tcb)
 resultado_t inte(tcb_t* tcb)
 {
 	return EXCEPCION_POR_INTERRUPCION;
-
-	/*
-	 * Mandar un mensaje al kernel pidiendole que haga tal interrupcion
-	 * Esperar una respuesta con el tcb actualizados
-	 *
-	 */
 }
 
 /*
@@ -717,7 +711,7 @@ resultado_t malc(tcb_t* tcb)
 	return OK;
 }
 
-// TODO falta verificar que la memoria alocada sea por instruccion MALC
+// TODO agregar validacion que la memoria alocada sea por instruccion MALC
 /*
  * 	FREE
  *
@@ -977,7 +971,6 @@ resultado_t crea(tcb_t* tcb)
 	return OK;
 }
 
-// TODO
 /*
  * * 	JOIN
  *
@@ -999,7 +992,6 @@ resultado_t join(tcb_t* tcb)
 	return OK;
 }
 
-// TODO
 /*
  * 	BLOK
  *
@@ -1014,7 +1006,7 @@ resultado_t blok(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// TODO fijarse si el apuntado por b es direccion de memoria o valor
+	// TODO preguntar si el apuntado por b es direccion de memoria o valor
 
 	int32_t valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
@@ -1024,7 +1016,6 @@ resultado_t blok(tcb_t* tcb)
 	return OK;
 }
 
-// TODO
 /*
  * 	WAKE
  *
@@ -1038,7 +1029,7 @@ resultado_t wake(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	// todo fijarse si el apuntado por b es direccion de memoria o valor
+	// todo preguntar si el apuntado por b es direccion de memoria o valor
 
 	int32_t valor_del_registro_B;
 	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
