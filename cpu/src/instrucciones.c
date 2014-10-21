@@ -777,6 +777,7 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 {
 	char* buffer = malloc(cantidad_de_bytes);
 	comunicar_entrada_estandar(tcb, cantidad_de_bytes, buffer);
+	// TODO pensar si hay que escribir en memoria la cantidad_de_bytes o solamente los que ingreso el usuario
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes, buffer)
 		== FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
@@ -807,7 +808,7 @@ resultado_t innc(tcb_t* tcb)
 		direccion_de_almacenamiento);
 }
 
-// TODO preguntar si los arrays se tienen que liberar
+// TODO preguntar si los arrays se tienen que liberar. Preguntar la diferencia con hacer calloc
 void _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
 	char buffer[4];

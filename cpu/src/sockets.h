@@ -122,11 +122,11 @@ void obtener_numero(tcb_t* tcb, int32_t* numero);
 
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
-void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer);
-void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar, char* buffer);
-void comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
-void comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador);
-void comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
-void comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer);
+resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar, char* buffer);
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
+resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador);
+resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
+resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
 
 #endif /* MEMORIA_H_ */
