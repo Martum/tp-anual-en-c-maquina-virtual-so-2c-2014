@@ -54,4 +54,11 @@ void bloquear(tcb_t* tcb, char* recurso);
  */
 void despertar(char* recurso);
 
+/**
+ * Si esta el tcb km disponible, proceder normalmente, si no lo està, tengo qe agregar el tcb qe recibo en la cola de
+ * block_esperando_km y devolverle otro tcb cualquiera. Al liberarse el tcb km, revisar si hay tcb esperandolo, si lo hay
+ * mandarlos a procesar, sino seguir normalmente.
+ */
+void interrupcion(tcb_t* tcb, direccion dir);
+
 #endif /* SERVICIOSACPU_H_ */
