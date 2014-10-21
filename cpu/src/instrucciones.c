@@ -54,8 +54,8 @@ resultado_t getm(tcb_t* tcb)
 }
 
 /*
- * 	Escribe en memoria en direccion hacia tantos bytes como cantidad_de_bytes.
- * 	Los bytes los lee de la direccion desde.
+ * 	@DESC: 	Escribe en memoria en direccion hacia tantos bytes como cantidad_de_bytes.
+ * 			Los bytes los lee de la direccion desde.
  */
 resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
 	direccion hacia, tcb_t* tcb)
@@ -132,10 +132,9 @@ resultado_t movr(tcb_t* tcb)
 }
 
 /*
- * 	Lee dos bytes desde el pc del tcb.
- * 	Cada byte es una letra de un registro.
- * 	Busca el valor del registro.
- * 	Efectua operacion con ambos valores y los guarda en registro 'a'.
+ * 	@DESC: 	Lee dos bytes desde el pc del tcb, efectua operacion con ambos y los guarda en registro 'a'.
+ * 			Cada byte es una letra de un registro.
+ * 			Busca el valor del registro.
  */
 resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 	int32_t condicion(int32_t))
@@ -276,10 +275,9 @@ resultado_t divr(tcb_t* tcb)
 }
 
 /*
- * 	Lee un bytes desde el pc del tcb.
- * 	El byte es una letra de un registro.
- * 	Busca el valor del registro.
- * 	Efectua operacion con el valor y lo guarda en registro 'a'.
+ * 	@DESC: 	Lee un bytes desde el pc del tcb, efectua operacion con el valor y lo guarda en registro 'a'.
+ * 			El byte es una letra de un registro.
+ * 			Busca el valor del registro.
  */
 resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 {
@@ -330,10 +328,9 @@ resultado_t decr(tcb_t* tcb)
 }
 
 /*
- * 	Lee dos bytes desde el pc del tcb.
+ * 	@DESC:	Lee dos bytes desde el pc del tcb, efectua comparacion con ambos y los guarda en registro 'a'.
  * 	Cada byte es una letra de un registro.
  * 	Busca el valor del registro.
- * 	Efectua comparacion con ambos valores y los guarda en registro 'a'.
  */
 resultado_t _funcion_comparacion(tcb_t* tcb,
 	int32_t comparador(int32_t, int32_t))
@@ -447,10 +444,10 @@ resultado_t _goto(tcb_t* tcb)
 }
 
 /*
- * 	Lee 4 bytes desde el pc del tcb.
- * 	Los cuatro bytes conforman un numero.
- * 	Efectua condicion el valor del registro 'a'.
- * 	Si cumple la condicion, actualiza el valor del pc del tcb en base codigo + numero leido
+ * 	@DESC:	Lee 4 bytes desde el pc del tcb. Si cumple la condicion, actualiza el valor del pc.
+ * 			Los cuatro bytes conforman un numero.
+ * 			Efectua condicion el valor del registro 'a'.
+ * 			Actualiza el valor del pc con base de codigo + numero leido.
  */
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
@@ -564,7 +561,7 @@ resultado_t nopp(tcb_t* tcb)
 }
 
 /*
- * 	Agrega los bytes al stack del tcb y actualiza el cursor del stack.
+ * 	@DESC: Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */
 resultado_t _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
@@ -627,7 +624,7 @@ resultado_t push(tcb_t* tcb)
 }
 
 /*
- * 	Obtiene tantos cantidad_de_bytes del stack y actualiza el cursor
+ * 	@DESC:	Obtiene tantos cantidad_de_bytes del stack y actualiza el cursor
  */
 resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
@@ -737,12 +734,20 @@ resultado_t _free(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	@DESC:	Le manda un mensaje al kernel para que pida por consola un numero devuelto en numero_ingresado
+ */
 void _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 {
 	char* buffer = malloc(sizeof(char) * 4);
+
 	uint32_t cantidad_de_bytes_leidos;
-	comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer, ENTERO);
+
+	comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
+		ENTERO);
+
 	unir_bytes(numero_ingresado, buffer);
+
 	free(buffer);
 }
 
@@ -769,17 +774,32 @@ resultado_t innn(tcb_t* tcb)
 	return OK;
 }
 
-resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes_maximos,
-	int32_t direccion)
+/*
+ * 	@DESC: 	Le manda un mensaje a kernel para que pida una cadena por consola.
+ * 			El tamaño es maximo es cantidad_de_bytes_maximos.
+ * 			La cadena la guarda en la MSP desde la direccion "direccion".
+ * 	@RETURN:
+ * 		OK: pudo completar la operacion
+ * 		ERROR_EN_EJECUCION: hubo un fallo al escribir en memoria
+ *
+ */
+resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
+	int32_t cantidad_de_bytes_maximos, int32_t direccion)
 {
 	char* buffer = malloc(cantidad_de_bytes_maximos);
+
 	uint32_t cantidad_de_bytes_leidos;
-	comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos, &cantidad_de_bytes_leidos, buffer, CADENA);
+
+	comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
+		&cantidad_de_bytes_leidos, buffer, CADENA);
+
 	// TODO pensar si hay que escribir en memoria la cantidad_de_bytes o solamente los que ingreso el usuario
-	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos, buffer)
-		== FALLO_ESCRITURA_EN_MEMORIA)
+	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
+		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
 	free(buffer);
+
 	return OK;
 }
 
@@ -799,6 +819,7 @@ resultado_t innc(tcb_t* tcb)
 
 	int32_t direccion_de_almacenamiento;
 	obtener_valor_del_registro(tcb, 'a', &direccion_de_almacenamiento);
+
 	int32_t cantidad_de_bytes;
 	obtener_valor_del_registro(tcb, 'b', &cantidad_de_bytes);
 
@@ -807,10 +828,15 @@ resultado_t innc(tcb_t* tcb)
 }
 
 // TODO preguntar si los arrays se tienen que liberar. Preguntar la diferencia con hacer calloc
+/*
+ *	@DESC: Le manda al kernel el numero para que lo imprima por consola.
+ */
 void _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
 	char buffer[4];
+
 	dividir_en_bytes(numero, buffer);
+
 	comunicar_salida_estandar(tcb, 4, buffer);
 }
 
@@ -834,15 +860,26 @@ resultado_t outn(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ *	@DESC: 	Le manda al kernel el una cadena para que lo imprima por consola.
+ *			La cadena la obtiene de la msp desde la direccion_de_cadena.
+ *	@RETURN:
+ *		OK: pudo completar la operacion
+ *		ERROR_EN_EJECUCION: fallo la lectura de memoria
+ */
 resultado_t _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 	int32_t direccion_de_cadena)
 {
 	char* buffer = malloc(cantidad_de_bytes);
+
 	if (leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
 		buffer) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
 	comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer);
+
 	free(buffer);
+
 	return OK;
 }
 
@@ -876,7 +913,7 @@ void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
 }
 
 /*
- * 	Crea un stack para el nuevo_tcb y se lo asigna
+ * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
  */
 resultado_t _crear_stack(tcb_t* nuevo_tcb)
 {
@@ -891,7 +928,7 @@ resultado_t _crear_stack(tcb_t* nuevo_tcb)
 }
 
 /*
- * 	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+ * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
  */
 resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
@@ -974,7 +1011,7 @@ resultado_t crea(tcb_t* tcb)
 }
 
 /*
- * * 	JOIN
+ * 	JOIN
  *
  * 	Bloquea el programa que ejecutó la llamada al sistema hasta que
  * 		el hilo con el identificador almacenado en el registro A haya finalizado.
