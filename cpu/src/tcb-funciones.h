@@ -43,12 +43,14 @@ void actualizar_km(tcb_t* tcb, bool nuevo_km);
 /**
  * @DESC: Actualiza el valor del cursor del stack en cantidad de bytes.
  * @RETURNS:
+ * 		OK: pudo completar la operacion
+ * 		EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA: si cursor - cantidad es menor que base de stack
  */
 resultado_t actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
 
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.
- * @RETURNS:
+ * @RETURNS: direccion de base de codigo
  */
 direccion obtener_base_de_codigo(tcb_t* tcb);
 
