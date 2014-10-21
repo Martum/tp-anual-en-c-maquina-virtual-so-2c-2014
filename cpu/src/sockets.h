@@ -129,7 +129,7 @@ void obtener_numero(tcb_t* tcb, int32_t* numero);
 
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
-resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos,
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32_t* bytes_leidos,
 	char* buffer, idetificador_tipo_t identificador);
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer);

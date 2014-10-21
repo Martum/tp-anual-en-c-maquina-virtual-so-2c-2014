@@ -80,7 +80,7 @@ int32_t main(int32_t argc, char** argv)
 		if (resultado == OK)
 			resultado = FIN_QUANTUM;
 
-		// TODO preguntar que pasa si esto falla
+		// TODO preguntar que pasa si informar a kernel falla
 		informar_a_kernel_de_finalizacion(tcb, resultado);
 	}
 

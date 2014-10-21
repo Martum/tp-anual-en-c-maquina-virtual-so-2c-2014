@@ -309,7 +309,7 @@ void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
 }
 
-resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos,
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32_t* bytes_leidos,
 	char* buffer, idetificador_tipo_t identificador)
 {
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
@@ -335,6 +335,7 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos,
 	respuesta_entrada_estandar_t respuesta =
 		*deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
 
+	*bytes_leidos = respuesta.tamanio;
 	buffer = respuesta.cadena;
 
 	free(chorro_de_envio);

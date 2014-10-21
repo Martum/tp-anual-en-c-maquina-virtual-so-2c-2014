@@ -740,7 +740,8 @@ resultado_t _free(tcb_t* tcb)
 void _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 {
 	char* buffer = malloc(sizeof(char) * 4);
-	comunicar_entrada_estandar(tcb, 4, buffer, ENTERO);
+	uint32_t cantidad_de_bytes_leidos;
+	comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer, ENTERO);
 	unir_bytes(numero_ingresado, buffer);
 	free(buffer);
 }
@@ -768,13 +769,14 @@ resultado_t innn(tcb_t* tcb)
 	return OK;
 }
 
-resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
+resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes_maximos,
 	int32_t direccion)
 {
-	char* buffer = malloc(cantidad_de_bytes);
-	comunicar_entrada_estandar(tcb, cantidad_de_bytes, buffer, CADENA);
+	char* buffer = malloc(cantidad_de_bytes_maximos);
+	uint32_t cantidad_de_bytes_leidos;
+	comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos, &cantidad_de_bytes_leidos, buffer, CADENA);
 	// TODO pensar si hay que escribir en memoria la cantidad_de_bytes o solamente los que ingreso el usuario
-	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes, buffer)
+	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos, buffer)
 		== FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
 	free(buffer);
