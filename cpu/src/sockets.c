@@ -410,6 +410,7 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 	return OK;
 }
 
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 {
 	pedido_join_t cuerpo_del_mensaje;
@@ -439,18 +440,68 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 	free(chorro_de_respuesta);
 
 	return OK;
-	return OK;
 }
 
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 {
-	// todo programar
+	pedido_bloquear_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.tcb = tcb;
+	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
+
+	char* chorro_de_envio = serializar_pedido_bloquear_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_bloquear_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
 	return OK;
 }
 
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 {
-	// todo programar
+	pedido_despertar_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
+
+	char* chorro_de_envio = serializar_pedido_despertar_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_despertar_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
 	return OK;
 }
 

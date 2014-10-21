@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+// TODO agregar validacion a los comunicar
+
 /*
  * 	LOAD [Registro], [Numero]
  *
