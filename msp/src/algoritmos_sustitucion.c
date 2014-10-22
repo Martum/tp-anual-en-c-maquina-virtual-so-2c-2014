@@ -15,9 +15,14 @@
 #include "estructuras.h"
 #include "configuraciones.h"
 
+uint32_t puntero_clock;
+void setear_puntero_clock(){
+	puntero_clock = 0;
+}
 
 uint32_t clock(){
-	uint32_t retorno = -1;
+	uint32_t retorno;
+	bool encontro = false;
 
 	// filtro a las paginas segun las que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
@@ -27,21 +32,34 @@ uint32_t clock(){
 
 	// itero las paginas
 	pagina_t* pag = malloc(sizeof(pagina_t));
-	int i = 0;
-	while(i<list_size(paginas_con_marco) && (retorno == -1)){
-		pag = list_get(paginas_con_marco,i);
+
+	while(puntero_clock<list_size(paginas_con_marco) && (retorno == -1)){
+		pag = list_get(paginas_con_marco,puntero_clock);
 		if(pag->bit_referencia == 1){
 			pag->bit_referencia = 0;
-			list_replace(paginas_con_marco,i,pag);
+			list_replace(paginas_con_marco,puntero_clock,pag);
 		}else{
 			retorno = pag->marco;
+			encontro = true;
 		}
-		i++;
+		puntero_clock++;
 	}
-	if(retorno == -1){
-		pag = list_get(paginas_con_marco,0);
-		retorno = pag->marco;
+
+	if(!encontro){
+		puntero_clock = 0;
+
+		while(puntero_clock<list_size(paginas_con_marco) && (retorno == -1)){
+			pag = list_get(paginas_con_marco,puntero_clock);
+			if(pag->bit_referencia == 1){
+				pag->bit_referencia = 0;
+				list_replace(paginas_con_marco,puntero_clock,pag);
+			}else{
+				retorno = pag->marco;
+			}
+			puntero_clock++;
+		}
 	}
+
 	free(paginas_con_marco);
 	free(pag);
 	return retorno;

@@ -8,6 +8,8 @@
 #ifndef ALGORITMOS_SUSTITUCION_H_
 #define ALGORITMOS_SUSTITUCION_H_
 
+#include <stdlib.h>
+
 // retornan el id del marco elegido para ser desalojado
 
 /* el algoritmo clock requiere que cada vez que una pagina se lee o se escribe
@@ -21,6 +23,8 @@ uint32_t clock();
  * (USAR FUNCION ubico_al_principio(*pagina))
  */
 uint32_t lru();
+
+void setear_puntero_clock();
 
 void set_bit_referencia(pagina_t*);
 
