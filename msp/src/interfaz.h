@@ -37,7 +37,7 @@ direccion crear_segmento(uint32_t, uint32_t, resultado_t*);
  * segmentos del proceso pid.
  * Libera la memoria que ocupaba este segmento.
  */
-void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado);
+void destruir_segmento(uint32_t pid, direccion base, resultado_t*);
 
 /*
  * leer_memoria(pid, direccion_logica, tamanio):bytes_leidos
@@ -47,7 +47,7 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado);
  * Si la direccion que se pasa es invalida o excede los limites del segmento
  * entonces retorna un error de violacion de segmento.
  */
-char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio, resultado_t *resultado);
+char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio, resultado_t*);
 
 /*
  * escribir_memoria(pid, direccion_logica, bytes_a_escribir, tamanio)
@@ -57,6 +57,6 @@ char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio, re
  * Si se intenta escribir en una direccion invalida o se exceden los limites del segmento
  * entonces retorna un error de violacion de segmento.
  */
-void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado);
+void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio, resultado_t*);
 
 #endif /* INTERFAZ_H_ */
