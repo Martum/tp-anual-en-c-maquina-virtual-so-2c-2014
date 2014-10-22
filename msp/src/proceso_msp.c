@@ -43,11 +43,25 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 	return list_find(get_lista_procesos(), (void*) _es_proceso);
 }
 
-void quitar_segmento(proceso_msp_t *proceso, direccion base){
-	bool _is_segmento_con_base(segmento_t *s) {
+bool quitar_segmento(proceso_msp_t *proceso, direccion base){
+	bool puedo_quitar_segmento = true;
+
+	bool _encuentro_segmento_con_base(segmento_t *s) {
 		return direccion_virtual_base_de_segmento(s->id) == base;
 	}
-	list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _is_segmento_con_base, (void*)_destruye_segmento);
+
+	// me fijo si encuentro el segmento
+	t_list* lista = list_create();
+	lista = list_filter(proceso->segmentos, (void*)_encuentro_segmento_con_base);
+	if(list_is_empty(lista)){
+		puedo_quitar_segmento = false;
+	}
+	free(lista);
+
+	// remuevo los que cumplen la condicion
+	list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _encuentro_segmento_con_base, (void*)_destruye_segmento);
+
+	return puedo_quitar_segmento;
 }
 
 void _destruye_segmento(segmento_t *segmento){

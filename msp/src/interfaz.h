@@ -9,6 +9,8 @@
 #define INTERFAZ_H_
 
 #include "estructuras.h"
+#include <hu4sockets/resultados.h>
+
 /* variables globales:
  * 		- tabla de procesos (lista de procesos)
  * 		- cantidad de memoria fisica total pedida
@@ -25,7 +27,7 @@
  *  Si no hay espacio suficiente en la mp o en el espacio de swapping
  *  retorna un error de memoria llena.
  */
-direccion crear_segmento(uint32_t, uint32_t);
+direccion crear_segmento(uint32_t, uint32_t, resultado_t*);
 
 
 /*
@@ -35,7 +37,7 @@ direccion crear_segmento(uint32_t, uint32_t);
  * segmentos del proceso pid.
  * Libera la memoria que ocupaba este segmento.
  */
-void destruir_segmento(uint32_t pid, direccion base);
+void destruir_segmento(uint32_t pid, direccion base, resultado_t*);
 
 /*
  * leer_memoria(pid, direccion_logica, tamanio):bytes_leidos
@@ -45,7 +47,7 @@ void destruir_segmento(uint32_t pid, direccion base);
  * Si la direccion que se pasa es invalida o excede los limites del segmento
  * entonces retorna un error de violacion de segmento.
  */
-char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio);
+char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio, resultado_t*);
 
 /*
  * escribir_memoria(pid, direccion_logica, bytes_a_escribir, tamanio)
@@ -55,6 +57,6 @@ char* leer_memoria(uint32_t pid, direccion direccon_logica, uint32_t tamanio);
  * Si se intenta escribir en una direccion invalida o se exceden los limites del segmento
  * entonces retorna un error de violacion de segmento.
  */
-void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio);
+void escribir_memoria(uint32_t pid, direccion direccon_logica, char* bytes_a_escribir, uint32_t tamanio, resultado_t*);
 
 #endif /* INTERFAZ_H_ */

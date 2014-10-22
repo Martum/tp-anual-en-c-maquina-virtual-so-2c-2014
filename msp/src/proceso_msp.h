@@ -13,7 +13,7 @@
 void listar_segmentos_de_un_proceso(proceso_msp_t*);
 proceso_msp_t* crear_proceso_msp();
 proceso_msp_t* buscar_proceso_segun_pid(uint32_t);
-void quitar_segmento(proceso_msp_t*, direccion);
+bool quitar_segmento(proceso_msp_t*, direccion);
 void _destruye_segmento(segmento_t*);
 void _destruye_pagina(pagina_t*);
 void _destruye_pagina_de_indice(pagina_t *);

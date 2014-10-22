@@ -21,5 +21,6 @@ uint32_t cantidad_paginas(uint32_t);
 direccion get_direccion_virtual(uint32_t,uint32_t,uint16_t);
 direccion direccion_virtual_base_de_segmento(uint16_t);
 segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t, t_list*);
+bool puedo_crear_paginas(uint32_t, uint32_t);
 
 #endif /* SEGMENTO_H_ */

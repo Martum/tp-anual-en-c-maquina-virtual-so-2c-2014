@@ -21,6 +21,8 @@
 #include <commons/string.h>
 // #include <commons/log.h>
 
+#include <hu4sockets/resultados.h>
+
 void* escuchar_consola_msp(void* otro_ente)
 {
 	printf("Bienvenido a la MSP! \n\n");
@@ -129,23 +131,59 @@ char* _parametro_string(char* param){
 }
 
 void crear_segment(uint32_t pid, uint32_t tamanio){
-	direccion dir = crear_segmento(pid, tamanio);
-	printf("Direccion del segmento creado: %d", dir);
-	// falta el logueo de la direccion
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	direccion dir = crear_segmento(pid, tamanio, resultado);
+
+	if(*(resultado)==RESULTADO_OK){
+		printf("Direccion del segmento creado: %d \n\n", dir);
+	}else if(*(resultado)==ERROR_DE_MEMORIA_LLENA){
+		printf("No se pudo crear el segmento: ERROR DE MEMORIA LLENA \n\n");
+	}
+
+	free(resultado);
+	// falta el logueo de la direccion o del error
 }
 
 void destruir_segment(uint32_t pid, direccion base){
-	destruir_segmento(pid, base);
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	destruir_segmento(pid, base, resultado);
+
+	if(*(resultado)==RESULTADO_OK){
+		printf("Segmento destruido correctamente \n\n");
+	}else if(*(resultado)==ERROR_NO_ENCUENTRO_SEGMENTO){
+		printf("ERROR No se pudo encontrar el segmento \n\n");
+	}
+
+	free(resultado);
 }
 
-void escribir_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio, char* texto){
-	escribir_memoria(pid, direccion_virtual, texto, tamanio);
+void escribir_memo(uint32_t pid, direccion direccion_virtual,
+					uint32_t tamanio, char* texto){
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	escribir_memoria(pid, direccion_virtual, texto, tamanio, resultado);
+
+	if(*(resultado)==RESULTADO_OK){
+		printf("Se escribio la memoria correctamente \n\n");
+	}else if(*(resultado)==SEGMENTATION_FAULT){
+		printf("ERROR Violacion de segmento \n\n");
+	}
+
+	free(resultado);
 }
 
 void leer_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio){
-	char* texto_leido = leer_memoria(pid, direccion_virtual, tamanio);
-	printf("Texto leido: %s", texto_leido);
-	// falta el logueo del texto leido
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	char* texto_leido = leer_memoria(pid, direccion_virtual, tamanio, resultado);
+
+	if(*(resultado)==RESULTADO_OK){
+		printf("Texto leido: %s \n\n", texto_leido);
+	}else if(*(resultado)==SEGMENTATION_FAULT){
+		printf("ERROR Violacion de segmento \n\n");
+	}
+
+	free(resultado);
+
+	// falta el logueo del texto leido o del error
 }
 
 void tabla_segmentos(){
