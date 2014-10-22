@@ -178,12 +178,15 @@ int _atender_socket(conexion_t* conexion){
 void _atiendo_crear_segmento(conexion_t* conexion, char* msg){
 	pedido_de_crear_segmento_t* pedido_crear = deserializar_pedido_de_crear_segmento_t(msg);
 
-	direccion dir_base = crear_segmento(pedido_crear->pid, pedido_crear->tamano);
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	direccion dir_base = crear_segmento(pedido_crear->pid, pedido_crear->tamano, resultado);
 
 	respuesta_de_crear_segmento_t* respuesta_crear = malloc(sizeof(respuesta_de_crear_segmento_t));
 	respuesta_crear->direccion_virtual = dir_base;
-	respuesta_crear->resultado =
 	respuesta_crear->flag = TOMA_SEGMENTO;
+	respuesta_crear->resultado = *(resultado);
+
+	free(resultado);
 
 	char* msg_respuesta_crear = serializar_respuesta_de_crear_segmento_t(respuesta_crear);
 
@@ -199,11 +202,15 @@ void _atiendo_crear_segmento(conexion_t* conexion, char* msg){
 void _atiendo_destruir_segmento(conexion_t* conexion, char* msg){
 	pedido_de_destruir_segmento_t* pedido_borrar = deserializar_pedido_de_destruir_segmento_t(msg);
 
-	destruir_segmento(pedido_borrar->pid, pedido_borrar->direccion_virtual);
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	destruir_segmento(pedido_borrar->pid, pedido_borrar->direccion_virtual, resultado);
 
 	respuesta_t * respuesta_borrar = malloc(sizeof(respuesta_t));
 	respuesta_borrar->flag = RESPUESTA_DESTRUCCION;
-	// respuesta_borrar->resultado = ...
+	respuesta_borrar->resultado = *(resultado);
+
+	free(resultado);
+
 	char* msg_respuesta_borrar = serializar_respuesta_t(respuesta_borrar);
 
 	uint32_t len_msg_borrar = tamanio_respuesta_t_serializado();
@@ -218,13 +225,16 @@ void _atiendo_destruir_segmento(conexion_t* conexion, char* msg){
 void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 	pedido_de_leer_de_memoria_t* pedido_leer = deserializar_pedido_de_leer_de_memoria_t(msg);
 
-	char* bytes = leer_memoria(pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano);
+	resultado_t* resultado = malloc(sizeof(resultado_t));
+	char* bytes = leer_memoria(pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano, resultado);
 
 	respuesta_de_leer_de_memoria_t * respuesta_leer = malloc(sizeof(respuesta_de_leer_de_memoria_t));
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
-	// respuesta_leer->resultado = ...
+	respuesta_leer->resultado = *(resultado);
 	respuesta_leer->tamano = (uint32_t)string_length(bytes);
+
+	free(resultado);
 
 	char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
 
@@ -240,14 +250,18 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 void _atiendo_escribir_memoria(conexion_t* conexion, char* msg){
 	pedido_de_escribir_en_memoria_t* pedido_escribir = deserializar_pedido_de_escribir_en_memoria_t(msg);
 
+	resultado_t* resultado = malloc(sizeof(resultado_t));
 	escribir_memoria(pedido_escribir->pid,
 					pedido_escribir->direccion_virtual,
 					pedido_escribir->bytes_a_escribir,
-					pedido_escribir->tamano);
+					pedido_escribir->tamano,
+					resultado);
 
 	respuesta_t* respuesta_escribir = malloc(sizeof(respuesta_t));
 	respuesta_escribir->flag = RESPUESTA_ESCRITURA;
-	// respuesta_escribir->resultado = ...;
+	respuesta_escribir->resultado = *(resultado);
+
+	free(resultado);
 
 	char* msg_respuesta_escribir = serializar_respuesta_t(respuesta_escribir);
 
