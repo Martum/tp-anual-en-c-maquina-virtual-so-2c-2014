@@ -7,7 +7,7 @@ int32_t main(int32_t argc, char** argv)
 
 	// TODO descomentar (solamente comentado para pruebas)
 //	if (conectar_con_memoria() == FALLO_CONEXION
-//		|| conectar_con_kernel() == FALLO_CONEXION) { // TODO informar por pantalla y log
+//		|| conectar_con_kernel() == FALLO_CONEXION) { // TODO cambiar a log
 //		printf("ERROR FALTAL: Fallo la conexion\n");
 //		return 0;
 //	}
@@ -23,7 +23,7 @@ int32_t main(int32_t argc, char** argv)
 		return 0;
 	}
 
-	// TODO convertir a log
+	// TODO cambiar a log
 	printf("Se pudo conectar a memoria y kernel\n");
 
 	tcb_t tcb;
@@ -80,7 +80,7 @@ int32_t main(int32_t argc, char** argv)
 		if (resultado == OK)
 			resultado = FIN_QUANTUM;
 
-		// TODO preguntar que pasa si esto falla
+		// TODO preguntar que pasa si informar a kernel falla
 		informar_a_kernel_de_finalizacion(tcb, resultado);
 	}
 

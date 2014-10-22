@@ -69,9 +69,14 @@ void actualizar_km(tcb_t* tcb, bool nuevo_km)
 	tcb->km = nuevo_km;
 }
 
-void actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
+resultado_t actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
-	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes; // todo pensar si no debe devolver FALLO si es menor a base
+	if (tcb->base_stack < tcb->cursor_stack + cantidad_de_bytes)
+		return EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA;
+
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes;
+
+	return OK;
 }
 
 direccion obtener_base_de_codigo(tcb_t* tcb)

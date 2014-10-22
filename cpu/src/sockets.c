@@ -5,8 +5,8 @@
  *      Author: utnso
  */
 
-// TODO arreglar con MSP los mensajes de errores y validar mensajes de envio y respuesta
-
+// TODO arreglar con MSP los mensajes de errores
+// TODO agregar validaciones a los obtener
 #include "sockets.h"
 
 sock_t* memoria;
@@ -251,14 +251,14 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
-	cuerpo_del_mensaje.tcb = &tcb; // TODO no estoy seguro de que esto funcione
+	cuerpo_del_mensaje.tcb = &tcb;
 	cuerpo_del_mensaje.resultado = res;
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
-	if (_enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION) {
 
@@ -304,40 +304,205 @@ void obtener_numero(tcb_t* tcb, int32_t* numero)
 	unir_bytes(numero, buffer);
 }
 
+// TODO arreglar con kernel este mensaje tamanio stack
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
-	// todo programar
 }
 
-void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer)
-{ // todo programar
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32_t* bytes_leidos,
+	char* buffer, idetificador_tipo_t identificador)
+{
+	pedido_entrada_estandar_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.pid = tcb->pid;
+	cuerpo_del_mensaje.identificador_de_tipo = identificador;
 
+	char* chorro_de_envio = serializar_pedido_entrada_estandar_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_respuesta_entrada_estandar_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_entrada_estandar_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_entrada_estandar_t respuesta =
+		*deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
+
+	*bytes_leidos = respuesta.tamanio;
+	buffer = respuesta.cadena;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
+// TODO avisar a kernel que tiene que devolver un OK
+resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer)
 {
-	// todo programar
+	pedido_salida_estandar_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.pid = tcb->pid;
+	cuerpo_del_mensaje.tamanio = bytes_a_enviar;
+	cuerpo_del_mensaje.cadena_de_texto = buffer;
+
+	char* chorro_de_envio = serializar_pedido_salida_estandar_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_salida_estandar_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-void comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
+// TODO avisar a kernel que tiene que devolver un OK
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 {
-	// todo programar
+	pedido_crear_hilo_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.tcb = nuevo_tcb;
+
+	char* chorro_de_envio = serializar_pedido_crear_hilo_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_crear_hilo_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-void comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
+// TODO avisar a kernel que tiene que devolver un OK
+resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 {
-	// todo programar
+	pedido_join_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.tid_llamador = tid_llamador;
+	cuerpo_del_mensaje.tid_esperador = tid_esperador;
+
+	char* chorro_de_envio = serializar_pedido_join_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_join_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-void comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
+// TODO avisar a kernel que tiene que devolver un OK
+resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 {
-	// todo programar
+	pedido_bloquear_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.tcb = tcb;
+	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
+
+	char* chorro_de_envio = serializar_pedido_bloquear_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_bloquear_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
-void comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
+// TODO avisar a kernel que tiene que devolver un OK
+resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 {
-	// todo programar
+	pedido_despertar_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
+
+	char* chorro_de_envio = serializar_pedido_despertar_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_despertar_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION) {
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
 }
 
 // TODO eliminar porque ya no sirve mas

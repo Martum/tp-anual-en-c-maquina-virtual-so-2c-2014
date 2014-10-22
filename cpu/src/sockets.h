@@ -44,6 +44,7 @@ resultado_t conectar_con_kernel();
  */
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
 
+// TODO eliminar (ya no es necesario)
 resultado_t pedir_tcb_sin_serializacion(tcb_t* tcb, int32_t* quantum);
 
 /*
@@ -54,7 +55,9 @@ resultado_t pedir_tcb_sin_serializacion(tcb_t* tcb, int32_t* quantum);
  */
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion);
 
-resultado_t crear_segmento_sinserializacion(direccion pid, uint32_t bytes, direccion* direccion);
+// TODO eliminar (ya no es necesario)
+resultado_t crear_segmento_sinserializacion(direccion pid, uint32_t bytes,
+	direccion* direccion);
 
 /*
  * @DESC: Le pide a memoria que destruya un segmento
@@ -64,7 +67,9 @@ resultado_t crear_segmento_sinserializacion(direccion pid, uint32_t bytes, direc
  */
 resultado_t destruir_segmento(direccion pid, direccion direccion);
 
-resultado_t destruir_segmento_sin_serializacion(direccion pid, direccion direccion);
+// TODO eliminar (ya no es necesario)
+resultado_t destruir_segmento_sin_serializacion(direccion pid,
+	direccion direccion);
 
 /*
  * @DESC: Le pide a memoria que le mande un chorro de datos desde una direccion y el resultado lo guarda en buffer
@@ -72,9 +77,12 @@ resultado_t destruir_segmento_sin_serializacion(direccion pid, direccion direcci
  * 		OK si pudo conectarse y trajo bien los datos
  * 		FALLO_LECTURA_DE_MEMORIA si hubo problemas al traer los datos
  */
-resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes, char* buffer);
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
+	char* buffer);
 
-resultado_t leer_de_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+// TODO eliminar (ya no es necesario)
+resultado_t leer_de_memoria_sin_serializacion(direccion pid,
+	direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le pide a memoria que guarde a partir de una direccion un chorro de datos
@@ -82,19 +90,24 @@ resultado_t leer_de_memoria_sin_serializacion(direccion pid, direccion direccion
  * 		OK si pudo conectarse y escribir los datos
  * 		FALLO_ESCRITURA_EN_MEMORIA si hubo problemas al escribir los datos
  */
-resultado_t escribir_en_memoria(direccion pid, direccion direccion, uint32_t bytes, char* buffer);
+resultado_t escribir_en_memoria(direccion pid, direccion direccion,
+	uint32_t bytes, char* buffer);
 
-resultado_t escribir_en_memoria_sin_serializacion(direccion pid, direccion direccion, uint32_t bytes, void* buffer);
+// TODO eliminar (ya no es necesario)
+resultado_t escribir_en_memoria_sin_serializacion(direccion pid,
+	direccion direccion, uint32_t bytes, void* buffer);
 
 /*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
  * @RETURNS:
  * 		OK si pudo conectarse y mandar bien el mensaje
- * 		FALLO_COMUNICACION si no pudo mandar bien el mensaje
+ * 		FALLO_INFORME_A_KERNEL si no pudo mandar bien el mensaje
  */
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
 
-resultado_t informar_a_kernel_de_finalizacion_sin_serializacion(tcb_t tcb, resultado_t res);
+// TODO eliminar (ya no es necesario)
+resultado_t informar_a_kernel_de_finalizacion_sin_serializacion(tcb_t tcb,
+	resultado_t res);
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
@@ -122,11 +135,57 @@ void obtener_numero(tcb_t* tcb, int32_t* numero);
 
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
-void comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_leidos, char* buffer);
-void comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar, char* buffer);
-void comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
-void comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador);
-void comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
-void comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
+/*
+ * @DESC: 	Le manda al kernel un mensaje para que pida por consola tantos bytes_a_leer,
+ * 			siendo un ENTERO o CADENA segun identificador y
+ * 			guardando el resultado en buffer
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32_t* bytes_leidos,
+	char* buffer, idetificador_tipo_t identificador);
+
+/*
+ * @DESC: 	Le manda al kernel un mensaje para que imprima por consola tantos bytes_a_enviar,
+ * 			siendo buffer la cadena.
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
+	char* buffer);
+
+/*
+ * @DESC: 	Le manda al kernel un mensaje con el nuevo_tcb para que lo programe
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
+
+/*
+ * @DESC: 	Le manda al kernel un mensaje para que bloquee un hilo hasta que otro se ejecute
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador);
+
+/*
+ * @DESC: 	Le manda al kernel un mensaje para que bloquee un tcb hasta que se libere id_recurso
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
+
+/*
+ * @DESC: 	Le manda al kernel un mensaje para que libere un tcb que este esperando id_recurso
+ * @RETURNS:
+ * 		OK si pudo completar la operacion satisfactoriamente
+ * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
+ */
+resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
 
 #endif /* MEMORIA_H_ */

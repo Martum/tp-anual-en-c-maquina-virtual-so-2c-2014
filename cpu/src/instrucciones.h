@@ -48,6 +48,11 @@
 //resultado_t join(tcb_t* tcb);
 //resultado_t blok(tcb_t* tcb);
 //resultado_t wake(tcb_t* tcb);
+
+/*
+ * 	@DESC: Carga todas las instrucciones en dic
+ * 	@RETURN:
+ */
 void cargar_diccionario_de_instrucciones(t_dictionary* dic);
 
 #endif /* INSTRUCCIONES_H_ */
