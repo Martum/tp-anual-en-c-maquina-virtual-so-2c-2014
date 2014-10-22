@@ -18,8 +18,9 @@
 #include "marco.h"
 
 #include <commons/string.h>
+#include <hu4sockets/resultados.h>
 
-direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes){
+direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *resultado){
 	// busco el proceso pid
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
@@ -33,7 +34,7 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes){
 	return direccion_virtual;
 }
 
-void destruir_segmento(uint32_t pid, direccion base){
+void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 	// busco el proceso pid
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
@@ -43,8 +44,9 @@ void destruir_segmento(uint32_t pid, direccion base){
 
 
 //Falta lanzar mensaje de error y leer la memoria propiamente dicha
-char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
-{
+char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
+		resultado_t *resultado){
+
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
 	proceso_msp_t* proceso=NULL;
@@ -52,7 +54,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 	pagina_t* pagina=NULL;
 	uint16_t desplazamiento=0;
 
-	bool memoria_invalida=descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
 
 	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
@@ -82,8 +84,9 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio)
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccion_logica, char* bytes_a_escribir, uint32_t tamanio)
-{
+void escribir_memoria(uint32_t pid, direccion direccion_logica,
+		char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
+
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
 	proceso_msp_t* proceso=NULL;
@@ -91,9 +94,9 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica, char* bytes_a_es
 	pagina_t* pagina=NULL;
 	uint16_t desplazamiento=0;
 
-	bool memoria_invalida=descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
 
-	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
+	bool hay_error = memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
 
 	if(hay_error)
