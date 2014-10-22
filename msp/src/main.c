@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <pthread.h>
 
@@ -11,6 +12,7 @@
 #include "consola_msp.h"
 #include "conexiones.h"
 
+#include "algoritmos_sustitucion.h"
 /* EJEMPLO DE LOG
 	 * t_log* logger = log_create("logs.txt", "LOG",true, LOG_LEVEL_INFO);
 				log_info(logger, "LOG A NIVEL %s", "INFO");
@@ -24,6 +26,10 @@ int main(void){
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
 	inicializar_lista_conexiones_cpu();
+
+	if(strcmp(algoritmo_sustitucion_de_paginas(),"CLOCK")==0){
+		setear_puntero_clock();
+	}
 
 	// Creo hilos
 	pthread_t consola_msp_thread;
