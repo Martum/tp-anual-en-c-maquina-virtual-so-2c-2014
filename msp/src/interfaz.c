@@ -80,9 +80,12 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 	if(hay_error)
 	{
 		//LANZAR ERROR
+		*(resultado) = SEGMENTATION_FAULT;
 	}
 	else
 	{
+		*(resultado) = RESULTADO_OK;
+
 		//NO SE CAMBIA DE MARCO TERRIBLE ERROR
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
@@ -120,9 +123,12 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,
 	if(hay_error)
 	{
 		//LANZAR ERROR
+		*(resultado) = SEGMENTATION_FAULT;
 	}
 	else
 	{
+		*(resultado) = RESULTADO_OK;
+
 		//NO CAMBIA EL MARCO TERRIBLE BUG
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
