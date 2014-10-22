@@ -51,7 +51,13 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
 	// saco el segmento del proceso y libero memoria
-	quitar_segmento(proceso,base);
+	bool ok = quitar_segmento(proceso,base);
+
+	if(ok){
+		*(resultado) = RESULTADO_OK;
+	}else{
+		*(resultado) = ERROR_NO_ENCUENTRO_SEGMENTO;
+	}
 }
 
 
