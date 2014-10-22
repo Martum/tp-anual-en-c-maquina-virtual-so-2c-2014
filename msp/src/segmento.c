@@ -14,19 +14,19 @@
 #include "segmento.h"
 #include "estructuras.h"
 #include "pagina.h"
+#include "marco.h"
 
 #include <commons/collections/list.h>
 #include <commons/bitarray.h>
 
-segmento_t *crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t tamanio_en_bytes) {
+segmento_t* crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t cant_paginas) {
 	segmento_t *segmento = malloc(sizeof(segmento_t));
-	uint32_t paginas = cantidad_paginas(tamanio_en_bytes);
-	segmento->tamanio = paginas;
+	segmento->tamanio = cant_paginas;
 	segmento->paginas = list_create();
 
 	// creo las paginas en el segmento
 	int i;
-	for(i=0; i< paginas; i++){
+	for(i=0; i< cant_paginas; i++){
 		crear_pagina(segmento);
 	}
 
@@ -80,4 +80,23 @@ segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t id_segmento, t_
 		return segmento->id==id_segmento;
 	}
 	return list_find(lista_segmentos, (void*) _es_segmento);
+}
+
+bool puedo_crear_paginas(uint32_t tamanio_en_bytes, uint32_t cant_paginas){
+
+	uint32_t cant_marcos_disponibles = cantidad_marcos_libre();
+
+	if(cant_paginas <= cant_marcos_disponibles){
+		return true;
+	}
+
+/*	uint32_t bytes_no_cubiertos_por_marcos =
+			tamanio_en_bytes - (cant_marcos_disponibles*256);
+*/
+
+	// FALTA UNA FUNCION QUE CALCULE CUANTOS BYTES TIENEN LOS ARCHIVOS DE SWAṔ
+	// 1048576 bytes por cada mb seteado para swap en arch de configuracion
+
+
+	return true;
 }
