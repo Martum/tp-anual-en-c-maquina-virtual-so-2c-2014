@@ -192,6 +192,20 @@ void salida_estandar(pedido_salida_estandar_t* salida)
 	free(salida);
 }
 
+void entrada_estandar(pedido_entrada_estandar_t* entrada)
+{
+	if(entrada->identificador_de_tipo == ENTERO)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	free(entrada);
+}
+
 void procesar_conexion(char* mensaje, uint32_t len)
 {
 	flag_t codop = codigo_operacion(mensaje);
@@ -199,7 +213,7 @@ void procesar_conexion(char* mensaje, uint32_t len)
 	switch(codop)
 	{
 		case ENTRADA_ESTANDAR:
-
+			entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje));
 			break;
 
 		case SALIDA_ESTANDAR:
