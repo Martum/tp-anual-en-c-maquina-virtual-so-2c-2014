@@ -59,9 +59,14 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
 
-void actualizar_pc(tcb_t* tcb, direccion direccion)
+void actualizar_pc(tcb_t* tcb, direccion nuevo_pc)
 {
-	tcb->pc = direccion;
+	tcb->pc = nuevo_pc;
+}
+
+void actualizar_tid(tcb_t* tcb, int32_t nuevo_tid)
+{
+	tcb->km = nuevo_tid;
 }
 
 void actualizar_km(tcb_t* tcb, bool nuevo_km)
@@ -69,7 +74,7 @@ void actualizar_km(tcb_t* tcb, bool nuevo_km)
 	tcb->km = nuevo_km;
 }
 
-resultado_t actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
+resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
 	if (tcb->base_stack < tcb->cursor_stack + cantidad_de_bytes)
 		return EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA;

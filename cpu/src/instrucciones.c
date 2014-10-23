@@ -572,7 +572,7 @@ resultado_t _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 		bytes) == FALLO_ESCRITURA_EN_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (actualizar_cursor_stack(tcb, cantidad_de_bytes)
+	if (mover_cursor_stack(tcb, cantidad_de_bytes)
 		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
@@ -635,7 +635,7 @@ resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (actualizar_cursor_stack(tcb, -cantidad_de_bytes)
+	if (mover_cursor_stack(tcb, -cantidad_de_bytes)
 		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
@@ -972,7 +972,7 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 
 	free(buffer);
 
-	if (actualizar_cursor_stack(tcb, ocupacion_stack)
+	if (mover_cursor_stack(tcb, ocupacion_stack)
 		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
@@ -1016,7 +1016,7 @@ resultado_t crea(tcb_t* tcb)
 
 	// Actualizo el nuevo_tcb con los nuevos valores
 	actualizar_pc(&nuevo_tcb, nuevo_pc);
-	nuevo_tcb.tid = -1; // Se setea en -1 para que el kernel lo asigne
+	actualizar_tid(&nuevo_tcb, -1); // Se setea en -1 para que el kernel lo asigne
 	actualizar_km(tcb, false);
 
 	// Guardo el nuevo tid en el registro 'a'

@@ -19,6 +19,7 @@
  */
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	int32_t numero);
+
 /*
  * @DESC: Obtiene el valor del registro de la tcb.
  * @RETURNS:
@@ -32,7 +33,13 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
  * @DESC: Actualiza el valor del pc con el valor.
  * @RETURNS:
  */
-void actualizar_pc(tcb_t* tcb, direccion direccion);
+void actualizar_pc(tcb_t* tcb, direccion nuevo_pc);
+
+/**
+ * @DESC: Actualiza el valor del tid con el valor.
+ * @RETURNS:
+ */
+void actualizar_tid(tcb_t* tcb, int32_t nuevo_tid);
 
 /**
  * @DESC: Actualiza el valor del km con el nuevo_km.
@@ -41,12 +48,12 @@ void actualizar_pc(tcb_t* tcb, direccion direccion);
 void actualizar_km(tcb_t* tcb, bool nuevo_km);
 
 /**
- * @DESC: Actualiza el valor del cursor del stack en cantidad de bytes.
+ * @DESC: Mueve el cursor del stack en cantidad de bytes.
  * @RETURNS:
  * 		OK: pudo completar la operacion
  * 		EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA: si cursor - cantidad es menor que base de stack
  */
-resultado_t actualizar_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
+resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes);
 
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.
