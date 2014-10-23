@@ -36,7 +36,6 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
-	printf("%s", ip);
 	*socket = crear_socket_hablador(ip, puerto);
 	if (conectar(*socket) == -1)
 		return FALLO_CONEXION;
@@ -152,7 +151,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	return OK;
 }
 
-// TODO agregar lectura de respuesta
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
@@ -174,8 +173,13 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 	}
 
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return FALLO_DESTRUCCION_DE_SEGMENTO;
 
 	return OK;
 }
@@ -215,7 +219,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	return OK;
 }
 
-// TODO agregar lectura de respuesta
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t bytes, char* buffer)
 {
@@ -240,13 +244,18 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 		return FALLO_ESCRITURA_EN_MEMORIA;
 	}
 
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return FALLO_ESCRITURA_EN_MEMORIA;
 
 	return OK;
 }
 
-// TODO agregar lectura de respuesta
+// TODO avisar a kernel que tiene que devolver un OK
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
@@ -268,8 +277,13 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
+	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return FALLO_INFORME_A_KERNEL;
 
 	return OK;
 }
@@ -309,8 +323,8 @@ void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
 }
 
-resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32_t* bytes_leidos,
-	char* buffer, idetificador_tipo_t identificador)
+resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
+	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -370,11 +384,12 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 
 	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
 
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
 	if (respuesta.resultado != OK)
 		return ERROR_EN_EJECUCION;
 
-	free(chorro_de_envio);
-	free(chorro_de_respuesta);
 
 	return OK;
 }
@@ -401,11 +416,11 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 
 	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
-		return ERROR_EN_EJECUCION;
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -433,11 +448,11 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 
 	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
-		return ERROR_EN_EJECUCION;
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -465,11 +480,11 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 
 	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
-		return ERROR_EN_EJECUCION;
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -496,11 +511,11 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 
 	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
-		return ERROR_EN_EJECUCION;
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
