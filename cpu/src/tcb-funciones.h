@@ -16,6 +16,7 @@ tcb_t* crear_tcb();
 void liberar_tcb();
 void clonar_tcb(tcb_t* destino, tcb_t* fuente);
 bool es_tcb_kernel(tcb_t* tcb);
+uint32_t obtener_ocupacion_stack(tcb_t* tcb);
 
 /*
  * @DESC: Actualiza el valor del registro de la tcb con el numero.

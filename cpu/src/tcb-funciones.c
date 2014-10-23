@@ -7,11 +7,13 @@
 
 #include "tcb-funciones.h"
 
-tcb_t* crear_tcb() {
+tcb_t* crear_tcb()
+{
 	return malloc(sizeof(tcb_t));
 }
 
-void liberar_tcb(tcb_t* tcb) {
+void liberar_tcb(tcb_t* tcb)
+{
 	free(tcb);
 }
 
@@ -20,8 +22,14 @@ void clonar_tcb(tcb_t* destino, tcb_t* fuente)
 	memcpy(destino, fuente, sizeof(tcb_t));
 }
 
-bool es_tcb_kernel(tcb_t* tcb) {
+bool es_tcb_kernel(tcb_t* tcb)
+{
 	return tcb->km;
+}
+
+uint32_t obtener_ocupacion_stack(tcb_t* tcb)
+{
+	return tcb->cursor_stack - tcb->base_stack;
 }
 
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
