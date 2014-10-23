@@ -143,15 +143,17 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	respuesta_de_crear_segmento_t respuesta =
 		*deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
 
-	*direccion = respuesta.direccion_virtual;
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != RESULTADO_OK)
+		return FALLO_CREACION_DE_SEGMENTO;
+
+	*direccion = respuesta.direccion_virtual;
 
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
@@ -178,7 +180,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
+	if (respuesta.resultado != RESULTADO_OK)
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 
 	return OK;
@@ -211,15 +213,17 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	respuesta_de_leer_de_memoria_t respuesta =
 		*deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
 
-	memcpy(buffer, respuesta.bytes_leido, bytes);
-
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+
+	if (respuesta.resultado != RESULTADO_OK)
+			return FALLO_LECTURA_DE_MEMORIA;
+
+	memcpy(buffer, respuesta.bytes_leido, bytes);
 
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t bytes, char* buffer)
 {
@@ -249,7 +253,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
+	if (respuesta.resultado != RESULTADO_OK)
 		return FALLO_ESCRITURA_EN_MEMORIA;
 
 	return OK;
