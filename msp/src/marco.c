@@ -74,5 +74,20 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, b
 
 void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
 {
+	uint32_t tamanio_aux = tamanio;
+	if((256-desplazamiento-tamanio)<0)
+	{
+		tamanio_aux= 256-desplazamiento;
+		mas_paginas=true;
+	}
+	else
+	{
+		mas_paginas=false;
+	}
+
+	tamanio=tamanio-tamanio_aux;
+	//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento
+	desplazamiento=0;
+
 
 }

@@ -111,8 +111,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccion_logica,
-		char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
+void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
