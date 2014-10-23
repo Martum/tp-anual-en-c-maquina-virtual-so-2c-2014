@@ -65,14 +65,16 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion desde,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
-		== FALLO_LECTURA_DE_MEMORIA)
+		== FALLO_LECTURA_DE_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
+	}
 
 	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
-		== FALLO_ESCRITURA_EN_MEMORIA)
+		== FALLO_ESCRITURA_EN_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
-
-	free(buffer);
+	}
 
 	return OK;
 }
@@ -803,8 +805,10 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
 	}
 
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
-		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+		buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
+	}
 
 	free(buffer);
 
@@ -846,6 +850,7 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 
 	if (comunicar_salida_estandar(tcb, 4, buffer) != OK)
 		return ERROR_EN_EJECUCION;
+
 	return OK;
 }
 
@@ -880,8 +885,10 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
-		buffer) == FALLO_LECTURA_DE_MEMORIA)
+		buffer) == FALLO_LECTURA_DE_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
+	}
 
 	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK) {
 		free(buffer);
@@ -928,12 +935,17 @@ void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
 resultado_t _crear_stack(tcb_t* nuevo_tcb)
 {
 	uint32_t tamano_stack;
-	direccion nueva_base_stack;
+
 	pedir_al_kernel_tamanio_stack(&tamano_stack);
+
+	direccion nueva_base_stack;
+
 	if (crear_segmento(nuevo_tcb->pid, tamano_stack, &nueva_base_stack)
 		== FALLO_CREACION_DE_SEGMENTO)
 		return ERROR_EN_EJECUCION;
+
 	nuevo_tcb->base_stack = nueva_base_stack;
+
 	return OK;
 }
 
