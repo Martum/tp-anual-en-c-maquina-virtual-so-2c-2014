@@ -1,6 +1,5 @@
 #include "instrucciones.h"
 
-// TODO agregar validacion a los comunicar
 // TODO agregar validacion a los obtener
 
 /*
@@ -42,9 +41,11 @@ resultado_t getm(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	char buffer;
+
 	if (leer_de_memoria(tcb->pid, valor_del_registro, 1, &buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
 	int32_t valor_de_memoria = buffer;
 
 	if (actualizar_valor_del_registro(tcb, registro1, valor_de_memoria)
@@ -505,7 +506,6 @@ resultado_t jpnz(tcb_t* tcb)
 	return _funcion_de_salto(tcb, condicion);
 }
 
-// TODO avisar a kernel sobre la implementacion
 /*
  * 	INTE [Direccion]
  *
@@ -709,7 +709,6 @@ resultado_t malc(tcb_t* tcb)
 	return OK;
 }
 
-// TODO avisar a MSP que tiene que avisarme si la memoria no se pudo destruir
 /*
  * 	FREE
  *
@@ -738,18 +737,23 @@ resultado_t _free(tcb_t* tcb)
 /*
  * 	@DESC:	Le manda un mensaje al kernel para que pida por consola un numero devuelto en numero_ingresado
  */
-void _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
+resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 {
 	char* buffer = malloc(sizeof(char) * 4);
 
 	uint32_t cantidad_de_bytes_leidos;
 
-	comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
-		ENTERO);
+	if (comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
+		ENTERO) != OK) {
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
 
 	unir_bytes(numero_ingresado, buffer);
 
 	free(buffer);
+
+	return OK;
 }
 
 /*
@@ -768,7 +772,8 @@ resultado_t innn(tcb_t* tcb)
 
 	int32_t numero_ingresado;
 
-	_pedir_por_consola_numero(tcb, &numero_ingresado);
+	if (_pedir_por_consola_numero(tcb, &numero_ingresado) != OK)
+		return ERROR_EN_EJECUCION;
 
 	actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
 
@@ -791,8 +796,11 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
 
 	uint32_t cantidad_de_bytes_leidos;
 
-	comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
-		&cantidad_de_bytes_leidos, buffer, CADENA);
+	if (comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
+		&cantidad_de_bytes_leidos, buffer, CADENA) != OK) {
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
 
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
 		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
@@ -830,13 +838,15 @@ resultado_t innc(tcb_t* tcb)
 /*
  *	@DESC: Le manda al kernel el numero para que lo imprima por consola.
  */
-void _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
+resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
 	char buffer[4];
 
 	dividir_en_bytes(numero, buffer);
 
-	comunicar_salida_estandar(tcb, 4, buffer);
+	if (comunicar_salida_estandar(tcb, 4, buffer) != OK)
+		return ERROR_EN_EJECUCION;
+	return OK;
 }
 
 /*
@@ -854,9 +864,7 @@ resultado_t outn(tcb_t* tcb)
 	int32_t numero_a_enviar;
 	obtener_valor_del_registro(tcb, 'a', &numero_a_enviar);
 
-	_imprimir_por_consola_numero(tcb, numero_a_enviar);
-
-	return OK;
+	return _imprimir_por_consola_numero(tcb, numero_a_enviar);
 }
 
 /*
@@ -875,7 +883,10 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
 		buffer) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer);
+	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK) {
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
 
 	free(buffer);
 
@@ -936,18 +947,22 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	char* buffer = malloc(ocupacion_stack);
 
 	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
-		== FALLO_LECTURA_DE_MEMORIA)
+		== FALLO_LECTURA_DE_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
+	}
 
 	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		free(buffer);
 		return ERROR_EN_EJECUCION;
+	}
+
+	free(buffer);
 
 	if (actualizar_cursor_stack(tcb, ocupacion_stack)
 		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
-
-	free(buffer);
 
 	return OK;
 }
@@ -1004,7 +1019,8 @@ resultado_t crea(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	// Le mando el nuevo tcb al kernel para planificar
-	comunicar_nuevo_tcb(&nuevo_tcb);
+	if (comunicar_nuevo_tcb(&nuevo_tcb) != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -1025,7 +1041,8 @@ resultado_t join(tcb_t* tcb)
 	int32_t identificador_almacenado_en_A;
 	obtener_valor_del_registro(tcb, 'a', &identificador_almacenado_en_A);
 
-	comunicar_join(tcb->tid, identificador_almacenado_en_A);
+	if (comunicar_join(tcb->tid, identificador_almacenado_en_A) != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -1047,7 +1064,8 @@ resultado_t blok(tcb_t* tcb)
 	int32_t id_recurso;
 	obtener_valor_del_registro(tcb, 'b', &id_recurso);
 
-	comunicar_bloquear(tcb, id_recurso);
+	if (comunicar_bloquear(tcb, id_recurso) != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
@@ -1068,7 +1086,8 @@ resultado_t wake(tcb_t* tcb)
 	int32_t id_recurso;
 	obtener_valor_del_registro(tcb, 'b', &id_recurso);
 
-	comunicar_despertar(tcb, id_recurso);
+	if (comunicar_despertar(tcb, id_recurso) != OK)
+		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
