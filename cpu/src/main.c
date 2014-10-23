@@ -1,4 +1,5 @@
 #include "instrucciones.h"
+#include <unistd.h>
 
 int32_t main(int32_t argc, char** argv)
 {
@@ -18,10 +19,16 @@ int32_t main(int32_t argc, char** argv)
 	}
 
 	// TODO eliminar (solamente para pruebas)
-	if (conectar_con_kernel() == FALLO_CONEXION) {
+	if (conectar_con_memoria() == FALLO_CONEXION) {
 		printf("ERROR FALTAL");
 		return 0;
 	}
+
+	// TODO eliminar (solamente para pruebas)
+//	if (conectar_con_kernel() == FALLO_CONEXION) {
+//		printf("ERROR FALTAL");
+//		return 0;
+//	}
 
 	// TODO cambiar a log
 	printf("Se pudo conectar a memoria y kernel\n");
@@ -73,8 +80,8 @@ int32_t main(int32_t argc, char** argv)
 		 break;
 		 */
 
-		// TODO agregar retardo
 		while ((quantum > 0 || tcb.km) && resultado == OK) {
+			sleep(retardo());
 			obtener_instruccion(&tcb, instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			resultado = funcion(&tcb);
