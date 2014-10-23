@@ -14,11 +14,19 @@
 #include <commons/collections/list.h>
 
 void crear_marco_en_lista_de_marcos(t_list *, uint32_t);
+
 marco_t* buscar_marco_segun_id(uint32_t);
+
 marco_t* buscar_marco_libre();
+
 uint32_t cantidad_marcos_libre();
+
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
 char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas);
+
+//GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
 void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas);
+
+uint32_t calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas);
 
 #endif /* MARCO_H_ */

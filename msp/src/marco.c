@@ -54,40 +54,47 @@ uint32_t cantidad_marcos_libre(){
 char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
 {
 
-	uint32_t tamanio_aux = tamanio;
-	if((256-desplazamiento-tamanio)<0)
-	{
-		tamanio_aux= 256-desplazamiento;
-		mas_paginas=true;
-	}
-	else
-	{
-		mas_paginas=false;
-	}
+	uint32_t tamanio_aux = calcular_tamanio_real(tamanio,desplazamiento,mas_paginas);
 
-	tamanio=tamanio-tamanio_aux;
-	//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento
-	desplazamiento=0;
 
 	return string_substring(datos_marco,desplazamiento,tamanio_aux);
 }
 
 void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
 {
-	uint32_t tamanio_aux = tamanio;
-	if((256-desplazamiento-tamanio)<0)
+
+
+	uint32_t tamanio_aux = calcular_tamanio_real(tamanio,desplazamiento,mas_paginas);
+
+	int i;
+	int j=0;
+	for(i=desplazamiento;i<tamanio_aux;i++)
 	{
-		tamanio_aux= 256-desplazamiento;
-		mas_paginas=true;
-	}
-	else
-	{
-		mas_paginas=false;
+		datos_marco[i]=bytes_a_escribir[j];
+		j++;
 	}
 
-	tamanio=tamanio-tamanio_aux;
-	//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento
-	desplazamiento=0;
 
 
 }
+
+uint32_t calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas)
+{
+	uint32_t tamanio_aux = tamanio;
+
+	if((256-desplazamiento-tamanio)<0)
+		{
+			tamanio_aux= 256-desplazamiento;
+			mas_paginas=true;
+		}
+		else
+		{
+			mas_paginas=false;
+		}
+
+		tamanio=tamanio-tamanio_aux;
+
+		return tamanio_aux;
+}
+
+
