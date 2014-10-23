@@ -73,3 +73,8 @@ bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas)
 	return true;
 }
 
+pagina_t* siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas)
+{
+	return list_get(lista_paginas, id_pagina+1);
+}
+
