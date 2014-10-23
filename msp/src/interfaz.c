@@ -18,10 +18,13 @@
 #include "direcciones.h"
 #include "marco.h"
 #include "pagina.h"
+#include "algoritmos_sustitucion.h"
+
 
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
+
 
 direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *resultado){
 	// busco el proceso pid
@@ -92,7 +95,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
-		pagina->bit_referencia=1;
+		set_bit_referencia(pagina);
 		while((tamanio==0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
@@ -141,7 +144,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
-		pagina->bit_referencia=1;
+		set_bit_referencia(pagina);
 		while((tamanio==0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
