@@ -5,7 +5,6 @@
  *      Author: utnso
  */
 
-// TODO arreglar con MSP los mensajes de errores
 // TODO agregar validaciones a los obtener
 #include "sockets.h"
 
@@ -260,6 +259,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 }
 
 // TODO avisar a kernel que tiene que devolver un OK
+// TODO agregar envio de direccion de comienzo de syscall
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	pedido_con_resultado_t cuerpo_del_mensaje;
