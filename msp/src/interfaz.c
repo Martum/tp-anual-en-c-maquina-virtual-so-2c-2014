@@ -95,6 +95,9 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
+			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
+			pagina_t siguiente_pagina = siguiente_pagina(pagina->id, segmento->paginas);
+			marco = buscar_marco_segun_id(siguiente_pagina->marco);
 		}
 
 
