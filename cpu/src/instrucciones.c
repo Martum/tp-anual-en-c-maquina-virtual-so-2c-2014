@@ -161,7 +161,7 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 	if (condicion(valor_del_registro_2))
 		return ERROR_EN_EJECUCION;
 
-	actualizar_valor_del_registro(tcb, 'a',
+	actualizar_registro_a(tcb,
 		operacion(valor_del_registro_1, valor_del_registro_2));
 
 	return OK;
@@ -294,7 +294,7 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_valor_del_registro(tcb, 'a', operacion(valor_del_registro));
+	actualizar_registro_a(tcb, operacion(valor_del_registro));
 
 	return OK;
 }
@@ -354,7 +354,7 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_valor_del_registro(tcb, 'a',
+	actualizar_registro_a(tcb,
 		comparador(valor_del_registro_1, valor_del_registro_2));
 
 	return OK;
@@ -456,13 +456,12 @@ resultado_t _goto(tcb_t* tcb)
 resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
 	int32_t offset;
-	int32_t valor_del_registro;
 
 	obtener_numero(tcb, &offset);
 
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
+	int32_t valor_del_registro_a = obtener_valor_registro_a(tcb);
 
-	if (condicion(valor_del_registro))
+	if (condicion(valor_del_registro_a))
 		return OK;
 
 	direccion base_de_codigo = obtener_base_de_codigo(tcb);
@@ -607,9 +606,7 @@ resultado_t push(tcb_t* tcb)
 	 */
 
 	char registro;
-	char bytes[4];
 	int32_t cantidad_de_bytes;
-	int32_t valor_a_pushear;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
 	obtener_registro(tcb, &registro);
@@ -617,9 +614,13 @@ resultado_t push(tcb_t* tcb)
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
+	int32_t valor_a_pushear;
+
 	if (obtener_valor_del_registro(tcb, registro, &valor_a_pushear)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
+
+	char bytes[4];
 
 	dividir_en_bytes(valor_a_pushear, bytes);
 
@@ -651,9 +652,7 @@ resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 resultado_t take(tcb_t* tcb)
 {
 	char registro;
-	char bytes[4];
 	int32_t cantidad_de_bytes;
-	int32_t valor;
 
 	obtener_numero(tcb, &cantidad_de_bytes);
 	obtener_registro(tcb, &registro);
@@ -661,8 +660,12 @@ resultado_t take(tcb_t* tcb)
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
+	char bytes[4];
+
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
+
+	int32_t valor;
 
 	unir_bytes(&valor, bytes);
 
@@ -693,20 +696,19 @@ resultado_t xxxx(tcb_t* tcb)
  */
 resultado_t malc(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t bytes;
 	direccion direccion;
 
-	obtener_valor_del_registro(tcb, 'a', &bytes);
+	int32_t bytes = obtener_valor_registro_a(tcb);
 
 	if (crear_segmento(tcb->pid, bytes, &direccion)
 		== FALLO_CREACION_DE_SEGMENTO)
 		return FALLO_CREACION_DE_SEGMENTO;
 
-	actualizar_valor_del_registro(tcb, 'a', direccion);
+	actualizar_registro_a(tcb, direccion);
 
 	return OK;
 }
@@ -720,15 +722,11 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t valor_del_registro;
-
-	obtener_valor_del_registro(tcb, 'a', &valor_del_registro);
-
-	direccion direccion = valor_del_registro;
+	direccion direccion = obtener_valor_registro_a(tcb);
 
 	if (destruir_segmento(tcb->pid, direccion) == FALLO_DESTRUCCION_DE_SEGMENTO)
 		return ERROR_EN_EJECUCION;
@@ -768,7 +766,7 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
  */
 resultado_t innn(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -777,7 +775,7 @@ resultado_t innn(tcb_t* tcb)
 	if (_pedir_por_consola_numero(tcb, &numero_ingresado) != OK)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_valor_del_registro(tcb, 'a', numero_ingresado);
+	actualizar_registro_a(tcb, numero_ingresado);
 
 	return OK;
 }
@@ -791,8 +789,8 @@ resultado_t innn(tcb_t* tcb)
  * 		ERROR_EN_EJECUCION: hubo un fallo al escribir en memoria
  *
  */
-resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
-	int32_t cantidad_de_bytes_maximos, int32_t direccion)
+resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
+	int32_t cantidad_de_bytes_maximos)
 {
 	char* buffer = malloc(cantidad_de_bytes_maximos);
 
@@ -825,18 +823,16 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb,
  */
 resultado_t innc(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t direccion_de_almacenamiento;
-	obtener_valor_del_registro(tcb, 'a', &direccion_de_almacenamiento);
+	int32_t direccion_de_almacenamiento = obtener_valor_registro_a(tcb);
 
-	int32_t cantidad_de_bytes;
-	obtener_valor_del_registro(tcb, 'b', &cantidad_de_bytes);
+	int32_t cantidad_de_bytes = obtener_valor_registro_b(tcb);
 
-	return _pedir_por_consola_cadena(tcb, cantidad_de_bytes,
-		direccion_de_almacenamiento);
+	return _pedir_por_consola_cadena(tcb, direccion_de_almacenamiento,
+		cantidad_de_bytes);
 }
 
 /*
@@ -862,12 +858,11 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
  */
 resultado_t outn(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t numero_a_enviar;
-	obtener_valor_del_registro(tcb, 'a', &numero_a_enviar);
+	int32_t numero_a_enviar = obtener_valor_registro_a(tcb);
 
 	return _imprimir_por_consola_numero(tcb, numero_a_enviar);
 }
@@ -909,24 +904,15 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb, int32_t cantidad_de_bytes,
  */
 resultado_t outc(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t direccion_de_la_cadena, cantidade_de_bytes;
-	obtener_valor_del_registro(tcb, 'a', &direccion_de_la_cadena);
-	obtener_valor_del_registro(tcb, 'b', &cantidade_de_bytes);
+	int32_t direccion_de_la_cadena = obtener_valor_registro_a(tcb);
+	int32_t cantidad_de_bytes = obtener_valor_registro_b(tcb);
 
-	return _imprimir_por_consola_cadena(tcb, cantidade_de_bytes,
+	return _imprimir_por_consola_cadena(tcb, cantidad_de_bytes,
 		direccion_de_la_cadena);
-}
-
-/*
- * 	Copia en nuevo_tcb todos los valores del tcb
- */
-void _clonar_tcb(tcb_t* nuevo_tcb, tcb_t* tcb)
-{
-	memcpy(&*nuevo_tcb, tcb, sizeof(tcb_t));
 }
 
 /*
@@ -979,6 +965,7 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	return OK;
 }
 
+// TODO avisar a kernel que me tienen que mandar el proximo tid porque lo necesito guardar
 /*
  * 	CREA
  *
@@ -1000,38 +987,37 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	tcb_t nuevo_tcb;
-
-	// Obtengo el nuevo valor del pc
-	int32_t valor_del_registro_B;
-	obtener_valor_del_registro(tcb, 'b', &valor_del_registro_B);
-	direccion nuevo_pc = valor_del_registro_B;
+	// Inicializo el nuevo tcb
+	tcb_t* nuevo_tcb = crear_tcb();
 
 	// Copio tcb a nuevo_tcb, tal cual
-	_clonar_tcb(&nuevo_tcb, tcb);
+	clonar_tcb(nuevo_tcb, tcb);
+
+	// Obtengo el nuevo valor del pc
+	direccion nuevo_pc = obtener_valor_registro_b(tcb);
 
 	// Actualizo el nuevo_tcb con los nuevos valores
-	actualizar_pc(&nuevo_tcb, nuevo_pc);
-	actualizar_tid(&nuevo_tcb, -1); // Se setea en -1 para que el kernel lo asigne
-	actualizar_km(tcb, false);
+	actualizar_pc(nuevo_tcb, nuevo_pc);
+	actualizar_tid(nuevo_tcb, -1);
+	actualizar_km(nuevo_tcb, false);
 
 	// Guardo el nuevo tid en el registro 'a'
-	actualizar_valor_del_registro(tcb, 'a', nuevo_tcb.tid);
+	actualizar_registro_a(tcb, nuevo_tcb->tid);
 
 	// Creo un nuevo stack para el nuevo_tcb
-	if (_crear_stack(&nuevo_tcb) == ERROR_EN_EJECUCION)
+	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
 	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
-	if (_clonar_stack(&nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
 	// Le mando el nuevo tcb al kernel para planificar
-	if (comunicar_nuevo_tcb(&nuevo_tcb) != OK)
+	if (comunicar_nuevo_tcb(nuevo_tcb) != OK)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
@@ -1046,12 +1032,11 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t identificador_almacenado_en_A;
-	obtener_valor_del_registro(tcb, 'a', &identificador_almacenado_en_A);
+	int32_t identificador_almacenado_en_A = obtener_valor_registro_a(tcb);
 
 	if (comunicar_join(tcb->tid, identificador_almacenado_en_A) != OK)
 		return ERROR_EN_EJECUCION;
@@ -1069,14 +1054,13 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t id_recurso;
-	obtener_valor_del_registro(tcb, 'b', &id_recurso);
+	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
-	if (comunicar_bloquear(tcb, id_recurso) != OK)
+	if (comunicar_bloquear(tcb, id_recurso_almacenado_en_b) != OK)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
@@ -1091,14 +1075,13 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
-	if (tcb->km == false) {
+	if (!es_tcb_kernel(tcb)) {
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t id_recurso;
-	obtener_valor_del_registro(tcb, 'b', &id_recurso);
+	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
-	if (comunicar_despertar(tcb, id_recurso) != OK)
+	if (comunicar_despertar(tcb, id_recurso_almacenado_en_b) != OK)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
