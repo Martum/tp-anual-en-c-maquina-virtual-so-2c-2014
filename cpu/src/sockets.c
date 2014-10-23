@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 
+// TODO arreglar si se va a mandar un mensaje mensaje al conectarse
 // TODO agregar validaciones a los obtener
 #include "sockets.h"
 
@@ -145,7 +146,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != RESULTADO_OK)
+	if (respuesta.resultado == ERROR_DE_MEMORIA_LLENA)
 		return FALLO_CREACION_DE_SEGMENTO;
 
 	*direccion = respuesta.direccion_virtual;
@@ -179,7 +180,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != RESULTADO_OK)
+	if (respuesta.resultado == ERROR_NO_ENCUENTRO_SEGMENTO)
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 
 	return OK;
@@ -215,7 +216,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != RESULTADO_OK)
+	if (respuesta.resultado == SEGMENTATION_FAULT)
 			return FALLO_LECTURA_DE_MEMORIA;
 
 	memcpy(buffer, respuesta.bytes_leido, bytes);
@@ -252,7 +253,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != RESULTADO_OK)
+	if (respuesta.resultado == SEGMENTATION_FAULT)
 		return FALLO_ESCRITURA_EN_MEMORIA;
 
 	return OK;
@@ -292,10 +293,11 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 	return OK;
 }
 
+// TODO preguntar a kernel si quieren un mensaje de DESCONEXION_CPU
 void cerrar_puertos()
 {
 	cerrar_liberar(memoria);
-	cerrar_liberar(kernel); // todo agregar mensaje de DESCONEXION_CPU
+	cerrar_liberar(kernel);
 }
 
 void _obtener(tcb_t* tcb, char* memoria_a_actualizar, uint32_t bytes_a_leer)
