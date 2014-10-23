@@ -17,6 +17,8 @@
 #include "configuraciones.h"
 #include "direcciones.h"
 #include "marco.h"
+#include "pagina.h"
+
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
@@ -86,7 +88,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 	{
 		*(resultado) = RESULTADO_OK;
 
-		//NO SE CAMBIA DE MARCO TERRIBLE ERROR
+
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
@@ -95,9 +97,10 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
+
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
-			pagina_t siguiente_pagina = siguiente_pagina(pagina->id, segmento->paginas);
-			marco = buscar_marco_segun_id(siguiente_pagina->marco);
+			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
+			marco = buscar_marco_segun_id(pagina_siguiente->marco);
 		}
 
 
@@ -141,6 +144,10 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			escribir_marco(marco->datos, desplazamiento,tamanio, bytes_a_escribir, mas_paginas);
+
+			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
+			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
+			marco = buscar_marco_segun_id(pagina_siguiente->marco);
 		}
 
 
