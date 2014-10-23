@@ -11,7 +11,7 @@
 #include <string.h>
 #include "hu4sockets/sockets.h"
 #include "hu4sockets/mensajes.h"
-#include "instrucciones-estructuras.h"
+#include "definiciones.h"
 #include "operaciones-con-bits.h"
 #include "configuraciones.h"
 
