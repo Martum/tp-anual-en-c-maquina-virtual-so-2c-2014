@@ -13,20 +13,29 @@
 #include "estructuras.h"
 #include <commons/collections/list.h>
 
-void crear_marco_en_lista_de_marcos(t_list *, uint32_t);
+//Crea un nuevo marco(y lo inicializa) en la tabla de marcos
+void crear_marco_en_lista_de_marcos(t_list * marcos);
 
-marco_t* buscar_marco_segun_id(uint32_t);
+//Busca el marco segun su ID en la tabla de marcos
+marco_t* buscar_marco_segun_id(uint32_t marco);
 
+//Busca un marco que no este asignado a una pagina
 marco_t* buscar_marco_libre();
 
+//Devuelve la cantidad de marcos libres.
 uint32_t cantidad_marcos_libre();
 
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
+//Toma los datos que hay en el marco y los inserta despues del desplzamiento.
+//Modifica tamanio para saber claramente cuanto tamaño queda leer.
 char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas);
 
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
+//Toma los bytes_a_escribir y los inserta en datos_marco a partir del desplazamiento.
+//Modifica tamanio para saber claramente cuanto tamaño queda escribir.
 void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas);
 
+//Funcion auxiliar. Calcula el tamanio que realmente voy a usar, no el total.
 uint32_t calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas);
 
 #endif /* MARCO_H_ */

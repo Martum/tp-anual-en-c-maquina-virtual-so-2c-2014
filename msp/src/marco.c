@@ -12,10 +12,9 @@
 #include <commons/log.h>
 #include <commons/string.h>
 
-void crear_marco_en_lista_de_marcos(t_list *marcos, uint32_t base_de_marcos)
+void crear_marco_en_lista_de_marcos(t_list *marcos)
 {
 	marco_t *marco = malloc(sizeof(marco_t));
-	//marco->base = list_size(marcos)*256 + base_de_marcos;
 	marco->datos= malloc(256);
 	marco->id = list_size(marcos);
 	marco->ocupado = false;
