@@ -182,9 +182,28 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 
 void salida_estandar(pedido_salida_estandar_t* salida)
 {
-	// TODO: Seguir aca
+	char* texto = malloc(salida->tamanio + 1);
+	texto[salida->tamanio] = '\0';
 
+	printf("SALIDA > %s", texto);
+
+	free(texto);
+	free(salida->cadena_de_texto);
 	free(salida);
+}
+
+void entrada_estandar(pedido_entrada_estandar_t* entrada)
+{
+	if(entrada->identificador_de_tipo == ENTERO)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	free(entrada);
 }
 
 void procesar_conexion(char* mensaje, uint32_t len)
@@ -194,13 +213,18 @@ void procesar_conexion(char* mensaje, uint32_t len)
 	switch(codop)
 	{
 		case ENTRADA_ESTANDAR:
-
+			entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje));
 			break;
 
 		case SALIDA_ESTANDAR:
 			salida_estandar(deserializar_pedido_salida_estandar_t(mensaje));
 			break;
+
+		default:
+			break;
 	}
+
+	free(mensaje);
 }
 
 void escuchar_kernel()

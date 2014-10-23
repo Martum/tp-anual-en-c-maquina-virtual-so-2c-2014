@@ -656,7 +656,8 @@ pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(
 	memcpy(&pedido->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(&pedido->cadena_de_texto, chorro + offset, pedido->tamanio);
+	pedido->cadena_de_texto = malloc(pedido->tamanio);
+	memcpy(pedido->cadena_de_texto, chorro + offset, pedido->tamanio);
 
 	return pedido;
 }
