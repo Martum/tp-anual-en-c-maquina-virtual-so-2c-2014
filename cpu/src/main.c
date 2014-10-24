@@ -1,4 +1,5 @@
 #include "instrucciones.h"
+#include <unistd.h>
 
 int32_t main(int32_t argc, char** argv)
 {
@@ -18,10 +19,16 @@ int32_t main(int32_t argc, char** argv)
 	}
 
 	// TODO eliminar (solamente para pruebas)
-	if (conectar_con_kernel() == FALLO_CONEXION) {
+	if (conectar_con_memoria() == FALLO_CONEXION) {
 		printf("ERROR FALTAL");
 		return 0;
 	}
+
+	// TODO eliminar (solamente para pruebas)
+//	if (conectar_con_kernel() == FALLO_CONEXION) {
+//		printf("ERROR FALTAL");
+//		return 0;
+//	}
 
 	// TODO cambiar a log
 	printf("Se pudo conectar a memoria y kernel\n");
@@ -42,9 +49,12 @@ int32_t main(int32_t argc, char** argv)
 	return 0;
 
 	while (1) {
-		// TODO preguntar que pasa si no puedo obtener un TCB
-		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
-			resultado = ERROR_EN_EJECUCION;
+		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
+			printf("ERROR FALTAL: al pedir tcb");
+			dictionary_destroy(dic_instrucciones);
+			cerrar_puertos();
+			return 0;
+		}
 
 		// TODO eliminar (no es mas necesario)
 		/*
@@ -71,6 +81,7 @@ int32_t main(int32_t argc, char** argv)
 		 */
 
 		while ((quantum > 0 || tcb.km) && resultado == OK) {
+			sleep(retardo());
 			obtener_instruccion(&tcb, instruccion);
 			funcion = dictionary_get(dic_instrucciones, instruccion);
 			resultado = funcion(&tcb);
@@ -80,8 +91,14 @@ int32_t main(int32_t argc, char** argv)
 		if (resultado == OK)
 			resultado = FIN_QUANTUM;
 
-		// TODO preguntar que pasa si informar a kernel falla
-		informar_a_kernel_de_finalizacion(tcb, resultado);
+		if (informar_a_kernel_de_finalizacion(tcb, resultado)
+			== FALLO_INFORME_A_KERNEL) {
+			printf("ERROR FALTAL: al enviar informe a kernel");
+			dictionary_destroy(dic_instrucciones);
+			cerrar_puertos();
+			return 0;
+
+		}
 	}
 
 	dictionary_destroy(dic_instrucciones);
