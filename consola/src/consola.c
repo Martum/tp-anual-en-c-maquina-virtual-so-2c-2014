@@ -231,7 +231,12 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
  */
 void enviar_respuesta_entrada(respuesta_entrada_estandar_t* respuesta_entrada)
 {
+	char* msj = serializar_respuesta_entrada_estandar_t(respuesta_entrada);
+	uint32_t i = tamanio_respuesta_entrada_estandar_t_serializado();
+	enviar(SOCKET_KERNEL, msj, &i);
 
+	free(respuesta_entrada->cadena);
+	free(respuesta_entrada);
 }
 
 void procesar_conexion(char* mensaje, uint32_t len)

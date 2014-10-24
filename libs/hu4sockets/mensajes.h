@@ -223,11 +223,11 @@ uint32_t tamanio_pedido_de_leer_de_memoria_t_serializado();
 
 pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(char*);
 char* serializar_pedido_de_escribir_en_memoria_t(pedido_de_escribir_en_memoria_t*);
-uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado();
+uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado(uint32_t);
 
 respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(char*);
 char* serializar_respuesta_de_leer_de_memoria_t(respuesta_de_leer_de_memoria_t*);
-uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado();
+uint32_t tamanio_respuesta_de_leer_de_memoria_t_serializado(uint32_t);
 
 respuesta_de_crear_segmento_t* deserializar_respuesta_de_crear_segmento_t(char*);
 char* serializar_respuesta_de_crear_segmento_t(respuesta_de_crear_segmento_t*);
@@ -243,7 +243,7 @@ uint32_t tamanio_pedido_entrada_estandar_t_serializado();
 
 pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(char*);
 char* serializar_pedido_salida_estandar_t(pedido_salida_estandar_t*);
-uint32_t tamanio_pedido_salida_estandar_t_serializado();
+uint32_t tamanio_pedido_salida_estandar_t_serializado(uint32_t);
 
 pedido_crear_hilo_t* deserializar_pedido_crear_hilo_t(char*);
 char* serializar_pedido_crear_hilo_t(pedido_crear_hilo_t*);
@@ -263,6 +263,6 @@ uint32_t tamanio_pedido_despertar_t_serializado();
 
 respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(char*);
 char* serializar_respuesta_entrada_estandar_t(respuesta_entrada_estandar_t*);
-uint32_t tamanio_respuesta_entrada_estandar_t_serializado();
+uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t);
 
 #endif /* MENSAJES_H_ */
