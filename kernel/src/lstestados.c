@@ -75,13 +75,13 @@ void agregar_a_exit_cola(tcb_t* tcb) {
 	queue_push(EXIT_COLA, tcb);
 }
 
-void quitar_de_exec(tcb_t* tcb) {
+tcb_t* quitar_de_exec(tcb_t* tcb) {
 
 	bool _igual_tid(void* elemento){
 		return tcb->tid == ((ejecutando_t*) elemento)->tcb->tid;
 	}
 
-	list_remove_by_condition(EXEC, _igual_tid );
+	return (tcb_t*) list_remove_by_condition(EXEC, _igual_tid );
 	//list_remove_and_destroy_by_condition(EXEC, _igual_tid, _eliminar_tcb);
 }
 
