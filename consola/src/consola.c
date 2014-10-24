@@ -100,6 +100,9 @@ int main(int argc, char **argv)
 	return salida;
 }
 
+/**
+ * Carga el Codigo Beso en memoria.
+ */
 char* cargar_beso(char* path, uint32_t* len)
 {
 	FILE* archivo = fopen(path, "r");
@@ -180,6 +183,9 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	return salida;
 }
 
+/**
+ * Muestra al usuario lo indicado por el Kernel.
+ */
 void salida_estandar(pedido_salida_estandar_t* salida)
 {
 	char* texto = malloc(salida->tamanio + 1);
@@ -232,11 +238,13 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 void enviar_respuesta_entrada(respuesta_entrada_estandar_t* respuesta_entrada)
 {
 	char* msj = serializar_respuesta_entrada_estandar_t(respuesta_entrada);
-	uint32_t i = tamanio_respuesta_entrada_estandar_t_serializado();
+	uint32_t i = tamanio_respuesta_entrada_estandar_t_serializado(respuesta_entrada->tamanio);
+
 	enviar(SOCKET_KERNEL, msj, &i);
 
 	free(respuesta_entrada->cadena);
 	free(respuesta_entrada);
+	free(msj);
 }
 
 void procesar_conexion(char* mensaje, uint32_t len)
@@ -256,8 +264,6 @@ void procesar_conexion(char* mensaje, uint32_t len)
 		default:
 			break;
 	}
-
-	free(mensaje);
 }
 
 void escuchar_kernel()

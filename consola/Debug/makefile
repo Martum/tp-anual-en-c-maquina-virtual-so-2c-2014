@@ -26,7 +26,7 @@ endif
 all: consola
 
 dependents:
-	-cd /home/martin/workspace/so/tp-2014-2c-hardcodeameun4/libs/Debug && $(MAKE) clean all
+	-cd /home/martin/workspace/so/tp-2014-2c-hardcodeameun4/libs/Debug && $(MAKE) all
 
 # Tool invocations
 consola: $(OBJS) $(USER_OBJS) /home/martin/workspace/so/tp-2014-2c-hardcodeameun4/libs/Debug/libhu4sockets.so
