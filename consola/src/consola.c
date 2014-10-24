@@ -192,18 +192,46 @@ void salida_estandar(pedido_salida_estandar_t* salida)
 	free(salida);
 }
 
-void entrada_estandar(pedido_entrada_estandar_t* entrada)
+/**
+ * Pide y procesa la entrada del dato correspondiente.
+ *
+ * @RETURNS: Un respuesta_entrada_estandar_t* con la informacion cargada
+ */
+respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrada)
 {
+	respuesta_entrada_estandar_t* respuesta_entrada = malloc(sizeof(respuesta_entrada_estandar_t));
+	respuesta_entrada->flag = RESPUESTA_ENTRADA;
+
 	if(entrada->identificador_de_tipo == ENTERO)
 	{
+		int32_t* entero = malloc(sizeof(int32_t));
+		printf("ENTRADA (i) > ");
+		scanf("%d", entero);
+
+		respuesta_entrada->tamanio = sizeof(int32_t);
+		respuesta_entrada->cadena = (char*)entero;
 
 	}
 	else
 	{
+		char* texto = malloc(51);
+		printf("ENTRADA (s) > ");
+		scanf("%50[^\n]", texto);
 
+		respuesta_entrada->tamanio = strlen(texto);
+		respuesta_entrada->cadena = texto;
 	}
 
 	free(entrada);
+	return respuesta_entrada;
+}
+
+/**
+ * Envia al Kernel la respuesta a la entrada solicitada.
+ */
+void enviar_respuesta_entrada(respuesta_entrada_estandar_t* respuesta_entrada)
+{
+
 }
 
 void procesar_conexion(char* mensaje, uint32_t len)
@@ -213,7 +241,7 @@ void procesar_conexion(char* mensaje, uint32_t len)
 	switch(codop)
 	{
 		case ENTRADA_ESTANDAR:
-			entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje));
+			enviar_respuesta_entrada(entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje)));
 			break;
 
 		case SALIDA_ESTANDAR:

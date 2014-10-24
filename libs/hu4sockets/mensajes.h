@@ -46,6 +46,7 @@ typedef enum {
 
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
+	RESPUESTA_ENTRADA = 252,
 
 	// Mensajes del CPU a Memoria: 301 -> 350
 	CREAME_UN_SEGMENTO = 301,
