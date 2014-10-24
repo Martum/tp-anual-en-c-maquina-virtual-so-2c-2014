@@ -636,7 +636,7 @@ char* serializar_pedido_salida_estandar_t(
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->cadena_de_texto, pedido->tamanio);
+	memcpy(bytes + offset, pedido->cadena_de_texto, pedido->tamanio);
 
 	return bytes;
 }
@@ -874,7 +874,7 @@ char* serializar_respuesta_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->cadena, pedido->tamanio);
+	memcpy(bytes + offset, pedido->cadena, pedido->tamanio);
 
 	return bytes;
 }
