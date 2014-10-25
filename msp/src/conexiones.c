@@ -89,7 +89,6 @@ void* escuchar_conexiones(void* otro_ente){
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = MAYOR_FD;
 	FD_ZERO(&readfds);
-	//FD_SET(principal->fd, &readfds);
 
 	// Preparamos el SET
 	fd_set readfdset = readfds;
@@ -238,7 +237,7 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 
 	char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
 
-	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado();
+	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(string_length(bytes));
 
 	enviar(conexion->socket,msg_respuesta_leer, &len_msg_leer);
 
