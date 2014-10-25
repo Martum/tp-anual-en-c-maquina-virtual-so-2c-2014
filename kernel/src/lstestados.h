@@ -49,4 +49,9 @@ tcb_t* quitar_de_ready_km();
 // Quita de la queue de ready de hilos usuario.
 tcb_t* quitar_de_ready();
 
+/**
+ * Busca en la lista de Exec el ejecutando_t de un determinado Hilo
+ */
+ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid);
+
 #endif /* LSTESTADOS_H_ */

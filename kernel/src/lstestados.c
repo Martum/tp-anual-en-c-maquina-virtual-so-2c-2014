@@ -113,3 +113,13 @@ tcb_t* quitar_de_ready_km(){
 tcb_t* quitar_de_ready(){
 	return queue_pop(READY[1]);
 }
+
+ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
+{
+	bool _buscar_pid_tid(void* elemento)
+	{
+		return ((ejecutando_t*) elemento)->tcb->pid == pid && ((ejecutando_t*) elemento)->tcb->tid == tid;
+	}
+
+	return list_find(EXEC, _buscar_pid_tid);
+}
