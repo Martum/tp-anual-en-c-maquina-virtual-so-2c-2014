@@ -33,6 +33,7 @@ int crear_hilo(tcb_t* tcb)
 	return -1;
 }
 
+/*// NO GO
 void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 	//REVISAR. Utilizar el enviar y recibir para evitar espera activa.
 	if (identificador_tipo == 1){
@@ -42,11 +43,17 @@ void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 		pedido_leer_cadena(pid);
 	}
 }
-/*
+
+// NO GO
 void* recibir_entrada_estandar(uint32_t pid, void* ){
 	codear;
 }
 */
+
+int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar)
+{
+	return 0;
+}
 
 int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 {

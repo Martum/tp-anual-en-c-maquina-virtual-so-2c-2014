@@ -28,14 +28,26 @@ int crear_hilo(tcb_t* tcb);
  * Recibe un pid y un identificador de tipo y pide a la consola que ingrese un dato segun
  * el identificador.
  */
-void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo);
+//void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo);
 
 
 /**
  * recibe la respuesta de la consola.
  */
-void* recibir_entrada_estandar(uint32_t pid, void* );
+//void* recibir_entrada_estandar(uint32_t pid, void* );
 
+
+/**
+ * Envia al CPU la respuesta del Proceso a la entrada estandar.
+ * Devuelve 0 en caso de exito; -1 si fallo
+ */
+int recibir_entrada_estandar(respuesta_entrada_estandar_t* entrada_estandar);
+
+/**
+ * Envia al Proceso un pedido de entrada estandar.
+ * Devuelve 0 en caso de exito; -1 si falla.
+ */
+int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar);
 
 /**
  * Recibe un pedido_salida_estandar_t*. Escribe en la consola correspondiente al pid la cadena recibida.
