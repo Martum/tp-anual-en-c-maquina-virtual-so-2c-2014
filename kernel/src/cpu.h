@@ -38,11 +38,11 @@ void* recibir_entrada_estandar(uint32_t pid, void* );
 
 
 /**
- * Recibe un pid y una cadena de texto. Escribe en la consola correspondiente al pid la cadena recibida.
+ * Recibe un pedido_salida_estandar_t*. Escribe en la consola correspondiente al pid la cadena recibida.
  *  Retorna 0 en caso de exito o -1 en caso de error. (Puede haber error? lo unico que se me ocurre es que se
- * desconecte la consola, pero eso mataria al proyecto directamente).
+ * desconecte la consola, pero eso mataria al proceso directamente).
  */
-int salida_estandar(uint32_t pid, char* cadena_a_escribir);
+int salida_estandar(pedido_salida_estandar_t* pedido_salida);
 
 /*
  * Envia el hilo a block, lo encola en la cola de espera del recurso.
