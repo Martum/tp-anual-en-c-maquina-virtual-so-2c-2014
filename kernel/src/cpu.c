@@ -51,9 +51,20 @@ void* recibir_entrada_estandar(uint32_t pid, void* ){
 }
 */
 
+int recibir_entrada_estandar(respuesta_entrada_estandar_t* entrada_estandar)
+{
+	return 0;
+}
+
 int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar)
 {
+	sock_t* conexion_proceso = buscar_conexion_proceso_por_pid(entrada_estandar->pid);
+	char* pedido_serializado = serializar_pedido_entrada_estandar_t(entrada_estandar);
+	uint32_t len = tamanio_pedido_entrada_estandar_t_serializado();
 
+	int32_t res = enviar(conexion_proceso, pedido_serializado, &len);
+
+	free(pedido_serializado);
 	return 0;
 }
 
