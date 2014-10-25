@@ -18,7 +18,7 @@
 pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
 t_list* lista_conexiones;
 fd_set readfds;
-
+int32_t MAYOR_FD = -1;
 void inicializar_lista_conexiones_cpu(){
 	lista_conexiones = list_create();
 }
@@ -87,9 +87,9 @@ void* escuchar_conexiones(void* otro_ente){
 	escuchar(principal);
 
 	// Seteamos este como el socket mas grande
-	int32_t mayor_fd = principal->fd;
+	int32_t mayor_fd = MAYOR_FD;
 	FD_ZERO(&readfds);
-	FD_SET(principal->fd, &readfds);
+	//FD_SET(principal->fd, &readfds);
 
 	// Preparamos el SET
 	fd_set readfdset = readfds;

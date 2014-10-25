@@ -1,16 +1,8 @@
 #include "instrucciones.h"
 
-int32_t main(int32_t argc, char** argv)
-{
+int32_t main(int32_t argc, char** argv) {
 
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
-
-	// TODO descomentar (solamente comentado para pruebas)
-//	if (conectar_con_memoria() == FALLO_CONEXION
-//		|| conectar_con_kernel() == FALLO_CONEXION) { // TODO cambiar a log
-//		printf("ERROR FALTAL: Fallo la conexion\n");
-//		return 0;
-//	}
 
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES) {
 		printf("ERROR FALTAL: al cargar configuraciones");
@@ -18,8 +10,14 @@ int32_t main(int32_t argc, char** argv)
 	}
 
 	// TODO eliminar (solamente para pruebas)
+	if (conectar_con_memoria() == FALLO_CONEXION) {
+		printf("ERROR FATAL FALLO CONEXION CON MEMORIA");
+		return 0;
+	}
+
+	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_kernel() == FALLO_CONEXION) {
-		printf("ERROR FALTAL");
+		printf("ERROR FATAL FALLO CONEXION CON KERNEL");
 		return 0;
 	}
 
