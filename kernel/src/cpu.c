@@ -53,13 +53,18 @@ void* recibir_entrada_estandar(uint32_t pid, void* ){
 
 int recibir_entrada_estandar(respuesta_entrada_estandar_t* entrada_estandar)
 {
-	// TODO: Continuar aca
-	// Hay que reveer todo el tema de entrada estandar
-	// - El CPU ademas del PID deberia enviar el TID, asi despue se puede buscar
-	// en la lista de EXEC el CPU donde esta corriendo ese HILO para enviarle la respuesta entrada
-	// - Hay que modificar el pedido_entrada_estandar_t y respuesta_entrada_estandar_t
-	// - En la consola, al generar la respuesta_entrada_estandar_t hay que ponerle el TID
-	// recibido en el pedido_entrada_estandar_t
+	// Buscamos el ID del CPU (NO SE HACE FREE)
+	ejecutando_t* ej = buscar_exec_por_pid_tid(entrada_estandar->pid, entrada_estandar->tid);
+
+	// Buscamos socket del CPU (NO SE HACE FREE)
+	sock_t* socket_cpu = buscar_conexion_cpu_por_id(ej->cpu);
+
+	// Enviamos la respuesta entrada serializada
+	char* mensaje = serializar_respuesta_entrada_estandar_t(entrada_estandar);
+	uint32_t len = tamanio_respuesta_entrada_estandar_t_serializado(entrada_estandar->tamanio);
+	enviar(socket_cpu, mensaje, &len);
+
+	free(mensaje);
 	return 0;
 }
 
