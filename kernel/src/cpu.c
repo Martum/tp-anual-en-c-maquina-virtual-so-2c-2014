@@ -53,6 +53,13 @@ void* recibir_entrada_estandar(uint32_t pid, void* ){
 
 int recibir_entrada_estandar(respuesta_entrada_estandar_t* entrada_estandar)
 {
+	// TODO: Continuar aca
+	// Hay que reveer todo el tema de entrada estandar
+	// - El CPU ademas del PID deberia enviar el TID, asi despue se puede buscar
+	// en la lista de EXEC el CPU donde esta corriendo ese HILO para enviarle la respuesta entrada
+	// - Hay que modificar el pedido_entrada_estandar_t y respuesta_entrada_estandar_t
+	// - En la consola, al generar la respuesta_entrada_estandar_t hay que ponerle el TID
+	// recibido en el pedido_entrada_estandar_t
 	return 0;
 }
 
