@@ -46,11 +46,23 @@ void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
 void* recibir_entrada_estandar(uint32_t pid, void* ){
 	codear;
 }
-
-int salida_estandar(uint32_t pid, char* cadena){
-	return escribir(pid, cadena);
-}
 */
+
+int salida_estandar(pedido_salida_estandar_t* pedido_salida)
+{
+	// Obtenemos socket proceso, serializamos el pedido
+	sock_t* conexion_proceso = buscar_conexion_proceso_por_pid(pedido_salida->pid);
+	char* salida_serializada = serializar_pedido_salida_estandar_t(pedido_salida);
+	uint32_t len = tamanio_pedido_salida_estandar_t_serializado(pedido_salida->tamanio);
+
+	// Enviamos pedido
+	int32_t res = enviar(conexion_proceso, salida_serializada, &len);
+
+	// Free & return
+	free(salida_serializada);
+	return res;
+}
+
 
 void bloquear(tcb_t* tcb, char* recurso){
 	quitar_de_exec(tcb);

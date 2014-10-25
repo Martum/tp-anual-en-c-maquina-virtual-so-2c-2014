@@ -25,7 +25,4 @@ void pedido_leer_int(uint32_t pid);
  */
 void pedido_leer_cadena(uint32_t pid);
 
-
-void escribir(uint32_t pid, uint16_t identificador_tipo);
-
 #endif /* CONSOLA_H_ */
