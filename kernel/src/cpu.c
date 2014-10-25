@@ -97,7 +97,7 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 
 
 void bloquear(tcb_t* tcb, char* recurso){
-	quitar_de_exec(tcb);
+	quitar_de_exec(tcb);	//TODO: Falta inicializar los recursos no inicializados
 	agregar_a_block(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }

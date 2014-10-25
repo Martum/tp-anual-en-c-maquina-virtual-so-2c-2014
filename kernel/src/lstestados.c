@@ -99,6 +99,10 @@ void quitar_de_block(tcb_t* tcb) {
 }
 
 void agregar_a_cola_recurso(char* recurso, tcb_t* tcb) {
+
+	if(!dictionary_has_key(DIC_COLAS_ESPERA_RECURSOS, recurso))
+		dictionary_put(DIC_COLAS_ESPERA_RECURSOS, recurso, queue_create());
+
 	queue_push((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), tcb);
 }
 
