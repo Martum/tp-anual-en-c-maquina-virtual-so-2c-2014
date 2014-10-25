@@ -77,8 +77,9 @@ void agregar_a_exit_cola(tcb_t* tcb) {
 
 tcb_t* quitar_de_exec(tcb_t* tcb) {
 
-	bool _igual_tid(void* elemento){
-		return tcb->tid == ((ejecutando_t*) elemento)->tcb->tid;
+	bool _igual_pid_tid(void* elemento){
+		return tcb->pid == ((ejecutando_t*) elemento)->tcb->pid
+				&& tcb->tid == ((ejecutando_t*) elemento)->tcb->tid;
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
