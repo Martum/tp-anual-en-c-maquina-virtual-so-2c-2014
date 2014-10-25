@@ -270,7 +270,7 @@ pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(
 	pedido_de_destruir_segmento_t* pedido_destruir_segmento = malloc(
 		sizeof(pedido_de_destruir_segmento_t));
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(&pedido_destruir_segmento->direccion_virtual, chorro + offset,
 		sizeof(direccion));
 
@@ -322,7 +322,7 @@ pedido_de_leer_de_memoria_t* deserializar_pedido_de_leer_de_memoria_t(char* chor
 	pedido_de_leer_de_memoria_t* pedido_de_leer_de_memoria = malloc(
 			sizeof(pedido_de_leer_de_memoria_t));
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(&pedido_de_leer_de_memoria->direccion_virtual, chorro + offset,
 		sizeof(direccion));
 
@@ -881,6 +881,12 @@ char* serializar_respuesta_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->tid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	memcpy(bytes + offset, pedido->cadena, pedido->tamanio);
 
 	return bytes;
@@ -898,6 +904,12 @@ respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(
 	memcpy(&respuesta->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	memcpy(&respuesta->pid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&respuesta->tid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	respuesta->cadena = malloc(respuesta->tamanio);
 	memcpy(respuesta->cadena, chorro + offset, respuesta->tamanio);
 
@@ -908,6 +920,8 @@ uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t tamanio)
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
+	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
 	t += tamanio;
 
