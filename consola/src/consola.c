@@ -207,6 +207,8 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 {
 	respuesta_entrada_estandar_t* respuesta_entrada = malloc(sizeof(respuesta_entrada_estandar_t));
 	respuesta_entrada->flag = RESPUESTA_ENTRADA;
+	respuesta_entrada->pid = entrada->pid;
+	respuesta_entrada->tid = entrada->tid;
 
 	if(entrada->identificador_de_tipo == ENTERO)
 	{
