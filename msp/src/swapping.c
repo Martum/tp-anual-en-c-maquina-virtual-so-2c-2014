@@ -95,11 +95,12 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 
 	txt_close_file(arch);
 
+	aumento_cantidad_archivos_swap();
 }
 
 void swap_out(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina)
 {
-
+	disminuyo_cantidad_archivos_swap();
 }
 
 

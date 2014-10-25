@@ -23,6 +23,8 @@ t_list* lista_marcos;
 // indice de paginas para acceder a todas las paginas rapidamente
 t_list* indice_paginas;
 
+uint32_t cantidad_archivos_swap;
+
 void cargar_configuraciones(){
 	configs_cpu = config_create("/home/utnso/workspace/tp-2014-2c-hardcodeameun4/msp/configs_msp.cfg");
 }
@@ -75,6 +77,22 @@ void inicializar_memoria_fisica_total(){
 
 void inicializar_indice_paginas(){
 	indice_paginas = list_create();
+}
+
+void inicializar_cantidad_archivos_swap(){
+	cantidad_archivos_swap = 0;
+}
+
+void aumento_cantidad_archivos_swap(){
+	cantidad_archivos_swap++;
+}
+
+void disminuyo_cantidad_archivos_swap(){
+	cantidad_archivos_swap--;
+}
+
+uint32_t get_cantidad_archivos_swap(){
+	return cantidad_archivos_swap;
 }
 
 t_list* get_lista_procesos(){
