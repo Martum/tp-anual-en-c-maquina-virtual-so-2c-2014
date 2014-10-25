@@ -75,7 +75,14 @@ void agregar_a_exit_cola(tcb_t* tcb) {
 	queue_push(EXIT_COLA, tcb);
 }
 
-tcb_t* quitar_de_exec(tcb_t* tcb) {
+void destruir_ejecutando(void* elemento)
+{
+	ejecutando_t* ej = (ejecutando_t*)elemento;
+	free(ej->tcb);
+	free(ej);
+}
+
+void quitar_de_exec(tcb_t* tcb) {
 
 	bool _igual_pid_tid(void* elemento){
 		return tcb->pid == ((ejecutando_t*) elemento)->tcb->pid
@@ -83,11 +90,13 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
-	ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_tid );
+	/*ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_tid );
 	tcb_t* tcb_salida = ejecutando->tcb;
 	free(ejecutando);
 
-	return tcb_salida;
+	return tcb_salida;*/
+
+	list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
 
 void quitar_de_block(tcb_t* tcb) {

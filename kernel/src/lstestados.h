@@ -34,7 +34,7 @@ void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id);
 
 void agregar_a_exit(tcb_t* tcb);
 
-tcb_t* quitar_de_exec(tcb_t* tcb);
+void quitar_de_exec(tcb_t* tcb);
 
 void quitar_de_block(tcb_t* tcb);
 
