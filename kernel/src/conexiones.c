@@ -307,8 +307,11 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
 
-				bloquear(pedido_bloqueo->tcb, pedido_bloqueo->identificador_de_recurso);
+				// No usamos el TCB porque el que se esta bloqueando
+				// es el que esta esperando la conclusion del KM
+				bloquear(pedido_bloqueo->identificador_de_recurso);
 
+				free(pedido_bloqueo->tcb);
 				free(pedido_bloqueo);
 				break;
 

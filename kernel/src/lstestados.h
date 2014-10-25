@@ -28,7 +28,7 @@ void inicializar_listas_estados_tcb();
  */
 void agregar_a_ready(tcb_t* tcb);
 
-void agregar_a_block(tcb_t* tcb);
+//void agregar_a_block(tcb_t* tcb);
 
 void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id);
 
@@ -36,7 +36,7 @@ void agregar_a_exit(tcb_t* tcb);
 
 void quitar_de_exec(tcb_t* tcb);
 
-void quitar_de_block(tcb_t* tcb);
+//void quitar_de_block(tcb_t* tcb);
 
 void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb);
 
@@ -58,5 +58,10 @@ char* identificador_de_recurso(uint32_t identificador);
  * Busca en la lista de Exec el ejecutando_t de un determinado Hilo
  */
 ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid);
+
+/**
+ * Devuelve el TCB bloqueado a la espera de la conclusion del KM
+ */
+tcb_t* get_bloqueado_conclusion_tcb();
 
 #endif /* LSTESTADOS_H_ */

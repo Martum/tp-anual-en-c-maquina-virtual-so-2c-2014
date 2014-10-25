@@ -17,33 +17,56 @@
 /*t_queue* exec;
 t_queue* block;*/
 
+// Cola de ready para procesos (1) y para KM (0)
 t_queue* READY[2];
+
+// Cola de exit
 t_queue* EXIT_COLA;
+
+// Procesos en ejecucion
 t_list* EXEC;
-t_list* BLOCK;
-t_queue* BLOCK_ESPERA_KM; // hacer getter y setters.
+
+// Procesos que estan esperando a que otro hilo termine
+t_list* BLOCK_JOIN;
+
+// Proceso que ejecuto una syscall y esta esperando a que KM la termine
+t_list* BLOCK_CONCLUSION_KM;
+
+// Procesos que estan esperando la liberacion del KM para ejecutar su propia syscall
+t_queue* BLOCK_ESPERA_KM;
+
+// Diccionario con identificadores de recursos y colas que estan esperando liberacion
 t_dictionary* DIC_COLAS_ESPERA_RECURSOS;
-t_queue* SYSCALLS_COLA;
+t_list* BLOCK_RECURSO;
+
+
+t_queue* SYSCALLS_COLA; // Que es esto?
 
 void _eliminar_tcb(void* elemento)
 {
 	free((tcb_t*) elemento);
 }
 
-void inicializar_listas_estados_tcb() {
-
-	EXIT_COLA = queue_create();
-	SYSCALLS_COLA = queue_create();
-
+void inicializar_listas_estados_tcb()
+{
 	READY[0] = queue_create();
 	READY[1] = queue_create();
 
+	EXIT_COLA = queue_create();
+
 	EXEC = list_create();
-	BLOCK = list_create();
+
+	BLOCK_JOIN = list_create();
+
+	BLOCK_CONCLUSION_KM = list_create();
+
+	BLOCK_ESPERA_KM = queue_create();
 
 	DIC_COLAS_ESPERA_RECURSOS = dictionary_create();
 
-	//TODO: FALTA INICIALIZAR EL DICCIONARIO DE COLAS DE ESPERA DE RECURSOS.
+	// Y esta?
+	SYSCALLS_COLA = queue_create();
+
 }
 
 
@@ -56,8 +79,8 @@ bool hay_hilo_km_ready(){
 	return !queue_is_empty(READY[0]);
 }
 
-void agregar_a_block(tcb_t* tcb) {
-	list_add(BLOCK, tcb);
+void agregar_a_block_recurso(tcb_t* tcb) {
+	list_add(BLOCK_RECURSO, tcb);
 }
 
 void agregar_a_syscalls_cola(tcb_t* tcb) {
@@ -100,13 +123,15 @@ void quitar_de_exec(tcb_t* tcb) {
 	list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
 
-void quitar_de_block(tcb_t* tcb) {
 
-	bool _igual_tid(void* elemento){
-		return tcb->tid == ((tcb_t*) elemento)->tid;
+void quitar_de_block_recurso(tcb_t* tcb) {
+
+	bool _igual_pid_tid(void* elemento){
+		return tcb->pid == ((tcb_t*) elemento)->pid &&
+			tcb->tid == ((tcb_t*) elemento)->tid;
 	}
 
-	list_remove_by_condition(BLOCK, _igual_tid);
+	list_remove_by_condition(BLOCK_RECURSO, _igual_pid_tid);
 }
 
 void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
@@ -159,4 +184,9 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 	}
 
 	return list_find(EXEC, _buscar_pid_tid);
+}
+
+tcb_t* get_bloqueado_conclusion_tcb()
+{
+	return (tcb_t*)list_get(BLOCK_CONCLUSION_KM, 0);
 }

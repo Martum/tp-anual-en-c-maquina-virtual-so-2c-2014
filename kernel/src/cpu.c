@@ -96,15 +96,16 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 }
 
 
-void bloquear(tcb_t* tcb, uint32_t recurso){
-	quitar_de_exec(tcb);
-	agregar_a_block(tcb);
+void bloquear(uint32_t recurso){
+	//quitar_de_exec(tcb);	//TODO: Modificar esto. No esta en exec, esta bloqueado conclusion km
+	tcb_t* tcb = get_bloqueado_conclusion_tcb();
+	agregar_a_block_recurso(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }
 
 void despertar(uint32_t recurso){
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
-	quitar_de_block(tcb);
+	quitar_de_block_recurso(tcb);
 	agregar_a_ready(tcb);
 }
 
