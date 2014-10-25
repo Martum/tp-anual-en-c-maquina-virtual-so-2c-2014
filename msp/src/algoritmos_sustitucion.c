@@ -20,7 +20,7 @@ void setear_puntero_clock(){
 	puntero_clock = 0;
 }
 
-uint32_t clock(){
+uint32_t algoritmo_clock(){
 	uint32_t retorno;
 	bool encontro = false;
 
@@ -65,7 +65,7 @@ uint32_t clock(){
 	return retorno;
 }
 
-uint32_t lru(){
+uint32_t algoritmo_lru(){
 	// filtro segun paginas que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
 		return pagina->tiene_marco;

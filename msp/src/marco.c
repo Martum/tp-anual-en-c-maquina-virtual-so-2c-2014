@@ -49,35 +49,7 @@ uint32_t cantidad_marcos_libre(){
 	return cant_marcos;
 }
 
-
-char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
-{
-
-	uint32_t tamanio_aux = calcular_tamanio_real(tamanio,desplazamiento,mas_paginas);
-
-
-	return string_substring(datos_marco,desplazamiento,tamanio_aux);
-}
-
-void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
-{
-
-
-	uint32_t tamanio_aux = calcular_tamanio_real(tamanio,desplazamiento,mas_paginas);
-
-	int i;
-	int j=0;
-	for(i=desplazamiento;i<tamanio_aux;i++)
-	{
-		datos_marco[i]=bytes_a_escribir[j];
-		j++;
-	}
-
-
-
-}
-
-uint32_t calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas)
+uint32_t _calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas)
 {
 	uint32_t tamanio_aux = tamanio;
 
@@ -95,5 +67,34 @@ uint32_t calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool m
 
 		return tamanio_aux;
 }
+
+char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
+{
+
+	uint32_t tamano_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
+
+
+	return string_substring(datos_marco,desplazamiento,tamano_aux);
+}
+
+void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
+{
+
+
+	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
+
+	int i;
+	int j=0;
+	for(i=desplazamiento;i<tamanio_aux;i++)
+	{
+		datos_marco[i]=bytes_a_escribir[j];
+		j++;
+	}
+
+
+
+}
+
+
 
 
