@@ -264,6 +264,30 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
 	//TODO: Atendeme el socket maestro
+	char* mensaje;
+	uint32_t len;
+
+	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
+	flag_t cod_op = codigo_operacion(mensaje);
+
+	if(resultado == 0)
+	{
+		switch (cod_op) {
+			case SALIDA_ESTANDAR:
+
+				break;
+
+			case ENTRADA_ESTANDAR:
+
+				break;
+
+
+			default:
+				break;
+		}
+	}
+
+	free(mensaje);
 }
 
 // Corre en un THREAD
