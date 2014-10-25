@@ -235,18 +235,26 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
 
+		/* DEPRECADO POR USO DE STRUCTS CON FLAG_T ADENTRO
+		 *
 		// Creamos copia del puntero al mensaje y a su len
 		// Hay que usar estos dentro de las funciones,
 		// ya que tienen desplazado el mensaje
 		char* copia_mensaje = mensaje + tamanio_flagt();
-		uint32_t copia_len = len - tamanio_flagt();
+		uint32_t copia_len = len - tamanio_flagt();*/
 
 		// Vemos que operacion es
 		switch(cod_op)
 		{
-	/*		case bla bla
-				foo(copia_mensaje(chorrobytes), copia_len(longitud del chorro))
-				break;*/
+			case RESPUESTA_ENTRADA:
+				;
+				respuesta_entrada_estandar_t* respuesta_entrada = deserializar_respuesta_entrada_estandar_t(mensaje);
+
+				recibir_entrada_estandar(respuesta_entrada);
+
+				free(respuesta_entrada->cadena);
+				free(respuesta_entrada);
+				break;
 
 			default:
 				_informar_mensaje_incompleto(conexion_proceso->socket);
@@ -261,9 +269,47 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 }
 
+/**
+ * Aca se atiende todo lo que llega desde la CPU.
+ * Interfaz expuesta a la CPU.
+ */
 void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
-	//TODO: Atendeme el socket maestro
+	char* mensaje;
+	uint32_t len;
+
+	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
+	flag_t cod_op = codigo_operacion(mensaje);
+
+	if(resultado == 0)
+	{
+		switch (cod_op) {
+			case SALIDA_ESTANDAR:
+				;
+				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
+
+				salida_estandar(pedido_salida);
+
+				free(pedido_salida->cadena_de_texto);
+				free(pedido_salida);
+				break;
+
+			case ENTRADA_ESTANDAR:
+				;
+				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
+
+				enviar_entrada_estandar(pedido_entrada);
+
+				free(pedido_entrada);
+				break;
+
+
+			default:
+				break;
+		}
+	}
+
+	free(mensaje);
 }
 
 // Corre en un THREAD
