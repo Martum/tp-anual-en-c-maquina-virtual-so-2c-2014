@@ -274,6 +274,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	{
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
+				;
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
 
 				salida_estandar(pedido_salida);
@@ -283,7 +284,12 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case ENTRADA_ESTANDAR:
+				;
+				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
+				enviar_entrada_estandar(pedido_entrada);
+
+				free(pedido_entrada);
 				break;
 
 

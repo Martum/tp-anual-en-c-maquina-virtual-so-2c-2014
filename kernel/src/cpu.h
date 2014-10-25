@@ -10,6 +10,11 @@
 
 #include <hu4sockets/tcb.h>
 #include <stdint.h>
+#include <hu4sockets/mensajes.h>
+#include <hu4sockets/sockets.h>
+#include <hu4sockets/tcb.h>
+#include "conexiones.h"
+#include <stdlib.h>
 
 
 /**

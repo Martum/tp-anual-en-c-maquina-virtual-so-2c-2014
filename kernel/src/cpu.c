@@ -11,6 +11,7 @@
 #include "consola.h"
 #include "cpu.h"
 
+
 uint32_t ID_CPU_GLOBAL = 1;
 
 uint32_t dame_nuevo_id_cpu()
@@ -52,6 +53,7 @@ void* recibir_entrada_estandar(uint32_t pid, void* ){
 
 int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar)
 {
+
 	return 0;
 }
 
