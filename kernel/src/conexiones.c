@@ -303,6 +303,32 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_entrada);
 				break;
 
+			case BLOQUEAR:
+				;
+				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
+
+				char* identificador = malloc(12);
+				sprintf(identificador, "%d", pedido_bloqueo->identificador_de_recurso);
+
+				bloquear(pedido_bloqueo->tcb, identificador);
+
+				free(identificador);
+				free(pedido_bloqueo);
+				break;
+
+			case DESPERTAR:
+				;
+				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
+
+				char* identificar = malloc(12);
+				sprintf(identificador, "%d", pedido_despertar->identificador_de_recurso);
+
+				despertar(identificador);
+
+				free(identificador);
+				free(pedido_despertar);
+				break;
+
 
 			default:
 				break;
