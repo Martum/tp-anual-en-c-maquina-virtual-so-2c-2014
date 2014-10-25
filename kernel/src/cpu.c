@@ -96,13 +96,13 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 }
 
 
-void bloquear(tcb_t* tcb, char* recurso){
+void bloquear(tcb_t* tcb, uint32_t recurso){
 	quitar_de_exec(tcb);	//TODO: Falta inicializar los recursos no inicializados
 	agregar_a_block(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }
 
-void despertar(char* recurso){
+void despertar(uint32_t recurso){
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
 	quitar_de_block(tcb);
 	agregar_a_ready(tcb);

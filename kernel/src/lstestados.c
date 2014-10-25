@@ -98,20 +98,30 @@ void quitar_de_block(tcb_t* tcb) {
 	list_remove_by_condition(BLOCK, _igual_tid);
 }
 
-void agregar_a_cola_recurso(char* recurso, tcb_t* tcb) {
+void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
+{
+	char* recurso = identificador_de_recurso(recurso_int);
 
 	if(!dictionary_has_key(DIC_COLAS_ESPERA_RECURSOS, recurso))
 		dictionary_put(DIC_COLAS_ESPERA_RECURSOS, recurso, queue_create());
 
 	queue_push((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), tcb);
+
+	free(recurso);
 }
 
 void quitar_de_syscalls_cola(tcb_t* tcb) {
 	queue_pop(SYSCALLS_COLA);
 }
 
-tcb_t* quitar_primero_de_cola_recurso(char* recurso){
-	return queue_pop((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso));
+tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
+{
+	char* recurso = identificador_de_recurso(recurso_int);
+
+	tcb_t* tcb = queue_pop((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso));
+
+	free(recurso);
+	return tcb;
 }
 
 tcb_t* quitar_de_ready_km(){
@@ -120,6 +130,14 @@ tcb_t* quitar_de_ready_km(){
 
 tcb_t* quitar_de_ready(){
 	return queue_pop(READY[1]);
+}
+
+char* identificador_de_recurso(uint32_t identificador_int)
+{
+	char* identificador = malloc(12);
+	sprintf(identificador, "%d", identificador_int);
+
+	return identificador;
 }
 
 ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)

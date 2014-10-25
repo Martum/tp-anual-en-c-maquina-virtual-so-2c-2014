@@ -64,12 +64,12 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida);
 /*
  * Envia el hilo a block, lo encola en la cola de espera del recurso.
  */
-void bloquear(tcb_t* tcb, char* recurso);
+void bloquear(tcb_t* tcb, uint32_t recurso);
 
 /*
  * Remueve el primer hilo de la cola de espera del recurso y lo manda a ready.
  */
-void despertar(char* recurso);
+void despertar(uint32_t recurso);
 
 /**
  * Si esta el tcb km disponible, proceder normalmente, si no lo està, tengo qe agregar el tcb qe recibo en la cola de
