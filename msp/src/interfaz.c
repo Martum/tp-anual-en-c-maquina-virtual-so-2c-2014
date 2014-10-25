@@ -17,9 +17,14 @@
 #include "configuraciones.h"
 #include "direcciones.h"
 #include "marco.h"
+#include "pagina.h"
+#include "algoritmos_sustitucion.h"
+
+
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
+
 
 direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *resultado){
 	// busco el proceso pid
@@ -86,15 +91,22 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 	{
 		*(resultado) = RESULTADO_OK;
 
-		//NO SE CAMBIA DE MARCO TERRIBLE ERROR
+
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
-		pagina->bit_referencia=1;
+		set_bit_referencia(pagina);
 		while((tamanio==0)&&(mas_paginas))
 		{
-			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
+			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
 			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
+
+			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
+			desplazamiento=0;
+
+			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente.
+			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
+			marco = buscar_marco_segun_id(pagina_siguiente->marco);
 		}
 
 
@@ -105,8 +117,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccion_logica,
-		char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
+void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
@@ -133,11 +144,18 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,
 		bool mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
-		pagina->bit_referencia=1;
+		set_bit_referencia(pagina);
 		while((tamanio==0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			escribir_marco(marco->datos, desplazamiento,tamanio, bytes_a_escribir, mas_paginas);
+
+			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
+			desplazamiento=0;
+
+			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
+			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
+			marco = buscar_marco_segun_id(pagina_siguiente->marco);
 		}
 
 

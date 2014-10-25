@@ -10,6 +10,7 @@
 #include <commons/collections/queue.h>
 #include <commons/collections/dictionary.h>
 #include <commons/collections/list.h>
+#include <stdlib.h>
 
 
 /*t_queue* exec;
@@ -22,6 +23,11 @@ t_list* BLOCK;
 t_queue* BLOCK_ESPERA_KM; // hacer getter y setters.
 t_dictionary* DIC_COLAS_ESPERA_RECURSOS;
 t_queue* SYSCALLS_COLA;
+
+void _eliminar_tcb(void* elemento)
+{
+	free((tcb_t*) elemento);
+}
 
 void inicializar_listas_estados_tcb() {
 
@@ -57,21 +63,26 @@ void agregar_a_syscalls_cola(tcb_t* tcb) {
 	queue_push(SYSCALLS_COLA, tcb);
 }
 
-void agregar_a_exec(tcb_t* tcb) {
-	list_add(EXEC, tcb);
+void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id) {
+	ejecutando_t* ej = malloc(sizeof(ejecutando_t));
+	ej->tcb = tcb;
+	ej->cpu = cpu_id;
+
+	list_add(EXEC, ej);
 }
 
 void agregar_a_exit_cola(tcb_t* tcb) {
 	queue_push(EXIT_COLA, tcb);
 }
 
-void quitar_de_exec(tcb_t* tcb) {
+tcb_t* quitar_de_exec(tcb_t* tcb) {
 
 	bool _igual_tid(void* elemento){
-		return tcb->tid == ((tcb_t*) elemento)->tid;
+		return tcb->tid == ((ejecutando_t*) elemento)->tcb->tid;
 	}
 
-	list_remove_by_condition(EXEC, _igual_tid );
+	return (tcb_t*) list_remove_by_condition(EXEC, _igual_tid );
+	//list_remove_and_destroy_by_condition(EXEC, _igual_tid, _eliminar_tcb);
 }
 
 void quitar_de_block(tcb_t* tcb) {

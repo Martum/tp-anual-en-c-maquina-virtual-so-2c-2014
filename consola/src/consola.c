@@ -100,6 +100,9 @@ int main(int argc, char **argv)
 	return salida;
 }
 
+/**
+ * Carga el Codigo Beso en memoria.
+ */
 char* cargar_beso(char* path, uint32_t* len)
 {
 	FILE* archivo = fopen(path, "r");
@@ -180,11 +183,68 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
 	return salida;
 }
 
+/**
+ * Muestra al usuario lo indicado por el Kernel.
+ */
 void salida_estandar(pedido_salida_estandar_t* salida)
 {
-	// TODO: Seguir aca
+	char* texto = malloc(salida->tamanio + 1);
+	texto[salida->tamanio] = '\0';
 
+	printf("SALIDA > %s", texto);
+
+	free(texto);
+	free(salida->cadena_de_texto);
 	free(salida);
+}
+
+/**
+ * Pide y procesa la entrada del dato correspondiente.
+ *
+ * @RETURNS: Un respuesta_entrada_estandar_t* con la informacion cargada
+ */
+respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrada)
+{
+	respuesta_entrada_estandar_t* respuesta_entrada = malloc(sizeof(respuesta_entrada_estandar_t));
+	respuesta_entrada->flag = RESPUESTA_ENTRADA;
+
+	if(entrada->identificador_de_tipo == ENTERO)
+	{
+		int32_t* entero = malloc(sizeof(int32_t));
+		printf("ENTRADA (i) > ");
+		scanf("%d", entero);
+
+		respuesta_entrada->tamanio = sizeof(int32_t);
+		respuesta_entrada->cadena = (char*)entero;
+
+	}
+	else
+	{
+		char* texto = malloc(51);
+		printf("ENTRADA (s) > ");
+		scanf("%50[^\n]", texto);
+
+		respuesta_entrada->tamanio = strlen(texto);
+		respuesta_entrada->cadena = texto;
+	}
+
+	free(entrada);
+	return respuesta_entrada;
+}
+
+/**
+ * Envia al Kernel la respuesta a la entrada solicitada.
+ */
+void enviar_respuesta_entrada(respuesta_entrada_estandar_t* respuesta_entrada)
+{
+	char* msj = serializar_respuesta_entrada_estandar_t(respuesta_entrada);
+	uint32_t i = tamanio_respuesta_entrada_estandar_t_serializado(respuesta_entrada->tamanio);
+
+	enviar(SOCKET_KERNEL, msj, &i);
+
+	free(respuesta_entrada->cadena);
+	free(respuesta_entrada);
+	free(msj);
 }
 
 void procesar_conexion(char* mensaje, uint32_t len)
@@ -194,11 +254,14 @@ void procesar_conexion(char* mensaje, uint32_t len)
 	switch(codop)
 	{
 		case ENTRADA_ESTANDAR:
-
+			enviar_respuesta_entrada(entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje)));
 			break;
 
 		case SALIDA_ESTANDAR:
 			salida_estandar(deserializar_pedido_salida_estandar_t(mensaje));
+			break;
+
+		default:
 			break;
 	}
 }

@@ -10,6 +10,13 @@
 
 #include <commons/collections/queue.h>
 #include <hu4sockets/tcb.h>
+#include <stdint.h>
+
+
+typedef struct ejecutando {
+	tcb_t* tcb;
+	uint32_t cpu;
+} ejecutando_t;
 
 /**
  * Inicializa las colas del Planificador
@@ -23,11 +30,11 @@ void agregar_a_ready(tcb_t* tcb);
 
 void agregar_a_block(tcb_t* tcb);
 
-void agregar_a_exec(tcb_t* tcb);
+void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id);
 
 void agregar_a_exit(tcb_t* tcb);
 
-void quitar_de_exec(tcb_t* tcb);
+tcb_t* quitar_de_exec(tcb_t* tcb);
 
 void quitar_de_block(tcb_t* tcb);
 

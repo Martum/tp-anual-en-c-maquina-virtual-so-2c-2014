@@ -62,8 +62,8 @@ void inicializar_lista_marcos(){
 
 	for(i=0;i<cant_marcos;i++){
 
-		// pongo arbitrariamente 10000 como base de marcos, se puede cambiar
-		crear_marco_en_lista_de_marcos(lista_marcos,2000);
+
+		crear_marco_en_lista_de_marcos(lista_marcos);
 
 
 	}
