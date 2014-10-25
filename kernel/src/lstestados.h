@@ -60,7 +60,7 @@ char* identificador_de_recurso(uint32_t identificador);
 ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid);
 
 /**
- * Devuelve el TCB bloqueado a la espera de la conclusion del KM
+ * Devuelve el TCB que esta bloqueado a la espera de la conclusion del KM
  */
 tcb_t* get_bloqueado_conclusion_tcb();
 

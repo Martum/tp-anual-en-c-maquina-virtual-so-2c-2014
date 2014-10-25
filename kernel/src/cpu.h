@@ -61,12 +61,12 @@ int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar);
  */
 int salida_estandar(pedido_salida_estandar_t* pedido_salida);
 
-/*
+/**
  * Envia el hilo a block, lo encola en la cola de espera del recurso.
  */
-void bloquear(tcb_t* tcb, uint32_t recurso);
+void bloquear(uint32_t recurso);
 
-/*
+/**
  * Remueve el primer hilo de la cola de espera del recurso y lo manda a ready.
  */
 void despertar(uint32_t recurso);
