@@ -81,8 +81,12 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 		return tcb->tid == ((ejecutando_t*) elemento)->tcb->tid;
 	}
 
-	return (tcb_t*) list_remove_by_condition(EXEC, _igual_tid );
-	//list_remove_and_destroy_by_condition(EXEC, _igual_tid, _eliminar_tcb);
+	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
+	ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_tid );
+	tcb_t* tcb_salida = ejecutando->tcb;
+	free(ejecutando);
+
+	return tcb_salida;
 }
 
 void quitar_de_block(tcb_t* tcb) {
