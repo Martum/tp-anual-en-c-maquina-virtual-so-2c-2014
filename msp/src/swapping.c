@@ -5,22 +5,22 @@
  *      Author: utnso
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "swapping.h"
 #include "estructuras.h"
 #include "pagina.h"
 #include "marco.h"
 #include "interfaz.h"
-#include <commons/txt.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <commons/string.h>
+#include "configuraciones.h"
 
+#include <commons/txt.h>
+#include <commons/string.h>
 
 uint32_t pid;
 uint16_t id_segmento;
-
-
 
 
 void swap_in(pagina_t* pagina)
@@ -95,11 +95,12 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 
 	txt_close_file(arch);
 
+	aumento_cantidad_archivos_swap();
 }
 
 void swap_out(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina)
 {
-
+	disminuyo_cantidad_archivos_swap();
 }
 
 

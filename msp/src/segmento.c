@@ -15,6 +15,7 @@
 #include "estructuras.h"
 #include "pagina.h"
 #include "marco.h"
+#include "configuraciones.h"
 
 #include <commons/collections/list.h>
 #include <commons/bitarray.h>
@@ -84,19 +85,11 @@ segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t id_segmento, t_
 
 bool puedo_crear_paginas(uint32_t tamanio_en_bytes, uint32_t cant_paginas){
 
-	uint32_t cant_marcos_disponibles = cantidad_marcos_libre();
+	uint32_t cantidad_max_arch_swap = cantidad_swap() * 4096;
 
-	if(cant_paginas <= cant_marcos_disponibles){
-		return true;
-	}
+	uint32_t total_posible_almac_paginas = cantidad_marcos_libre()
+											+ cantidad_max_arch_swap
+											- get_cantidad_archivos_swap();
 
-/*	uint32_t bytes_no_cubiertos_por_marcos =
-			tamanio_en_bytes - (cant_marcos_disponibles*256);
-*/
-
-	// FALTA UNA FUNCION QUE CALCULE CUANTOS BYTES TIENEN LOS ARCHIVOS DE SWAṔ
-	// 1048576 bytes por cada mb seteado para swap en arch de configuracion
-
-
-	return true;
+	return cant_paginas <= total_posible_almac_paginas;
 }

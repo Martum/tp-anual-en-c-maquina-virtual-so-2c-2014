@@ -23,10 +23,17 @@ t_list* get_lista_procesos();
 t_list* get_lista_marcos();
 t_list* get_indice_paginas();
 uint32_t get_memoria_fisica_total();
+uint32_t get_cantidad_archivos_swap();
 
 void inicializar_lista_procesos();
 void inicializar_lista_marcos();
 void inicializar_memoria_fisica_total();
 void inicializar_indice_paginas();
+void inicializar_cantidad_archivos_swap();
+
+void aumento_cantidad_archivos_swap();
+void disminuyo_cantidad_archivos_swap();
+
+
 
 #endif /* CONFIGURACIONES_H_ */
