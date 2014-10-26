@@ -186,20 +186,19 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	return OK;
 }
 
-// TODO refactorizar nombres
-resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t cantidad_de_bytes,
 	char* buffer)
 {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
-	cuerpo_del_mensaje.tamano = bytes;
+	cuerpo_del_mensaje.tamano = cantidad_de_bytes;
 
 	char* chorro_de_envio = serializar_pedido_de_leer_de_memoria_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
-		tamanio_respuesta_de_leer_de_memoria_t_serializado(bytes));
+		tamanio_respuesta_de_leer_de_memoria_t_serializado(cantidad_de_bytes));
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
@@ -220,28 +219,27 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t bytes,
 	if (respuesta.resultado == SEGMENTATION_FAULT)
 			return FALLO_LECTURA_DE_MEMORIA;
 
-	memcpy(buffer, respuesta.bytes_leido, bytes);
+	memcpy(buffer, respuesta.bytes_leido, cantidad_de_bytes);
 
 	return OK;
 }
 
-// TODO refactorizar nombres
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
-	uint32_t bytes, char* buffer)
+	uint32_t cantidad_de_bytes, char* bytes_a_escribir)
 {
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.direccion_virtual = direccion;
-	cuerpo_del_mensaje.bytes_a_escribir = buffer;
-	cuerpo_del_mensaje.tamano = bytes;
+	cuerpo_del_mensaje.bytes_a_escribir = bytes_a_escribir;
+	cuerpo_del_mensaje.tamano = cantidad_de_bytes;
 
 	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
-		tamanio_pedido_de_escribir_en_memoria_t_serializado(bytes),
+		tamanio_pedido_de_escribir_en_memoria_t_serializado(cantidad_de_bytes),
 		chorro_de_respuesta) == FALLO_COMUNICACION) {
 
 		free(chorro_de_envio);

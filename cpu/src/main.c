@@ -10,6 +10,13 @@ int32_t main(int32_t argc, char** argv) {
 		return 0;
 	}
 
+	// TODO descomentar (solamente comentado para pruebas)
+	//	if (conectar_con_memoria() == FALLO_CONEXION
+	//		|| conectar_con_kernel() == FALLO_CONEXION) {
+	//		printf("ERROR FALTAL: Fallo la conexion\n");
+	//		return 0;
+	//	}
+
 	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_memoria() == FALLO_CONEXION) {
 		printf("ERROR FATAL FALLO CONEXION CON MEMORIA");
