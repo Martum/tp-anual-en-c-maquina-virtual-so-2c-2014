@@ -9,10 +9,11 @@
 #define RESULTADOS_H_
 
 typedef enum {
-	OK,
-	FALLO,
-	PRUEBA,
-	TERMINO,
+	OK = 1,
+	FALLO = 2,
+	PRUEBA = 3,
+	TERMINO = 4,
+	COMPLETADO_OK = 5,
 
 	// FALLOS EN CPU: 101 -> 130
 	FALLO_CONEXION = 102,

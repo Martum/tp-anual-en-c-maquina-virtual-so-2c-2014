@@ -79,7 +79,8 @@ bool hay_hilo_km_ready(){
 	return !queue_is_empty(READY[0]);
 }
 
-void agregar_a_block_recurso(tcb_t* tcb) {
+void agregar_a_block_recurso(tcb_t* tcb)
+{
 	list_add(BLOCK_RECURSO, tcb);
 }
 
@@ -124,7 +125,8 @@ void quitar_de_exec(tcb_t* tcb) {
 }
 
 
-void quitar_de_block_recurso(tcb_t* tcb) {
+void quitar_de_block_recurso(tcb_t* tcb)
+{
 
 	bool _igual_pid_tid(void* elemento){
 		return tcb->pid == ((tcb_t*) elemento)->pid &&
