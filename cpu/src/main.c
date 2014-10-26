@@ -1,11 +1,13 @@
 #include "instrucciones.h"
 #include <unistd.h>
 
-int32_t main(int32_t argc, char** argv) {
+int32_t main(int32_t argc, char** argv)
+{
 
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
-	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES) {
+	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
+	{
 		printf("ERROR FALTAL: al cargar configuraciones");
 		return 0;
 	}
@@ -18,14 +20,16 @@ int32_t main(int32_t argc, char** argv) {
 	//	}
 
 	// TODO eliminar (solamente para pruebas)
-	if (conectar_con_memoria() == FALLO_CONEXION) {
-		printf("ERROR FATAL FALLO CONEXION CON MEMORIA");
+	if (conectar_con_memoria() == FALLO_CONEXION)
+	{
+		printf("ERROR FATAL: al conectarse con memoria");
 		return 0;
 	}
 
 	// TODO eliminar (solamente para pruebas)
-	if (conectar_con_kernel() == FALLO_CONEXION) {
-		printf("ERROR FATAL FALLO CONEXION CON KERNEL");
+	if (conectar_con_kernel() == FALLO_CONEXION)
+	{
+		printf("ERROR FATAL: al conectarse con kernel");
 		return 0;
 	}
 
@@ -47,8 +51,10 @@ int32_t main(int32_t argc, char** argv) {
 	// TODO eliminar (solo para pruebas)
 	return 0;
 
-	while (1) {
-		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
+	while (1)
+	{
+		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
+		{
 			printf("ERROR FALTAL: al pedir tcb");
 			dictionary_destroy(dic_instrucciones);
 			desconectarse();
@@ -79,11 +85,18 @@ int32_t main(int32_t argc, char** argv) {
 		 break;
 		 */
 
-		while ((quantum > 0 || tcb.km) && resultado == OK) {
+		while ((quantum > 0 || tcb.km) && resultado == OK)
+		{
 			sleep(retardo());
-			obtener_instruccion(&tcb, instruccion);
+
+			if (obtener_instruccion(&tcb, instruccion)
+				== FALLO_LECTURA_DE_MEMORIA)
+				resultado = ERROR_EN_EJECUCION;
+
 			funcion = dictionary_get(dic_instrucciones, instruccion);
+
 			resultado = funcion(&tcb);
+
 			quantum--;
 		}
 
@@ -91,12 +104,12 @@ int32_t main(int32_t argc, char** argv) {
 			resultado = FIN_QUANTUM;
 
 		if (informar_a_kernel_de_finalizacion(tcb, resultado)
-			== FALLO_INFORME_A_KERNEL) {
+			== FALLO_INFORME_A_KERNEL)
+		{
 			printf("ERROR FALTAL: al enviar informe a kernel");
 			dictionary_destroy(dic_instrucciones);
 			desconectarse();
 			return 0;
-
 		}
 	}
 
