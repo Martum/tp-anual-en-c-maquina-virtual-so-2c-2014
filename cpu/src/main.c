@@ -37,13 +37,12 @@ int32_t main(int32_t argc, char** argv)
 	printf("Se pudo conectar a memoria y kernel\n");
 
 	tcb_t tcb;
-	t_dictionary* dic_instrucciones = dictionary_create();
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t resultado = OK;
 	int32_t quantum;
 	instruccion_t instruccion;
 
-	cargar_diccionario_de_instrucciones(dic_instrucciones);
+	inicializar_dic_de_instrucciones();
 
 	// TODO eliminar (solo para pruebas)
 	desconectarse();
@@ -56,18 +55,10 @@ int32_t main(int32_t argc, char** argv)
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			printf("ERROR FALTAL: al pedir tcb");
-			dictionary_destroy(dic_instrucciones);
+			liberar_dic_de_instrucciones();
 			desconectarse();
 			return 0;
 		}
-
-		// TODO eliminar (no es mas necesario)
-		/*
-		 dictionary_destroy(dic_instrucciones);
-		 cerrar_puertos();
-		 printf("ERROR FALTAL: Fallo pedido de tcb\n");
-		 return 0;
-		 */
 
 		printf("%d\n", quantum); // TODO eliminar (solamente para pruebas)
 		printf("%d\n", tcb.a); // TODO eliminar (solamente para pruebas)
@@ -77,14 +68,6 @@ int32_t main(int32_t argc, char** argv)
 		if ((quantum <= 0) && !tcb.km)
 			resultado = ERROR_EN_EJECUCION;
 
-		// TODO eliminar (no es mas necesario)
-		/*
-		 dictionary_destroy(dic_instrucciones);
-		 cerrar_puertos();
-		 printf("ERROR FALTAL: Quantum invalido. Aborto\n");
-		 break;
-		 */
-
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
 			sleep(retardo());
@@ -93,7 +76,7 @@ int32_t main(int32_t argc, char** argv)
 				== FALLO_LECTURA_DE_MEMORIA)
 				resultado = ERROR_EN_EJECUCION;
 
-			funcion = dictionary_get(dic_instrucciones, instruccion);
+			obtener_funcion(funcion, instruccion);
 
 			resultado = funcion(&tcb);
 
@@ -107,14 +90,13 @@ int32_t main(int32_t argc, char** argv)
 			== FALLO_INFORME_A_KERNEL)
 		{
 			printf("ERROR FALTAL: al enviar informe a kernel");
-			dictionary_destroy(dic_instrucciones);
+			liberar_dic_de_instrucciones();
 			desconectarse();
 			return 0;
 		}
 	}
 
-	dictionary_destroy(dic_instrucciones);
-
+	liberar_dic_de_instrucciones();
 	desconectarse();
 
 	return 0;

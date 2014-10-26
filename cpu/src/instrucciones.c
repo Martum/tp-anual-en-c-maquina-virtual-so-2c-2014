@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+t_dictionary* dic_instrucciones;
+
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -69,13 +71,15 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
-		== FALLO_LECTURA_DE_MEMORIA) {
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
-		== FALLO_ESCRITURA_EN_MEMORIA) {
+		== FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -729,7 +733,8 @@ resultado_t xxxx(tcb_t* tcb)
  */
 resultado_t malc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -754,7 +759,8 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -776,7 +782,8 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 	uint32_t cantidad_de_bytes_leidos;
 
 	if (comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
-		ENTERO) != OK) {
+		ENTERO) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -798,7 +805,8 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
  */
 resultado_t innn(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -829,13 +837,15 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
 	uint32_t cantidad_de_bytes_leidos;
 
 	if (comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
-		&cantidad_de_bytes_leidos, buffer, CADENA) != OK) {
+		&cantidad_de_bytes_leidos, buffer, CADENA) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
-		buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -855,7 +865,8 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
  */
 resultado_t innc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -891,7 +902,8 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
  */
 resultado_t outn(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -913,12 +925,14 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
-		buffer) == FALLO_LECTURA_DE_MEMORIA) {
+		buffer) == FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK) {
+	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -937,7 +951,8 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
  */
 resultado_t outc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -978,13 +993,15 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	char* buffer = malloc(ocupacion_stack);
 
 	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
-		== FALLO_LECTURA_DE_MEMORIA) {
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -1020,7 +1037,8 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1065,7 +1083,8 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1087,7 +1106,8 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1108,7 +1128,8 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1118,6 +1139,22 @@ resultado_t wake(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
+}
+
+void inicializar_dic_de_instrucciones()
+{
+	dic_instrucciones = dictionary_create();
+	cargar_diccionario_de_instrucciones(dic_instrucciones);
+}
+
+void liberar_dic_de_instrucciones()
+{
+	dictionary_destroy(dic_instrucciones);
+}
+
+void obtener_funcion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion)
+{
+	funcion = dictionary_get(dic_instrucciones, instruccion);
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic)
