@@ -96,19 +96,19 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
  * @RETURNS:
  */
-void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion);
+resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc y actualiza el registro.
  * @RETURNS:
  */
-void obtener_registro(tcb_t* tcb, char* registro);
+resultado_t obtener_registro(tcb_t* tcb, char* registro);
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza el numero.
  * @RETURNS:
  */
-void obtener_numero(tcb_t* tcb, int32_t* numero);
+resultado_t obtener_numero(tcb_t* tcb, int32_t* numero);
 
 void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 

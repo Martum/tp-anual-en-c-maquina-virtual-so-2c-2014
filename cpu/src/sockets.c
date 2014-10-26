@@ -300,28 +300,39 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 	return OK;
 }
 
-void _obtener(tcb_t* tcb, char* memoria_a_actualizar, uint32_t bytes_a_leer)
+resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
+	uint32_t bytes_a_leer)
 {
-	leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar);
+	if (leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return FALLO_LECTURA_DE_MEMORIA;
 	tcb->pc = tcb->pc + bytes_a_leer;
+	return OK;
 }
 
-void obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
+resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
-	_obtener(tcb, instruccion, sizeof(instruccion_t));
+	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
+		== FALLO_LECTURA_DE_MEMORIA)
+		return FALLO_LECTURA_DE_MEMORIA;
 	instruccion[4] = '\0';
+	return OK;
 }
 
-void obtener_registro(tcb_t* tcb, char* registro)
+resultado_t obtener_registro(tcb_t* tcb, char* registro)
 {
-	_obtener(tcb, registro, sizeof(char));
+	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
+		return FALLO_LECTURA_DE_MEMORIA;
+	return OK;
 }
 
-void obtener_numero(tcb_t* tcb, int32_t* numero)
+resultado_t obtener_numero(tcb_t* tcb, int32_t* numero)
 {
 	char buffer[3];
-	_obtener(tcb, buffer, sizeof(int32_t));
+	if (_obtener(tcb, buffer, sizeof(int32_t)) == FALLO_LECTURA_DE_MEMORIA)
+		return FALLO_LECTURA_DE_MEMORIA;
 	unir_bytes(numero, buffer);
+	return OK;
 }
 
 // TODO arreglar con kernel este mensaje tamanio stack
