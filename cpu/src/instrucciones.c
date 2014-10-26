@@ -1,7 +1,5 @@
 #include "instrucciones.h"
 
-// TODO agregar validacion a los obtener
-
 /*
  * 	LOAD [Registro], [Numero]
  *

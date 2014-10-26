@@ -5,8 +5,7 @@
  *      Author: utnso
  */
 
-// TODO arreglar si se va a mandar un mensaje mensaje al conectarse
-// TODO agregar validaciones a los obtener
+// TODO arreglar con memoria si se va a mandar un mensaje mensaje al conectarse
 #include "sockets.h"
 
 sock_t* memoria;
@@ -52,7 +51,8 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -60,14 +60,18 @@ resultado_t _mandar_soy_cpu_a_kernel()
 		return FALLO_COMUNICACION;
 	}
 
-	pedido_t respuesta = *deserializar_pedido_t(chorro_de_respuesta);
+	pedido_t* respuesta = deserializar_pedido_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.flag != BIENVENIDO) {
+	if (respuesta->flag != BIENVENIDO)
+	{
+		free(respuesta);
 		return FALLO_COMUNICACION;
 	}
+
+	free(respuesta);
 
 	return OK;
 }
@@ -106,7 +110,8 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -114,13 +119,16 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-	respuesta_de_nuevo_tcb_t respuesta = *deserializar_respuesta_de_nuevo_tcb_t(
+	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
 		chorro_de_respuesta);
-	*tcb = *respuesta.tcb;
-	*quantum = respuesta.quantum;
+
+	*tcb = *respuesta->tcb;
+	*quantum = respuesta->quantum;
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+	free(respuesta->tcb);
+	free(respuesta);
 
 	return OK;
 }
@@ -139,7 +147,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -147,16 +156,19 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
-	respuesta_de_crear_segmento_t respuesta =
-		*deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
+	respuesta_de_crear_segmento_t* respuesta =
+		deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado == ERROR_DE_MEMORIA_LLENA)
-		return FALLO_CREACION_DE_SEGMENTO;
+	if (respuesta->resultado == ERROR_DE_MEMORIA_LLENA)
+		free(respuesta);
+	return FALLO_CREACION_DE_SEGMENTO;
 
-	*direccion = respuesta.direccion_virtual;
+	*direccion = respuesta->direccion_virtual;
+
+	free(respuesta);
 
 	return OK;
 }
@@ -174,7 +186,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
-		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		chorro_de_respuesta) == FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -182,13 +195,18 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 	}
 
-	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado == ERROR_NO_ENCUENTRO_SEGMENTO)
+	if (respuesta->resultado == ERROR_NO_ENCUENTRO_SEGMENTO)
+	{
+		free(respuesta);
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
+	}
+
+	free(respuesta);
 
 	return OK;
 }
@@ -209,7 +227,8 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -217,16 +236,23 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
-	respuesta_de_leer_de_memoria_t respuesta =
-		*deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
+	respuesta_de_leer_de_memoria_t* respuesta =
+		deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado == SEGMENTATION_FAULT)
+	if (respuesta->resultado == SEGMENTATION_FAULT)
+	{
+		free(respuesta->bytes_leido);
+		free(respuesta);
 		return FALLO_LECTURA_DE_MEMORIA;
+	}
 
-	memcpy(buffer, respuesta.bytes_leido, cantidad_de_bytes);
+	memcpy(buffer, respuesta->bytes_leido, cantidad_de_bytes);
+
+	free(respuesta->bytes_leido);
+	free(respuesta);
 
 	return OK;
 }
@@ -247,7 +273,8 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(cantidad_de_bytes),
-		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		chorro_de_respuesta) == FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -255,13 +282,18 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 		return FALLO_ESCRITURA_EN_MEMORIA;
 	}
 
-	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado == SEGMENTATION_FAULT)
+	if (respuesta->resultado == SEGMENTATION_FAULT)
+	{
+		free(respuesta);
 		return FALLO_ESCRITURA_EN_MEMORIA;
+	}
+
+	free(respuesta);
 
 	return OK;
 }
@@ -281,7 +313,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -289,13 +322,18 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	respuesta_t respuesta = *deserializar_respuesta_t(chorro_de_respuesta);
+	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta.resultado != OK)
+	if (respuesta->resultado != OK)
+	{
+		free(respuesta);
 		return FALLO_INFORME_A_KERNEL;
+	}
+
+	free(respuesta);
 
 	return OK;
 }
@@ -306,7 +344,9 @@ resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	if (leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
+
 	tcb->pc = tcb->pc + bytes_a_leer;
+
 	return OK;
 }
 
@@ -315,7 +355,9 @@ resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
+
 	instruccion[4] = '\0';
+
 	return OK;
 }
 
@@ -323,15 +365,19 @@ resultado_t obtener_registro(tcb_t* tcb, char* registro)
 {
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
+
 	return OK;
 }
 
 resultado_t obtener_numero(tcb_t* tcb, int32_t* numero)
 {
 	char buffer[3];
+
 	if (_obtener(tcb, buffer, sizeof(int32_t)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
+
 	unir_bytes(numero, buffer);
+
 	return OK;
 }
 
@@ -362,14 +408,16 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	if (recibir(kernel, &chorro_de_respuesta, &len_devolucion) == -1)
 		return FALLO_COMUNICACION;
 
-	respuesta_entrada_estandar_t respuesta =
-		*deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
+	respuesta_entrada_estandar_t* respuesta =
+		deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
 
-	*bytes_leidos = respuesta.tamanio;
-	buffer = respuesta.cadena;
+	*bytes_leidos = respuesta->tamanio;
+	buffer = respuesta->cadena;
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
+	free(respuesta->cadena);
+	free(respuesta);
 
 	return OK;
 }
@@ -389,7 +437,8 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_salida_estandar_t_serializado(bytes_a_enviar),
-		chorro_de_respuesta) == FALLO_COMUNICACION) {
+		chorro_de_respuesta) == FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -419,7 +468,8 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_crear_hilo_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -450,7 +500,8 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_join_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -481,7 +532,8 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_bloquear_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -511,7 +563,8 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_despertar_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		== FALLO_COMUNICACION)
+	{
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
