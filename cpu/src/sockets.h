@@ -37,6 +37,12 @@ resultado_t conectar_con_memoria();
 resultado_t conectar_con_kernel();
 
 /*
+ * @DESC: Cierra los puertos de memoria y kernel
+ * @RETURNS:
+ */
+void desconectarse();
+
+/*
  * @DESC: Le pide al kernel un tcb y guarda el tcb devuelto y su quantum y los parametros
  * @RETURNS:
  * 		OK si pudo conectarse y trajo bien los datos
@@ -85,12 +91,6 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
  * 		FALLO_INFORME_A_KERNEL si no pudo mandar bien el mensaje
  */
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
-
-/*
- * @DESC: Cierra los puertos de memoria y kernel
- * @RETURNS:
- */
-void cerrar_puertos();
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.

@@ -42,11 +42,6 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 	return OK;
 }
 
-resultado_t conectar_con_memoria()
-{
-	return _conectar(&memoria, ip_msp(), puerto_msp());
-}
-
 resultado_t _mandar_soy_cpu_a_kernel()
 {
 	pedido_t cuerpo_del_mensaje;
@@ -86,6 +81,18 @@ resultado_t conectar_con_kernel()
 		return FALLO_CONEXION;
 
 	return OK;
+}
+
+resultado_t conectar_con_memoria()
+{
+	return _conectar(&memoria, ip_msp(), puerto_msp());
+}
+
+// TODO preguntar a kernel si quieren un mensaje de DESCONEXION_CPU
+void desconectarse()
+{
+	cerrar_liberar(memoria);
+	cerrar_liberar(kernel);
 }
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
@@ -291,13 +298,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 
 	return OK;
-}
-
-// TODO preguntar a kernel si quieren un mensaje de DESCONEXION_CPU
-void cerrar_puertos()
-{
-	cerrar_liberar(memoria);
-	cerrar_liberar(kernel);
 }
 
 void _obtener(tcb_t* tcb, char* memoria_a_actualizar, uint32_t bytes_a_leer)

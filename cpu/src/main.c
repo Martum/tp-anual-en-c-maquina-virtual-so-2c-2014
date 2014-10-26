@@ -42,7 +42,7 @@ int32_t main(int32_t argc, char** argv) {
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
 
 	// TODO eliminar (solo para pruebas)
-	cerrar_puertos();
+	desconectarse();
 
 	// TODO eliminar (solo para pruebas)
 	return 0;
@@ -51,7 +51,7 @@ int32_t main(int32_t argc, char** argv) {
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB) {
 			printf("ERROR FALTAL: al pedir tcb");
 			dictionary_destroy(dic_instrucciones);
-			cerrar_puertos();
+			desconectarse();
 			return 0;
 		}
 
@@ -94,7 +94,7 @@ int32_t main(int32_t argc, char** argv) {
 			== FALLO_INFORME_A_KERNEL) {
 			printf("ERROR FALTAL: al enviar informe a kernel");
 			dictionary_destroy(dic_instrucciones);
-			cerrar_puertos();
+			desconectarse();
 			return 0;
 
 		}
@@ -102,7 +102,7 @@ int32_t main(int32_t argc, char** argv) {
 
 	dictionary_destroy(dic_instrucciones);
 
-	cerrar_puertos();
+	desconectarse();
 
 	return 0;
 }
