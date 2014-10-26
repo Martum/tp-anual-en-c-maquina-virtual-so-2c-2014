@@ -77,7 +77,7 @@ int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar)
 	int32_t res = enviar(conexion_proceso, pedido_serializado, &len);
 
 	free(pedido_serializado);
-	return 0;
+	return res;
 }
 
 int salida_estandar(pedido_salida_estandar_t* pedido_salida)

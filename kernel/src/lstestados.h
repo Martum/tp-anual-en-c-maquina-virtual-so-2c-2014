@@ -64,4 +64,14 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid);
  */
 tcb_t* get_bloqueado_conclusion_tcb();
 
+/**
+ * Agrega a la lista de TCBs bloqueados que estan esperando un Recurso
+ */
+void agregar_a_block_recurso(tcb_t* tcb);
+
+/**
+ * Quita de la lista de TCBs bloqueados que estan esperando un Recurso
+ */
+void quitar_de_block_recurso(tcb_t* tcb);
+
 #endif /* LSTESTADOS_H_ */
