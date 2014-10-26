@@ -193,8 +193,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	return OK;
 }
 
-resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t cantidad_de_bytes,
-	char* buffer)
+resultado_t leer_de_memoria(direccion pid, direccion direccion,
+	uint32_t cantidad_de_bytes, char* buffer)
 {
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
@@ -224,7 +224,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t cantida
 	free(chorro_de_respuesta);
 
 	if (respuesta.resultado == SEGMENTATION_FAULT)
-			return FALLO_LECTURA_DE_MEMORIA;
+		return FALLO_LECTURA_DE_MEMORIA;
 
 	memcpy(buffer, respuesta.bytes_leido, cantidad_de_bytes);
 
@@ -329,43 +329,40 @@ void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
 }
 
-// TODO revisar porque rompe
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
-//	pedido_entrada_estandar_t cuerpo_del_mensaje;
-//	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
-//	cuerpo_del_mensaje.pid = tcb->pid;
-//	cuerpo_del_mensaje.identificador_de_tipo = identificador;
-//
-//	char* chorro_de_envio = serializar_pedido_entrada_estandar_t(
-//		&cuerpo_del_mensaje);
-//	char* chorro_de_respuesta = malloc(
-//		tamanio_respuesta_entrada_estandar_t_serializado());
-//
-//	if (_enviar_y_recibir(kernel, chorro_de_envio,
-//		tamanio_pedido_entrada_estandar_t_serializado(), chorro_de_respuesta)
-//		== FALLO_COMUNICACION) {
-//
-//		free(chorro_de_envio);
-//		free(chorro_de_respuesta);
-//
-//		return FALLO_COMUNICACION;
-//	}
-//
-//	respuesta_entrada_estandar_t respuesta =
-//		*deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
-//
-//	*bytes_leidos = respuesta.tamanio;
-//	buffer = respuesta.cadena;
-//
-//	free(chorro_de_envio);
-//	free(chorro_de_respuesta);
+	pedido_entrada_estandar_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.pid = tcb->pid;
+	cuerpo_del_mensaje.identificador_de_tipo = identificador;
+
+	uint32_t len_a_enviar = tamanio_pedido_entrada_estandar_t_serializado();
+
+	char* chorro_de_envio = serializar_pedido_entrada_estandar_t(
+		&cuerpo_del_mensaje);
+
+	if (enviar(kernel, chorro_de_envio, &len_a_enviar) == -1)
+		return FALLO_COMUNICACION;
+
+	char* chorro_de_respuesta;
+	uint32_t len_devolucion;
+
+	if (recibir(kernel, &chorro_de_respuesta, &len_devolucion) == -1)
+		return FALLO_COMUNICACION;
+
+	respuesta_entrada_estandar_t respuesta =
+		*deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
+
+	*bytes_leidos = respuesta.tamanio;
+	buffer = respuesta.cadena;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
 
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer)
 {
@@ -380,8 +377,8 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
-		tamanio_pedido_salida_estandar_t_serializado(bytes_a_enviar), chorro_de_respuesta)
-		== FALLO_COMUNICACION) {
+		tamanio_pedido_salida_estandar_t_serializado(bytes_a_enviar),
+		chorro_de_respuesta) == FALLO_COMUNICACION) {
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
@@ -400,7 +397,6 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 {
 	pedido_crear_hilo_t cuerpo_del_mensaje;
@@ -431,7 +427,6 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 {
 	pedido_join_t cuerpo_del_mensaje;
@@ -463,7 +458,6 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 {
 	pedido_bloquear_t cuerpo_del_mensaje;
@@ -495,7 +489,6 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 {
 	pedido_despertar_t cuerpo_del_mensaje;
