@@ -603,7 +603,7 @@ resultado_t _push(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 		return ERROR_EN_EJECUCION;
 
 	if (mover_cursor_stack(tcb, cantidad_de_bytes)
-		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
@@ -671,7 +671,7 @@ resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 		return ERROR_EN_EJECUCION;
 
 	if (mover_cursor_stack(tcb, -cantidad_de_bytes)
-		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
@@ -738,12 +738,12 @@ resultado_t malc(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t bytes = obtener_valor_registro_a(tcb);
+	int32_t cantidad_de_bytes_a_pedir = obtener_valor_registro_a(tcb);
 	direccion direccion;
 
-	if (crear_segmento(tcb->pid, bytes, &direccion)
+	if (crear_segmento(tcb->pid, cantidad_de_bytes_a_pedir, &direccion)
 		== FALLO_CREACION_DE_SEGMENTO)
-		return FALLO_CREACION_DE_SEGMENTO;
+		return ERROR_EN_EJECUCION;
 
 	actualizar_registro_a(tcb, direccion);
 
@@ -1009,7 +1009,7 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	free(buffer);
 
 	if (mover_cursor_stack(tcb, ocupacion_stack)
-		== EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA)
+		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
 	return OK;

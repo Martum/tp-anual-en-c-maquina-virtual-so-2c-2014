@@ -341,7 +341,13 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	uint32_t bytes_a_leer)
 {
-	if (leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar)
+	uint32_t pid_a_leer = 1;
+
+	if (!es_tcb_kernel(tcb)) {
+		pid_a_leer = tcb->pid;
+	}
+
+	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, memoria_a_actualizar)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
@@ -352,7 +358,7 @@ resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 
 resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
-	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
+	if (_obtener(tcb, instruccion, sizeof(instruccion_t) - 1)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
@@ -386,6 +392,7 @@ void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
 {
 }
 
+// TODO preguntar si hace falta un campo resultado_t en caso de que falle la entrada
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {

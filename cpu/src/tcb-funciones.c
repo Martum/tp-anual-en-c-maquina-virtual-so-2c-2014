@@ -132,7 +132,7 @@ int32_t obtener_valor_registro_b(tcb_t* tcb)
 resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
 	if (tcb->base_stack < tcb->cursor_stack + cantidad_de_bytes)
-		return EXCEPCION_POR_LECTURA_DE_STACK_INVALIDA;
+		return EXCEPCION_POR_POSICION_DE_STACK_INVALIDA;
 
 	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes;
 

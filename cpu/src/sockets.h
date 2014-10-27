@@ -14,6 +14,7 @@
 #include "definiciones.h"
 #include "operaciones-con-bits.h"
 #include "configuraciones.h"
+#include "tcb-funciones.h"
 
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
