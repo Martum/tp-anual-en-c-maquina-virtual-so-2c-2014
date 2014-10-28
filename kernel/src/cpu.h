@@ -23,6 +23,16 @@
 uint32_t dame_nuevo_id_cpu();
 
 /**
+ * Copia el TID y el PID
+ */
+void copiar_encabezado(tcb_t* to, tcb_t* from);
+
+/**
+ * Copia los Registros de Programacion (A, B, C, D, E, F)
+ */
+void copiar_registros_programacion(tcb_t* to, tcb_t* from);
+
+/**
  * Copia todos los elementos de FROM a TO
  */
 void copiar_tcb(tcb_t* to, tcb_t* from);

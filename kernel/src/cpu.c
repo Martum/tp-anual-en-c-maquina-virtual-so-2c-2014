@@ -19,10 +19,25 @@ uint32_t dame_nuevo_id_cpu()
 	return ID_CPU_GLOBAL++;
 }
 
-void copiar_tcb(tcb_t* to, tcb_t* from)
+void copiar_encabezado(tcb_t* to, tcb_t* from)
 {
 	to->pid = from->pid;
 	to->tid = from->tid;
+}
+
+void copiar_registros_programacion(tcb_t* to, tcb_t* from)
+{
+	to->a = from->a;
+	to->b = from->b;
+	to->c = from->c;
+	to->d = from->d;
+	to->e = from->e;
+	to->f = from->f;
+}
+
+void copiar_tcb(tcb_t* to, tcb_t* from)
+{
+	copiar_encabezado(to, from);
 
 	to->base_codigo = from->base_codigo;
 	to->tamanio_codigo = from->tamanio_codigo;
@@ -32,12 +47,7 @@ void copiar_tcb(tcb_t* to, tcb_t* from)
 	to->base_stack = from->base_stack;
 	to->cursor_stack = from->cursor_stack;
 
-	to->a = from->a;
-	to->b = from->b
-	to->c = from->c;
-	to->d = from->d;
-	to->e = from->e;
-	to->f = from->f;
+	copiar_registros_programacion(to, from);
 }
 
 int crear_hilo(tcb_t* tcb)
@@ -119,8 +129,9 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 
 void bloquear(uint32_t recurso)
 {
-	//quitar_de_exec(tcb);	//TODO: Modificar esto. No esta en exec, esta bloqueado conclusion km
+	// Este TCB es el que ejecuto la syscall (actualmente la esta corriendo el TCB KM)
 	tcb_t* tcb = get_bloqueado_conclusion_tcb();
+
 	agregar_a_block_recurso(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }

@@ -336,7 +336,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_entrada);
 				break;
 
-			case BLOQUEAR:
+			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
 				;
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
 
