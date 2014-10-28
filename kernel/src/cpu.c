@@ -111,5 +111,8 @@ void despertar(uint32_t recurso)
 	agregar_a_ready(tcb);
 }
 
-
+void interrupcion(tcb_t* tcb, direccion dir)
+{
+	//TODO: Continuar aca. Tener en cuenta que el tcb recibido se libera fuera
+}
 
