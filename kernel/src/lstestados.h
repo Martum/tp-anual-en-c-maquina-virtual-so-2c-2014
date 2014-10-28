@@ -74,9 +74,27 @@ void agregar_a_block_recurso(tcb_t* tcb);
  */
 void quitar_de_block_recurso(tcb_t* tcb);
 
+// FUNCIONES DE TCB KM
+
 /**
  * Devuelve el TCB KM
  */
 tcb_t* get_tcb_km();
+
+/**
+ * Verifica si el TCB KM esta corriendo
+ * @RETURNS: TRUE si esta en running; FALSE caso contrario
+ */
+bool tcb_km_is_running();
+
+
+// FUNCIONES DE BLOCK_ESPERA_KM
+
+/**
+ * Verifica si hay hilos en la cola de bloqueados esperando KM libre
+ * @RETURNS: TRUE si hay hilos en la cola; false caso contrario
+ */
+bool hay_hilos_block_espera_km();
+
 
 #endif /* LSTESTADOS_H_ */

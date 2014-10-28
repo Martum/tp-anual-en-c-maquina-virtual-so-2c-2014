@@ -203,3 +203,13 @@ tcb_t* get_tcb_km()
 {
 	return TCB_KM;
 }
+
+bool tcb_km_is_running()
+{
+	return !list_is_empty(BLOCK_CONCLUSION_KM);
+}
+
+bool hay_hilos_block_espera_km()
+{
+	return !queue_is_empty(BLOCK_ESPERA_KM);
+}

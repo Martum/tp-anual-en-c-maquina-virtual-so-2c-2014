@@ -114,5 +114,18 @@ void despertar(uint32_t recurso)
 void interrupcion(tcb_t* tcb, direccion dir)
 {
 	//TODO: Continuar aca. Tener en cuenta que el tcb recibido se libera fuera
+
+	// Quitar de running ACA
+	// Copiar este TCB al que estaba en RUNNING
+
+	if(hay_hilos_block_espera_km() || tcb_km_is_running())
+	{
+		// Crear struct con el tcb y la direccion
+		// Encolarlo en block_espera_km
+	}
+	else
+	{// TCB KM libre, lo podemos usar
+
+	}
 }
 
