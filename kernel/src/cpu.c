@@ -50,6 +50,7 @@ void copiar_tcb(tcb_t* to, tcb_t* from)
 	copiar_registros_programacion(to, from);
 }
 
+// TODO: Esto hay que verlo con Santi
 int crear_hilo(tcb_t* tcb)
 {
 	// Creamos TCB
@@ -145,19 +146,27 @@ void despertar(uint32_t recurso)
 
 void interrupcion(tcb_t* tcb, direccion dir)
 {
-	//TODO: Continuar aca. Tener en cuenta que el tcb recibido se libera fuera
-
-	// Quitar de running ACA
-	// Copiar este TCB al que estaba en RUNNING
+	// Quitamos de EXEC y copiamos el nuevo estado
+	tcb_t* tcb_actual = quitar_de_exec(tcb);
+	copiar_tcb(tcb_actual, tcb);
 
 	if(hay_hilos_block_espera_km() || tcb_km_is_running())
 	{
-		// Crear struct con el tcb y la direccion
-		// Encolarlo en block_espera_km
+		// Creamos struct y lo encolamos a la espera de KM
+		esperando_km_t* ekm = malloc(sizeof(esperando_km_t));
+		ekm->tcb = tcb_actual;
+		ekm->direccion_syscall = dir;
+
+		agregar_a_block_espera_km(ekm);
 	}
 	else
 	{// TCB KM libre, lo podemos usar
-
+		// TODO: CONTINUAR ACA
+		// Hay que copiar los registros al tcb km.
+		// Poner el tcb km en rdy
+		// Poner tcb_actual en la lista block conclusion km
 	}
+
+	// NO HACER FREE DE NADA
 }
 

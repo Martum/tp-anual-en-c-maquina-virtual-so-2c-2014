@@ -69,6 +69,7 @@ void inicializar_listas_estados_tcb()
 	BLOCK_ESPERA_KM = queue_create();
 
 	DIC_COLAS_ESPERA_RECURSOS = dictionary_create();
+	BLOCK_RECURSO = list_create();
 
 	// Y esta?
 	SYSCALLS_COLA = queue_create();
@@ -212,4 +213,9 @@ bool tcb_km_is_running()
 bool hay_hilos_block_espera_km()
 {
 	return !queue_is_empty(BLOCK_ESPERA_KM);
+}
+
+void agregar_a_block_espera_km(esperando_km_t* ekm)
+{
+	queue_push(BLOCK_ESPERA_KM, ekm);
 }
