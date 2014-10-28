@@ -17,6 +17,9 @@
 /*t_queue* exec;
 t_queue* block;*/
 
+// TCB KM
+tcb_t* TCB_KM;
+
 // Cola de ready para procesos (1) y para KM (0)
 t_queue* READY[2];
 
@@ -49,6 +52,9 @@ void _eliminar_tcb(void* elemento)
 
 void inicializar_listas_estados_tcb()
 {
+	TCB_KM = malloc(sizeof(tcb_t));
+	TCB_KM->km = true;
+
 	READY[0] = queue_create();
 	READY[1] = queue_create();
 
@@ -191,4 +197,9 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 tcb_t* get_bloqueado_conclusion_tcb()
 {
 	return (tcb_t*)list_get(BLOCK_CONCLUSION_KM, 0);
+}
+
+tcb_t* get_tcb_km()
+{
+	return TCB_KM;
 }

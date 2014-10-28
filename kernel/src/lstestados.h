@@ -74,4 +74,9 @@ void agregar_a_block_recurso(tcb_t* tcb);
  */
 void quitar_de_block_recurso(tcb_t* tcb);
 
+/**
+ * Devuelve el TCB KM
+ */
+tcb_t* get_tcb_km();
+
 #endif /* LSTESTADOS_H_ */
