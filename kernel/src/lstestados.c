@@ -79,7 +79,7 @@ void inicializar_listas_estados_tcb()
 
 void agregar_a_ready(tcb_t* tcb) {
 	queue_push(READY[!tcb->km], tcb);
-	// Aca deberíamos llamar al planificador.
+	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
 bool hay_hilo_km_ready(){
@@ -218,4 +218,9 @@ bool hay_hilos_block_espera_km()
 void agregar_a_block_espera_km(esperando_km_t* ekm)
 {
 	queue_push(BLOCK_ESPERA_KM, ekm);
+}
+
+void agregar_a_block_conclusion_km(tcb_t* tcb)
+{
+	queue_push(BLOCK_CONCLUSION_KM, tcb);
 }

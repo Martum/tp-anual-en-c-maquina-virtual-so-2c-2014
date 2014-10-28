@@ -15,6 +15,7 @@
 #include <hu4sockets/tcb.h>
 #include "conexiones.h"
 #include <stdlib.h>
+#include "lstestados.h"
 
 
 /**
@@ -92,5 +93,11 @@ void despertar(uint32_t recurso);
  * mandarlos a procesar, sino seguir normalmente.
  */
 void interrupcion(tcb_t* tcb, direccion dir);
+
+/**
+ * Prepara el TCB KM para ejecutarlo. Lo encola en rdy[0] y deja
+ * al TCB usuario en block_conclusion_km
+ */
+void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion);
 
 #endif /* SERVICIOSACPU_H_ */

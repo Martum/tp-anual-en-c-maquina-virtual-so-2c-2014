@@ -104,12 +104,18 @@ bool tcb_km_is_running();
  */
 bool hay_hilos_block_espera_km();
 
-
-// FUNCIONES DE BLOCK_ESPERA_KM
 /**
  * Agrega a la cola de bloqueados a la espera de KM
  */
 void agregar_a_block_espera_km(esperando_km_t* ekm);
+
+
+// FUNCIONES DE BLOCK_CONCLUSION_KM
+
+/**
+ * Agrega a BLOCK_CONCLUSION_KM el TCB
+ */
+void agregar_a_block_conclusion_km(tcb_t* tcb);
 
 
 #endif /* LSTESTADOS_H_ */

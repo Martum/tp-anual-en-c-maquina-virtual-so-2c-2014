@@ -152,7 +152,7 @@ void interrupcion(tcb_t* tcb, direccion dir)
 
 	if(hay_hilos_block_espera_km() || tcb_km_is_running())
 	{
-		// Creamos struct y lo encolamos a la espera de KM
+		// Encolamos el struct a la espera del KM
 		esperando_km_t* ekm = malloc(sizeof(esperando_km_t));
 		ekm->tcb = tcb_actual;
 		ekm->direccion_syscall = dir;
@@ -161,12 +161,25 @@ void interrupcion(tcb_t* tcb, direccion dir)
 	}
 	else
 	{// TCB KM libre, lo podemos usar
-		// TODO: CONTINUAR ACA
-		// Hay que copiar los registros al tcb km.
-		// Poner el tcb km en rdy
-		// Poner tcb_actual en la lista block conclusion km
+		preparar_km_para_ejecutar(tcb_actual, dir);
 	}
 
 	// NO HACER FREE DE NADA
+}
+
+void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion)
+{
+	// Copiamos los registros al TCB KM
+	tcb_t* tcb_km = get_tcb_km();
+	copiar_encabezado(tcb_km, tcb);
+	copiar_registros_programacion(tcb_km, tcb);
+
+	tcb_km->pc = direccion;
+
+	// Agregamos el TCB Usuario a block
+	agregar_a_block_conclusion_km(tcb);
+
+	// Agregamos el TCB KM a rdy
+	agregar_a_ready(tcb_km);
 }
 
