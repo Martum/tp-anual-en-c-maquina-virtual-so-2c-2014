@@ -83,6 +83,23 @@ void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 		*mayor_fd = nuevo_fd;
 }
 
+void _enviar_resultadot(sock_t* conexion, resultado_t res)
+{
+	char* msg = malloc(tamanio_flagt());
+	uint32_t i = sizeof(resultado_t);
+
+	memcpy(msg, &res, i);
+
+	enviar(conexion, msg, &i);
+
+	free(msg);
+}
+
+void _enviar_completadook(sock_t* conexion)
+{
+	_enviar_resultadot(conexion, COMPLETADO_OK);
+}
+
 void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
 	char* msg = malloc(tamanio_flagt());
@@ -281,6 +298,12 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
+	// TODO: IMPORTANTE: Cuando se recibe un TCB KM que termino de ejecutar,
+	// el TCB UM esta en la lista BLOCK_CONCLUSION_KM. Despues de copiar los
+	// registros del KM al UM, NO HAY QUE PONERLO DIRECTAMENTE EN RDY (al UM).
+	// Primero hay que verificar si no esta encolado en alguna lista de tipo BLOCK
+	// (hacer una funcion para esto). Si no esta en ninguna, ahi si se pone en RDY.
+
 	if(resultado == 0)
 	{
 		switch (cod_op) {
@@ -288,7 +311,12 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
 
-				salida_estandar(pedido_salida);
+				if(salida_estandar(pedido_salida) == 0)
+					_enviar_completadook(conexion_cpu->socket);
+				else
+				{
+					// TODO: Ver con Santi como informar Error
+				}
 
 				free(pedido_salida->cadena_de_texto);
 				free(pedido_salida);
@@ -298,9 +326,51 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
-				enviar_entrada_estandar(pedido_entrada);
+				if(enviar_entrada_estandar(pedido_entrada) == 0)
+					_enviar_completadook(conexion_cpu->socket);
+				else
+				{
+					// TODO: Ver con Santi como informar Error
+				}
 
 				free(pedido_entrada);
+				break;
+
+			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
+				;
+				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
+
+				// No usamos el TCB porque el que se esta bloqueando
+				// es el que esta esperando la conclusion del KM
+				bloquear(pedido_bloqueo->identificador_de_recurso);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_bloqueo->tcb);
+				free(pedido_bloqueo);
+				break;
+
+			case DESPERTAR:
+				;
+				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
+
+				despertar(pedido_despertar->identificador_de_recurso);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_despertar);
+				break;
+
+			case INTERRUPCION:
+				;
+				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
+
+				interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_interrupcion->tcb);
+				free(pedido_interrupcion);
 				break;
 
 

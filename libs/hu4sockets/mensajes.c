@@ -252,7 +252,7 @@ char* serializar_pedido_de_destruir_segmento_t(
 {
 	char* bytes = malloc(tamanio_pedido_de_crear_segmento_t_serializado());
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(bytes + offset, &pedido->direccion_virtual, sizeof(direccion));
 
 	offset += sizeof(direccion);
@@ -270,7 +270,7 @@ pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(
 	pedido_de_destruir_segmento_t* pedido_destruir_segmento = malloc(
 		sizeof(pedido_de_destruir_segmento_t));
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(&pedido_destruir_segmento->direccion_virtual, chorro + offset,
 		sizeof(direccion));
 
@@ -302,7 +302,7 @@ char* serializar_pedido_de_leer_de_memoria_t(pedido_de_leer_de_memoria_t* pedido
 
 	char* bytes = malloc(tamanio_pedido_de_leer_de_memoria_t_serializado());
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(bytes + offset, &pedido->direccion_virtual, sizeof(direccion));
 
 	offset += sizeof(direccion);
@@ -322,7 +322,7 @@ pedido_de_leer_de_memoria_t* deserializar_pedido_de_leer_de_memoria_t(char* chor
 	pedido_de_leer_de_memoria_t* pedido_de_leer_de_memoria = malloc(
 			sizeof(pedido_de_leer_de_memoria_t));
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(&pedido_de_leer_de_memoria->direccion_virtual, chorro + offset,
 		sizeof(direccion));
 
@@ -358,7 +358,7 @@ char* serializar_pedido_de_escribir_en_memoria_t(
 {
 	char* bytes = malloc(tamanio_pedido_de_escribir_en_memoria_t_serializado(pedido->tamano));
 
-	uint32_t offset = 0;
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 	memcpy(bytes + offset, &pedido->direccion_virtual, sizeof(direccion));
 
 	offset += sizeof(direccion);
@@ -382,7 +382,7 @@ pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(
 	pedido_de_escribir_en_memoria_t* pedido = malloc(
 				sizeof(pedido_de_escribir_en_memoria_t));
 
-		uint32_t offset = 0;
+		uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
 		memcpy(&pedido->direccion_virtual, chorro + offset,
 			sizeof(direccion));
 
@@ -584,6 +584,9 @@ char* serializar_pedido_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->tid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	memcpy(bytes + offset, &pedido->identificador_de_tipo, sizeof(idetificador_tipo_t));
 
 	return bytes;
@@ -597,8 +600,11 @@ pedido_entrada_estandar_t* deserializar_pedido_entrada_estandar_t(
 	uint32_t offset = 0;
 	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
-	offset += sizeof(tcb_t);
+	offset += sizeof(flag_t);
 	memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&pedido->tid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
 	memcpy(&pedido->identificador_de_tipo, chorro + offset, sizeof(idetificador_tipo_t));
@@ -610,6 +616,7 @@ uint32_t tamanio_pedido_entrada_estandar_t_serializado()
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
 	t += sizeof(idetificador_tipo_t);
 
@@ -649,7 +656,7 @@ pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(
 	uint32_t offset = 0;
 	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
-	offset += sizeof(tcb_t);
+	offset += sizeof(flag_t);
 	memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
@@ -733,7 +740,7 @@ char* serializar_pedido_join_t(
 	offset += sizeof(flag_t);
 	memcpy(bytes + offset, &pedido->tid_llamador, sizeof(uint32_t));
 
-	offset += sizeof(flag_t);
+	offset += sizeof(uint32_t);
 	memcpy(bytes + offset, &pedido->tid_esperador, sizeof(uint32_t));
 
 	return bytes;
@@ -750,7 +757,7 @@ pedido_join_t* deserializar_pedido_join_t(
 	offset += sizeof(flag_t);
 	memcpy(&pedido->tid_llamador, chorro + offset, sizeof(uint32_t));
 
-	offset += sizeof(flag_t);
+	offset += sizeof(uint32_t);
 	memcpy(&pedido->tid_esperador, chorro + offset, sizeof(uint32_t));
 
 	return pedido;
@@ -843,7 +850,7 @@ pedido_despertar_t* deserializar_pedido_despertar_t(
 	uint32_t offset = 0;
 	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
-	offset += sizeof(tcb_t);
+	offset += sizeof(flag_t);
 	memcpy(&pedido->identificador_de_recurso, chorro + offset, sizeof(uint32_t));
 
 	return pedido;
@@ -874,6 +881,12 @@ char* serializar_respuesta_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->tid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	memcpy(bytes + offset, pedido->cadena, pedido->tamanio);
 
 	return bytes;
@@ -891,6 +904,12 @@ respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(
 	memcpy(&respuesta->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	memcpy(&respuesta->pid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
+	memcpy(&respuesta->tid, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	respuesta->cadena = malloc(respuesta->tamanio);
 	memcpy(respuesta->cadena, chorro + offset, respuesta->tamanio);
 
@@ -901,6 +920,8 @@ uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t tamanio)
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
+	t += sizeof(uint32_t);
+	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
 	t += tamanio;
 

@@ -1,6 +1,6 @@
 #include "instrucciones.h"
 
-// TODO agregar validacion a los obtener
+t_dictionary* dic_instrucciones;
 
 /*
  * 	LOAD [Registro], [Numero]
@@ -12,8 +12,11 @@ resultado_t load(tcb_t* tcb)
 	char registro;
 	int32_t numero;
 
-	obtener_registro(tcb, &registro);
-	obtener_numero(tcb, &numero);
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_numero(tcb, &numero) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	if (actualizar_valor_del_registro(tcb, registro, numero)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -31,8 +34,11 @@ resultado_t getm(tcb_t* tcb)
 {
 	char registro1, registro2;
 
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_2;
 
@@ -65,13 +71,15 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
-		== FALLO_LECTURA_DE_MEMORIA) {
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
-		== FALLO_ESCRITURA_EN_MEMORIA) {
+		== FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -90,15 +98,22 @@ resultado_t setm(tcb_t* tcb)
 	int32_t cantidad_de_bytes_a_copiar;
 	char registro1, registro2;
 
-	obtener_numero(tcb, &cantidad_de_bytes_a_copiar);
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	if (obtener_numero(tcb, &cantidad_de_bytes_a_copiar)
+		== FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
+
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -118,8 +133,11 @@ resultado_t movr(tcb_t* tcb)
 {
 	char registro1, registro2;
 
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_2;
 
@@ -144,14 +162,18 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 {
 	char registro1, registro2;
 
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
+
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -285,7 +307,8 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 {
 	char registro;
 
-	obtener_registro(tcb, &registro);
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro;
 
@@ -340,14 +363,18 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 {
 	char registro1, registro2;
 
-	obtener_registro(tcb, &registro1);
-	obtener_registro(tcb, &registro2);
+	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
+
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -431,7 +458,8 @@ resultado_t _goto(tcb_t* tcb)
 {
 	char registro;
 
-	obtener_registro(tcb, &registro);
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro;
 
@@ -536,8 +564,11 @@ resultado_t shif(tcb_t* tcb)
 	int32_t bits_a_desplazar;
 	char registro;
 
-	obtener_numero(tcb, &bits_a_desplazar);
-	obtener_registro(tcb, &registro);
+	if (obtener_numero(tcb, &bits_a_desplazar) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	int32_t valor_de_registro;
 
@@ -608,8 +639,11 @@ resultado_t push(tcb_t* tcb)
 	int32_t cantidad_de_bytes;
 	char registro;
 
-	obtener_numero(tcb, &cantidad_de_bytes);
-	obtener_registro(tcb, &registro);
+	if (obtener_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
@@ -654,8 +688,11 @@ resultado_t take(tcb_t* tcb)
 	int32_t cantidad_de_bytes;
 	char registro;
 
-	obtener_numero(tcb, &cantidad_de_bytes);
-	obtener_registro(tcb, &registro);
+	if (obtener_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
+
+	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+		return ERROR_EN_EJECUCION;
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
@@ -696,7 +733,8 @@ resultado_t xxxx(tcb_t* tcb)
  */
 resultado_t malc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -721,7 +759,8 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -743,7 +782,8 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 	uint32_t cantidad_de_bytes_leidos;
 
 	if (comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
-		ENTERO) != OK) {
+		ENTERO) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -765,7 +805,8 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
  */
 resultado_t innn(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -796,13 +837,15 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
 	uint32_t cantidad_de_bytes_leidos;
 
 	if (comunicar_entrada_estandar(tcb, cantidad_de_bytes_maximos,
-		&cantidad_de_bytes_leidos, buffer, CADENA) != OK) {
+		&cantidad_de_bytes_leidos, buffer, CADENA) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(tcb->pid, direccion, cantidad_de_bytes_leidos,
-		buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -822,16 +865,18 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
  */
 resultado_t innc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t direccion_de_almacenamiento_nueva_cadena = obtener_valor_registro_a(tcb);
+	int32_t direccion_de_almacenamiento_nueva_cadena = obtener_valor_registro_a(
+		tcb);
 
 	int32_t cantidad_de_bytes_maxima = obtener_valor_registro_b(tcb);
 
-	return _pedir_por_consola_cadena(tcb, direccion_de_almacenamiento_nueva_cadena,
-		cantidad_de_bytes_maxima);
+	return _pedir_por_consola_cadena(tcb,
+		direccion_de_almacenamiento_nueva_cadena, cantidad_de_bytes_maxima);
 }
 
 /*
@@ -857,7 +902,8 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
  */
 resultado_t outn(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -879,12 +925,14 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
 	char* buffer = malloc(cantidad_de_bytes);
 
 	if (leer_de_memoria(tcb->pid, direccion_de_cadena, cantidad_de_bytes,
-		buffer) == FALLO_LECTURA_DE_MEMORIA) {
+		buffer) == FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK) {
+	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -903,7 +951,8 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
  */
 resultado_t outc(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -944,13 +993,15 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 	char* buffer = malloc(ocupacion_stack);
 
 	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
-		== FALLO_LECTURA_DE_MEMORIA) {
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
 	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA) {
+		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
@@ -986,7 +1037,8 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1031,7 +1083,8 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1053,7 +1106,8 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1074,7 +1128,8 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		return ERROR_EN_EJECUCION;
 	}
 
@@ -1084,6 +1139,22 @@ resultado_t wake(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
+}
+
+void inicializar_dic_de_instrucciones()
+{
+	dic_instrucciones = dictionary_create();
+	cargar_diccionario_de_instrucciones(dic_instrucciones);
+}
+
+void liberar_dic_de_instrucciones()
+{
+	dictionary_destroy(dic_instrucciones);
+}
+
+void obtener_funcion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion)
+{
+	funcion = dictionary_get(dic_instrucciones, instruccion);
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic)

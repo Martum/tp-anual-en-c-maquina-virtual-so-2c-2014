@@ -140,6 +140,7 @@ typedef struct pedido_interrupcion {
 typedef struct pedido_entrada_estandar {
 	flag_t flag;
 	uint32_t pid;
+	uint32_t tid;
 	idetificador_tipo_t identificador_de_tipo;
 } pedido_entrada_estandar_t;
 
@@ -176,6 +177,8 @@ typedef struct pedido_despertar {
 
 typedef struct respuesta_entrada_estandar {
 	flag_t flag;
+	uint32_t pid;
+	uint32_t tid;
 	uint32_t tamanio;
 	char* cadena;
 } respuesta_entrada_estandar_t;

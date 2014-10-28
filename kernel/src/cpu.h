@@ -15,12 +15,28 @@
 #include <hu4sockets/tcb.h>
 #include "conexiones.h"
 #include <stdlib.h>
+#include "lstestados.h"
 
 
 /**
  * Genera un nuevo ID para CPU
  */
 uint32_t dame_nuevo_id_cpu();
+
+/**
+ * Copia el TID y el PID
+ */
+void copiar_encabezado(tcb_t* to, tcb_t* from);
+
+/**
+ * Copia los Registros de Programacion (A, B, C, D, E, F)
+ */
+void copiar_registros_programacion(tcb_t* to, tcb_t* from);
+
+/**
+ * Copia todos los elementos de FROM a TO
+ */
+void copiar_tcb(tcb_t* to, tcb_t* from);
 
 /**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
@@ -61,15 +77,15 @@ int enviar_entrada_estandar(pedido_entrada_estandar_t* entrada_estandar);
  */
 int salida_estandar(pedido_salida_estandar_t* pedido_salida);
 
-/*
+/**
  * Envia el hilo a block, lo encola en la cola de espera del recurso.
  */
-void bloquear(tcb_t* tcb, char* recurso);
+void bloquear(uint32_t recurso);
 
-/*
+/**
  * Remueve el primer hilo de la cola de espera del recurso y lo manda a ready.
  */
-void despertar(char* recurso);
+void despertar(uint32_t recurso);
 
 /**
  * Si esta el tcb km disponible, proceder normalmente, si no lo està, tengo qe agregar el tcb qe recibo en la cola de
@@ -77,5 +93,11 @@ void despertar(char* recurso);
  * mandarlos a procesar, sino seguir normalmente.
  */
 void interrupcion(tcb_t* tcb, direccion dir);
+
+/**
+ * Prepara el TCB KM para ejecutarlo. Lo encola en rdy[0] y deja
+ * al TCB usuario en block_conclusion_km
+ */
+void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion);
 
 #endif /* SERVICIOSACPU_H_ */
