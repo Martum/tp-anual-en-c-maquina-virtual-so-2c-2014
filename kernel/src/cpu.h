@@ -23,6 +23,11 @@
 uint32_t dame_nuevo_id_cpu();
 
 /**
+ * Copia todos los elementos de FROM a TO
+ */
+void copiar_tcb(tcb_t* to, tcb_t* from);
+
+/**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
  * Devuelve 0 en caso de exito o -1 en caso de no haber memoria disponible.
  */

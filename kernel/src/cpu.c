@@ -19,6 +19,27 @@ uint32_t dame_nuevo_id_cpu()
 	return ID_CPU_GLOBAL++;
 }
 
+void copiar_tcb(tcb_t* to, tcb_t* from)
+{
+	to->pid = from->pid;
+	to->tid = from->tid;
+
+	to->base_codigo = from->base_codigo;
+	to->tamanio_codigo = from->tamanio_codigo;
+
+	to->pc = from->pc;
+
+	to->base_stack = from->base_stack;
+	to->cursor_stack = from->cursor_stack;
+
+	to->a = from->a;
+	to->b = from->b
+	to->c = from->c;
+	to->d = from->d;
+	to->e = from->e;
+	to->f = from->f;
+}
+
 int crear_hilo(tcb_t* tcb)
 {
 	// Creamos TCB

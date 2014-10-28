@@ -113,7 +113,7 @@ void destruir_ejecutando(void* elemento)
 	free(ej);
 }
 
-void quitar_de_exec(tcb_t* tcb) {
+tcb_t* quitar_de_exec(tcb_t* tcb) {
 
 	bool _igual_pid_tid(void* elemento){
 		return tcb->pid == ((ejecutando_t*) elemento)->tcb->pid
@@ -121,13 +121,13 @@ void quitar_de_exec(tcb_t* tcb) {
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
-	/*ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_tid );
+	ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_pid_tid );
 	tcb_t* tcb_salida = ejecutando->tcb;
 	free(ejecutando);
 
-	return tcb_salida;*/
+	return tcb_salida;
 
-	list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
+	//list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
 
 
