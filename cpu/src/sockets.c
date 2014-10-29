@@ -290,7 +290,6 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 
 	return OK;
 }
-// TODO avisar a kernel que tiene que devolver un OK
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	if (res == EXCEPCION_POR_INTERRUPCION)
@@ -305,7 +304,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 		char* chorro_de_envio = serializar_pedido_interrupcion_t(
 			&cuerpo_del_mensaje);
-		char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+		char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
 		if (_enviar_y_recibir(kernel, chorro_de_envio,
 			tamanio_pedido_interrupcion_t_serializado(), chorro_de_respuesta)
@@ -318,18 +317,15 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 			return FALLO_INFORME_A_KERNEL;
 		}
 
-		respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
+		resultado_t resultado = *chorro_de_respuesta;
 
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
 
-		if (respuesta->resultado != OK)
+		if (resultado != COMPLETADO_OK)
 		{
-			free(respuesta);
 			return FALLO_INFORME_A_KERNEL;
 		}
-
-		free(respuesta);
 
 		return OK;
 	}
@@ -341,7 +337,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
@@ -354,21 +350,19 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
+	resultado_t resultado = *chorro_de_respuesta;
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta->resultado != OK)
+	if (resultado != COMPLETADO_OK)
 	{
-		free(respuesta);
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	free(respuesta);
-
 	return OK;
 }
+
 
 resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	uint32_t bytes_a_leer)
