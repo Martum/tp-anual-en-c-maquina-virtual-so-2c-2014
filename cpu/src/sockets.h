@@ -41,7 +41,7 @@ resultado_t conectar_con_kernel();
  * @DESC: Cierra los puertos de memoria y kernel
  * @RETURNS:
  */
-void desconectarse();
+resultado_t desconectarse();
 
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento

@@ -74,6 +74,20 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 	return OK;
 }
+resultado_t _mandar_desconexion_cpu_a_kernel()
+{
+	char* chorro_a_enviar = malloc(sizeof(resultado_t));
+	uint32_t tamanio = sizeof(resultado_t);
+	resultado_t resultado = DESCONEXION_CPU;
+
+	memcpy(chorro_a_enviar, &resultado, tamanio);
+
+	enviar(kernel, chorro_a_enviar, &tamanio);
+
+	free(chorro_a_enviar);
+
+	return OK;
+}
 resultado_t conectar_con_kernel()
 {
 	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
@@ -88,11 +102,14 @@ resultado_t conectar_con_memoria()
 {
 	return _conectar(&memoria, ip_msp(), puerto_msp());
 }
-// TODO agregar mensaje de DESCONEXION_CPU
-void desconectarse()
+resultado_t desconectarse()
 {
+	_mandar_desconexion_cpu_a_kernel();
+
 	cerrar_liberar(memoria);
 	cerrar_liberar(kernel);
+
+	return OK;
 }
 
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
@@ -362,7 +379,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 	return OK;
 }
-
 
 resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	uint32_t bytes_a_leer)
