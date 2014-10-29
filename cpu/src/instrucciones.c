@@ -963,57 +963,59 @@ resultado_t outc(tcb_t* tcb)
 		cantidad_de_bytes_de_la_cadena);
 }
 
-/*
- * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
- */
-resultado_t _crear_stack(tcb_t* tcb)
-{
-	uint32_t tamano_stack;
+// TODO eliminar (ya no hace falta)
+///*
+// * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
+// */
+//resultado_t _crear_stack(tcb_t* tcb)
+//{
+//	uint32_t tamano_stack;
+//
+//	pedir_al_kernel_tamanio_stack(&tamano_stack);
+//
+//	direccion nueva_base_stack;
+//
+//	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
+//		== FALLO_CREACION_DE_SEGMENTO)
+//		return ERROR_EN_EJECUCION;
+//
+//	actualizar_base_del_stack(tcb, nueva_base_stack);
+//
+//	return OK;
+//}
 
-	pedir_al_kernel_tamanio_stack(&tamano_stack);
-
-	direccion nueva_base_stack;
-
-	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
-		== FALLO_CREACION_DE_SEGMENTO)
-		return ERROR_EN_EJECUCION;
-
-	actualizar_base_del_stack(tcb, nueva_base_stack);
-
-	return OK;
-}
-
-/*
- * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
- */
-resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
-{
-	uint32_t ocupacion_stack = obtener_ocupacion_stack(tcb);
-
-	char* buffer = malloc(ocupacion_stack);
-
-	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
-		== FALLO_LECTURA_DE_MEMORIA)
-	{
-		free(buffer);
-		return ERROR_EN_EJECUCION;
-	}
-
-	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
-	{
-		free(buffer);
-		return ERROR_EN_EJECUCION;
-	}
-
-	free(buffer);
-
-	if (mover_cursor_stack(tcb, ocupacion_stack)
-		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
-		return ERROR_EN_EJECUCION;
-
-	return OK;
-}
+// TODO eliminar (ya no hace falta)
+///*
+// * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+// */
+//resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
+//{
+//	uint32_t ocupacion_stack = obtener_ocupacion_stack(tcb);
+//
+//	char* buffer = malloc(ocupacion_stack);
+//
+//	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
+//		== FALLO_LECTURA_DE_MEMORIA)
+//	{
+//		free(buffer);
+//		return ERROR_EN_EJECUCION;
+//	}
+//
+//	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
+//		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+//	{
+//		free(buffer);
+//		return ERROR_EN_EJECUCION;
+//	}
+//
+//	free(buffer);
+//
+//	if (mover_cursor_stack(tcb, ocupacion_stack)
+//		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
+//		return ERROR_EN_EJECUCION;
+//
+//	return OK;
+//}
 
 // TODO avisar a kernel que me tienen que mandar el proximo tid porque lo necesito guardar
 /*
@@ -1059,13 +1061,15 @@ resultado_t crea(tcb_t* tcb)
 	// Guardo el nuevo tid en el registro 'a'
 	actualizar_registro_a(tcb, nuevo_tcb->tid);
 
-	// Creo un nuevo stack para el nuevo_tcb
-	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
-		return ERROR_EN_EJECUCION;
+	// TODO eliminar (ya no hace falta)
+//	// Creo un nuevo stack para el nuevo_tcb
+//	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
+//		return ERROR_EN_EJECUCION;
 
-	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
-	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
-		return ERROR_EN_EJECUCION;
+	// TODO eliminar (ya no hace falta)
+//	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
+//	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+//		return ERROR_EN_EJECUCION;
 
 	// Le mando el nuevo tcb al kernel para planificar
 	if (comunicar_nuevo_tcb(nuevo_tcb) != OK)
