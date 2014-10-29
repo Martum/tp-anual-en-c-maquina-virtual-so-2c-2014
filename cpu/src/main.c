@@ -27,14 +27,18 @@ int32_t main(int32_t argc, char** argv)
 	}
 
 	// TODO eliminar (solamente para pruebas)
-	if (conectar_con_kernel() == FALLO_CONEXION)
-	{
-		printf("ERROR FATAL: al conectarse con kernel");
-		return 0;
-	}
+//	if (conectar_con_kernel() == FALLO_CONEXION)
+//	{
+//		printf("ERROR FATAL: al conectarse con kernel");
+//		return 0;
+//	}
 
 	// TODO cambiar a log
 	printf("Se pudo conectar a memoria y kernel\n");
+
+	direccion direccion;
+	crear_segmento(12, 123, &direccion);
+	printf("Direccion: %d\n", direccion);
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);

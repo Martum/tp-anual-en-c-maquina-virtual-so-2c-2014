@@ -92,7 +92,7 @@ resultado_t conectar_con_memoria()
 	return _conectar(&memoria, ip_msp(), puerto_msp());
 }
 
-// TODO preguntar a kernel si quieren un mensaje de DESCONEXION_CPU
+// TODO agregar mensaje de DESCONEXION_CPU
 void desconectarse()
 {
 	cerrar_liberar(memoria);
@@ -302,6 +302,47 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 // TODO agregar envio de direccion de comienzo de syscall
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
+	if (res == EXCEPCION_POR_INTERRUPCION)
+	{
+		int32_t direccion;
+		obtener_numero(&tcb, &direccion);
+
+		pedido_interrupcion_t cuerpo_del_mensaje;
+		cuerpo_del_mensaje.flag = INTERRUPCION;
+		cuerpo_del_mensaje.tcb = &tcb;
+		cuerpo_del_mensaje.direccion_de_memoria = direccion;
+
+		char* chorro_de_envio = serializar_pedido_interrupcion_t(
+			&cuerpo_del_mensaje);
+		char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+		if (_enviar_y_recibir(kernel, chorro_de_envio,
+			tamanio_pedido_interrupcion_t_serializado, chorro_de_respuesta)
+			== FALLO_COMUNICACION)
+		{
+
+			free(chorro_de_envio);
+			free(chorro_de_respuesta);
+
+			return FALLO_INFORME_A_KERNEL;
+		}
+
+		respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		if (respuesta->resultado != OK)
+		{
+			free(respuesta);
+			return FALLO_INFORME_A_KERNEL;
+		}
+
+		free(respuesta);
+
+		return OK;
+	}
+
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.tcb = &tcb;
@@ -343,7 +384,8 @@ resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 {
 	uint32_t pid_a_leer = 1;
 
-	if (!es_tcb_kernel(tcb)) {
+	if (!es_tcb_kernel(tcb))
+	{
 		pid_a_leer = tcb->pid;
 	}
 
