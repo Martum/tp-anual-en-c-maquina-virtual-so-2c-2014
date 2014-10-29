@@ -135,7 +135,7 @@ uint32_t tamanio_respuesta_de_nuevo_tcb_t_serializado()
 
 // FIN DE RESPUESTA DE NUEVO TCB
 
-// COMPIEZO DE PEDIDO CON RESULTADO
+// COMIENZO DE PEDIDO CON RESULTADO
 
 char* serializar_pedido_con_resultado_t(
 	pedido_con_resultado_t* pedido_con_resultado)
@@ -195,6 +195,62 @@ uint32_t tamanio_pedido_con_resultado_t_serializado()
 }
 
 // FIN DE PEDIDO CON RESULTADO
+
+// COMIENZO DE PEDIDO NUEVO TID
+
+char* serializar_pedido_nuevo_tid_t(
+	pedido_nuevo_tid_t* pedido_con_resultado)
+{
+	char* bytes = malloc(tamanio_pedido_nuevo_tid_t_serializado());
+
+	return bytes;
+}
+
+pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char* chorro)
+{
+	pedido_nuevo_tid_t* pedido_con_resultado = malloc(
+		sizeof(pedido_nuevo_tid_t));
+
+
+	return pedido_con_resultado;
+}
+
+uint32_t tamanio_pedido_nuevo_tid_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE PEDIDO NUEVO TID
+
+// COMIENZO DE RESPUESTA NUEVO TID
+
+char* serializar_respuesta_nuevo_tid_t(
+	respuesta_nuevo_tid_t* pedido_con_resultado)
+{
+	char* bytes = malloc(tamanio_respuesta_nuevo_tid_t_serializado());
+
+	return bytes;
+}
+
+respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char* chorro)
+{
+	respuesta_nuevo_tid_t* pedido_con_resultado = malloc(
+		sizeof(respuesta_nuevo_tid_t));
+
+
+	return pedido_con_resultado;
+}
+
+uint32_t tamanio_respuesta_nuevo_tid_t_serializado()
+{
+	uint32_t t = 0;
+
+	return t;
+}
+
+// FIN DE RESPUESTA NUEVO TID
 
 // COMIEZO DE PEDIDO DE CREAR SEGMENTO
 

@@ -111,9 +111,6 @@ resultado_t obtener_registro(tcb_t* tcb, char* registro);
  */
 resultado_t obtener_numero(tcb_t* tcb, int32_t* numero);
 
-// TODO eliminar (ya no se hace falta)
-//void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
-
 /*
  * @DESC: 	Le manda al kernel un mensaje para que pida por consola tantos bytes_a_leer,
  * 			siendo un ENTERO o CADENA segun identificador y
@@ -166,5 +163,11 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
  * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
  */
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
+
+
+resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid);
+
+// TODO eliminar (ya no se hace falta)
+//void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
 #endif /* MEMORIA_H_ */

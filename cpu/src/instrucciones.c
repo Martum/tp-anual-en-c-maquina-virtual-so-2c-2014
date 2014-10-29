@@ -1017,6 +1017,11 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
+void _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
+{
+	pedir_tid_a_kernel(*tcb, nuevo_tid);
+}
+
 // TODO avisar a kernel que me tienen que mandar el proximo tid porque lo necesito guardar
 /*
  * 	CREA
@@ -1044,6 +1049,9 @@ resultado_t crea(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
+	direccion nuevo_tid;
+	_obtener_nuevo_tid(tcb, &nuevo_tid);
+
 	// Inicializo el nuevo tcb
 	tcb_t* nuevo_tcb = crear_tcb();
 
@@ -1066,12 +1074,12 @@ resultado_t crea(tcb_t* tcb)
 //	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	// TODO eliminar (ya no hace falta)
+// TODO eliminar (ya no hace falta)
 //	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	// Le mando el nuevo tcb al kernel para planificar
+// Le mando el nuevo tcb al kernel para planificar
 	if (comunicar_nuevo_tcb(nuevo_tcb) != OK)
 		return ERROR_EN_EJECUCION;
 

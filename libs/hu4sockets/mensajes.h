@@ -33,7 +33,8 @@ typedef enum {
 	NUEVO_CPU = 201,
 	MANDA_TCB = 202,
 	TOMA_RESULTADO = 203,
-	SOY_CPU = 204,		// Se envia al conectarse
+	SOY_CPU = 204,
+	DAME_TID = 205,
 
 	// Servicios expuestos a la CPU
 	INTERRUPCION = 205,
@@ -47,6 +48,7 @@ typedef enum {
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
 	RESPUESTA_ENTRADA = 252,
+	TOMA_TID = 253,
 
 	// Mensajes del CPU a Memoria: 301 -> 350
 	CREAME_UN_SEGMENTO = 301,
@@ -83,11 +85,21 @@ typedef struct pedido_con_resultado {
 	int32_t informacion;
 } pedido_con_resultado_t;
 
+typedef struct pedido_nuevo_tid {
+	flag_t flag;
+	tcb_t* tcb;
+} pedido_nuevo_tid_t;
+
 typedef struct respuesta_de_nuevo_tcb {
 	flag_t flag;
 	tcb_t* tcb;
 	uint32_t quantum;
 } respuesta_de_nuevo_tcb_t;
+
+typedef struct respuesta_nuevo_tid {
+	flag_t flag;
+	direccion tid;
+} respuesta_nuevo_tid_t;
 
 typedef struct pedido_de_crear_segmento {
 	flag_t flag;
@@ -211,6 +223,16 @@ uint32_t tamanio_respuesta_t_serializado();
 pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char*);
 char* serializar_pedido_con_resultado_t(pedido_con_resultado_t*);
 uint32_t tamanio_pedido_con_resultado_t_serializado();
+
+// TODO implementar estos dos
+
+pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char*);
+char* serializar_pedido_nuevo_tid_t(pedido_nuevo_tid_t*);
+uint32_t tamanio_pedido_nuevo_tid_t_serializado();
+
+respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char*);
+char* serializar_respuesta_nuevo_tid_t(respuesta_nuevo_tid_t*);
+uint32_t tamanio_respuesta_nuevo_tid_t_serializado();
 
 pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char*);
 char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t*);

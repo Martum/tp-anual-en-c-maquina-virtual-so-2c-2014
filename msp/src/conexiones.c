@@ -231,15 +231,15 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
 	respuesta_leer->resultado = *(resultado);
-	respuesta_leer->tamano = (uint32_t)string_length(bytes);
+//	respuesta_leer->tamano = (uint32_t)string_length(bytes);
 
 	free(resultado);
 
 	char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
 
-	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(string_length(bytes));
+//	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(string_length(bytes));
 
-	enviar(conexion->socket,msg_respuesta_leer, &len_msg_leer);
+//	enviar(conexion->socket,msg_respuesta_leer, &len_msg_leer);
 
 	free(pedido_leer);
 	free(respuesta_leer);
