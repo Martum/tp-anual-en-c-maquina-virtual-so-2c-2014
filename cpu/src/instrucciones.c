@@ -1017,9 +1017,11 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
-void _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
+resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
 {
-	pedir_tid_a_kernel(*tcb, nuevo_tid);
+	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
+		return ERROR_EN_EJECUCION;
+	return OK;
 }
 
 // TODO avisar a kernel que me tienen que mandar el proximo tid porque lo necesito guardar
@@ -1050,7 +1052,8 @@ resultado_t crea(tcb_t* tcb)
 	}
 
 	direccion nuevo_tid;
-	_obtener_nuevo_tid(tcb, &nuevo_tid);
+	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
 
 	// Inicializo el nuevo tcb
 	tcb_t* nuevo_tcb = crear_tcb();
