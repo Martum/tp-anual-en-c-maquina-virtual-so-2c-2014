@@ -336,7 +336,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_entrada);
 				break;
 
-			case BLOQUEAR:
+			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
 				;
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
 
@@ -359,6 +359,18 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				_enviar_completadook(conexion_cpu->socket);
 
 				free(pedido_despertar);
+				break;
+
+			case INTERRUPCION:
+				;
+				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
+
+				interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_interrupcion->tcb);
+				free(pedido_interrupcion);
 				break;
 
 

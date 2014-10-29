@@ -19,6 +19,38 @@ uint32_t dame_nuevo_id_cpu()
 	return ID_CPU_GLOBAL++;
 }
 
+void copiar_encabezado(tcb_t* to, tcb_t* from)
+{
+	to->pid = from->pid;
+	to->tid = from->tid;
+}
+
+void copiar_registros_programacion(tcb_t* to, tcb_t* from)
+{
+	to->a = from->a;
+	to->b = from->b;
+	to->c = from->c;
+	to->d = from->d;
+	to->e = from->e;
+	to->f = from->f;
+}
+
+void copiar_tcb(tcb_t* to, tcb_t* from)
+{
+	copiar_encabezado(to, from);
+
+	to->base_codigo = from->base_codigo;
+	to->tamanio_codigo = from->tamanio_codigo;
+
+	to->pc = from->pc;
+
+	to->base_stack = from->base_stack;
+	to->cursor_stack = from->cursor_stack;
+
+	copiar_registros_programacion(to, from);
+}
+
+// TODO: Esto hay que verlo con Santi
 int crear_hilo(tcb_t* tcb)
 {
 	// Creamos TCB
@@ -98,8 +130,9 @@ int salida_estandar(pedido_salida_estandar_t* pedido_salida)
 
 void bloquear(uint32_t recurso)
 {
-	//quitar_de_exec(tcb);	//TODO: Modificar esto. No esta en exec, esta bloqueado conclusion km
+	// Este TCB es el que ejecuto la syscall (actualmente la esta corriendo el TCB KM)
 	tcb_t* tcb = get_bloqueado_conclusion_tcb();
+
 	agregar_a_block_recurso(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
 }
@@ -111,5 +144,42 @@ void despertar(uint32_t recurso)
 	agregar_a_ready(tcb);
 }
 
+void interrupcion(tcb_t* tcb, direccion dir)
+{
+	// Quitamos de EXEC y copiamos el nuevo estado
+	tcb_t* tcb_actual = quitar_de_exec(tcb);
+	copiar_tcb(tcb_actual, tcb);
 
+	if(hay_hilos_block_espera_km() || tcb_km_is_running())
+	{
+		// Encolamos el struct a la espera del KM
+		esperando_km_t* ekm = malloc(sizeof(esperando_km_t));
+		ekm->tcb = tcb_actual;
+		ekm->direccion_syscall = dir;
+
+		agregar_a_block_espera_km(ekm);
+	}
+	else
+	{// TCB KM libre, lo podemos usar
+		preparar_km_para_ejecutar(tcb_actual, dir);
+	}
+
+	// NO HACER FREE DE NADA
+}
+
+void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion)
+{
+	// Copiamos los registros al TCB KM
+	tcb_t* tcb_km = get_tcb_km();
+	copiar_encabezado(tcb_km, tcb);
+	copiar_registros_programacion(tcb_km, tcb);
+
+	tcb_km->pc = direccion;
+
+	// Agregamos el TCB Usuario a block
+	agregar_a_block_conclusion_km(tcb);
+
+	// Agregamos el TCB KM a rdy
+	agregar_a_ready(tcb_km);
+}
 

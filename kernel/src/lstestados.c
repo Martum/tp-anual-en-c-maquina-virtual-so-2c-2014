@@ -17,6 +17,9 @@
 /*t_queue* exec;
 t_queue* block;*/
 
+// TCB KM
+tcb_t* TCB_KM;
+
 // Cola de ready para procesos (1) y para KM (0)
 t_queue* READY[2];
 
@@ -49,6 +52,9 @@ void _eliminar_tcb(void* elemento)
 
 void inicializar_listas_estados_tcb()
 {
+	TCB_KM = malloc(sizeof(tcb_t));
+	TCB_KM->km = true;
+
 	READY[0] = queue_create();
 	READY[1] = queue_create();
 
@@ -63,6 +69,7 @@ void inicializar_listas_estados_tcb()
 	BLOCK_ESPERA_KM = queue_create();
 
 	DIC_COLAS_ESPERA_RECURSOS = dictionary_create();
+	BLOCK_RECURSO = list_create();
 
 	// Y esta?
 	SYSCALLS_COLA = queue_create();
@@ -72,7 +79,7 @@ void inicializar_listas_estados_tcb()
 
 void agregar_a_ready(tcb_t* tcb) {
 	queue_push(READY[!tcb->km], tcb);
-	// Aca deberíamos llamar al planificador.
+	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
 bool hay_hilo_km_ready(){
@@ -107,7 +114,7 @@ void destruir_ejecutando(void* elemento)
 	free(ej);
 }
 
-void quitar_de_exec(tcb_t* tcb) {
+tcb_t* quitar_de_exec(tcb_t* tcb) {
 
 	bool _igual_pid_tid(void* elemento){
 		return tcb->pid == ((ejecutando_t*) elemento)->tcb->pid
@@ -115,13 +122,13 @@ void quitar_de_exec(tcb_t* tcb) {
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
-	/*ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_tid );
+	ejecutando_t* ejecutando = list_remove_by_condition(EXEC, _igual_pid_tid );
 	tcb_t* tcb_salida = ejecutando->tcb;
 	free(ejecutando);
 
-	return tcb_salida;*/
+	return tcb_salida;
 
-	list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
+	//list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
 
 
@@ -191,4 +198,29 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 tcb_t* get_bloqueado_conclusion_tcb()
 {
 	return (tcb_t*)list_get(BLOCK_CONCLUSION_KM, 0);
+}
+
+tcb_t* get_tcb_km()
+{
+	return TCB_KM;
+}
+
+bool tcb_km_is_running()
+{
+	return !list_is_empty(BLOCK_CONCLUSION_KM);
+}
+
+bool hay_hilos_block_espera_km()
+{
+	return !queue_is_empty(BLOCK_ESPERA_KM);
+}
+
+void agregar_a_block_espera_km(esperando_km_t* ekm)
+{
+	queue_push(BLOCK_ESPERA_KM, ekm);
+}
+
+void agregar_a_block_conclusion_km(tcb_t* tcb)
+{
+	queue_push(BLOCK_CONCLUSION_KM, tcb);
 }

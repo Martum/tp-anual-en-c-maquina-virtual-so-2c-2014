@@ -15,12 +15,28 @@
 #include <hu4sockets/tcb.h>
 #include "conexiones.h"
 #include <stdlib.h>
+#include "lstestados.h"
 
 
 /**
  * Genera un nuevo ID para CPU
  */
 uint32_t dame_nuevo_id_cpu();
+
+/**
+ * Copia el TID y el PID
+ */
+void copiar_encabezado(tcb_t* to, tcb_t* from);
+
+/**
+ * Copia los Registros de Programacion (A, B, C, D, E, F)
+ */
+void copiar_registros_programacion(tcb_t* to, tcb_t* from);
+
+/**
+ * Copia todos los elementos de FROM a TO
+ */
+void copiar_tcb(tcb_t* to, tcb_t* from);
 
 /**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
@@ -77,5 +93,11 @@ void despertar(uint32_t recurso);
  * mandarlos a procesar, sino seguir normalmente.
  */
 void interrupcion(tcb_t* tcb, direccion dir);
+
+/**
+ * Prepara el TCB KM para ejecutarlo. Lo encola en rdy[0] y deja
+ * al TCB usuario en block_conclusion_km
+ */
+void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion);
 
 #endif /* SERVICIOSACPU_H_ */
