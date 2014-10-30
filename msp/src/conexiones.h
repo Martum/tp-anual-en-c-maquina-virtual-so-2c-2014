@@ -17,7 +17,7 @@ typedef struct conexion {
 
 void inicializar_lista_conexiones_cpu();
 void* escuchar_conexiones(void*);
-void _procesar_nueva_conexion(sock_t*);
+void _procesar_nueva_conexion(sock_t*, sock_t**);
 conexion_t* buscar_conexion_cpu_por_fd(int32_t);
 int _atender_socket(conexion_t*);
 void _agregar_conexion(sock_t*, uint32_t);

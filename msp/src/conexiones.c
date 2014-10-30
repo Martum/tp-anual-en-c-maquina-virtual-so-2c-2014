@@ -65,6 +65,11 @@ void _informar_respuesta_escritura(sock_t* conexion){
 	_enviar_flagt(conexion, RESPUESTA_ESCRITURA);
 }
 
+void _dar_bienvenida(sock_t* nueva_conexion){
+	// Respondemos con BIENVENIDA
+	_enviar_flagt(nueva_conexion, BIENVENIDO);
+}
+
 conexion_t* buscar_conexion_por_fd(int32_t fd){
 
 	// Funcion de busqueda
@@ -89,6 +94,7 @@ void* escuchar_conexiones(void* otro_ente){
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = MAYOR_FD;
 	FD_ZERO(&readfds);
+	FD_SET(principal->fd, &readfds);
 
 	// Preparamos el SET
 	fd_set readfdset = readfds;
@@ -112,8 +118,7 @@ void* escuchar_conexiones(void* otro_ente){
 
 						// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
-						nueva_conexion = aceptar_conexion(principal);
-						_procesar_nueva_conexion(nueva_conexion);
+						_procesar_nueva_conexion(principal, &nueva_conexion);
 
 					}else{
 
@@ -132,9 +137,12 @@ void* escuchar_conexiones(void* otro_ente){
 	return NULL;
 }
 
-void _procesar_nueva_conexion(sock_t* nueva_conexion){
+void _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion){
+	*nueva_conexion = aceptar_conexion(principal);
+	_dar_bienvenida(*nueva_conexion);
+
 	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
-	_agregar_conexion(nueva_conexion, ultima_conex->id + 1);
+	_agregar_conexion(*nueva_conexion, ultima_conex->id + 1);
 }
 
 int _atender_socket(conexion_t* conexion){
