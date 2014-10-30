@@ -18,6 +18,7 @@
 #include "loader.h"
 #include <sys/time.h>
 #include "cpu.h"
+#include "planificador.h"
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -382,6 +383,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				_enviar_completadook(conexion_cpu->socket);
 
 				free(pedido_join);
+				break;
+
+			case MANDA_TCB:
+				pedir_tcb(conexion_cpu->id);
 				break;
 
 			default:

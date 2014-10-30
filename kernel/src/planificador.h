@@ -11,7 +11,7 @@
 #include <hu4sockets/mensajes.h>
 
 // Retorna el respuesta_de_nuevo_tcb_t* ya serializado.
-char*  rta_nuevo_tcb();
+char* _rta_nuevo_tcb();
 
 // RECIBE UN TCB DEL CPU Y HACE LO QUE CORRESPONDA SEGUN EL RESULTADO.
 void recibir_tcb(resultado_t resultado, tcb_t* tcb);

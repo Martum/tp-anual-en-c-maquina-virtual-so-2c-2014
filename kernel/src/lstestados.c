@@ -78,6 +78,7 @@ void inicializar_listas_estados_tcb()
 
 void agregar_a_ready(tcb_t* tcb) {
 	queue_push(READY[!tcb->km], tcb);
+	// TODO: Llamar al planificador acá? Revisar en qué lugares se llama esta función.
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
