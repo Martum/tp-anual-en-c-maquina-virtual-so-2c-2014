@@ -167,6 +167,17 @@ void interrupcion(tcb_t* tcb, direccion dir)
 	// NO HACER FREE DE NADA
 }
 
+void join(uint32_t llamador, uint32_t esperando_a)
+{
+	esperando_join_t* ej = malloc(sizeof(esperando_join_t));
+	ej->tcb = get_bloqueado_conclusion_tcb();
+	ej->esperando_a = esperando_a;
+
+	agregar_a_block_join(ej);
+
+	set_enviar_a_rdy(false);
+}
+
 void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion)
 {
 	// Copiamos los registros al TCB KM
