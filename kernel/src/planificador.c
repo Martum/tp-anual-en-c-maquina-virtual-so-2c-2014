@@ -13,9 +13,13 @@
 #include <stdlib.h>
 
 
-t_queue* cpu_en_espera_de_tcb;
+t_queue* cpu_en_espera_de_tcb = NULL;
 
 void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
+	if (cpu_en_espera_de_tcb == NULL){
+		cpu_en_espera_de_tcb = queue_create();
+	}
+
 	uint32_t* cpu = malloc(sizeof(uint32_t));
 	*cpu = cpu_id;
 	queue_push(cpu_en_espera_de_tcb, cpu);
@@ -33,19 +37,18 @@ tcb_t* _proximo_tcb(uint32_t cpu_id)
 	if (hay_hilo_km_ready())
 	{
 		tcb = quitar_de_ready_km();
-		agregar_a_exec(tcb, cpu_id);
+		//agregar_a_exec(tcb, cpu_id);
 	}
 	else
 	{
 		tcb = quitar_de_ready();
-		if (tcb != NULL){ // Por si no hay tcb en ready.
+		/*if (tcb != NULL){ // Por si no hay tcb en ready.
 			agregar_a_exec(tcb, cpu_id);
-		}
+		}*/
 	}
 
 	return tcb;
 }
-
 
 // TODO: el planificador tiene que manejar una cola de cpus en espera de tcb. Cuando le llega una peticion
 // de tcb, encola  la cpu en la lista y corre el planificador. Cuando un tcb entra en ready,
@@ -59,11 +62,14 @@ void pedir_tcb(uint32_t cpu_id){
 void _planificar(){
 	if (!queue_is_empty(cpu_en_espera_de_tcb)){
 		if (hay_hilo_ready()){
-			tcb_t* tcb = quitar_de_ready();
-			uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();
+			tcb_t* tcb = _proximo_tcb();
 
-			_enviar_tcb_a_cpu(tcb, cpu_id);
-			agregar_a_exec(tcb, cpu_id);
+			if (tcb != NULL){
+				uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();
+
+				_enviar_tcb_a_cpu(tcb, cpu_id);
+				agregar_a_exec(tcb, cpu_id);
+			}
 		}
 	}
 }
