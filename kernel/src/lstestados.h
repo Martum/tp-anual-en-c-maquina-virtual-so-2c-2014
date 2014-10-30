@@ -65,6 +65,8 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int);
 
 bool hay_hilo_km_ready();
 
+bool hay_hilo_ready();
+
 tcb_t* quitar_de_ready_km();
 
 // Quita de la queue de ready de hilos usuario.
