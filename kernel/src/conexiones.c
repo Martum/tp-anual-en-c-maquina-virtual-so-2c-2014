@@ -373,6 +373,16 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_interrupcion);
 				break;
 
+			case JOIN:
+				;
+				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
+
+				join(pedido_join->tid_llamador, pedido_join->tid_esperador);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_join);
+				break;
 
 			default:
 				break;

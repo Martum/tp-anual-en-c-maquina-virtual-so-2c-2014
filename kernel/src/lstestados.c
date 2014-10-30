@@ -197,7 +197,7 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 
 tcb_t* get_bloqueado_conclusion_tcb()
 {
-	return (tcb_t*)list_get(BLOCK_CONCLUSION_KM, 0);
+	return ((conclusion_km_t*)list_get(BLOCK_CONCLUSION_KM, 0))->tcb;
 }
 
 tcb_t* get_tcb_km()
@@ -222,5 +222,9 @@ void agregar_a_block_espera_km(esperando_km_t* ekm)
 
 void agregar_a_block_conclusion_km(tcb_t* tcb)
 {
-	queue_push(BLOCK_CONCLUSION_KM, tcb);
+	conclusion_km_t* ckm = malloc(sizeof(conclusion_km_t));
+	ckm->tcb = tcb;
+	ckm->enviar_a_rdy = true;
+
+	list_add(BLOCK_CONCLUSION_KM, ckm);
 }

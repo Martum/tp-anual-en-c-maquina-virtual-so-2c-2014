@@ -95,6 +95,11 @@ void despertar(uint32_t recurso);
 void interrupcion(tcb_t* tcb, direccion dir);
 
 /**
+ * Encola al TCB llamador en block join a la espera de que el TCB a_esperar termine.
+ */
+void join(uint32_t llamador, uint32_t a_esperar);
+
+/**
  * Prepara el TCB KM para ejecutarlo. Lo encola en rdy[0] y deja
  * al TCB usuario en block_conclusion_km
  */
