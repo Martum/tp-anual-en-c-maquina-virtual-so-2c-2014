@@ -247,6 +247,12 @@ char* serializar_respuesta_nuevo_tid_t(
 {
 	char* bytes = malloc(tamanio_respuesta_nuevo_tid_t_serializado());
 
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido_con_resultado->tid, sizeof(direccion));
+
 	return bytes;
 }
 
@@ -255,6 +261,11 @@ respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char* chorro)
 	respuesta_nuevo_tid_t* pedido_con_resultado = malloc(
 		sizeof(respuesta_nuevo_tid_t));
 
+	uint32_t offset = 0;
+	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&pedido_con_resultado->tid, chorro + offset, sizeof(direccion));
 
 	return pedido_con_resultado;
 }
@@ -262,6 +273,8 @@ respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char* chorro)
 uint32_t tamanio_respuesta_nuevo_tid_t_serializado()
 {
 	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(direccion);
 
 	return t;
 }
@@ -516,8 +529,7 @@ respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(
 	respuesta_de_leer_de_memoria_t* respuesta = malloc(sizeof(respuesta_de_leer_de_memoria_t));
 
 	uint32_t offset = 0;
-	memcpy(&respuesta->flag, chorro + offset,
-		sizeof(flag_t));
+	memcpy(&respuesta->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
 	memcpy(&respuesta->resultado, chorro + offset, sizeof(resultado_t));
@@ -571,8 +583,7 @@ respuesta_de_crear_segmento_t* deserializar_respuesta_de_crear_segmento_t(
 	respuesta_de_crear_segmento_t* respuesta = malloc(sizeof(respuesta_de_crear_segmento_t));
 
 	uint32_t offset = 0;
-	memcpy(&respuesta->flag, chorro + offset,
-		sizeof(flag_t));
+	memcpy(&respuesta->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
 	memcpy(&respuesta->resultado, chorro + offset, sizeof(resultado_t));
