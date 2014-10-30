@@ -370,6 +370,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				_enviar_completadook(conexion_cpu->socket);
 
+				// TODO: Aca habria que correr el planificador??
+
 				free(pedido_interrupcion->tcb);
 				free(pedido_interrupcion);
 				break;
