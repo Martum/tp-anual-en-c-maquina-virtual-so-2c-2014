@@ -23,6 +23,11 @@ typedef struct esperando_km {
 	uint32_t direccion_syscall;
 } esperando_km_t;
 
+typedef struct esperando_join {
+	tcb_t* tcb;
+	uint32_t esperando_a;
+} esperando_join_t;
+
 /**
  * Struct para encapsular al TCB que esta esperando al TCB KM que termine
  * de ejecutar la syscall. Si enviar_a_rdy es true (default) se debe encolar en rdy;
@@ -127,6 +132,19 @@ void agregar_a_block_espera_km(esperando_km_t* ekm);
  * Agrega a BLOCK_CONCLUSION_KM el TCB
  */
 void agregar_a_block_conclusion_km(tcb_t* tcb);
+
+/**
+ * Setea el Flag enviar_a_rdy con el valor un_bool
+ */
+void set_enviar_a_rdy(bool un_bool);
+
+
+// FUNCIONES DE BLOCK_JOIN
+
+/**
+ * Agrega al TCB a la lista de Bloqueados por Join
+ */
+void agregar_a_block_join(esperando_join_t* ej);
 
 
 #endif /* LSTESTADOS_H_ */
