@@ -85,6 +85,10 @@ bool hay_hilo_km_ready(){
 	return !queue_is_empty(READY[0]);
 }
 
+bool hay_hilo_ready(){
+	return !queue_is_empty(READY[1]);
+}
+
 void agregar_a_block_recurso(tcb_t* tcb)
 {
 	list_add(BLOCK_RECURSO, tcb);
@@ -154,6 +158,7 @@ void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
 	free(recurso);
 }
 
+// TODO: Recibe TCB y no hace nada con eso??
 void quitar_de_syscalls_cola(tcb_t* tcb) {
 	queue_pop(SYSCALLS_COLA);
 }
