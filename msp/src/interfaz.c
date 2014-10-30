@@ -20,8 +20,6 @@
 #include "pagina.h"
 #include "algoritmos_sustitucion.h"
 
-
-
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
 
