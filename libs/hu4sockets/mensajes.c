@@ -203,6 +203,13 @@ char* serializar_pedido_nuevo_tid_t(
 {
 	char* bytes = malloc(tamanio_pedido_nuevo_tid_t_serializado());
 
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, serializar_tcb(pedido_con_resultado->tcb),
+		tamanio_tcb_serializado());
+
 	return bytes;
 }
 
@@ -211,6 +218,13 @@ pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char* chorro)
 	pedido_nuevo_tid_t* pedido_con_resultado = malloc(
 		sizeof(pedido_nuevo_tid_t));
 
+	uint32_t offset = 0;
+	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	pedido_con_resultado->tcb = malloc(sizeof(tcb_t));
+	memcpy(pedido_con_resultado->tcb, deserializar_tcb(chorro + offset),
+		sizeof(tcb_t));
 
 	return pedido_con_resultado;
 }
@@ -218,6 +232,8 @@ pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char* chorro)
 uint32_t tamanio_pedido_nuevo_tid_t_serializado()
 {
 	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += tamanio_tcb_serializado();
 
 	return t;
 }
@@ -438,23 +454,22 @@ pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(
 	pedido_de_escribir_en_memoria_t* pedido = malloc(
 				sizeof(pedido_de_escribir_en_memoria_t));
 
-		uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
-		memcpy(&pedido->direccion_virtual, chorro + offset,
-			sizeof(direccion));
+	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
+	memcpy(&pedido->direccion_virtual, chorro + offset, sizeof(direccion));
 
-		offset += sizeof(direccion);
-		memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
+	offset += sizeof(direccion);
+	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
-		offset += sizeof(flag_t);
-		memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
+	offset += sizeof(flag_t);
+	memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
 
-		offset += sizeof(uint32_t);
-		memcpy(&pedido->tamano, chorro + offset, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+	memcpy(&pedido->tamano, chorro + offset, sizeof(uint32_t));
 
-		offset += sizeof(uint32_t);
-		memcpy(&pedido->bytes_a_escribir, chorro + offset, pedido->tamano);
+	offset += sizeof(uint32_t);
+	memcpy(&pedido->bytes_a_escribir, chorro + offset, pedido->tamano);
 
-		return pedido;
+	return pedido;
 }
 
 uint32_t tamanio_pedido_de_escribir_en_memoria_t_serializado(uint32_t tamano)
