@@ -467,7 +467,7 @@ pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(
 	memcpy(&pedido->tamano, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	pedido->bytes_a_escribir = malloc(tamano);
+	pedido->bytes_a_escribir = malloc(pedido->tamano);
 	memcpy(&pedido->bytes_a_escribir, chorro + offset, pedido->tamano);
 
 	return pedido;
@@ -526,7 +526,7 @@ respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(
 	memcpy(&respuesta->tamano, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	respuesta->bytes_leido = malloc(tamano);
+	respuesta->bytes_leido = malloc(respuesta->tamano);
 	memcpy(&respuesta->bytes_leido, chorro + offset, respuesta->tamano);
 
 	return respuesta;
