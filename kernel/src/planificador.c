@@ -7,10 +7,13 @@
 
 #include "planificador.h"
 #include "configuraciones.h"
+#include "conexiones.h"
 #include "lstestados.h"
 #include <hu4sockets/mensajes.h>
+#include <hu4sockets/sockets.h>
 #include <hu4sockets/tcb.h>
 #include <stdlib.h>
+
 
 
 t_queue* cpu_en_espera_de_tcb = NULL;
@@ -31,7 +34,8 @@ void* quitar_de_cpu_en_espera_de_tcb() {
 
 
 // TODO: FALTA CONTEMPLAR EL CASO QUE NO HAYA PROXIMO TCB
-tcb_t* _proximo_tcb(uint32_t cpu_id)
+//tcb_t* _proximo_tcb(uint32_t cpu_id)
+tcb_t* _proximo_tcb()
 {
 	tcb_t* tcb = NULL;
 	if (hay_hilo_km_ready())
@@ -61,24 +65,27 @@ void pedir_tcb(uint32_t cpu_id){
 
 void _planificar(){
 	if (!queue_is_empty(cpu_en_espera_de_tcb)){
-		if (hay_hilo_ready()){
+		if (hay_hilo_ready()){ // EN CUALQUIER READY. MODIFICAR
 			tcb_t* tcb = _proximo_tcb();
 
-			if (tcb != NULL){
+			if (tcb != NULL){ // ESTA DE MAS? SI YA ENTRE POR EL OTRO IF
 				uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();
 
 				_enviar_tcb_a_cpu(tcb, cpu_id);
-				agregar_a_exec(tcb, cpu_id);
+				agregar_a_exec(tcb, *cpu_id);
 			}
 		}
 	}
 }
 
 void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id){
-	char* respuesta = malloc(tamanio_respuesta_de_nuevo_tcb_t_serializado());
+	uint32_t tamanio = tamanio_respuesta_de_nuevo_tcb_t_serializado();
+
+	char* respuesta = malloc(tamanio);
 	respuesta = rta_nuevo_tcb(cpu_id, tcb);
 
-	// TODO: CODIGO QUE ENVIE EL CHORRO A LA CPU CORRESPONDIENTE.
+	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
+	enviar(socket, respuesta, &tamanio);
 }
 
 // TODO: FALTA EL FREE. Vos... el que me llama... hacelo!
