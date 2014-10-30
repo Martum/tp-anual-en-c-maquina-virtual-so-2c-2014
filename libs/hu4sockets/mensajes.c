@@ -526,6 +526,7 @@ respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(
 	memcpy(&respuesta->tamano, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
+	respuesta->bytes_leido = malloc(tamano);
 	memcpy(&respuesta->bytes_leido, chorro + offset, respuesta->tamano);
 
 	return respuesta;
