@@ -358,8 +358,8 @@ pedido_de_destruir_segmento_t* deserializar_pedido_de_destruir_segmento_t(
 uint32_t tamanio_pedido_de_destruir_segmento_t_serializado()
 {
 	uint32_t t = 0;
-	t += sizeof(direccion);
 	t += sizeof(flag_t);
+	t += sizeof(direccion);
 	t += sizeof(uint32_t);
 
 	return t;
@@ -374,13 +374,13 @@ char* serializar_pedido_de_leer_de_memoria_t(pedido_de_leer_de_memoria_t* pedido
 
 	char* bytes = malloc(tamanio_pedido_de_leer_de_memoria_t_serializado());
 
-	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
-	memcpy(bytes + offset, &pedido->direccion_virtual, sizeof(direccion));
-
-	offset += sizeof(direccion);
+	uint32_t offset = 0;
 	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->direccion_virtual, sizeof(direccion));
+
+	offset += sizeof(direccion);
 	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
@@ -394,14 +394,14 @@ pedido_de_leer_de_memoria_t* deserializar_pedido_de_leer_de_memoria_t(char* chor
 	pedido_de_leer_de_memoria_t* pedido_de_leer_de_memoria = malloc(
 			sizeof(pedido_de_leer_de_memoria_t));
 
-	uint32_t offset = 0;	// BUG. FLAG_T tiene que estar primero
-	memcpy(&pedido_de_leer_de_memoria->direccion_virtual, chorro + offset,
-		sizeof(direccion));
-
-	offset += sizeof(direccion);
+	uint32_t offset = 0;
 	memcpy(&pedido_de_leer_de_memoria->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(&pedido_de_leer_de_memoria->direccion_virtual, chorro + offset,
+			sizeof(direccion));
+
+	offset += sizeof(direccion);
 	memcpy(&pedido_de_leer_de_memoria->pid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
@@ -412,8 +412,8 @@ pedido_de_leer_de_memoria_t* deserializar_pedido_de_leer_de_memoria_t(char* chor
 
 uint32_t tamanio_pedido_de_leer_de_memoria_t_serializado(){
 	uint32_t t = 0;
-	t += sizeof(direccion);
 	t += sizeof(flag_t);
+	t += sizeof(direccion);
 	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
 
