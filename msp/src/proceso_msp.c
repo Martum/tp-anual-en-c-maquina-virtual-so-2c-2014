@@ -28,9 +28,9 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 
 }
 
-proceso_msp_t* crear_proceso_msp(){
+proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
-	proceso->pid = list_size(get_lista_procesos());
+	proceso->pid = un_pid;
 	list_add(get_lista_procesos(),proceso);
 	proceso->segmentos = list_create();
 	return proceso;

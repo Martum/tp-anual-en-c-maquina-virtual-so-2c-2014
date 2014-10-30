@@ -14,6 +14,7 @@
 #include "definiciones.h"
 #include "operaciones-con-bits.h"
 #include "configuraciones.h"
+#include "tcb-funciones.h"
 
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
@@ -40,15 +41,7 @@ resultado_t conectar_con_kernel();
  * @DESC: Cierra los puertos de memoria y kernel
  * @RETURNS:
  */
-void desconectarse();
-
-/*
- * @DESC: Le pide al kernel un tcb y guarda el tcb devuelto y su quantum y los parametros
- * @RETURNS:
- * 		OK si pudo conectarse y trajo bien los datos
- * 		FALLO_PEDIDO_DE_TCB si hubo problemas al traer los datos
- */
-resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
+resultado_t desconectarse();
 
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento
@@ -85,6 +78,14 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t bytes, char* buffer);
 
 /*
+ * @DESC: Le pide al kernel un tcb y guarda el tcb devuelto y su quantum y los parametros
+ * @RETURNS:
+ * 		OK si pudo conectarse y trajo bien los datos
+ * 		FALLO_PEDIDO_DE_TCB si hubo problemas al traer los datos
+ */
+resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum);
+
+/*
  * @DESC: Le avisa al kernel que termino de ejecutar el quantum siendo res el motivo de finalizacion
  * @RETURNS:
  * 		OK si pudo conectarse y mandar bien el mensaje
@@ -109,8 +110,6 @@ resultado_t obtener_registro(tcb_t* tcb, char* registro);
  * @RETURNS:
  */
 resultado_t obtener_numero(tcb_t* tcb, int32_t* numero);
-
-void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
 /*
  * @DESC: 	Le manda al kernel un mensaje para que pida por consola tantos bytes_a_leer,
@@ -164,5 +163,11 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
  * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
  */
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
+
+
+resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid);
+
+// TODO eliminar (ya no se hace falta)
+//void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
 #endif /* MEMORIA_H_ */

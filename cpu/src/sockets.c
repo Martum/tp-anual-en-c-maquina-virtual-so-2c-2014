@@ -76,6 +76,21 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	return OK;
 }
 
+resultado_t _mandar_desconexion_cpu_a_kernel()
+{
+	char* chorro_a_enviar = malloc(sizeof(resultado_t));
+	uint32_t tamanio = sizeof(resultado_t);
+	resultado_t resultado = DESCONEXION_CPU;
+
+	memcpy(chorro_a_enviar, &resultado, tamanio);
+
+	enviar(kernel, chorro_a_enviar, &tamanio);
+
+	free(chorro_a_enviar);
+
+	return OK;
+}
+
 resultado_t conectar_con_kernel()
 {
 	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
@@ -92,43 +107,12 @@ resultado_t conectar_con_memoria()
 	return _conectar(&memoria, ip_msp(), puerto_msp());
 }
 
-// TODO preguntar a kernel si quieren un mensaje de DESCONEXION_CPU
-void desconectarse()
+resultado_t desconectarse()
 {
+	_mandar_desconexion_cpu_a_kernel();
+
 	cerrar_liberar(memoria);
 	cerrar_liberar(kernel);
-}
-
-resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
-{
-	pedido_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = MANDA_TCB;
-
-	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(
-		tamanio_respuesta_de_nuevo_tcb_t_serializado());
-
-	if (_enviar_y_recibir(kernel, chorro_de_envio,
-		tamanio_pedido_t_serializado(), chorro_de_respuesta)
-		== FALLO_COMUNICACION)
-	{
-
-		free(chorro_de_envio);
-		free(chorro_de_respuesta);
-
-		return FALLO_PEDIDO_DE_TCB;
-	}
-
-	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
-		chorro_de_respuesta);
-
-	*tcb = *respuesta->tcb;
-	*quantum = respuesta->quantum;
-
-	free(chorro_de_envio);
-	free(chorro_de_respuesta);
-	free(respuesta->tcb);
-	free(respuesta);
 
 	return OK;
 }
@@ -298,10 +282,80 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	return OK;
 }
 
-// TODO avisar a kernel que tiene que devolver un OK
-// TODO agregar envio de direccion de comienzo de syscall
+resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
+{
+	pedido_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = MANDA_TCB;
+
+	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_respuesta_de_nuevo_tcb_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION)
+	{
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_PEDIDO_DE_TCB;
+	}
+
+	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
+		chorro_de_respuesta);
+
+	*tcb = *respuesta->tcb;
+	*quantum = respuesta->quantum;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+	free(respuesta->tcb);
+	free(respuesta);
+
+	return OK;
+}
+
 resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
+	if (res == EXCEPCION_POR_INTERRUPCION)
+	{
+		int32_t direccion;
+		obtener_numero(&tcb, &direccion);
+
+		pedido_interrupcion_t cuerpo_del_mensaje;
+		cuerpo_del_mensaje.flag = INTERRUPCION;
+		cuerpo_del_mensaje.tcb = &tcb;
+		cuerpo_del_mensaje.direccion_de_memoria = direccion;
+
+		char* chorro_de_envio = serializar_pedido_interrupcion_t(
+			&cuerpo_del_mensaje);
+		char* chorro_de_respuesta = malloc(sizeof(resultado_t));
+
+		if (_enviar_y_recibir(kernel, chorro_de_envio,
+			tamanio_pedido_interrupcion_t_serializado(), chorro_de_respuesta)
+			== FALLO_COMUNICACION)
+		{
+
+			free(chorro_de_envio);
+			free(chorro_de_respuesta);
+
+			return FALLO_INFORME_A_KERNEL;
+		}
+
+		resultado_t resultado = *chorro_de_respuesta;
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		if (resultado != COMPLETADO_OK)
+		{
+			return FALLO_INFORME_A_KERNEL;
+		}
+
+		return OK;
+	}
+
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.tcb = &tcb;
@@ -309,7 +363,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 	char* chorro_de_envio = serializar_pedido_con_resultado_t(
 		&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
@@ -322,18 +376,15 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
+	resultado_t resultado = *chorro_de_respuesta;
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (respuesta->resultado != OK)
+	if (resultado != COMPLETADO_OK)
 	{
-		free(respuesta);
 		return FALLO_INFORME_A_KERNEL;
 	}
-
-	free(respuesta);
 
 	return OK;
 }
@@ -341,7 +392,14 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	uint32_t bytes_a_leer)
 {
-	if (leer_de_memoria(tcb->pid, tcb->pc, bytes_a_leer, memoria_a_actualizar)
+	uint32_t pid_a_leer = 1;
+
+	if (!es_tcb_kernel(tcb))
+	{
+		pid_a_leer = tcb->pid;
+	}
+
+	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, memoria_a_actualizar)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
@@ -352,7 +410,7 @@ resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 
 resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
-	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
+	if (_obtener(tcb, instruccion, sizeof(instruccion_t) - 1)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
@@ -379,11 +437,6 @@ resultado_t obtener_numero(tcb_t* tcb, int32_t* numero)
 	unir_bytes(numero, buffer);
 
 	return OK;
-}
-
-// TODO arreglar con kernel este mensaje tamanio stack
-void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack)
-{
 }
 
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
@@ -582,3 +635,40 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 
 	return OK;
 }
+
+// TODO avisar a mati que tiene que implementar las serializaciones
+resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid)
+{
+	pedido_nuevo_tid_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = DAME_TID;
+	cuerpo_del_mensaje.tcb = &tcb;
+
+	char* chorro_de_envio = serializar_pedido_nuevo_tid_t(&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_nuevo_tid_t_serializado());
+
+	if (_enviar_y_recibir(kernel, chorro_de_envio,
+		tamanio_pedido_nuevo_tid_t_serializado(), chorro_de_respuesta)
+		== FALLO_COMUNICACION)
+	{
+
+		free(chorro_de_envio);
+		free(chorro_de_respuesta);
+
+		return FALLO_COMUNICACION;
+	}
+
+	respuesta_nuevo_tid_t* respuesta = deserializar_respuesta_nuevo_tid_t(chorro_de_respuesta);
+
+	*nuevo_tid = respuesta->tid;
+
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	return OK;
+}
+
+// TODO eliminar (ya no se hace falta)
+//void pedir_al_kernel_tamanio_stack(uint32_t *tamano_stack)
+//{
+//
+//}

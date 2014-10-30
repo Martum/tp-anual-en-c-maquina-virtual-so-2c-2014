@@ -30,6 +30,10 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *r
 	// busco el proceso pid
 	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
+	if(proceso == NULL){
+		proceso = crear_proceso_msp(pid);
+	}
+
 	// calculo cuantas paginas necesita el segmento
 	uint32_t cant_paginas = cantidad_paginas(tamanio_en_bytes);
 
