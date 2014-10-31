@@ -83,7 +83,9 @@ void inicializar_memoria_fisica_total(){
 }
 
 void inicializar_indice_paginas(){
+	lock_lista_indice_paginas();
 	indice_paginas = list_create();
+	unlock_lista_indice_paginas();
 }
 
 void inicializar_cantidad_archivos_swap(){
@@ -121,7 +123,10 @@ uint32_t get_memoria_fisica_total(){
 }
 
 t_list* get_indice_paginas(){
-	return indice_paginas;
+	lock_lista_indice_paginas();
+	t_list* lista = indice_paginas;
+	unlock_lista_indice_paginas();
+	return lista;
 }
 
 

@@ -92,8 +92,10 @@ void _destruye_pagina(pagina_t *pagina) {
 		return true;
 	}
 	// saco a la pagina de la lista indice de paginas
+	lock_lista_indice_paginas();
 	list_remove_and_destroy_element(get_indice_paginas(),pagina->id_en_indice,(void*)_destruye_pagina_de_indice);
-//	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
+	unlock_lista_indice_paginas();
+	//	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
 
 	// libero memoria de la pagina
 	free(pagina);
