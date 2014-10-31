@@ -216,7 +216,9 @@ void listar_marcos(){
 		}
 
 	}
+	lock_lista_marcos();
 	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
+	unlock_lista_marcos();
 }
 
 
