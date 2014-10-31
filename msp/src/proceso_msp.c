@@ -14,6 +14,7 @@
 #include "configuraciones.h"
 #include "estructuras.h"
 #include "marco.h"
+#include "semaforos.h"
 
 void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 
@@ -31,7 +32,11 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
 	proceso->pid = un_pid;
+
+	lock_lista_procesos();
 	list_add(get_lista_procesos(),proceso);
+	unlock_lista_procesos();
+
 	proceso->segmentos = list_create();
 	return proceso;
 }
@@ -40,7 +45,12 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 	bool _es_proceso(proceso_msp_t* proceso) {
 		return proceso->pid==pid;
 	}
-	return list_find(get_lista_procesos(), (void*) _es_proceso);
+
+	lock_lista_procesos();
+	proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
+	unlock_lista_procesos();
+
+	return proc;
 }
 
 bool quitar_segmento(proceso_msp_t *proceso, direccion base){

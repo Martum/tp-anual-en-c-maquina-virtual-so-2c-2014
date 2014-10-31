@@ -9,7 +9,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "marco.h"
+#include "semaforos.h"
+
 #include <commons/collections/list.h>
 #include <commons/config.h>
 #include <commons/string.h>
@@ -54,7 +57,9 @@ char* algoritmo_sustitucion_de_paginas(){
 }
 
 void inicializar_lista_procesos(){
+	lock_lista_procesos();
 	lista_procesos = list_create();
+	unlock_lista_procesos();
 }
 
 void inicializar_lista_marcos(){
