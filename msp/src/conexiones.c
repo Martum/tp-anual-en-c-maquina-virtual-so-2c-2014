@@ -144,7 +144,7 @@ void* escuchar_conexiones(void* otro_ente){
 
 void _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion){
 	*nueva_conexion = aceptar_conexion(principal);
-	_dar_bienvenida(*nueva_conexion);
+	//_dar_bienvenida(*nueva_conexion);
 	FD_SET((*nueva_conexion)->fd, &readfds);
 	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
 	_agregar_conexion(*nueva_conexion, ultima_conex->id + 1);
