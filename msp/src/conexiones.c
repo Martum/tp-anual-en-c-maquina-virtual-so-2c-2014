@@ -18,7 +18,7 @@
 pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
 t_list* lista_conexiones;
 fd_set readfds;
-int32_t MAYOR_FD = -1;
+int32_t mayor_fd = -1;
 void inicializar_lista_conexiones_cpu(){
 	lista_conexiones = list_create();
 }
@@ -86,13 +86,18 @@ conexion_t* buscar_conexion_por_fd(int32_t fd){
 	return conexion;
 }
 
+void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd){
+	if(*mayor_fd < nuevo_fd)
+		*mayor_fd = nuevo_fd;
+}
+
 void* escuchar_conexiones(void* otro_ente){
 
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);
 
 	// Seteamos este como el socket mas grande
-	int32_t mayor_fd = MAYOR_FD;
+	int32_t mayor_fd = principal->fd;
 	FD_ZERO(&readfds);
 	FD_SET(principal->fd, &readfds);
 
@@ -119,7 +124,7 @@ void* escuchar_conexiones(void* otro_ente){
 						// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
 						_procesar_nueva_conexion(principal, &nueva_conexion);
-
+						_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 					}else{
 
 						// No es el socket principal, es un proceso
@@ -140,7 +145,7 @@ void* escuchar_conexiones(void* otro_ente){
 void _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion){
 	*nueva_conexion = aceptar_conexion(principal);
 	_dar_bienvenida(*nueva_conexion);
-
+	FD_SET((*nueva_conexion)->fd, &readfds);
 	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
 	_agregar_conexion(*nueva_conexion, ultima_conex->id + 1);
 }
