@@ -743,7 +743,9 @@ resultado_t malc(tcb_t* tcb)
 
 	if (crear_segmento(tcb->pid, cantidad_de_bytes_a_pedir, &direccion)
 		== FALLO_CREACION_DE_SEGMENTO)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	actualizar_registro_a(tcb, direccion);
 
@@ -767,7 +769,9 @@ resultado_t _free(tcb_t* tcb)
 	direccion direccion = obtener_valor_registro_a(tcb);
 
 	if (destruir_segmento(tcb->pid, direccion) == FALLO_DESTRUCCION_DE_SEGMENTO)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
@@ -813,7 +817,9 @@ resultado_t innn(tcb_t* tcb)
 	int32_t numero_ingresado;
 
 	if (_pedir_por_consola_numero(tcb, &numero_ingresado) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	actualizar_registro_a(tcb, numero_ingresado);
 
@@ -870,13 +876,12 @@ resultado_t innc(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	int32_t direccion_de_almacenamiento_nueva_cadena = obtener_valor_registro_a(
-		tcb);
+	int32_t direccion_de_nueva_cadena = obtener_valor_registro_a(tcb);
 
 	int32_t cantidad_de_bytes_maxima = obtener_valor_registro_b(tcb);
 
-	return _pedir_por_consola_cadena(tcb,
-		direccion_de_almacenamiento_nueva_cadena, cantidad_de_bytes_maxima);
+	return _pedir_por_consola_cadena(tcb, direccion_de_nueva_cadena,
+		cantidad_de_bytes_maxima);
 }
 
 /*
@@ -889,7 +894,9 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 	dividir_en_bytes(numero, buffer);
 
 	if (comunicar_salida_estandar(tcb, 4, buffer) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
@@ -1020,7 +1027,10 @@ resultado_t outc(tcb_t* tcb)
 resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
 {
 	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
+	{
 		return ERROR_EN_EJECUCION;
+	}
+
 	return OK;
 }
 
@@ -1055,36 +1065,30 @@ resultado_t crea(tcb_t* tcb)
 	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
-	// Inicializo el nuevo tcb
 	tcb_t* nuevo_tcb = crear_tcb();
 
-	// Copio tcb a nuevo_tcb, tal cual
 	clonar_tcb(nuevo_tcb, tcb);
 
-	// Obtengo el nuevo valor del pc
 	direccion nuevo_pc = obtener_valor_registro_b(tcb);
 
-	// Actualizo el nuevo_tcb con los nuevos valores
 	actualizar_pc(nuevo_tcb, nuevo_pc);
-	actualizar_tid(nuevo_tcb, -1);
+	actualizar_tid(nuevo_tcb, nuevo_tid);
 	actualizar_km(nuevo_tcb, false);
 
-	// Guardo el nuevo tid en el registro 'a'
-	actualizar_registro_a(tcb, nuevo_tcb->tid);
+	actualizar_registro_a(tcb, nuevo_tid);
 
 	// TODO eliminar (ya no hace falta)
-//	// Creo un nuevo stack para el nuevo_tcb
 //	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
 // TODO eliminar (ya no hace falta)
-//	// Le copio todos los bytes del stack de tcb al stack del nuevo tcb
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-// Le mando el nuevo tcb al kernel para planificar
 	if (comunicar_nuevo_tcb(nuevo_tcb) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
@@ -1106,7 +1110,9 @@ resultado_t join(tcb_t* tcb)
 	int32_t identificador_almacenado_en_a = obtener_valor_registro_a(tcb);
 
 	if (comunicar_join(tcb->tid, identificador_almacenado_en_a) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
@@ -1129,7 +1135,9 @@ resultado_t blok(tcb_t* tcb)
 	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
 	if (comunicar_bloquear(tcb, id_recurso_almacenado_en_b) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
@@ -1151,7 +1159,9 @@ resultado_t wake(tcb_t* tcb)
 	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
 	if (comunicar_despertar(tcb, id_recurso_almacenado_en_b) != OK)
+	{
 		return ERROR_EN_EJECUCION;
+	}
 
 	return OK;
 }
