@@ -49,27 +49,6 @@ void _enviar_flagt(sock_t* conexion, flag_t flag){
 	free(respuesta);
 }
 
-void _informar_te_doy_segmento(sock_t* conexion){
-	_enviar_flagt(conexion, TOMA_SEGMENTO);
-}
-
-void _informar_respuesta_destruccion_segmento(sock_t* conexion){
-	_enviar_flagt(conexion, RESPUESTA_DESTRUCCION);
-}
-
-void _informar_te_doy_bytes(sock_t* conexion){
-	_enviar_flagt(conexion, TOMA_BYTES);
-}
-
-void _informar_respuesta_escritura(sock_t* conexion){
-	_enviar_flagt(conexion, RESPUESTA_ESCRITURA);
-}
-
-void _dar_bienvenida(sock_t* nueva_conexion){
-	// Respondemos con BIENVENIDA
-	_enviar_flagt(nueva_conexion, BIENVENIDO);
-}
-
 conexion_t* buscar_conexion_por_fd(int32_t fd){
 
 	// Funcion de busqueda
@@ -128,8 +107,7 @@ void* escuchar_conexiones(void* otro_ente){
 					}else{
 
 						// No es el socket principal, es un proceso
-						// int tipo_msg =
-								_atender_socket(buscar_conexion_por_fd(i));
+						_atender_socket(buscar_conexion_por_fd(i));
 
 					}
 				}
@@ -144,7 +122,6 @@ void* escuchar_conexiones(void* otro_ente){
 
 void _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion){
 	*nueva_conexion = aceptar_conexion(principal);
-	//_dar_bienvenida(*nueva_conexion);
 	FD_SET((*nueva_conexion)->fd, &readfds);
 	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
 	_agregar_conexion(*nueva_conexion, ultima_conex->id + 1);

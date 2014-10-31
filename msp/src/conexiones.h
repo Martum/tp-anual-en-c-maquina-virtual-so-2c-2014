@@ -23,11 +23,6 @@ void _recalcular_mayor_fd(int32_t*, int32_t);
 int _atender_socket(conexion_t*);
 void _agregar_conexion(sock_t*, uint32_t);
 
-void _informar_te_doy_segmento(sock_t* conexion);
-void _informar_respuesta_destruccion_segmento(sock_t* conexion);
-void _informar_te_doy_bytes(sock_t* conexion);
-void _informar_respuesta_escritura(sock_t* conexion);
-
 void _atiendo_crear_segmento(conexion_t*, char*);
 void _atiendo_destruir_segmento(conexion_t*, char*);
 void _atiendo_leer_memoria(conexion_t*, char*);
