@@ -30,9 +30,9 @@ marco_t* buscar_marco_segun_id(uint32_t id){
 	bool _is_marco(marco_t *m) {
 		return m->id == id;
 	}
-	lock_lista_marcos();
+	//lock_lista_marcos();
 	marco_t* marco = list_find(get_lista_marcos(), (void*) _is_marco);
-	unlock_lista_marcos();
+	//unlock_lista_marcos();
 	return marco;
 }
 
@@ -41,9 +41,9 @@ marco_t* buscar_marco_libre()
 	bool _is_marco_libre(marco_t *m) {
 		return m->ocupado == false;
 	}
-	lock_lista_marcos();
+	//lock_lista_marcos();
 	marco_t* marco = list_find(get_lista_marcos(), (void*) _is_marco_libre);
-	unlock_lista_marcos();
+	//unlock_lista_marcos();
 	return marco;
 }
 
@@ -55,9 +55,9 @@ uint32_t cantidad_marcos_libre(){
 			cant_marcos++;
 		}
 	}
-	lock_lista_marcos();
+	//lock_lista_marcos();
 	list_iterate(get_lista_marcos(), (void*) _marco_libre);
-	unlock_lista_marcos();
+	//unlock_lista_marcos();
 	return cant_marcos;
 }
 

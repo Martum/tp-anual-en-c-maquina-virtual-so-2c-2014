@@ -30,9 +30,9 @@ uint32_t algoritmo_clock(){
 		return pagina->tiene_marco;
 	}
 
-	lock_lista_indice_paginas();
+//	lock_lista_indice_paginas();
 	t_list* paginas_con_marco =	list_filter(get_indice_paginas(),(void*) _paginas_con_marco);
-	unlock_lista_indice_paginas();
+//	unlock_lista_indice_paginas();
 
 	// itero las paginas
 	pagina_t* pag = malloc(sizeof(pagina_t));
@@ -75,9 +75,9 @@ uint32_t algoritmo_lru(){
 		return pagina->tiene_marco;
 	}
 
-	lock_lista_indice_paginas();
+	//lock_lista_indice_paginas();
 	t_list* paginas_con_marco =	list_filter(get_indice_paginas(),(void*) _paginas_con_marco);
-	unlock_lista_indice_paginas();
+	//unlock_lista_indice_paginas();
 
 	// saco el ultimo elemento (el menos usado recientemente)
 	pagina_t* pag = list_get(paginas_con_marco,list_size(paginas_con_marco)-1);
@@ -88,10 +88,10 @@ uint32_t algoritmo_lru(){
 }
 
 void ubico_al_principio(pagina_t* pag){
-	lock_lista_indice_paginas();
+	//lock_lista_indice_paginas();
 	list_remove(get_indice_paginas(),pag->id_en_indice);
 	list_add_in_index(get_indice_paginas(),0,pag);
-	unlock_lista_indice_paginas();
+	//unlock_lista_indice_paginas();
 	pag->id_en_indice = 0;
 }
 

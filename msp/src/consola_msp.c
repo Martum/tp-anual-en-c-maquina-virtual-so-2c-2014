@@ -190,9 +190,9 @@ void tabla_segmentos(){
 	void _listar_segmentos(proceso_msp_t* proceso) {
 		listar_segmentos_de_un_proceso(proceso);
 	}
-	lock_lista_procesos();
+	//lock_lista_procesos();
 	list_iterate(get_lista_procesos(), (void*) _listar_segmentos);
-	unlock_lista_procesos();
+	//unlock_lista_procesos();
 }
 
 void tabla_paginas(uint32_t pid){
@@ -216,9 +216,9 @@ void listar_marcos(){
 		}
 
 	}
-	lock_lista_marcos();
+	//lock_lista_marcos();
 	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
-	unlock_lista_marcos();
+	//unlock_lista_marcos();
 }
 
 

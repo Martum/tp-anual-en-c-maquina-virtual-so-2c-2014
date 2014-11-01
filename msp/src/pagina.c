@@ -28,10 +28,10 @@ void crear_pagina(segmento_t *segmento){
 	pagina->bit_referencia = 0;
 
 	// agrego pagina a indice de paginas
-	lock_lista_indice_paginas();
+	//lock_lista_indice_paginas();
 	list_add(get_indice_paginas(), pagina);
 	pagina->id_en_indice = list_size(get_indice_paginas()) - 1;
-	unlock_lista_indice_paginas();
+	//unlock_lista_indice_paginas();
 }
 
 void agregar_pagina_a_segmento(segmento_t *segmento, pagina_t *pagina){
