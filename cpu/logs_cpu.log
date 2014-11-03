@@ -1,0 +1,11 @@
+[INFO] 17:43:46:757 CPU/(4050:4050): Empiezo el loggeo
+[TRACE] 17:43:46:757 CPU/(4050:4050): Intento cargar configuraciones
+[INFO] 17:43:46:757 CPU/(4050:4050): Configuraciones cargadas con exito
+[TRACE] 17:43:46:758 CPU/(4050:4050): Intento conectarme con memoria
+[TRACE] 17:43:46:758 CPU/(4050:4050): Intento conectarme con ip: 127.0.0.1 y puerto: 17291
+[WARNING] 17:43:46:763 CPU/(4050:4050): No pudo conectarse a ip: 127.0.0.1 y puerto: 17291
+[ERROR] 17:43:46:763 CPU/(4050:4050): No pudo conectarse con memoria
+[INFO] 17:43:46:763 CPU/(4050:4050): Liberando recursos para cierre...
+[TRACE] 17:43:46:763 CPU/(4050:4050): Intento liberar las configuraciones
+[INFO] 17:43:46:763 CPU/(4050:4050): Configuraciones liberadas con exito
+[INFO] 17:43:46:763 CPU/(4050:4050): Finalizo el loggeo

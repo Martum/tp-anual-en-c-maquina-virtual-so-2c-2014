@@ -7,16 +7,19 @@
 
 #include "logs.h"
 
+FILE *fp;
+
 t_log* logger;
 //t_log* logger_historial;
 
 void empezar_loggeo()
 {
-	truncate("logs/logs_cpu.log", 0);
 
-	logger = log_create(
-		"logs/logs_cpu.log",
-		"CPU", true, LOG_LEVEL_TRACE);
+	fp = fopen("logs_cpu.log", "w");
+
+	truncate("logs_cpu.log", 0);
+
+	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_TRACE);
 
 //	logger_historial =
 //		log_create(
@@ -29,6 +32,7 @@ void empezar_loggeo()
 void finalizar_loggeo()
 {
 	loggear_info("Finalizo el loggeo");
+	fclose(fp);
 	log_destroy(logger);
 //	log_destroy(logger_historial);
 }
