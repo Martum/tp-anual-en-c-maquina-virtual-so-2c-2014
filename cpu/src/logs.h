@@ -18,6 +18,7 @@ void empezar_loggeo();
 void finalizar_loggeo();
 
 void loggear_trace(const char* mensaje, ...);
+void loggear_debug(const char* mensaje, ...);
 void loggear_info(const char* mensaje, ...);
 void loggear_warning(const char* mensaje, ...);
 void loggear_error(const char* mensaje, ...);

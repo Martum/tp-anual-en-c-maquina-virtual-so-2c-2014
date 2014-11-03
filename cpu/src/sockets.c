@@ -46,7 +46,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
-	loggear_trace("Intento conectarme con ip: %s y puerto: %d", ip, puerto);
+	loggear_debug("IP %s -- Puerto %d", ip, puerto);
 
 	*socket = crear_socket_hablador(ip, puerto);
 
@@ -56,8 +56,7 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 		return FALLO_CONEXION;
 	}
 
-	loggear_info("Conexion realizada con exito al ip: %s y puerto: %d", ip,
-		puerto);
+	loggear_info("Conexion realizada con exito");
 
 	return OK;
 }
@@ -191,6 +190,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	loggear_trace("Me preparo para enviar pedido de creacion de segmento");
 
+	loggear_debug("PID %d -- Tamanio del segmento %d", pid, bytes);
+
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
@@ -220,7 +221,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	*direccion = respuesta->direccion_virtual;
 
-	loggear_trace("La direccion del segmento es %d", *direccion);
+	loggear_debug("Direccion del segmento %d", *direccion);
 
 	free(respuesta);
 
@@ -239,6 +240,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
 	loggear_trace("Me preparo para enviar pedido de destruccion de segmento");
+
+	loggear_debug("PID: %d -- Direccion %d", pid, direccion);
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),

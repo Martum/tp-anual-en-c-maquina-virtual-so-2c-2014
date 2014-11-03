@@ -48,6 +48,17 @@ void loggear_trace(const char* format, ...)
 //	log_trace(logger_historial, nuevo);
 }
 
+void loggear_debug(const char* format, ...)
+{
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, format);
+	nuevo = string_from_vformat(format, arguments);
+	va_end(arguments);
+	log_debug(logger, nuevo);
+//	log_info(logger_historial, nuevo);
+}
+
 void loggear_info(const char* format, ...)
 {
 	char* nuevo;

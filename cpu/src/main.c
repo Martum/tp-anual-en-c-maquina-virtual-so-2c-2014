@@ -53,7 +53,9 @@ int32_t main(int32_t argc, char** argv)
 	// TODO eliminar (solo para pruebas)
 	direccion direccion;
 	crear_segmento(12, 123, &direccion);
-	printf("Direccion: %d\n", direccion);
+
+	// TODO eliminar (solo para pruebas)
+	destruir_segmento(12, direccion);
 
 	// TODO eliminar (solo para pruebas)
 	char bytes = 'a';
