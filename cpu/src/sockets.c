@@ -104,13 +104,23 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 	return OK;
 }
 
-resultado_t desconectarse()
+resultado_t desconectar_memoria()
+{
+	cerrar_liberar(memoria);
+	return OK;
+}
+
+resultado_t desconectar_kernel()
 {
 	_mandar_desconexion_cpu_a_kernel();
-
-	cerrar_liberar(memoria);
 	cerrar_liberar(kernel);
+	return OK;
+}
 
+resultado_t desconectarse()
+{
+	desconectar_memoria();
+	desconectar_kernel();
 	return OK;
 }
 
@@ -377,7 +387,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	uint32_t bytes_a_leer)
 {
-	uint32_t pid_a_leer = PID_KERNEL;
+	uint32_t pid_a_leer = PID_KERNEL
+	;
 
 	if (!es_tcb_kernel(tcb))
 		pid_a_leer = tcb->pid;

@@ -43,6 +43,9 @@ resultado_t conectar_con_kernel();
  */
 resultado_t desconectarse();
 
+resultado_t desconectar_memoria();
+resultado_t desconectar_kernel();
+
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento
  * @RETURNS:
