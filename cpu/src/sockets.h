@@ -18,6 +18,7 @@
 
 #include "configuraciones.h"
 #include "definiciones.h"
+#include "logs.h"
 #include "operaciones-con-bits.h"
 #include "tcb-funciones.h"
 

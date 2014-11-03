@@ -16,14 +16,28 @@ sock_t* kernel;
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	uint32_t len_a_enviar, char* respuesta)
 {
+	loggear_trace("Me preparo para enviar %d bytes", len_a_enviar);
+
 	if (enviar(socket, chorro_a_enviar, &len_a_enviar) == -1)
+	{
+		loggear_warning("No pudo mandar el paquete de %d bytes", len_a_enviar);
 		return FALLO_COMUNICACION;
+	}
+
+	loggear_info("Envio con exito paquete de %d bytes", len_a_enviar);
 
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
 
+	loggear_trace("Me preparo para recibir respuesta");
+
 	if (recibir(socket, &mensaje_recibido, &len_devolucion) == -1)
+	{
+		loggear_warning("No pudo recibir respuesta");
 		return FALLO_COMUNICACION;
+	}
+
+	loggear_info("Recibio con exito paquete de %d bytes", len_devolucion);
 
 	memcpy(respuesta, mensaje_recibido, len_devolucion);
 
@@ -32,10 +46,18 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
+	loggear_trace("Intento conectarme con ip: %s y puerto: %d", ip, puerto);
+
 	*socket = crear_socket_hablador(ip, puerto);
 
 	if (conectar(*socket) == -1)
+	{
+		loggear_warning("No pudo conectarse a ip: %s y puerto: %d", ip, puerto);
 		return FALLO_CONEXION;
+	}
+
+	loggear_info("Conexion realizada con exito al ip: %s y puerto: %d", ip,
+		puerto);
 
 	return OK;
 }
@@ -48,14 +70,19 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_pedido_t_serializado());
 
+	loggear_trace("Me preparo para enviar y recibir SOY_CPU");
+
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
+		loggear_warning("Problema al comunicarse con kernel");
 		free(chorro_de_envio);
 		free(chorro_de_respuesta);
 		return FALLO_COMUNICACION;
 	}
+
+	loggear_info("Comunicacion con kernel realizada con exito");
 
 	pedido_t* respuesta = deserializar_pedido_t(chorro_de_respuesta);
 
@@ -64,9 +91,12 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 	if (respuesta->flag != BIENVENIDO)
 	{
+		loggear_warning("El mensaje de respuesta no es el esperado, sino %d", respuesta->flag);
 		free(respuesta);
 		return FALLO_COMUNICACION;
 	}
+
+	loggear_info("Respuesta recibida correcta");
 
 	free(respuesta);
 
@@ -75,18 +105,29 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
+	loggear_trace("Intento conectarme con kernel");
+
 	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
 		return FALLO_CONEXION;
 
+	loggear_info("Conexion con kernel realizada con exito");
+
 	return OK;
 }
 
 resultado_t conectar_con_memoria()
 {
-	return _conectar(&memoria, ip_msp(), puerto_msp());
+	loggear_trace("Intento conectarme con memoria");
+
+	if (_conectar(&memoria, ip_msp(), puerto_msp()) == FALLO_CONEXION)
+		return FALLO_CONEXION;
+
+	loggear_info("Conexion con memoria realizada con exito");
+
+	return OK;
 }
 
 resultado_t _mandar_desconexion_cpu_a_kernel()

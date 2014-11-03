@@ -34,6 +34,7 @@ int32_t main(int32_t argc, char** argv)
 	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
+		loggear_warning("No pudo conectarse con memoria");
 		liberar_configuraciones();
 		finalizar_loggeo();
 		printf("ERROR FATAL: al conectarse con memoria");
