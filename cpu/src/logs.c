@@ -19,10 +19,13 @@ void empezar_loggeo()
 		log_create(
 			"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu_historial.log",
 			"CPU", false, LOG_LEVEL_TRACE);
+
+	loggear_info("Empiezo el loggeo");
 }
 
 void finalizar_loggeo()
 {
+	loggear_info("Finalizo el loggeo");
 	log_destroy(logger);
 	log_destroy(logger_historial);
 }
