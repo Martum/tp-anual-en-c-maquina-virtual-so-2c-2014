@@ -12,6 +12,8 @@ t_log* logger_historial;
 
 void empezar_loggeo()
 {
+	truncate("/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu.log", 0);
+
 	logger = log_create(
 		"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu.log",
 		"CPU", true, LOG_LEVEL_TRACE);

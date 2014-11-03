@@ -8,6 +8,8 @@
 #ifndef LOGS_H_
 #define LOGS_H_
 
+#include <unistd.h>
+
 #include "commons/log.h"
 #include "commons/string.h"
 
