@@ -29,13 +29,6 @@ int32_t main(int32_t argc, char** argv)
 		return 0;
 	}
 
-	// TODO eliminar (solamente comentado para pruebas)
-	//	if (conectar_con_memoria() == FALLO_CONEXION
-	//		|| conectar_con_kernel() == FALLO_CONEXION) {
-	//		printf("ERROR FALTAL: Fallo la conexion\n");
-	//		return 0;
-	//	}
-
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
 		loggear_error("No pudo conectarse con memoria");
@@ -92,11 +85,6 @@ int32_t main(int32_t argc, char** argv)
 			return 0;
 		}
 
-		printf("%d\n", quantum); // TODO eliminar (solamente para pruebas)
-		printf("%d\n", tcb.a); // TODO eliminar (solamente para pruebas)
-
-		break; // TODO eliminar (solamente para pruebas)
-
 		if ((quantum <= 0) && !tcb.km)
 		{
 			loggear_warning("Se recibio un quantum %d menor a 0", quantum);
@@ -118,8 +106,6 @@ int32_t main(int32_t argc, char** argv)
 			}
 
 			obtener_funcion_segun_instruccion(funcion, instruccion);
-
-			loggear_trace("Instruccion a ejecutar: %s", instruccion);
 
 			resultado = funcion(&tcb);
 
