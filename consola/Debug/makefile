@@ -26,13 +26,13 @@ endif
 all: consola
 
 dependents:
-	-cd /home/utnso/Escritorio/SO/tp-2014-2c-hardcodeameun4/libs/Debug && $(MAKE) clean all
+	-cd /home/utnso/Escritorio/Repositorio/tp-2014-2c-hardcodeameun4/libs/Debug && $(MAKE) all
 
 # Tool invocations
-consola: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/SO/tp-2014-2c-hardcodeameun4/libs/Debug/libhu4sockets.so
+consola: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/Repositorio/tp-2014-2c-hardcodeameun4/libs/Debug/libhu4sockets.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/utnso/Escritorio/SO/tp-2014-2c-hardcodeameun4/libs/Debug" -o "consola" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/home/utnso/Escritorio/Repositorio/tp-2014-2c-hardcodeameun4/libs/Debug" -o "consola" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -43,6 +43,6 @@ clean:
 
 .PHONY: all clean dependents
 .SECONDARY:
-/home/utnso/Escritorio/SO/tp-2014-2c-hardcodeameun4/libs/Debug/libhu4sockets.so:
+/home/utnso/Escritorio/Repositorio/tp-2014-2c-hardcodeameun4/libs/Debug/libhu4sockets.so:
 
 -include ../makefile.targets

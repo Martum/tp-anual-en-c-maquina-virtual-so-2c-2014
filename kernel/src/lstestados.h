@@ -184,5 +184,10 @@ void remover_de_esperando_km_a_exit(uint32_t pid);
  */
 void preparar_exit_para_proceso(uint32_t pid, bool muere_proceso);
 
+/**
+ * Agrega a EXIT los TCBs encolados en esperando_km
+ */
+void remover_de_esperando_km_a_exit(uint32_t pid);
+
 
 #endif /* LSTESTADOS_H_ */

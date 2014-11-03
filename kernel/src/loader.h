@@ -29,6 +29,9 @@ uint32_t dame_nuevo_pid();
  */
 uint32_t dame_nuevo_tid(uint32_t pid);
 
+/**
+ * Retorna el ultimo TID entregado.
+ */
 uint32_t dame_ultimo_tid(uint32_t pid);
 
 /**

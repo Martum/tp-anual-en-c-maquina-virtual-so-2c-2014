@@ -221,7 +221,7 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
 	respuesta_leer->resultado = *(resultado);
-	respuesta_leer->tamano = respuesta_leer->tamano = (uint32_t)string_length(bytes);
+	respuesta_leer->tamano = (uint32_t)string_length(bytes);
 
 	free(resultado);
 

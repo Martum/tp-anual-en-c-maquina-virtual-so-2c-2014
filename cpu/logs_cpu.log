@@ -1,0 +1,21 @@
+[INFO] 18:08:35:576 CPU/(4926:4926): Empiezo el loggeo
+[TRACE] 18:08:35:576 CPU/(4926:4926): Intento cargar configuraciones
+[INFO] 18:08:35:576 CPU/(4926:4926): Configuraciones cargadas con exito
+[TRACE] 18:08:35:576 CPU/(4926:4926): Intento conectarme con memoria
+[DEBUG] 18:08:35:576 CPU/(4926:4926): IP 160086248 -- Puerto 17291
+[INFO] 18:08:35:577 CPU/(4926:4926): Conexion realizada con exito
+[INFO] 18:08:35:577 CPU/(4926:4926): Conexion con memoria realizada con exito
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para enviar pedido de creacion de segmento
+[DEBUG] 18:08:35:577 CPU/(4926:4926): PID 12 -- Tamanio del segmento 123
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para enviar 12 bytes
+[INFO] 18:08:35:577 CPU/(4926:4926): Envio con exito paquete de 12 bytes
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para recibir respuesta
+[INFO] 18:08:35:577 CPU/(4926:4926): Recibio con exito paquete de 12 bytes
+[TRACE] 18:08:35:577 CPU/(4926:4926): Recibi una respuesta por creacion de segmento
+[INFO] 18:08:35:577 CPU/(4926:4926): Creacion de segmento satisfactoria
+[DEBUG] 18:08:35:577 CPU/(4926:4926): Direccion del segmento 1048576
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para enviar pedido de destruccion de segmento
+[DEBUG] 18:08:35:577 CPU/(4926:4926): PID: 12 -- Direccion 1048576
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para enviar 12 bytes
+[INFO] 18:08:35:577 CPU/(4926:4926): Envio con exito paquete de 12 bytes
+[TRACE] 18:08:35:577 CPU/(4926:4926): Me preparo para recibir respuesta

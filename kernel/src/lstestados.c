@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "planificador.h"
+#include "loader.h"
 
 
 /*t_queue* exec;
@@ -273,7 +274,7 @@ void _eliminar_exit_t(uint32_t pid)
 void _verificar_salida_proceso(exit_t* et)
 {
 	if((et->muere_proceso && et->hilos_totales == list_size(et->lista_tcbs)) || !et->muere_proceso)
-	{
+	{// Ya podemos eliminar los TCBs y liberar la memoria
 		list_clean_and_destroy_elements(et->lista_tcbs, eliminar_y_destruir_tcb);
 		_eliminar_exit_t(et->pid);
 	}
@@ -315,6 +316,27 @@ void preparar_exit_para_proceso(uint32_t pid, bool muere_proceso)
 	et->pid = pid;
 	et->lista_tcbs = list_create();
 	et->muere_proceso = muere_proceso;
+	et->hilos_totales = dame_ultimo_tid(pid);
 
 	list_add(EXIT_COLA, et);
+}
+
+void remover_de_esperando_km_a_exit(uint32_t pid)
+{
+	bool _satisface_pid(void* elemento)
+	{
+		return ((esperando_km_t*) elemento)->tcb->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(BLOCK_ESPERA_KM, _satisface_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		esperando_km_t* ekm = list_remove_by_condition(BLOCK_ESPERA_KM, _satisface_pid);
+
+		agregar_a_exit(ekm->tcb);
+
+		free(ekm);
+	}
 }
