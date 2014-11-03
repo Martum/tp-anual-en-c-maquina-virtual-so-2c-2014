@@ -40,6 +40,9 @@ int32_t main(int32_t argc, char** argv)
 	crear_segmento(12, 123, &direccion);
 	printf("Direccion: %d\n", direccion);
 
+	char bytes = 'a';
+	escribir_en_memoria(12, direccion, 1, &bytes);
+
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t resultado = OK;
