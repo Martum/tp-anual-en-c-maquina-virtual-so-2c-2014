@@ -14,7 +14,7 @@ void _liberar_recursos();
 
 int32_t main(int32_t argc, char** argv)
 {
-	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
+//	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
 	empezar_loggeo();
 
@@ -25,15 +25,15 @@ int32_t main(int32_t argc, char** argv)
 		loggear_error("No se pudieron cargar las configuraciones");
 		loggear_info("Liberando recursos para cierre...");
 		finalizar_loggeo();
-		error_show("ERROR FALTAL: al cargar configuraciones");
+		error_show(" Al cargar configuraciones");
 		return 0;
 	}
 
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
 		loggear_error("No pudo conectarse con memoria");
-		liberar_configuraciones();
 		loggear_info("Liberando recursos para cierre...");
+		liberar_configuraciones();
 		finalizar_loggeo();
 		error_show(" Al tratar de conectarse con memoria");
 		return 0;
@@ -43,8 +43,9 @@ int32_t main(int32_t argc, char** argv)
 //	if (conectar_con_kernel() == FALLO_CONEXION)
 //	{
 //		loggear_error("No pudo conectarse con memoria");
-//		finalizar_loggeo();
 //		loggear_info("Liberando recursos para cierre...");
+//		liberar_configuraciones();
+//		finalizar_loggeo();
 //		error_show(" Al tratar de conectarse con kernel");
 //		return 0;
 //	}
@@ -52,7 +53,9 @@ int32_t main(int32_t argc, char** argv)
 	// TODO eliminar (solo para pruebas)
 	direccion direccion;
 	crear_segmento(12, 123, &direccion);
-	printf("Direccion: %d\n", direccion);
+
+	// TODO eliminar (solo para pruebas)
+	destruir_segmento(12, direccion);
 
 	// TODO eliminar (solo para pruebas)
 	char bytes = 'a';

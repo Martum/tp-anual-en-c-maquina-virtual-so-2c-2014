@@ -46,7 +46,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
-	loggear_trace("Intento conectarme con ip: %s y puerto: %d", ip, puerto);
+	loggear_debug("IP %s -- Puerto %d", ip, puerto);
 
 	*socket = crear_socket_hablador(ip, puerto);
 
@@ -56,8 +56,7 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 		return FALLO_CONEXION;
 	}
 
-	loggear_info("Conexion realizada con exito al ip: %s y puerto: %d", ip,
-		puerto);
+	loggear_info("Conexion realizada con exito");
 
 	return OK;
 }
@@ -189,6 +188,10 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	char* chorro_de_respuesta = malloc(
 		tamanio_respuesta_de_crear_segmento_t_serializado());
 
+	loggear_trace("Me preparo para enviar pedido de creacion de segmento");
+
+	loggear_debug("PID %d -- Tamanio del segmento %d", pid, bytes);
+
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
@@ -198,6 +201,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
+	loggear_trace("Recibi una respuesta por creacion de segmento");
+
 	respuesta_de_crear_segmento_t* respuesta =
 		deserializar_respuesta_de_crear_segmento_t(chorro_de_respuesta);
 
@@ -206,11 +211,17 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	if (respuesta->resultado == ERROR_DE_MEMORIA_LLENA)
 	{
+		loggear_warning(
+			"La creacion no se pudo realizar porque la memoria estaba llena");
 		free(respuesta);
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
+	loggear_info("Creacion de segmento satisfactoria");
+
 	*direccion = respuesta->direccion_virtual;
+
+	loggear_debug("Direccion del segmento %d", *direccion);
 
 	free(respuesta);
 
@@ -228,6 +239,10 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
+	loggear_trace("Me preparo para enviar pedido de destruccion de segmento");
+
+	loggear_debug("PID: %d -- Direccion %d", pid, direccion);
+
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
@@ -237,6 +252,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 	}
 
+	loggear_trace("Recibi una respuesta por destruccion de segmento");
+
 	respuesta_t* respuesta = deserializar_respuesta_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
@@ -244,9 +261,12 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 
 	if (respuesta->resultado == ERROR_NO_ENCUENTRO_SEGMENTO)
 	{
+		loggear_warning("La destruccion no se pudo realizar porque no encontro el segmetno");
 		free(respuesta);
 		return FALLO_DESTRUCCION_DE_SEGMENTO;
 	}
+
+	loggear_info("Destruccion de segmento satisfactoria");
 
 	free(respuesta);
 
