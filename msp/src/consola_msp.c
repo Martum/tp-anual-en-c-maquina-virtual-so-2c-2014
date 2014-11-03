@@ -135,7 +135,7 @@ void crear_segment(uint32_t pid, uint32_t tamanio){
 	direccion dir = crear_segmento(pid, tamanio, resultado);
 
 	if(*(resultado)==RESULTADO_OK){
-		printf("Direccion del segmento creado: %x \n\n", dir);
+		printf("Direccion del segmento creado: %d \n\n", dir);
 	}else if(*(resultado)==ERROR_DE_MEMORIA_LLENA){
 		printf("No se pudo crear el segmento: ERROR DE MEMORIA LLENA \n\n");
 	}
