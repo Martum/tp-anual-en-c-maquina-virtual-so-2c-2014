@@ -54,7 +54,7 @@ void copiar_tcb(tcb_t* to, tcb_t* from)
 int crear_hilo(tcb_t* tcb)
 {
 	// Creamos TCB
-	tcb_t* tcb_hilo = crear_tcb(tcb->pid, dame_nuevo_tid());
+	tcb_t* tcb_hilo = crear_tcb(tcb->pid, dame_nuevo_tid(tcb->pid));
 
 	// Le asignamos la misma base_codigo y un nuevo base_stack
 	if(cargar_tcb_sin_codigo(tcb, tcb_hilo) != -1)
