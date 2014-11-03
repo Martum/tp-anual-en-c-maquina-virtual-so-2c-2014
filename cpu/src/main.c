@@ -1,10 +1,15 @@
-#include "instrucciones.h"
 #include <unistd.h>
+
+#include "instrucciones.h"
+#include "signals.h"
 
 int32_t main(int32_t argc, char** argv)
 {
+//	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
-	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
+	escuchar_signals();
+
+	sleep(1000);
 
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
