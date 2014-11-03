@@ -54,11 +54,20 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *r
 }
 
 void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
-	// busco el proceso pid
-	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
-	// saco el segmento del proceso y libero memoria
-	bool ok = quitar_segmento(proceso,base);
+	bool _es_proceso(proceso_msp_t* proceso) {
+		return proceso->pid==pid;
+	}
+
+	bool ok;
+
+	if(list_any_satisfy(get_lista_procesos(),(void*) _es_proceso)){
+		// busco el proceso pid
+		proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+		ok = quitar_segmento(proceso,base);
+	}else{
+		ok = false;
+	}
 
 	if(ok){
 		*(resultado) = RESULTADO_OK;

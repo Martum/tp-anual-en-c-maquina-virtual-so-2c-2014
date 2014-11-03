@@ -130,7 +130,12 @@ void mover_tcbs_a_exit(uint32_t pid)
 	preparar_exit_para_proceso(pid, true);
 
 	remover_de_ready_a_exit(pid);
-	// TODO: Continuar aca
+
+	// TODO: Verificar la cola rdy del KM
+	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
+	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
+
+	remover_de_conclusion_km_a_exit(pid);
 
 	remover_de_esperando_km_a_exit(pid);
 

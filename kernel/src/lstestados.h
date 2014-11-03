@@ -149,9 +149,24 @@ void agregar_a_block_espera_km(esperando_km_t* ekm);
 void agregar_a_block_conclusion_km(tcb_t* tcb);
 
 /**
+ * Devuelve el struct conclusion_km_t
+ */
+conclusion_km_t* get_conclusion_km_t();
+
+/**
  * Setea el Flag enviar_a_rdy con el valor un_bool
  */
 void set_enviar_a_rdy(bool un_bool);
+
+/**
+ * Devuelve el TCB encolado BLOCK_CONCLUSION_KM
+ */
+tcb_t* get_bloqueado_conclusion_tcb();
+
+/**
+ * Elimina el struct conclusion_km_t (no elimina el TCB)
+ */
+void eliminar_conclusion_tcb();
 
 
 // FUNCIONES DE BLOCK_JOIN
@@ -198,5 +213,11 @@ void remover_de_join_a_exit(uint32_t pid);
  * Agrega a EXIT los TCBs encolados en Bloqueo por Recurso
  */
 void remover_de_block_recursos_a_exit(uint32_t pid);
+
+/**
+ * Agrega a EXIT los TCBs encolados en conclusion_km UNICAMENTE si el KM no esta ejecutando
+ * y si corresponde.
+ */
+void remover_de_conclusion_km_a_exit(uint32_t pid);
 
 #endif /* LSTESTADOS_H_ */

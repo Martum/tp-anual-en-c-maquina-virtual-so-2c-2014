@@ -231,15 +231,26 @@ void agregar_a_block_conclusion_km(tcb_t* tcb)
 	list_add(BLOCK_CONCLUSION_KM, ckm);
 }
 
+conclusion_km_t* get_conclusion_km_t()
+{
+	return (conclusion_km_t*)list_get(BLOCK_CONCLUSION_KM, 0);
+}
+
 void set_enviar_a_rdy(bool un_bool)
 {
-	conclusion_km_t* ckm = (conclusion_km_t*)list_get(BLOCK_CONCLUSION_KM, 0);
+	conclusion_km_t* ckm = get_conclusion_km_t();
 	ckm->enviar_a_rdy = un_bool;
 }
 
 tcb_t* get_bloqueado_conclusion_tcb()
 {
-	return ((conclusion_km_t*)list_get(BLOCK_CONCLUSION_KM, 0))->tcb;
+	return (get_conclusion_km_t())->tcb;
+}
+
+void eliminar_conclusion_tcb()
+{
+	free(get_bloqueado_conclusion_tcb);
+	list_remove(BLOCK_CONCLUSION_KM, 0);
 }
 
 void agregar_a_block_join(esperando_join_t* ej)
@@ -409,5 +420,29 @@ void remover_de_block_recursos_a_exit(uint32_t pid)
 		_eliminar_de_listas_recursos(tcb);
 
 		agregar_a_exit(tcb);
+	}
+}
+
+void remover_de_conclusion_km_a_exit(uint32_t pid)
+{
+	tcb_t* tcb = get_bloqueado_conclusion_tcb();
+	if(tcb->pid == pid)
+	{
+		agregar_a_exit(tcb);
+
+		if(list_size(READY[0]) == 1)
+		{// Todavia no entro a ejecutar
+			list_remove(READY[0], 0);
+
+			// Elimina el struct conclusion_km_t
+			eliminar_conclusion_tcb();
+
+			// Replanificamos KM para otro TCB
+			replanificar_tcb_km_aca!!!
+		}
+		else
+		{// Ya se esta ejecutando
+			set_enviar_a_rdy(false);
+		}
 	}
 }
