@@ -1,5 +1,7 @@
 #include <unistd.h>
 
+#include "commons/error.h"
+
 #include "instrucciones.h"
 #include "logs.h"
 #include "signals.h"
@@ -20,7 +22,7 @@ int32_t main(int32_t argc, char** argv)
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
 		loggear_error("No se pudieron cargar las configuraciones");
-		printf("ERROR FALTAL: al cargar configuraciones");
+		error_show("ERROR FALTAL: al cargar configuraciones");
 		return 0;
 	}
 
@@ -37,7 +39,7 @@ int32_t main(int32_t argc, char** argv)
 		loggear_warning("No pudo conectarse con memoria");
 		liberar_configuraciones();
 		finalizar_loggeo();
-		printf("ERROR FATAL: al conectarse con memoria");
+		error_show(" Al tratar de conectarse con memoria");
 		return 0;
 	}
 
