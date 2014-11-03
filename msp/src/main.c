@@ -20,6 +20,8 @@
 	*/
 
 int main(void){
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 	cargar_configuraciones();
 	inicializar_lista_procesos();
 	inicializar_lista_marcos();
