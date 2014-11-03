@@ -26,6 +26,7 @@
 
 # Loggeo del CPU
 cpu/logs_cpu.txt
+cpu/logs_cpu.log
 cpu/logs_cpu_historial.txt
 
 *.txt
