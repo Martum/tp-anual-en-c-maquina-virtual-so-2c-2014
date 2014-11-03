@@ -23,6 +23,8 @@ int32_t main(int32_t argc, char** argv)
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
 		loggear_error("No se pudieron cargar las configuraciones");
+		loggear_info("Liberando recursos para cierre...");
+		finalizar_loggeo();
 		error_show("ERROR FALTAL: al cargar configuraciones");
 		return 0;
 	}
@@ -38,6 +40,7 @@ int32_t main(int32_t argc, char** argv)
 	{
 		loggear_error("No pudo conectarse con memoria");
 		liberar_configuraciones();
+		loggear_info("Liberando recursos para cierre...");
 		finalizar_loggeo();
 		error_show(" Al tratar de conectarse con memoria");
 		return 0;
@@ -48,6 +51,7 @@ int32_t main(int32_t argc, char** argv)
 //	{
 //		loggear_error("No pudo conectarse con memoria");
 //		finalizar_loggeo();
+//		loggear_info("Liberando recursos para cierre...");
 //		error_show(" Al tratar de conectarse con kernel");
 //		return 0;
 //	}
@@ -148,6 +152,7 @@ int32_t main(int32_t argc, char** argv)
 
 void _liberar_recursos()
 {
+	loggear_info("Liberando recursos para cierre...");
 	liberar_configuraciones();
 	liberar_dic_de_instrucciones();
 	desconectarse();

@@ -13,7 +13,7 @@ t_config* configs_cpu;
 
 resultado_t cargar_configuraciones(){
 	loggear_trace("Intento cargar configuraciones");
-	configs_cpu = config_create("/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/configs_cpu.cfg");
+	configs_cpu = config_create("configs_cpu.cfg");
 	if (config_keys_amount(configs_cpu) == 0) {
 		loggear_info("No hay ninguna key que leer");
 		return FALLO_CARGA_DE_CONFIGURACIONES;
