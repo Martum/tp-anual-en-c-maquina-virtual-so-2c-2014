@@ -23,7 +23,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_info("Envio con exito paquete de %d bytes", len_a_enviar);
+	loggear_trace("Envio con exito paquete de %d bytes", len_a_enviar);
 
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
@@ -36,7 +36,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_info("Recibio con exito paquete de %d bytes", len_devolucion);
+	loggear_trace("Recibio con exito paquete de %d bytes", len_devolucion);
 
 	memcpy(respuesta, mensaje_recibido, len_devolucion);
 
@@ -55,7 +55,7 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 		return FALLO_CONEXION;
 	}
 
-	loggear_info("Conexion realizada con exito");
+	loggear_debug("Conexion realizada con exito");
 
 	return OK;
 }
@@ -80,7 +80,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_info("Comunicacion con kernel realizada con exito");
+	loggear_trace("Comunicacion con kernel realizada con exito");
 
 	pedido_t* respuesta = deserializar_pedido_t(chorro_de_respuesta);
 
@@ -95,7 +95,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_info("Respuesta recibida correcta");
+	loggear_trace("Respuesta recibida correcta");
 
 	free(respuesta);
 
@@ -104,7 +104,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	loggear_trace("Intento conectarme con kernel");
+	loggear_debug("Intento conectarme con kernel");
 
 	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
@@ -112,19 +112,19 @@ resultado_t conectar_con_kernel()
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
 		return FALLO_CONEXION;
 
-	loggear_info("Conexion con kernel realizada con exito");
+	loggear_debug("Conexion con kernel realizada con exito");
 
 	return OK;
 }
 
 resultado_t conectar_con_memoria()
 {
-	loggear_trace("Intento conectarme con memoria");
+	loggear_debug("Intento conectarme con memoria");
 
 	if (_conectar(&memoria, ip_msp(), puerto_msp()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
-	loggear_info("Conexion con memoria realizada con exito");
+	loggear_debug("Conexion con memoria realizada con exito");
 
 	return OK;
 }
@@ -141,7 +141,7 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 
 	enviar(kernel, chorro_a_enviar, &tamanio);
 
-	loggear_info("Envio de mensaje de DESCONEXION_CPU realizado con exito");
+	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
 
 	free(chorro_a_enviar);
 
@@ -150,19 +150,19 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 
 resultado_t desconectar_memoria()
 {
-	loggear_trace("Intento desconectarme de memoria");
+	loggear_debug("Intento desconectarme de memoria");
 	cerrar_liberar(memoria);
-	loggear_info("Desconexion de memoria realizada con exito");
+	loggear_debug("Desconexion de memoria realizada con exito");
 
 	return OK;
 }
 
 resultado_t desconectar_kernel()
 {
-	loggear_trace("Intento desconectarme de kernel");
+	loggear_debug("Intento desconectarme de kernel");
 	_mandar_desconexion_cpu_a_kernel();
 	cerrar_liberar(kernel);
-	loggear_info("Desconexion de kernel realizada con exito");
+	loggear_debug("Desconexion de kernel realizada con exito");
 
 	return OK;
 }
@@ -221,7 +221,7 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	free(respuesta);
 
-	loggear_info("Creacion de segmento satisfactoria");
+	loggear_trace("Creacion de segmento satisfactoria");
 
 	loggear_debug("Direccion del segmento %d", *direccion);
 
@@ -269,7 +269,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 
 	free(respuesta);
 
-	loggear_info("Destruccion de segmento satisfactoria");
+	loggear_trace("Destruccion de segmento satisfactoria");
 
 	return OK;
 }
@@ -323,7 +323,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	free(respuesta->bytes_leido);
 	free(respuesta);
 
-	loggear_info("Lectura de memorira satisfactoria");
+	loggear_trace("Lectura de memorira satisfactoria");
 
 	loggear_debug("Cantidad de bytes leidos %d", respuesta->tamano);
 
@@ -375,7 +375,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 
 	free(respuesta);
 
-	loggear_info("Escritura en memoria satisfactoria");
+	loggear_trace("Escritura en memoria satisfactoria");
 
 	return OK;
 }
@@ -413,7 +413,7 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	free(respuesta->tcb);
 	free(respuesta);
 
-	loggear_info("Pedido de TCB satisfactorio");
+	loggear_trace("Pedido de TCB satisfactorio");
 
 	loggear_debug("PID TCB %d -- TID TCB %d -- Quantum %d", tcb->pid, tcb->tid,
 		*quantum);
@@ -465,7 +465,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 			return FALLO_INFORME_A_KERNEL;
 		}
 
-		loggear_info("Informe de interrupcion satisfactorio");
+		loggear_trace("Informe de interrupcion satisfactorio");
 
 		return OK;
 	}
@@ -506,56 +506,84 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	loggear_info("Informe de resultado satisfactorio");
+	loggear_trace("Informe de resultado satisfactorio");
 
 	return OK;
 }
 
-resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
+resultado_t _obtener(tcb_t* tcb, char* buffer,
 	uint32_t bytes_a_leer)
 {
+	loggear_trace("Me preparo para obtener %d bytes", bytes_a_leer);
+
 	uint32_t pid_a_leer = PID_KERNEL
 	;
 
-	if (!es_tcb_kernel(tcb))
+	if (!tcb->km)
 		pid_a_leer = tcb->pid;
 
-	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, memoria_a_actualizar)
+	loggear_trace(
+		"PID TCB %d -- Direccion a leer %d -- Modo kernel %d",
+		pid_a_leer, tcb->pc, tcb->km);
+
+	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
+	loggear_trace("Obtencion de bytes satisfactoria");
+
 	actualizar_pc(tcb, tcb->pc + bytes_a_leer);
+
+	loggear_trace("PC nuevo %d", tcb->pc);
 
 	return OK;
 }
 
 resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
+	loggear_debug("Me preparo para leer una instruccion");
+
 	if (_obtener(tcb, instruccion, sizeof(instruccion_t) - 1)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
 	instruccion[4] = '\0';
 
+	loggear_debug("Lectura de instruccion satisfactoria");
+
+	loggear_debug("Instruccion %s", instruccion);
+
 	return OK;
 }
 
 resultado_t leer_registro(tcb_t* tcb, char* registro)
 {
+	loggear_debug("Me preparo para leer registro");
+
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
+
+	loggear_debug("Lectura de registro satisfactoria");
+
+	loggear_debug("Registro %c", registro);
 
 	return OK;
 }
 
 resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 {
+	loggear_debug("Me preparo para leer numero");
+
 	char buffer[3];
 
 	if (_obtener(tcb, buffer, sizeof(int32_t)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
 	unir_bytes(numero, buffer);
+
+	loggear_debug("Lectura de numero satisfactoria");
+
+	loggear_debug("Numero %d", *numero);
 
 	return OK;
 }
