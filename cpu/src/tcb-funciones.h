@@ -5,17 +5,38 @@
  *      Author: utnso
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include "hu4sockets/tcb.h"
-
 #ifndef TCB_FUNCIONES_H_
 #define TCB_FUNCIONES_H_
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "hu4sockets/tcb.h"
+
+/*
+ * @DESC: Reserva memoria para un dato de tipo tcb.
+ * @RETURNS: puntero a la memoria reservada
+ */
 tcb_t* crear_tcb();
-void liberar_tcb();
+
+/*
+ * @DESC: Libera la memoria reservada para tcb.
+ * @RETURNS:
+ */
+void liberar_tcb(tcb_t* tcb);
+
+// TODO eliminar (ya no se necesita)
 void clonar_tcb(tcb_t* destino, tcb_t* fuente);
+
+/*
+ * @DESC: Comprueba si el tcb es de tipo kernel
+ * @RETURNS:
+ * 		true si es de tipo kernel
+ * 		false si no es de tipo kernel
+ */
 bool es_tcb_kernel(tcb_t* tcb);
+
+// TODO eliminar (ya no sirve)
 uint32_t obtener_ocupacion_stack(tcb_t* tcb);
 
 /*

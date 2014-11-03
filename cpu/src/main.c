@@ -1,44 +1,70 @@
-#include "instrucciones.h"
 #include <unistd.h>
+
+#include "commons/error.h"
+
+#include "instrucciones.h"
+#include "logs.h"
+#include "signals.h"
+
+void _liberar_recursos();
+
+// TODO agregar logs
+// TODO cambiar los printf de errores faltes por commons/error
 
 int32_t main(int32_t argc, char** argv)
 {
-
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
+
+	empezar_loggeo();
+
+	escuchar_signals();
 
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
-		printf("ERROR FALTAL: al cargar configuraciones");
+		loggear_error("No se pudieron cargar las configuraciones");
+		error_show("ERROR FALTAL: al cargar configuraciones");
 		return 0;
 	}
 
-	// TODO descomentar (solamente comentado para pruebas)
+	// TODO eliminar (solamente comentado para pruebas)
 	//	if (conectar_con_memoria() == FALLO_CONEXION
 	//		|| conectar_con_kernel() == FALLO_CONEXION) {
 	//		printf("ERROR FALTAL: Fallo la conexion\n");
 	//		return 0;
 	//	}
 
-	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
-		printf("ERROR FATAL: al conectarse con memoria");
+		loggear_error("No pudo conectarse con memoria");
+		liberar_configuraciones();
+		finalizar_loggeo();
+		error_show(" Al tratar de conectarse con memoria");
 		return 0;
 	}
 
-	// TODO eliminar (solamente para pruebas)
+	// TODO descomentar (solamente comentado para pruebas)
 //	if (conectar_con_kernel() == FALLO_CONEXION)
 //	{
-//		printf("ERROR FATAL: al conectarse con kernel");
+//		loggear_error("No pudo conectarse con memoria");
+//		finalizar_loggeo();
+//		error_show(" Al tratar de conectarse con kernel");
 //		return 0;
 //	}
 
-	// TODO cambiar a log
-	printf("Se pudo conectar a memoria y kernel\n");
-
+	// TODO eliminar (solo para pruebas)
 	direccion direccion;
 	crear_segmento(12, 123, &direccion);
 	printf("Direccion: %d\n", direccion);
+
+	// TODO eliminar (solo para pruebas)
+	char bytes = 'a';
+	escribir_en_memoria(12, direccion, 1, &bytes);
+
+	// TODO eliminar (solo para pruebas)
+	_liberar_recursos();
+
+	// TODO eliminar (solo para pruebas)
+	return 0;
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
@@ -48,19 +74,14 @@ int32_t main(int32_t argc, char** argv)
 
 	inicializar_dic_de_instrucciones();
 
-	// TODO eliminar (solo para pruebas)
-	desconectarse();
-
-	// TODO eliminar (solo para pruebas)
-	return 0;
+	loggear_trace("Cargadas todas las estructuras administrativas");
 
 	while (1)
 	{
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			printf("ERROR FALTAL: al pedir tcb");
-			liberar_dic_de_instrucciones();
-			desconectarse();
+			_liberar_recursos();
 			return 0;
 		}
 
@@ -76,11 +97,11 @@ int32_t main(int32_t argc, char** argv)
 		{
 			sleep(retardo());
 
-			if (obtener_instruccion(&tcb, instruccion)
+			if (leer_proxima_instruccion(&tcb, instruccion)
 				== FALLO_LECTURA_DE_MEMORIA)
 				resultado = ERROR_EN_EJECUCION;
 
-			obtener_funcion(funcion, instruccion);
+			obtener_funcion_segun_instruccion(funcion, instruccion);
 
 			resultado = funcion(&tcb);
 
@@ -94,14 +115,20 @@ int32_t main(int32_t argc, char** argv)
 			== FALLO_INFORME_A_KERNEL)
 		{
 			printf("ERROR FALTAL: al enviar informe a kernel");
-			liberar_dic_de_instrucciones();
-			desconectarse();
+			_liberar_recursos();
 			return 0;
 		}
 	}
 
-	liberar_dic_de_instrucciones();
-	desconectarse();
+	_liberar_recursos();
 
 	return 0;
+}
+
+void _liberar_recursos()
+{
+	liberar_configuraciones();
+	liberar_dic_de_instrucciones();
+	desconectarse();
+	finalizar_loggeo();
 }

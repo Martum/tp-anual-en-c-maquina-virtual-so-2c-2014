@@ -18,7 +18,7 @@
 pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
 t_list* lista_conexiones;
 fd_set readfds;
-int32_t MAYOR_FD = -1;
+int32_t mayor_fd = -1;
 void inicializar_lista_conexiones_cpu(){
 	lista_conexiones = list_create();
 }
@@ -49,27 +49,6 @@ void _enviar_flagt(sock_t* conexion, flag_t flag){
 	free(respuesta);
 }
 
-void _informar_te_doy_segmento(sock_t* conexion){
-	_enviar_flagt(conexion, TOMA_SEGMENTO);
-}
-
-void _informar_respuesta_destruccion_segmento(sock_t* conexion){
-	_enviar_flagt(conexion, RESPUESTA_DESTRUCCION);
-}
-
-void _informar_te_doy_bytes(sock_t* conexion){
-	_enviar_flagt(conexion, TOMA_BYTES);
-}
-
-void _informar_respuesta_escritura(sock_t* conexion){
-	_enviar_flagt(conexion, RESPUESTA_ESCRITURA);
-}
-
-void _dar_bienvenida(sock_t* nueva_conexion){
-	// Respondemos con BIENVENIDA
-	_enviar_flagt(nueva_conexion, BIENVENIDO);
-}
-
 conexion_t* buscar_conexion_por_fd(int32_t fd){
 
 	// Funcion de busqueda
@@ -86,13 +65,18 @@ conexion_t* buscar_conexion_por_fd(int32_t fd){
 	return conexion;
 }
 
+void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd){
+	if(*mayor_fd < nuevo_fd)
+		*mayor_fd = nuevo_fd;
+}
+
 void* escuchar_conexiones(void* otro_ente){
 
 	sock_t* principal = crear_socket_escuchador(puerto());
 	escuchar(principal);
 
 	// Seteamos este como el socket mas grande
-	int32_t mayor_fd = MAYOR_FD;
+	int32_t mayor_fd = principal->fd;
 	FD_ZERO(&readfds);
 	FD_SET(principal->fd, &readfds);
 
@@ -119,12 +103,11 @@ void* escuchar_conexiones(void* otro_ente){
 						// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion;
 						_procesar_nueva_conexion(principal, &nueva_conexion);
-
+						_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 					}else{
 
 						// No es el socket principal, es un proceso
-						// int tipo_msg =
-								_atender_socket(buscar_conexion_por_fd(i));
+						_atender_socket(buscar_conexion_por_fd(i));
 
 					}
 				}
@@ -139,8 +122,7 @@ void* escuchar_conexiones(void* otro_ente){
 
 void _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion){
 	*nueva_conexion = aceptar_conexion(principal);
-	_dar_bienvenida(*nueva_conexion);
-
+	FD_SET((*nueva_conexion)->fd, &readfds);
 	conexion_t* ultima_conex = (conexion_t*)list_take(lista_conexiones, list_size(lista_conexiones));
 	_agregar_conexion(*nueva_conexion, ultima_conex->id + 1);
 }
@@ -239,7 +221,7 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
 	respuesta_leer->resultado = *(resultado);
-	respuesta_leer->tamano = (uint32_t)string_length(bytes);
+	respuesta_leer->tamano = respuesta_leer->tamano = (uint32_t)string_length(bytes);
 
 	free(resultado);
 

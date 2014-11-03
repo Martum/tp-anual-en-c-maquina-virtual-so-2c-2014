@@ -9,9 +9,11 @@
 #define INSTRUCCIONES_H_
 
 #include <commons/collections/dictionary.h>
-#include "tcb-funciones.h"
-#include "sockets.h"
+
+#include "definiciones.h"
 #include "operaciones-con-bits.h"
+#include "sockets.h"
+#include "tcb-funciones.h"
 
 /*
  * 	@DESC: Crea el diccionario de instrucciones y le carga todas las instrucciones
@@ -35,6 +37,6 @@ void cargar_diccionario_de_instrucciones(t_dictionary* dic);
  * 	@DESC: Devuelve la funcion asosiada a la instruccion
  * 	@RETURN: una funcion
  */
-void obtener_funcion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion);
+void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion);
 
 #endif /* INSTRUCCIONES_H_ */

@@ -4,14 +4,18 @@
  *  Created on: 15/09/2014
  *      Author: utnso
  */
+
 #include <stdbool.h>
-#include "pagina.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <commons/collections/list.h>
+
+#include "pagina.h"
 #include "segmento.h"
 #include "configuraciones.h"
 #include "swapping.h"
+#include "semaforos.h"
+
+#include <commons/collections/list.h>
 
 void crear_pagina(segmento_t *segmento){
 	pagina_t *pagina = malloc(sizeof(pagina_t));
@@ -24,8 +28,10 @@ void crear_pagina(segmento_t *segmento){
 	pagina->bit_referencia = 0;
 
 	// agrego pagina a indice de paginas
+	//lock_lista_indice_paginas();
 	list_add(get_indice_paginas(), pagina);
 	pagina->id_en_indice = list_size(get_indice_paginas()) - 1;
+	//unlock_lista_indice_paginas();
 }
 
 void agregar_pagina_a_segmento(segmento_t *segmento, pagina_t *pagina){

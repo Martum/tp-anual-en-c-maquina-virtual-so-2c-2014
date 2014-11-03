@@ -5,19 +5,22 @@
  *      Author: utnso
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include "hu4sockets/sockets.h"
-#include "hu4sockets/mensajes.h"
-#include "definiciones.h"
-#include "operaciones-con-bits.h"
-#include "configuraciones.h"
-#include "tcb-funciones.h"
-
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "hu4sockets/mensajes.h"
+#include "hu4sockets/sockets.h"
+
+#include "configuraciones.h"
+#include "definiciones.h"
+#include "logs.h"
+#include "operaciones-con-bits.h"
+#include "tcb-funciones.h"
 
 /*
  * @DESC: Crea el socket sock_t y se conecta con el ip y puerto
@@ -38,8 +41,23 @@ resultado_t conectar_con_memoria();
 resultado_t conectar_con_kernel();
 
 /*
+ * @DESC: Cierra el puerto con memoria
+ * @RETURNS:
+ * 		OK siempre
+ */
+resultado_t desconectar_memoria();
+
+/*
+ * @DESC: Cierra el puerto con kernel y le mando un mensaje de desconexion
+ * @RETURNS:
+ * 		OK siempre
+ */
+resultado_t desconectar_kernel();
+
+/*
  * @DESC: Cierra los puertos de memoria y kernel
  * @RETURNS:
+ * 		OK siempre
  */
 resultado_t desconectarse();
 
@@ -97,19 +115,19 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res);
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza instruccion.
  * @RETURNS:
  */
-resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion);
+resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion);
 
 /*
  * @DESC: Lee de memoria un byte apuntado por pc y actualiza el registro.
  * @RETURNS:
  */
-resultado_t obtener_registro(tcb_t* tcb, char* registro);
+resultado_t leer_registro(tcb_t* tcb, char* registro);
 
 /*
  * @DESC: Lee de memoria los primeros 4 bytes apuntados por pc y actualiza el numero.
  * @RETURNS:
  */
-resultado_t obtener_numero(tcb_t* tcb, int32_t* numero);
+resultado_t leer_numero(tcb_t* tcb, int32_t* numero);
 
 /*
  * @DESC: 	Le manda al kernel un mensaje para que pida por consola tantos bytes_a_leer,
@@ -164,7 +182,7 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
  */
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
 
-
+// TODO eliminar (probablemente ya no sirva)
 resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid);
 
 // TODO eliminar (ya no se hace falta)
