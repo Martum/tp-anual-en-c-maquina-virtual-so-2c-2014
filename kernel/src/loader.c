@@ -13,24 +13,55 @@
 #include "memoria.h"
 #include "lstestados.h"
 #include "loader.h"
+#include <commons/collections/list.h>
 #include "configuraciones.h"
+#include <pthread.h>
 
-uint32_t pid_global = 1;
-uint32_t tid_global = 1;
+uint32_t PID_GLOBAL = 1;
+pthread_mutex_t MUTEX_PID = PTHREAD_MUTEX_INITIALIZER;
+
+t_list* PIDS = NULL;
+
 
 uint32_t dame_nuevo_pid()
 {
-	return pid_global++;
+	pthread_mutex_lock(&MUTEX_PID);
+
+	if(PIDS == NULL)
+		PIDS = list_create();
+
+	pid_lista_t* pidt = malloc(sizeof(pid_lista_t));
+	pidt->pid = ++PID_GLOBAL;
+	pidt->ultimo_tid = 0;
+
+	list_add(PIDS, pidt);
+
+	pthread_mutex_unlock(&MUTEX_PID);
+
+	return pidt->pid;
 }
 
-uint32_t dame_nuevo_tid()
+uint32_t dame_nuevo_tid(uint32_t pid)
 {
-	return tid_global++;
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((pid_lista_t*) elemento)->pid == pid;
+	}
+
+	pthread_mutex_lock(&MUTEX_PID);
+
+	pid_lista_t* pidt = list_find(PIDS, _buscar_por_pid);
+	pidt->ultimo_tid = pidt->ultimo_tid + 1;
+
+	pthread_mutex_unlock(&MUTEX_PID);
+
+	return pidt->ultimo_tid;
 }
 
 int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 {
-	tcb_t* tcb = crear_tcb(dame_nuevo_pid(), dame_nuevo_tid());
+	uint32_t pid = dame_nuevo_pid();
+	tcb_t* tcb = crear_tcb(pid, dame_nuevo_tid(pid));
 	tcb->tamanio_codigo = len;
 
 	// Pido segmento de codigo
