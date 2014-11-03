@@ -1,7 +1,7 @@
 // TODO preguntar si cpu puede escribir en memoria
+// TODO preguntar si cpu puede crear segmentos
 
 #include "instrucciones.h"
-// TODO preguntar si cpu puede crear segmentos
 // TODO preguntar si cpu puede destruir segmentos
 
 t_dictionary* dic_instrucciones;
@@ -1180,8 +1180,7 @@ void inicializar_dic_de_instrucciones()
 
 	loggear_trace("Intento cargar el diccionario de instrucciones");
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
-	loggear_info(
-		"Cargadas todas las instrucciones al diccionario de instrucciones con exito");
+	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones");
 }
 
 void liberar_dic_de_instrucciones()
@@ -1191,9 +1190,12 @@ void liberar_dic_de_instrucciones()
 	loggear_info("Diccionario de instrucciones liberado correctamente");
 }
 
-void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion)
+void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*),
+	instruccion_t instruccion)
 {
+	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
+	loggear_trace("Instruccion a ejecutar %s encontrada", instruccion);
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic)

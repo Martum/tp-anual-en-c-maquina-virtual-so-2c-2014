@@ -91,7 +91,8 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 	if (respuesta->flag != BIENVENIDO)
 	{
-		loggear_warning("El mensaje de respuesta no es el esperado, sino %d", respuesta->flag);
+		loggear_warning("El mensaje de respuesta no es el esperado, sino %d",
+			respuesta->flag);
 		free(respuesta);
 		return FALLO_COMUNICACION;
 	}
@@ -154,6 +155,7 @@ resultado_t desconectar_memoria()
 	loggear_trace("Intento desconectarme de memoria");
 	cerrar_liberar(memoria);
 	loggear_info("Desconexion de memoria realizada con exito");
+
 	return OK;
 }
 
@@ -163,6 +165,7 @@ resultado_t desconectar_kernel()
 	_mandar_desconexion_cpu_a_kernel();
 	cerrar_liberar(kernel);
 	loggear_info("Desconexion de kernel realizada con exito");
+
 	return OK;
 }
 
@@ -170,6 +173,7 @@ resultado_t desconectarse()
 {
 	desconectar_memoria();
 	desconectar_kernel();
+
 	return OK;
 }
 
