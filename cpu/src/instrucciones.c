@@ -1,4 +1,8 @@
+// TODO preguntar si cpu puede escribir en memoria
+
 #include "instrucciones.h"
+// TODO preguntar si cpu puede crear segmentos
+// TODO preguntar si cpu puede destruir segmentos
 
 t_dictionary* dic_instrucciones;
 
@@ -12,10 +16,10 @@ resultado_t load(tcb_t* tcb)
 	char registro;
 	int32_t numero;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_numero(tcb, &numero) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_numero(tcb, &numero) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	if (actualizar_valor_del_registro(tcb, registro, numero)
@@ -34,10 +38,10 @@ resultado_t getm(tcb_t* tcb)
 {
 	char registro1, registro2;
 
-	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_2;
@@ -98,14 +102,14 @@ resultado_t setm(tcb_t* tcb)
 	int32_t cantidad_de_bytes_a_copiar;
 	char registro1, registro2;
 
-	if (obtener_numero(tcb, &cantidad_de_bytes_a_copiar)
+	if (leer_numero(tcb, &cantidad_de_bytes_a_copiar)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
@@ -133,10 +137,10 @@ resultado_t movr(tcb_t* tcb)
 {
 	char registro1, registro2;
 
-	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_2;
@@ -162,10 +166,10 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 {
 	char registro1, registro2;
 
-	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
@@ -307,7 +311,7 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 {
 	char registro;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro;
@@ -363,10 +367,10 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 {
 	char registro1, registro2;
 
-	if (obtener_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
@@ -458,7 +462,7 @@ resultado_t _goto(tcb_t* tcb)
 {
 	char registro;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_del_registro;
@@ -484,7 +488,7 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
 {
 	int32_t offset;
 
-	obtener_numero(tcb, &offset);
+	leer_numero(tcb, &offset);
 
 	int32_t valor_del_registro_a = obtener_valor_registro_a(tcb);
 
@@ -564,10 +568,10 @@ resultado_t shif(tcb_t* tcb)
 	int32_t bits_a_desplazar;
 	char registro;
 
-	if (obtener_numero(tcb, &bits_a_desplazar) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_numero(tcb, &bits_a_desplazar) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	int32_t valor_de_registro;
@@ -593,6 +597,7 @@ resultado_t nopp(tcb_t* tcb)
 	return OK;
 }
 
+// TODO preguntar si cpu puede escribir en memoria
 /*
  * 	@DESC: Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */
@@ -639,10 +644,10 @@ resultado_t push(tcb_t* tcb)
 	int32_t cantidad_de_bytes;
 	char registro;
 
-	if (obtener_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
@@ -688,10 +693,10 @@ resultado_t take(tcb_t* tcb)
 	int32_t cantidad_de_bytes;
 	char registro;
 
-	if (obtener_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	if (obtener_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
+	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
@@ -1034,7 +1039,7 @@ resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
 	return OK;
 }
 
-// TODO avisar a kernel que me tienen que mandar el proximo tid porque lo necesito guardar
+// TODO arreglar con kernel que va a pasar con crea
 /*
  * 	CREA
  *

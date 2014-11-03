@@ -9,9 +9,11 @@
 #define INSTRUCCIONES_H_
 
 #include <commons/collections/dictionary.h>
-#include "tcb-funciones.h"
-#include "sockets.h"
+
+#include "definiciones.h"
 #include "operaciones-con-bits.h"
+#include "sockets.h"
+#include "tcb-funciones.h"
 
 /*
  * 	@DESC: Crea el diccionario de instrucciones y le carga todas las instrucciones

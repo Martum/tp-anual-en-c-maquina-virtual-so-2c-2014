@@ -3,9 +3,11 @@
 #include "instrucciones.h"
 #include "signals.h"
 
+// TODO agregar logs
+
 int32_t main(int32_t argc, char** argv)
 {
-//	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
+	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
 	escuchar_signals();
 
@@ -82,7 +84,7 @@ int32_t main(int32_t argc, char** argv)
 		{
 			sleep(retardo());
 
-			if (obtener_instruccion(&tcb, instruccion)
+			if (leer_proxima_instruccion(&tcb, instruccion)
 				== FALLO_LECTURA_DE_MEMORIA)
 				resultado = ERROR_EN_EJECUCION;
 

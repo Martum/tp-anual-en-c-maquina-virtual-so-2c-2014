@@ -320,7 +320,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 	if (res == EXCEPCION_POR_INTERRUPCION)
 	{
 		int32_t direccion;
-		obtener_numero(&tcb, &direccion);
+		leer_numero(&tcb, &direccion);
 
 		pedido_interrupcion_t cuerpo_del_mensaje;
 		cuerpo_del_mensaje.flag = INTERRUPCION;
@@ -402,7 +402,7 @@ resultado_t _obtener(tcb_t* tcb, char* memoria_a_actualizar,
 	return OK;
 }
 
-resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
+resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
 	if (_obtener(tcb, instruccion, sizeof(instruccion_t) - 1)
 		== FALLO_LECTURA_DE_MEMORIA)
@@ -413,7 +413,7 @@ resultado_t obtener_instruccion(tcb_t* tcb, instruccion_t instruccion)
 	return OK;
 }
 
-resultado_t obtener_registro(tcb_t* tcb, char* registro)
+resultado_t leer_registro(tcb_t* tcb, char* registro)
 {
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
@@ -421,7 +421,7 @@ resultado_t obtener_registro(tcb_t* tcb, char* registro)
 	return OK;
 }
 
-resultado_t obtener_numero(tcb_t* tcb, int32_t* numero)
+resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 {
 	char buffer[3];
 

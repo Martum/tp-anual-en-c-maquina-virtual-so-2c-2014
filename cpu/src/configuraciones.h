@@ -9,17 +9,53 @@
 #define CONFIGURACIONES_H_
 
 #include <stdint.h>
+
 #include <commons/config.h>
+
 #include <hu4sockets/resultados.h>
 
+/*
+ * @DESC: Carga el archivo de configuraciones
+ * @RETURNS:
+ * 		OK si pudo cargarlo
+ * 		FALLO_CONEXION si hubo problemas al cargarlo
+ */
 resultado_t cargar_configuraciones();
+
+/*
+ * @DESC: Libera el archivo de configuraciones
+ * @RETURNS:
+ */
 void destruir_configuraciones();
 
+/*
+ * @DESC: Recupera el valor "IP_KERNEL" de archivo de configuraciones
+ * @RETURNS: ip del kernel
+ */
 char* ip_kernel();
-char* ip_msp();
-uint32_t puerto_kernel();
-uint32_t puerto_msp();
-uint32_t retardo();
 
+/*
+ * @DESC: Recupera el valor "PUERTO_KERNEL" de archivo de configuraciones
+ * @RETURNS: puerto del kernel
+ */
+uint32_t puerto_kernel();
+
+/*
+ * @DESC: Recupera el valor "IP_MSP" de archivo de configuraciones
+ * @RETURNS: ip del msp
+ */
+char* ip_msp();
+
+/*
+ * @DESC: Recupera el valor "PUERTO_MSP" de archivo de configuraciones
+ * @RETURNS: puerto del msp
+ */
+uint32_t puerto_msp();
+
+/*
+ * @DESC: Recupera el valor "RETARDO" de archivo de configuraciones
+ * @RETURNS: retardo de las instrucciones
+ */
+uint32_t retardo();
 
 #endif /* CONFIGURACIONES_H_ */
