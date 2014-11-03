@@ -10,6 +10,7 @@ void _liberar_recursos();
 
 // TODO agregar logs
 // TODO cambiar los printf de errores faltes por commons/error
+// TODO ver que pasa cuando hay ERROR_EN_EJECUCION
 
 int32_t main(int32_t argc, char** argv)
 {
@@ -80,8 +81,10 @@ int32_t main(int32_t argc, char** argv)
 	{
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
-			printf("ERROR FALTAL: al pedir tcb");
-			_liberar_recursos();
+			loggear_error("No pudo pedir tcb a kernel");
+			liberar_configuraciones();
+			finalizar_loggeo();
+			error_show(" Al pedir tcb a kernel");
 			return 0;
 		}
 
@@ -91,31 +94,49 @@ int32_t main(int32_t argc, char** argv)
 		break; // TODO eliminar (solamente para pruebas)
 
 		if ((quantum <= 0) && !tcb.km)
+		{
+			loggear_warning("Se recibio un quantum %d menor a 0", quantum);
 			resultado = ERROR_EN_EJECUCION;
+		}
 
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
+			loggear_trace("Me preparo para ejecutar otra instruccion.");
+			loggear_trace("Quantum restante", quantum);
+			loggear_trace("Modo kernel %d", tcb.km);
+
 			sleep(retardo());
 
 			if (leer_proxima_instruccion(&tcb, instruccion)
 				== FALLO_LECTURA_DE_MEMORIA)
+			{
 				resultado = ERROR_EN_EJECUCION;
+			}
 
 			obtener_funcion_segun_instruccion(funcion, instruccion);
 
+			loggear_trace("Instruccion a ejecutar: %s", instruccion);
+
 			resultado = funcion(&tcb);
+
+			loggear_trace("Resultado de la ejecucion: %d", resultado);
 
 			quantum--;
 		}
 
 		if (resultado == OK)
+		{
+			loggear_info("Se termino el quantum");
 			resultado = FIN_QUANTUM;
+		}
 
 		if (informar_a_kernel_de_finalizacion(tcb, resultado)
 			== FALLO_INFORME_A_KERNEL)
 		{
-			printf("ERROR FALTAL: al enviar informe a kernel");
-			_liberar_recursos();
+			loggear_error("No pudo informar al kernel");
+			liberar_configuraciones();
+			finalizar_loggeo();
+			error_show(" Al enviar informe a kernel");
 			return 0;
 		}
 	}
