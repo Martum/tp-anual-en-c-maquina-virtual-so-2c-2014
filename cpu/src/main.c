@@ -9,8 +9,6 @@ int32_t main(int32_t argc, char** argv)
 
 	escuchar_signals();
 
-	sleep(1000);
-
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
 		printf("ERROR FALTAL: al cargar configuraciones");

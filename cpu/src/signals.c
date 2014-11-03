@@ -5,18 +5,22 @@
  *      Author: utnso
  */
 
+#include "signals.h"
+
 #include <stdio.h>
 #include <signal.h>
 
-#include "signals.h"
+#include "sockets.h"
 
-void catch(int sig)
+
+void atrapar_interrupcion(int sig)
 {
 	printf("Señal: %d atrapada!\n", sig);
+	desconectarse();
 	exit(0);
 }
 
 void escuchar_signals()
 {
-	signal(SIGINT, & catch);
+	signal(SIGINT, atrapar_interrupcion);
 }
