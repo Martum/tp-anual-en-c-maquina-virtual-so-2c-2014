@@ -4,6 +4,8 @@
 #include "logs.h"
 #include "signals.h"
 
+void _liberar_recursos();
+
 // TODO agregar logs
 // TODO cambiar los printf de errores faltes por commons/error
 
@@ -22,8 +24,6 @@ int32_t main(int32_t argc, char** argv)
 		return 0;
 	}
 
-	finalizar_loggeo();
-
 	// TODO descomentar (solamente comentado para pruebas)
 	//	if (conectar_con_memoria() == FALLO_CONEXION
 	//		|| conectar_con_kernel() == FALLO_CONEXION) {
@@ -35,6 +35,7 @@ int32_t main(int32_t argc, char** argv)
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
 		liberar_configuraciones();
+		finalizar_loggeo();
 		printf("ERROR FATAL: al conectarse con memoria");
 		return 0;
 	}
@@ -59,8 +60,7 @@ int32_t main(int32_t argc, char** argv)
 	escribir_en_memoria(12, direccion, 1, &bytes);
 
 	// TODO eliminar (solo para pruebas)
-	liberar_configuraciones();
-	desconectarse();
+	_liberar_recursos();
 
 	// TODO eliminar (solo para pruebas)
 	return 0;
@@ -78,9 +78,7 @@ int32_t main(int32_t argc, char** argv)
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			printf("ERROR FALTAL: al pedir tcb");
-			liberar_configuraciones();
-			liberar_dic_de_instrucciones();
-			desconectarse();
+			_liberar_recursos();
 			return 0;
 		}
 
@@ -114,16 +112,20 @@ int32_t main(int32_t argc, char** argv)
 			== FALLO_INFORME_A_KERNEL)
 		{
 			printf("ERROR FALTAL: al enviar informe a kernel");
-			liberar_configuraciones();
-			liberar_dic_de_instrucciones();
-			desconectarse();
+			_liberar_recursos();
 			return 0;
 		}
 	}
 
+	_liberar_recursos();
+
+	return 0;
+}
+
+void _liberar_recursos()
+{
 	liberar_configuraciones();
 	liberar_dic_de_instrucciones();
 	desconectarse();
-
-	return 0;
+	finalizar_loggeo();
 }
