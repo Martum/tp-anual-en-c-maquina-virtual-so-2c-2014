@@ -101,7 +101,7 @@ int32_t main(int32_t argc, char** argv)
 				== FALLO_LECTURA_DE_MEMORIA)
 				resultado = ERROR_EN_EJECUCION;
 
-			obtener_funcion(funcion, instruccion);
+			obtener_funcion_segun_instruccion(funcion, instruccion);
 
 			resultado = funcion(&tcb);
 

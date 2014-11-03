@@ -138,7 +138,11 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 
 	memcpy(chorro_a_enviar, &resultado, tamanio);
 
+	loggear_trace("Me preparo para enviar DESCONEXION_CPU a kernel");
+
 	enviar(kernel, chorro_a_enviar, &tamanio);
+
+	loggear_info("Envio de mensaje de DESCONEXION_CPU realizado con exito");
 
 	free(chorro_a_enviar);
 
@@ -147,14 +151,18 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 
 resultado_t desconectar_memoria()
 {
+	loggear_trace("Intento desconectarme de memoria");
 	cerrar_liberar(memoria);
+	loggear_info("Desconexion de memoria realizada con exito");
 	return OK;
 }
 
 resultado_t desconectar_kernel()
 {
+	loggear_trace("Intento desconectarme de kernel");
 	_mandar_desconexion_cpu_a_kernel();
 	cerrar_liberar(kernel);
+	loggear_info("Desconexion de kernel realizada con exito");
 	return OK;
 }
 

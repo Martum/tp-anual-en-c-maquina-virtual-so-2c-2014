@@ -1174,16 +1174,24 @@ resultado_t wake(tcb_t* tcb)
 
 void inicializar_dic_de_instrucciones()
 {
+	loggear_trace("Intento crear el diccionario de instrucciones");
 	dic_instrucciones = dictionary_create();
+	loggear_info("Creacion de diccionario con exito");
+
+	loggear_trace("Intento cargar el diccionario de instrucciones");
 	cargar_diccionario_de_instrucciones(dic_instrucciones);
+	loggear_info(
+		"Cargadas todas las instrucciones al diccionario de instrucciones con exito");
 }
 
 void liberar_dic_de_instrucciones()
 {
+	loggear_trace("Intento liberar el diccionario de instrucciones");
 	dictionary_destroy(dic_instrucciones);
+	loggear_info("Diccionario de instrucciones liberado correctamente");
 }
 
-void obtener_funcion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion)
+void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion)
 {
 	funcion = dictionary_get(dic_instrucciones, instruccion);
 }
