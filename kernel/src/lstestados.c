@@ -21,10 +21,10 @@ t_queue* block;*/
 tcb_t* TCB_KM;
 
 // Cola de ready para procesos (1) y para KM (0)
-t_queue* READY[2];
+t_list* READY[2];
 
 // Cola de exit
-t_queue* EXIT_COLA;
+t_list* EXIT_COLA;
 
 // Procesos en ejecucion
 t_list* EXEC;
@@ -36,7 +36,7 @@ t_list* BLOCK_JOIN;
 t_list* BLOCK_CONCLUSION_KM;
 
 // Procesos que estan esperando la liberacion del KM para ejecutar su propia syscall
-t_queue* BLOCK_ESPERA_KM;
+t_list* BLOCK_ESPERA_KM;
 
 // Diccionario con identificadores de recursos y colas que estan esperando liberacion
 t_dictionary* DIC_COLAS_ESPERA_RECURSOS;
@@ -55,10 +55,10 @@ void inicializar_listas_estados_tcb()
 	TCB_KM = malloc(sizeof(tcb_t));
 	TCB_KM->km = true;
 
-	READY[0] = queue_create();
-	READY[1] = queue_create();
+	READY[0] = list_create();
+	READY[1] = list_create();
 
-	EXIT_COLA = queue_create();
+	EXIT_COLA = list_create();
 
 	EXEC = list_create();
 
@@ -66,7 +66,7 @@ void inicializar_listas_estados_tcb()
 
 	BLOCK_CONCLUSION_KM = list_create();
 
-	BLOCK_ESPERA_KM = queue_create();
+	BLOCK_ESPERA_KM = list_create();
 
 	DIC_COLAS_ESPERA_RECURSOS = dictionary_create();
 	BLOCK_RECURSO = list_create();
@@ -77,17 +77,17 @@ void inicializar_listas_estados_tcb()
 
 
 void agregar_a_ready(tcb_t* tcb) {
-	queue_push(READY[!tcb->km], tcb);
+	list_add(READY[!tcb->km], tcb);
 	// TODO: Llamar al planificador acá? Revisar en qué lugares se llama esta función.
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
 bool hay_hilo_km_ready(){
-	return !queue_is_empty(READY[0]);
+	return !list_is_empty(READY[0]);
 }
 
 bool hay_hilo_ready(){
-	return !queue_is_empty(READY[1]);
+	return !list_is_empty(READY[1]);
 }
 
 void agregar_a_block_recurso(tcb_t* tcb)
@@ -108,7 +108,7 @@ void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id) {
 }
 
 void agregar_a_exit_cola(tcb_t* tcb) {
-	queue_push(EXIT_COLA, tcb);
+	list_add(EXIT_COLA, tcb);
 }
 
 void destruir_ejecutando(void* elemento)
@@ -175,11 +175,11 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
 }
 
 tcb_t* quitar_de_ready_km(){
-	return queue_pop(READY[0]);
+	return list_remove(READY[0], 0);
 }
 
 tcb_t* quitar_de_ready(){
-	return queue_pop(READY[1]);
+	return list_remove(READY[1], 0);
 }
 
 char* identificador_de_recurso(uint32_t identificador_int)
@@ -212,12 +212,12 @@ bool tcb_km_is_running()
 
 bool hay_hilos_block_espera_km()
 {
-	return !queue_is_empty(BLOCK_ESPERA_KM);
+	return !list_is_empty(BLOCK_ESPERA_KM);
 }
 
 void agregar_a_block_espera_km(esperando_km_t* ekm)
 {
-	queue_push(BLOCK_ESPERA_KM, ekm);
+	list_add(BLOCK_ESPERA_KM, ekm);
 }
 
 void agregar_a_block_conclusion_km(tcb_t* tcb)
