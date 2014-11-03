@@ -28,6 +28,19 @@ typedef struct esperando_join {
 	uint32_t esperando_a;
 } esperando_join_t;
 
+
+/**
+ * Estructura para la lista de EXIT. Se indica el PID, la lista de TCBs,
+ * un flag muere_proceso; que cuando esta en TRUE significa que muere el Proceso entero (todos los Hilos); y
+ * se indica la cantidad de Hilos que tiene el proceso.
+ */
+typedef struct exit {
+	uint32_t pid;
+	t_list* lista_tcbs;
+	uint32_t hilos_totales;
+	bool muere_proceso;
+} exit_t;
+
 /**
  * Struct para encapsular al TCB que esta esperando al TCB KM que termine
  * de ejecutar la syscall. Si enviar_a_rdy es true (default) se debe encolar en rdy;
@@ -157,9 +170,19 @@ void agregar_a_block_join(esperando_join_t* ej);
 void agregar_a_exit(tcb_t* tcb);
 
 /**
- * Saca de READY todos los Hilos con ese PID
+ * Saca de READY todos los Hilos con ese PID y los pone en EXIT
  */
 void remover_de_ready_a_exit(uint32_t pid);
+
+/**
+ * Saca de BLOCK_ESPERA_KM todos los Hilos con ese PID y los pone en EXIT
+ */
+void remover_de_esperando_km_a_exit(uint32_t pid);
+
+/**
+ * Agrega un exit_t a EXIT.
+ */
+void preparar_exit_para_proceso(uint32_t pid, bool muere_proceso);
 
 
 #endif /* LSTESTADOS_H_ */

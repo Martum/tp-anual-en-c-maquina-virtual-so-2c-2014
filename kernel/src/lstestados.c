@@ -12,6 +12,7 @@
 #include <commons/collections/list.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "planificador.h"
 
 
 /*t_queue* exec;
@@ -245,9 +246,51 @@ void agregar_a_block_join(esperando_join_t* ej)
 	list_add(BLOCK_JOIN, ej);
 }
 
+/**
+ * Dealloca un exit_t que busca por PID en EXIT_COLA
+ */
+void _eliminar_exit_t(uint32_t pid)
+{
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((exit_t*)elemento)->pid == pid;
+	}
+
+	void _destruir_exit_t(void* elemento)
+	{
+		exit_t* et = elemento;
+		list_destroy(et->lista_tcbs);
+		free(et);
+	}
+
+	list_remove_and_destroy_by_condition(EXIT_COLA, _buscar_por_pid, _destruir_exit_t);
+}
+
+/**
+ * Verifica si una de las listas internas de EXIT ya esta completa (o sea,
+ * ya se pueden eliminar los TCBs)
+ */
+void _verificar_salida_proceso(exit_t* et)
+{
+	if((et->muere_proceso && et->hilos_totales == list_size(et->lista_tcbs)) || !et->muere_proceso)
+	{
+		list_clean_and_destroy_elements(et->lista_tcbs, eliminar_y_destruir_tcb);
+		_eliminar_exit_t(et->pid);
+	}
+}
+
 void agregar_a_exit(tcb_t* tcb)
 {
-	list_add(EXIT_COLA, tcb);
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((exit_t*)elemento)->pid == tcb->pid;
+	}
+
+	exit_t* et = list_find(EXIT_COLA, _buscar_por_pid);
+
+	list_add(et->lista_tcbs, tcb);
+
+	_verificar_salida_proceso(et);
 }
 
 void remover_de_ready_a_exit(uint32_t pid)
@@ -264,4 +307,14 @@ void remover_de_ready_a_exit(uint32_t pid)
 	{
 		agregar_a_exit(list_remove_by_condition(READY[1], _satisface_pid));
 	}
+}
+
+void preparar_exit_para_proceso(uint32_t pid, bool muere_proceso)
+{
+	exit_t* et = malloc(sizeof(exit_t));
+	et->pid = pid;
+	et->lista_tcbs = list_create();
+	et->muere_proceso = muere_proceso;
+
+	list_add(EXIT_COLA, et);
 }

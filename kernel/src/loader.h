@@ -29,6 +29,8 @@ uint32_t dame_nuevo_pid();
  */
 uint32_t dame_nuevo_tid(uint32_t pid);
 
+uint32_t dame_ultimo_tid(uint32_t pid);
+
 /**
  * Procesa un nuevo programa que acaba de conectarse con nosotros.
  * Creamos el TCB, le asignamos PID y TID (como es el primero TID=1).

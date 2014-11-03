@@ -126,7 +126,26 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 void mover_tcbs_a_exit(uint32_t pid)
 {
+	preparar_exit_para_proceso(pid, true);
+
 	remover_de_ready_a_exit(pid);
 	// TODO: Continuar aca
+
+	remover_de_esperando_km_a_exit(pid);
+
+	remover_de_join_a_exit(pid);
+
+	remover_de_block_recursos_a_exit(pid);	// Es de la lista de bloqueados y de las del diccionario
+}
+
+void eliminar_y_destruir_tcb(void* tcbv)
+{
+	// TODO: Continuar aca
+	tcb_t* tcb = tcbv;
+
+	destruir_segmento(tcb->pid, tcb->base_codigo);
+	destruir_segmento(tcb->pid, tcb->base_stack);
+
+	free(tcb);
 }
 
