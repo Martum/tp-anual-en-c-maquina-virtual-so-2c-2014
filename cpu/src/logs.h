@@ -9,14 +9,15 @@
 #define LOGS_H_
 
 #include "commons/log.h"
+#include "commons/string.h"
 
 void empezar_loggeo();
 
 void finalizar_loggeo();
 
-void loggear_trace(char* mensaje);
-void loggear_info(char* mensaje);
-void loggear_warning(char* mensaje);
-void loggear_error(char* mensaje);
+void loggear_trace(const char* mensaje, ...);
+void loggear_info(const char* mensaje, ...);
+void loggear_warning(const char* mensaje, ...);
+void loggear_error(const char* mensaje, ...);
 
 #endif /* LOGS_H_ */

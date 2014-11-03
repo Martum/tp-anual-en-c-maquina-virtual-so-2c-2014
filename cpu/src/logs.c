@@ -13,9 +13,10 @@ t_log* logger_historial;
 void empezar_loggeo()
 {
 	logger = log_create(
-			"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu.log",
-			"CPU", true, LOG_LEVEL_TRACE);
-	logger_historial = log_create(
+		"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu.log",
+		"CPU", true, LOG_LEVEL_TRACE);
+	logger_historial =
+		log_create(
 			"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/logs/logs_cpu_historial.log",
 			"CPU", false, LOG_LEVEL_TRACE);
 }
@@ -26,26 +27,46 @@ void finalizar_loggeo()
 	log_destroy(logger_historial);
 }
 
-void loggear_trace(char* mensaje)
+void loggear_trace(const char* format, ...)
 {
-	log_trace(logger, mensaje);
-	log_trace(logger_historial, mensaje);
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, format);
+	nuevo = string_from_vformat(format, arguments);
+	va_end(arguments);
+	log_trace(logger, nuevo);
+	log_trace(logger_historial, nuevo);
 }
 
-void loggear_info(char* mensaje)
+void loggear_info(const char* format, ...)
 {
-	log_info(logger, mensaje);
-	log_info(logger_historial, mensaje);
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, format);
+	nuevo = string_from_vformat(format, arguments);
+	va_end(arguments);
+	log_info(logger, nuevo);
+	log_info(logger_historial, nuevo);
 }
 
-void loggear_warning(char* mensaje)
+void loggear_warning(const char* format, ...)
 {
-	log_warning(logger, mensaje);
-	log_warning(logger_historial, mensaje);
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, format);
+	nuevo = string_from_vformat(format, arguments);
+	va_end(arguments);
+	log_warning(logger, nuevo);
+	log_warning(logger_historial, nuevo);
 }
 
-void loggear_error(char* mensaje)
+void loggear_error(const char* format, ...)
 {
-	log_error(logger, mensaje);
-	log_error(logger_historial, mensaje);
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, format);
+	nuevo = string_from_vformat(format, arguments);
+	va_end(arguments);
+	log_error(logger, nuevo);
+	log_error(logger_historial, nuevo);
 }
