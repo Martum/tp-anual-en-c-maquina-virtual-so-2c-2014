@@ -26,7 +26,7 @@ resultado_t cargar_configuraciones();
  * @DESC: Libera el archivo de configuraciones
  * @RETURNS:
  */
-void destruir_configuraciones();
+void liberar_configuraciones();
 
 /*
  * @DESC: Recupera el valor "IP_KERNEL" de archivo de configuraciones

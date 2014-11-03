@@ -17,7 +17,7 @@ resultado_t cargar_configuraciones(){
 	return OK;
 }
 
-void destruir_configuraciones(){
+void liberar_configuraciones(){
 	config_destroy(configs_cpu);
 }
 

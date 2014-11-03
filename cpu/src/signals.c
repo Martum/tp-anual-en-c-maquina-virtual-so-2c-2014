@@ -10,12 +10,16 @@
 #include <stdio.h>
 #include <signal.h>
 
+#include "configuraciones.h"
+#include "instrucciones.h"
 #include "sockets.h"
 
 
 void atrapar_interrupcion(int sig)
 {
 	printf("Señal: %d atrapada!\n", sig);
+	liberar_configuraciones();
+	liberar_dic_de_instrucciones();
 	desconectarse();
 	exit(0);
 }

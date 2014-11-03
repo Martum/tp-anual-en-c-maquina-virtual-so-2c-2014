@@ -27,6 +27,7 @@ int32_t main(int32_t argc, char** argv)
 	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
+		liberar_configuraciones();
 		printf("ERROR FATAL: al conectarse con memoria");
 		return 0;
 	}
@@ -41,12 +42,21 @@ int32_t main(int32_t argc, char** argv)
 	// TODO cambiar a log
 	printf("Se pudo conectar a memoria y kernel\n");
 
+	// TODO eliminar (solo para pruebas)
 	direccion direccion;
 	crear_segmento(12, 123, &direccion);
 	printf("Direccion: %d\n", direccion);
 
+	// TODO eliminar (solo para pruebas)
 	char bytes = 'a';
 	escribir_en_memoria(12, direccion, 1, &bytes);
+
+	// TODO eliminar (solo para pruebas)
+	liberar_configuraciones();
+	desconectarse();
+
+	// TODO eliminar (solo para pruebas)
+	return 0;
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
@@ -56,17 +66,12 @@ int32_t main(int32_t argc, char** argv)
 
 	inicializar_dic_de_instrucciones();
 
-	// TODO eliminar (solo para pruebas)
-	desconectarse();
-
-	// TODO eliminar (solo para pruebas)
-	return 0;
-
 	while (1)
 	{
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			printf("ERROR FALTAL: al pedir tcb");
+			liberar_configuraciones();
 			liberar_dic_de_instrucciones();
 			desconectarse();
 			return 0;
@@ -102,12 +107,14 @@ int32_t main(int32_t argc, char** argv)
 			== FALLO_INFORME_A_KERNEL)
 		{
 			printf("ERROR FALTAL: al enviar informe a kernel");
+			liberar_configuraciones();
 			liberar_dic_de_instrucciones();
 			desconectarse();
 			return 0;
 		}
 	}
 
+	liberar_configuraciones();
 	liberar_dic_de_instrucciones();
 	desconectarse();
 

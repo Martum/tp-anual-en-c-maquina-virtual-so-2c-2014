@@ -1029,6 +1029,7 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
+// TODO eliminar (ya no hace falta)
 resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
 {
 	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
