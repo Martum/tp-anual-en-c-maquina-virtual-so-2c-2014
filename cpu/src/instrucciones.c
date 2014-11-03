@@ -2,7 +2,6 @@
 // TODO preguntar si cpu puede crear segmentos
 
 #include "instrucciones.h"
-// TODO preguntar si cpu puede destruir segmentos
 
 t_dictionary* dic_instrucciones;
 
@@ -597,7 +596,6 @@ resultado_t nopp(tcb_t* tcb)
 	return OK;
 }
 
-// TODO preguntar si cpu puede escribir en memoria
 /*
  * 	@DESC: Agrega los bytes al stack del tcb y actualiza el cursor del stack.
  */

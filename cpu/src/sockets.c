@@ -5,7 +5,6 @@
  *      Author: utnso
  */
 
-// TODO arreglar con memoria si se va a mandar un mensaje mensaje al conectarse
 #include "sockets.h"
 
 #define PID_KERNEL 1;
@@ -171,13 +170,16 @@ resultado_t desconectar_kernel()
 resultado_t desconectarse()
 {
 	desconectar_memoria();
-	desconectar_kernel();
+	// TODO descomentar (solo comentado para pruebas de memoria)
+//	desconectar_kernel();
 
 	return OK;
 }
 
 resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 {
+	loggear_trace("Preparando mensaje para crear segmento");
+
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
@@ -187,8 +189,6 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
 		tamanio_respuesta_de_crear_segmento_t_serializado());
-
-	loggear_trace("Me preparo crear segmento");
 
 	loggear_debug("PID %d -- Tamanio del segmento %d", pid, bytes);
 
@@ -230,6 +230,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
+	loggear_trace("Preparando mensaje para destruir segmento");
+
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
@@ -238,8 +240,6 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
-
-	loggear_trace("Me preparo destruir segmento");
 
 	loggear_debug("PID: %d -- Direccion %d", pid, direccion);
 
@@ -277,6 +277,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* buffer)
 {
+	loggear_trace("Preparando mensaje para leer de memoria");
+
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
@@ -287,8 +289,6 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
 		tamanio_respuesta_de_leer_de_memoria_t_serializado(cantidad_de_bytes));
-
-	loggear_trace("Me preparo leer de memoria");
 
 	loggear_debug("Cantidad de bytes a leer %d", cantidad_de_bytes);
 
@@ -333,6 +333,8 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* bytes_a_escribir)
 {
+	loggear_trace("Preparando mensaje escribir en memoria");
+
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
 	cuerpo_del_mensaje.pid = pid;
@@ -343,8 +345,6 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	char* chorro_de_envio = serializar_pedido_de_escribir_en_memoria_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
-
-	loggear_trace("Me preparo escribir en memoria");
 
 	loggear_debug("Cantidad de bytes a escribir %d -- Bytes %s",
 		cantidad_de_bytes, bytes_a_escribir);
@@ -382,6 +382,8 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 {
+	loggear_trace("Preparando mensaje para pedir TCB");
+
 	pedido_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = MANDA_TCB;
 
@@ -398,6 +400,8 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
+	loggear_trace("Recibi respuesta por pedido de TCB");
+
 	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
 		chorro_de_respuesta);
 
@@ -409,6 +413,11 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	free(respuesta->tcb);
 	free(respuesta);
 
+	loggear_info("Pedido de TCB satisfactorio");
+
+	loggear_debug("PID TCB %d -- TID TCB %d -- Quantum %d", tcb->pid, tcb->tid,
+		*quantum);
+
 	return OK;
 }
 
@@ -416,8 +425,14 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	if (res == EXCEPCION_POR_INTERRUPCION)
 	{
+		loggear_trace("Preparando mensaje para informar a kernel interrupcion");
+
+		loggear_trace("Busco direccion de interrupcion");
+
 		int32_t direccion;
 		leer_numero(&tcb, &direccion);
+
+		loggear_debug("Direccion de interrupcion %d", direccion);
 
 		pedido_interrupcion_t cuerpo_del_mensaje;
 		cuerpo_del_mensaje.flag = INTERRUPCION;
@@ -437,6 +452,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 			return FALLO_INFORME_A_KERNEL;
 		}
 
+		loggear_trace("Recibi respuesta por informe de interrupcion");
+
 		resultado_t resultado = *chorro_de_respuesta;
 
 		free(chorro_de_envio);
@@ -444,11 +461,16 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 		if (resultado != COMPLETADO_OK)
 		{
+			loggear_warning("No se pudo completar el informe de interrupcion");
 			return FALLO_INFORME_A_KERNEL;
 		}
 
+		loggear_info("Informe de interrupcion satisfactorio");
+
 		return OK;
 	}
+
+	loggear_trace("Preparando mensaje para informar al kernel un resultado");
 
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -459,6 +481,9 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
+	loggear_debug("PID TCB %d -- TID TCB %d -- Resultado %d", tcb.pid, tcb.tid,
+		res);
+
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
@@ -468,6 +493,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
+	loggear_trace("Recibi respuesta por informe de resultado");
+
 	resultado_t resultado = *chorro_de_respuesta;
 
 	free(chorro_de_envio);
@@ -475,8 +502,11 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 	if (resultado != COMPLETADO_OK)
 	{
+		loggear_warning("No se pudo completar el informe de resultado");
 		return FALLO_INFORME_A_KERNEL;
 	}
+
+	loggear_info("Informe de resultado satisfactorio");
 
 	return OK;
 }
@@ -717,6 +747,7 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 	return OK;
 }
 
+// TODO esto probablemente no sirva mas
 // TODO avisar a mati que tiene que implementar las serializaciones
 resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid)
 {
