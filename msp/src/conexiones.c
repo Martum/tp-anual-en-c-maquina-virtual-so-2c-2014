@@ -216,18 +216,20 @@ void _atiendo_leer_memoria(conexion_t* conexion, char* msg){
 
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	char* bytes = leer_memoria(pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano, resultado);
+	uint32_t cantidad_de_bytes = pedido_leer->tamano;
+
 
 	respuesta_de_leer_de_memoria_t * respuesta_leer = malloc(sizeof(respuesta_de_leer_de_memoria_t));
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
 	respuesta_leer->resultado = *(resultado);
-	respuesta_leer->tamano = (uint32_t)string_length(bytes);
+	respuesta_leer->tamano = cantidad_de_bytes;
 
 	free(resultado);
 
 	char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
 
-	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(string_length(bytes));
+	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(cantidad_de_bytes);
 
 	enviar(conexion->socket,msg_respuesta_leer, &len_msg_leer);
 

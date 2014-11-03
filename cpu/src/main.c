@@ -1,21 +1,28 @@
 #include <unistd.h>
 
 #include "instrucciones.h"
+#include "logs.h"
 #include "signals.h"
 
 // TODO agregar logs
+// TODO cambiar los printf de errores faltes por commons/error
 
 int32_t main(int32_t argc, char** argv)
 {
 	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
 
+	empezar_loggeo();
+
 	escuchar_signals();
 
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
+		loggear_error("No se pudieron cargar las configuraciones");
 		printf("ERROR FALTAL: al cargar configuraciones");
 		return 0;
 	}
+
+	finalizar_loggeo();
 
 	// TODO descomentar (solamente comentado para pruebas)
 	//	if (conectar_con_memoria() == FALLO_CONEXION
