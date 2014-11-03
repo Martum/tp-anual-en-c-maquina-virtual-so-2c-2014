@@ -154,9 +154,9 @@ void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
 	char* recurso = identificador_de_recurso(recurso_int);
 
 	if(!dictionary_has_key(DIC_COLAS_ESPERA_RECURSOS, recurso))
-		dictionary_put(DIC_COLAS_ESPERA_RECURSOS, recurso, queue_create());
+		dictionary_put(DIC_COLAS_ESPERA_RECURSOS, recurso, list_create());
 
-	queue_push((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), tcb);
+	list_add((t_list*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), tcb);
 
 	free(recurso);
 }
@@ -170,7 +170,7 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
 {
 	char* recurso = identificador_de_recurso(recurso_int);
 
-	tcb_t* tcb = queue_pop((t_queue*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso));
+	tcb_t* tcb = list_get((t_list*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), 0);
 
 	free(recurso);
 	return tcb;
@@ -358,5 +358,56 @@ void remover_de_join_a_exit(uint32_t pid)
 		agregar_a_exit(ej->tcb);
 
 		free(ej);
+	}
+}
+
+/**
+ * Elimina un TCB de todas las listas de recursos donde este
+ */
+void _eliminar_de_listas_recursos(tcb_t* tcb)
+{
+	// TODO: Habria que desencolar al primero ademas de sacar a este?
+	// Lo digo porque me parece que al sacar a este se esta liberando el recurso, pero no se...
+
+	void _eliminar_tcb_cola_recurso(char* key, void* listav)
+	{
+		t_list* lista = listav;
+
+		bool _satisface_pid_tid(void* elemento)
+		{
+			return ((tcb_t*) elemento)->pid == tcb->pid &&
+					((tcb_t*) elemento)->tid == tcb->tid;
+		}
+
+		uint32_t cantidad = list_count_satisfying(lista, _satisface_pid_tid);
+
+		int i;
+		for(i = 0; i < cantidad; i++)
+		{
+			tcb_t* tcb = list_remove_by_condition(lista, _satisface_pid_tid);
+		}
+
+	}
+
+	dictionary_iterator(DIC_COLAS_ESPERA_RECURSOS, _eliminar_tcb_cola_recurso);
+}
+
+void remover_de_block_recursos_a_exit(uint32_t pid)
+{
+	bool _satisface_pid(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(BLOCK_RECURSO, _satisface_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		tcb_t* tcb = list_remove_by_condition(BLOCK_RECURSO, _satisface_pid);
+
+		_eliminar_de_listas_recursos(tcb);
+
+		agregar_a_exit(tcb);
 	}
 }

@@ -194,4 +194,9 @@ void remover_de_esperando_km_a_exit(uint32_t pid);
  */
 void remover_de_join_a_exit(uint32_t pid);
 
+/**
+ * Agrega a EXIT los TCBs encolados en Bloqueo por Recurso
+ */
+void remover_de_block_recursos_a_exit(uint32_t pid);
+
 #endif /* LSTESTADOS_H_ */
