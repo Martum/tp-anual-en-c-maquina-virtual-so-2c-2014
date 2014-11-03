@@ -14,16 +14,20 @@
 
 #include "memoria.h"
 
+typedef struct pid {
+	uint32_t pid;
+	uint32_t ultimo_tid;
+} pid_lista_t;
 
 /**
- * @RETURNS: Un nuevo PID que no esta en uso
+ * @RETURNS: Un nuevo PID que no esta en uso. PID 1 reservado.
  */
 uint32_t dame_nuevo_pid();
 
 /**
  * @RETURNS: Un nuevo TID que no esta en uso
  */
-uint32_t dame_nuevo_tid();
+uint32_t dame_nuevo_tid(uint32_t pid);
 
 /**
  * Procesa un nuevo programa que acaba de conectarse con nosotros.

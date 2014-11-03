@@ -10,6 +10,8 @@
 
 #include <hu4sockets/sockets.h>
 
+//
+
 typedef struct conexion {
 	sock_t* socket;
 	uint32_t id;
