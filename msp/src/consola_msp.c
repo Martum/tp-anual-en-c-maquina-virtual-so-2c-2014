@@ -17,14 +17,14 @@
 #include "algoritmos_sustitucion.h"
 #include "interfaz.h"
 #include "segmento.h"
+#include "semaforos.h"
 
 #include <commons/string.h>
 // #include <commons/log.h>
 
 #include <hu4sockets/resultados.h>
 
-void* escuchar_consola_msp(void* otro_ente)
-{
+void* escuchar_consola_msp(void* otro_ente){
 	printf("Bienvenido a la MSP! \n\n");
 	printf("Instrucciones disponibles: \n");
 	printf(" - Crear Segmento: pid, tamaño \n");
@@ -190,7 +190,9 @@ void tabla_segmentos(){
 	void _listar_segmentos(proceso_msp_t* proceso) {
 		listar_segmentos_de_un_proceso(proceso);
 	}
+	//lock_lista_procesos();
 	list_iterate(get_lista_procesos(), (void*) _listar_segmentos);
+	//unlock_lista_procesos();
 }
 
 void tabla_paginas(uint32_t pid){
@@ -214,7 +216,9 @@ void listar_marcos(){
 		}
 
 	}
+	//lock_lista_marcos();
 	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
+	//unlock_lista_marcos();
 }
 
 

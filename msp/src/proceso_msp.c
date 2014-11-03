@@ -14,6 +14,7 @@
 #include "configuraciones.h"
 #include "estructuras.h"
 #include "marco.h"
+#include "semaforos.h"
 
 void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 
@@ -31,7 +32,11 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
 	proceso->pid = un_pid;
+
+	//unlock_lista_procesos();
 	list_add(get_lista_procesos(),proceso);
+	//lock_lista_procesos();
+
 	proceso->segmentos = list_create();
 	return proceso;
 }
@@ -40,7 +45,12 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 	bool _es_proceso(proceso_msp_t* proceso) {
 		return proceso->pid==pid;
 	}
-	return list_find(get_lista_procesos(), (void*) _es_proceso);
+
+	//unlock_lista_procesos();
+	proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
+	//lock_lista_procesos();
+
+	return proc;
 }
 
 bool quitar_segmento(proceso_msp_t *proceso, direccion base){
@@ -82,8 +92,10 @@ void _destruye_pagina(pagina_t *pagina) {
 		return true;
 	}
 	// saco a la pagina de la lista indice de paginas
+	//lock_lista_indice_paginas();
 	list_remove_and_destroy_element(get_indice_paginas(),pagina->id_en_indice,(void*)_destruye_pagina_de_indice);
-//	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
+	//unlock_lista_indice_paginas();
+	//	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
 
 	// libero memoria de la pagina
 	free(pagina);

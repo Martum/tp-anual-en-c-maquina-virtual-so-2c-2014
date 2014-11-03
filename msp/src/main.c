@@ -35,12 +35,12 @@ int main(void){
 	// Creo hilos
 	pthread_t consola_msp_thread;
 	pthread_create(&consola_msp_thread, NULL, escuchar_consola_msp, NULL);
-	pthread_t conexiones_thread;
-	pthread_create(&conexiones_thread, NULL, escuchar_conexiones, NULL);
+//	pthread_t conexiones_thread;
+//	pthread_create(&conexiones_thread, NULL, escuchar_conexiones, NULL);
 
 	// Esperamos a que ambos terminen
 	pthread_join(consola_msp_thread, NULL);
-	pthread_join(conexiones_thread, NULL);
+//	pthread_join(conexiones_thread, NULL);
 
 	destruir_configuraciones();
 	return 0;
