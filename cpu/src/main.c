@@ -26,32 +26,30 @@ int32_t main(int32_t argc, char** argv)
 		return 0;
 	}
 
-	// TODO descomentar (solamente comentado para pruebas)
+	// TODO eliminar (solamente comentado para pruebas)
 	//	if (conectar_con_memoria() == FALLO_CONEXION
 	//		|| conectar_con_kernel() == FALLO_CONEXION) {
 	//		printf("ERROR FALTAL: Fallo la conexion\n");
 	//		return 0;
 	//	}
 
-	// TODO eliminar (solamente para pruebas)
 	if (conectar_con_memoria() == FALLO_CONEXION)
 	{
-		loggear_warning("No pudo conectarse con memoria");
+		loggear_error("No pudo conectarse con memoria");
 		liberar_configuraciones();
 		finalizar_loggeo();
 		error_show(" Al tratar de conectarse con memoria");
 		return 0;
 	}
 
-	// TODO eliminar (solamente para pruebas)
+	// TODO descomentar (solamente comentado para pruebas)
 //	if (conectar_con_kernel() == FALLO_CONEXION)
 //	{
-//		printf("ERROR FATAL: al conectarse con kernel");
+//		loggear_error("No pudo conectarse con memoria");
+//		finalizar_loggeo();
+//		error_show(" Al tratar de conectarse con kernel");
 //		return 0;
 //	}
-
-	// TODO cambiar a log
-	printf("Se pudo conectar a memoria y kernel\n");
 
 	// TODO eliminar (solo para pruebas)
 	direccion direccion;
@@ -75,6 +73,8 @@ int32_t main(int32_t argc, char** argv)
 	instruccion_t instruccion;
 
 	inicializar_dic_de_instrucciones();
+
+	loggear_trace("Cargadas todas las estructuras administrativas");
 
 	while (1)
 	{
