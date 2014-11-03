@@ -149,4 +149,17 @@ void set_enviar_a_rdy(bool un_bool);
 void agregar_a_block_join(esperando_join_t* ej);
 
 
+// FUNCIONES DE EXIT Y SIMILARES
+
+/**
+ * Agrega un TCB a Exit
+ */
+void agregar_a_exit(tcb_t* tcb);
+
+/**
+ * Saca de READY todos los Hilos con ese PID
+ */
+void remover_de_ready_a_exit(uint32_t pid);
+
+
 #endif /* LSTESTADOS_H_ */

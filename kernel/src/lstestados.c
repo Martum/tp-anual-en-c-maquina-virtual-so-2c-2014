@@ -244,3 +244,24 @@ void agregar_a_block_join(esperando_join_t* ej)
 {
 	list_add(BLOCK_JOIN, ej);
 }
+
+void agregar_a_exit(tcb_t* tcb)
+{
+	list_add(EXIT_COLA, tcb);
+}
+
+void remover_de_ready_a_exit(uint32_t pid)
+{
+	bool _satisface_pid(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(READY[1], _satisface_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		agregar_a_exit(list_remove_by_condition(READY[1], _satisface_pid));
+	}
+}

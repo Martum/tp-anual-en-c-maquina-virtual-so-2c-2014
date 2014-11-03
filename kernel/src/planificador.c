@@ -124,3 +124,9 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 	 } */
 }
 
+void mover_tcbs_a_exit(uint32_t pid)
+{
+	remover_de_ready_a_exit(pid);
+	// TODO: Continuar aca
+}
+

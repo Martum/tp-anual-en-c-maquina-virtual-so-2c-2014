@@ -31,5 +31,10 @@ void _planificar();
 // ENVIA LA RTA CON EL TCB A LA CPU.
 void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id);
 
+/**
+ * Mueve todos los TCBs de este Proceso a Exit
+ */
+void mover_tcbs_a_exit(uint32_t pid);
+
 
 #endif /* PLANIFICADOR_H_ */
