@@ -14,7 +14,7 @@ resultado_t cargar_configuraciones()
 {
 	loggear_trace("Intento cargar configuraciones");
 
-	configs_cpu = config_create("configs_cpu.cfg");
+	configs_cpu = config_create("../configs_cpu.cfg");
 
 	if (config_keys_amount(configs_cpu) == 0)
 	{
