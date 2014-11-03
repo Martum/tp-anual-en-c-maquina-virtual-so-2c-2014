@@ -61,12 +61,14 @@ bool quitar_segmento(proceso_msp_t *proceso, direccion base){
 	}
 
 	// me fijo si encuentro el segmento
-	t_list* lista = list_create();
-	lista = list_filter(proceso->segmentos, (void*)_encuentro_segmento_con_base);
-	if(list_is_empty(lista)){
+//	t_list* lista = list_create();
+	//segmento_t* segmento = malloc(sizeof(segmento_t));
+	segmento_t* segmento = list_find(proceso->segmentos, (void*)_encuentro_segmento_con_base);
+	//if(list_is_empty(lista)){
+	if(segmento == NULL){
 		puedo_quitar_segmento = false;
 	}
-	free(lista);
+//	free(lista);
 
 	// remuevo los que cumplen la condicion
 	list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _encuentro_segmento_con_base, (void*)_destruye_segmento);
@@ -95,10 +97,6 @@ void _destruye_pagina(pagina_t *pagina) {
 	//lock_lista_indice_paginas();
 	list_remove_and_destroy_element(get_indice_paginas(),pagina->id_en_indice,(void*)_destruye_pagina_de_indice);
 	//unlock_lista_indice_paginas();
-	//	list_remove_and_destroy_by_condition(get_indice_paginas(), (void*)_is_pagina, (void*)_destruye_pagina_de_indice);
-
-	// libero memoria de la pagina
-	free(pagina);
 }
 
 void _destruye_pagina_de_indice(pagina_t *pag) {
