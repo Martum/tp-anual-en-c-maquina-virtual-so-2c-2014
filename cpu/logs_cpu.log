@@ -1,11 +1,17 @@
-[INFO] 17:43:46:757 CPU/(4050:4050): Empiezo el loggeo
-[TRACE] 17:43:46:757 CPU/(4050:4050): Intento cargar configuraciones
-[INFO] 17:43:46:757 CPU/(4050:4050): Configuraciones cargadas con exito
-[TRACE] 17:43:46:758 CPU/(4050:4050): Intento conectarme con memoria
-[TRACE] 17:43:46:758 CPU/(4050:4050): Intento conectarme con ip: 127.0.0.1 y puerto: 17291
-[WARNING] 17:43:46:763 CPU/(4050:4050): No pudo conectarse a ip: 127.0.0.1 y puerto: 17291
-[ERROR] 17:43:46:763 CPU/(4050:4050): No pudo conectarse con memoria
-[INFO] 17:43:46:763 CPU/(4050:4050): Liberando recursos para cierre...
-[TRACE] 17:43:46:763 CPU/(4050:4050): Intento liberar las configuraciones
-[INFO] 17:43:46:763 CPU/(4050:4050): Configuraciones liberadas con exito
-[INFO] 17:43:46:763 CPU/(4050:4050): Finalizo el loggeo
+[INFO] 17:52:09:836 CPU/(4337:4337): Empiezo el loggeo
+[TRACE] 17:52:09:836 CPU/(4337:4337): Intento cargar configuraciones
+[INFO] 17:52:09:836 CPU/(4337:4337): Configuraciones cargadas con exito
+[TRACE] 17:52:09:836 CPU/(4337:4337): Intento conectarme con memoria
+[TRACE] 17:52:09:836 CPU/(4337:4337): Intento conectarme con ip: 127.0.0.1 y puerto: 17291
+[INFO] 17:52:09:837 CPU/(4337:4337): Conexion realizada con exito al ip: 127.0.0.1 y puerto: 17291
+[INFO] 17:52:09:837 CPU/(4337:4337): Conexion con memoria realizada con exito
+[TRACE] 17:52:09:837 CPU/(4337:4337): Me preparo para enviar pedido de creacion de segmento
+[TRACE] 17:52:09:838 CPU/(4337:4337): Me preparo para enviar 12 bytes
+[INFO] 17:52:09:838 CPU/(4337:4337): Envio con exito paquete de 12 bytes
+[TRACE] 17:52:09:838 CPU/(4337:4337): Me preparo para recibir respuesta
+[INFO] 17:52:09:838 CPU/(4337:4337): Recibio con exito paquete de 12 bytes
+[INFO] 17:52:09:838 CPU/(4337:4337): Creacion de segmento satisfactoria
+[TRACE] 17:52:09:838 CPU/(4337:4337): La direccion del segmento es 1048576
+[TRACE] 17:52:09:838 CPU/(4337:4337): Me preparo para enviar 17 bytes
+[INFO] 17:52:09:839 CPU/(4337:4337): Envio con exito paquete de 17 bytes
+[TRACE] 17:52:09:839 CPU/(4337:4337): Me preparo para recibir respuesta

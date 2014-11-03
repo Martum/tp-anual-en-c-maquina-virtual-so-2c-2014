@@ -189,6 +189,8 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 	char* chorro_de_respuesta = malloc(
 		tamanio_respuesta_de_crear_segmento_t_serializado());
 
+	loggear_trace("Me preparo para enviar pedido de creacion de segmento");
+
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
@@ -206,11 +208,17 @@ resultado_t crear_segmento(direccion pid, uint32_t bytes, direccion* direccion)
 
 	if (respuesta->resultado == ERROR_DE_MEMORIA_LLENA)
 	{
+		loggear_warning(
+			"La creacion no se pudo realizar porque la memoria estaba llena");
 		free(respuesta);
 		return FALLO_CREACION_DE_SEGMENTO;
 	}
 
+	loggear_info("Creacion de segmento satisfactoria");
+
 	*direccion = respuesta->direccion_virtual;
+
+	loggear_trace("La direccion del segmento es %d", *direccion);
 
 	free(respuesta);
 
