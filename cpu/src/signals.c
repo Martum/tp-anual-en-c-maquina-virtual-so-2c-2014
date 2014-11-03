@@ -12,12 +12,13 @@
 
 #include "configuraciones.h"
 #include "instrucciones.h"
+#include "logs.h"
 #include "sockets.h"
 
 
 void atrapar_interrupcion(int sig)
 {
-	printf("Señal: %d atrapada!\n", sig);
+	loggear_warning("Atrapada interrupcion");
 	liberar_configuraciones();
 	liberar_dic_de_instrucciones();
 	desconectarse();
