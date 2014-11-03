@@ -13,6 +13,7 @@
 #include <hu4sockets/sockets.h>
 #include <hu4sockets/tcb.h>
 #include <stdlib.h>
+#include "memoria.h"
 
 t_queue* cpu_en_espera_de_tcb = NULL;
 

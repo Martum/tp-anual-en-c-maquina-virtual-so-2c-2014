@@ -189,5 +189,9 @@ void preparar_exit_para_proceso(uint32_t pid, bool muere_proceso);
  */
 void remover_de_esperando_km_a_exit(uint32_t pid);
 
+/**
+ * Agrega a EXIT los TCBs encolados en Join
+ */
+void remover_de_join_a_exit(uint32_t pid);
 
 #endif /* LSTESTADOS_H_ */

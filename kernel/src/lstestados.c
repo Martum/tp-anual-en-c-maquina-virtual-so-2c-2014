@@ -340,3 +340,23 @@ void remover_de_esperando_km_a_exit(uint32_t pid)
 		free(ekm);
 	}
 }
+
+void remover_de_join_a_exit(uint32_t pid)
+{
+	bool _satisface_pid(void* elemento)
+	{
+		return ((esperando_join_t*) elemento)->tcb->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(BLOCK_JOIN, _satisface_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		esperando_join_t* ej = list_remove_by_condition(BLOCK_JOIN, _satisface_pid);
+
+		agregar_a_exit(ej->tcb);
+
+		free(ej);
+	}
+}
