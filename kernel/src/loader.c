@@ -58,6 +58,22 @@ uint32_t dame_nuevo_tid(uint32_t pid)
 	return pidt->ultimo_tid;
 }
 
+uint32_t dame_ultimo_tid(uint32_t pid)
+{
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((pid_lista_t*) elemento)->pid == pid;
+	}
+
+	pthread_mutex_lock(&MUTEX_PID);
+
+	pid_lista_t* pidt = list_find(PIDS, _buscar_por_pid);
+
+	pthread_mutex_unlock(&MUTEX_PID);
+
+	return pidt->ultimo_tid;
+}
+
 int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 {
 	uint32_t pid = dame_nuevo_pid();

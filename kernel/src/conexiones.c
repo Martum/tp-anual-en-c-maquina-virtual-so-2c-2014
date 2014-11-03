@@ -61,6 +61,25 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 }
 
+void _eliminar_conexion_proceso(sock_t* conexion)
+{
+	bool _buscar_conexion(void* elemento)
+	{
+		return ((conexion_proceso_t*)elemento)->socket->fd == conexion->fd;
+	}
+
+	pthread_mutex_lock(&MUTEX_CONEXIONES_PROCESOS);
+
+	conexion_proceso_t* conexionp = list_remove_by_condition(CONEXIONES_PROCESOS, _buscar_conexion);
+
+	FD_CLR(conexion->fd, &READFDS_PROCESOS);
+
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
+
+	cerrar_liberar(conexionp->socket);
+	free(conexionp);
+}
+
 /**
  * Agrega una conexion a la lista de conexiones de CPU
  */
@@ -272,6 +291,11 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 				free(respuesta_entrada->cadena);
 				free(respuesta_entrada);
+				break;
+
+			case TERMINAR_CONEXION:
+				mover_tcbs_a_exit(conexion_proceso->pid);
+				_eliminar_conexion_proceso(conexion_proceso->socket);
 				break;
 
 			default:

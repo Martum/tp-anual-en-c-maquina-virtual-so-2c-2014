@@ -26,3 +26,4 @@
 
 # Loggeo del CPU
 cpu/logs/*
+*.log
