@@ -64,8 +64,6 @@ bool quitar_segmento(proceso_msp_t *proceso, direccion base){
 
 	// me fijo si encuentro el segmento
 	if(list_any_satisfy(proceso->segmentos, (void*) _encuentro_segmento_con_base)){
-		segmento_t* segmento = list_find(proceso->segmentos, (void*)_encuentro_segmento_con_base);
-
 		puedo_quitar_segmento = true;
 
 		// remuevo los que cumplen la condicion

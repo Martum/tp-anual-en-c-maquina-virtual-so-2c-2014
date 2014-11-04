@@ -82,5 +82,4 @@ void listar_marcos();
 void* escuchar_consola_msp(void*);
 void _dar_instrucciones_por_consola();
 bool _matcheo_cadena_con_funcion(char*);
-int _parametro_int(char* param);
-char* _parametro_string(char* param);
+bool _hay_parametro(char* param);

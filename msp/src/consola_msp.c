@@ -57,7 +57,7 @@ void _dar_instrucciones_por_consola(){
 		int resultado = _matcheo_cadena_con_funcion(cadena);
 
 		if(!resultado){
-			printf("Instruccion invalida \n");
+			printf("Instruccion invalida \n\n");
 		}
 
 		_dar_instrucciones_por_consola();
@@ -66,40 +66,107 @@ void _dar_instrucciones_por_consola(){
 
 bool _matcheo_cadena_con_funcion(char *cadena){
 
+	// la instruccion no puede terminar en ":"
+	if(string_ends_with(cadena, ":") || string_ends_with(cadena, ",") || string_starts_with(cadena, ":")){
+		return false;
+	}
+
 	// obtengo el nombre de la funcion
 	char** funcion = string_split(cadena, ":");
 
  	char* nombre_funcion = funcion[0];
  	char* lista_parametros = funcion[1];
 
+ 	if(lista_parametros!= NULL){
+ 	 	if(string_starts_with(lista_parametros,",")){
+ 	 		return false;
+ 	 	}
+ 	}
+
  	bool matchea = false;
 
 	if(strcmp(nombre_funcion,"Crear Segmento")==0){
+
+		if(strchr(lista_parametros, ',')==NULL){
+			return false;
+		}
+
 		char** parametros = string_split(lista_parametros, ",");
-		crear_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
+
+		char* param[2];
+
+		param[0] = string_substring_from(parametros[0],1);
+		param[1] = string_substring_from(parametros[1],1);
+
+		if(!_hay_parametro(param[0]) ||  !_hay_parametro(param[1])){
+			return false;
+		}
+
+		crear_segment(atoi(param[0]), atoi(param[1]));
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Destruir Segmento")==0){
+
+		if(strchr(lista_parametros, ',')==NULL){
+			return false;
+		}
+
 		char** parametros = string_split(lista_parametros, ",");
-		destruir_segment(_parametro_int(parametros[0]), _parametro_int(parametros[1]));
+
+		char* param[2];
+
+		param[0] = string_substring_from(parametros[0],1);
+		param[1] = string_substring_from(parametros[1],1);
+
+		if(!_hay_parametro(param[0]) ||  !_hay_parametro(param[1])){
+			return false;
+		}
+
+		destruir_segment(atoi(param[0]), atoi(param[1]));
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Escribir Memoria")==0){
+
+		if(strchr(lista_parametros, ',')==NULL){
+			return false;
+		}
+
 		char** parametros = string_split(lista_parametros, ",");
-		escribir_memo(_parametro_int(parametros[0]),
-						_parametro_int(parametros[1]),
-						_parametro_int(parametros[2]),
-						_parametro_string(parametros[3]));
+
+		char* param[4];
+		param[0] = string_substring_from(parametros[0],1);
+		param[1] = string_substring_from(parametros[1],1);
+		param[2] = string_substring_from(parametros[2],1);
+		param[3] = string_substring_from(parametros[3],1);
+
+		if(!_hay_parametro(param[0]) ||  !_hay_parametro(param[1])
+				||!_hay_parametro(param[2]) ||  !_hay_parametro(param[3])){
+			return false;
+		}
+
+		escribir_memo(atoi(param[0]), atoi(param[1]), atoi(param[2]), param[3]);
 		matchea = true;
 	}
 
 	if(strcmp(nombre_funcion,"Leer Memoria")==0){
+		if(strchr(lista_parametros, ',')==NULL){
+			return false;
+		}
 		char** parametros = string_split(lista_parametros, ",");
-		leer_memo(_parametro_int(parametros[0]),
-					_parametro_int(parametros[1]),
-					_parametro_int(parametros[2]));
+
+		char* param[3];
+		param[0] = string_substring_from(parametros[0],1);
+		param[1] = string_substring_from(parametros[1],1);
+		param[2] = string_substring_from(parametros[2],1);
+
+		if(!_hay_parametro(param[0]) ||  !_hay_parametro(param[1])
+				||!_hay_parametro(param[2])){
+			return false;
+		}
+
+		leer_memo(atoi(param[0]), atoi(param[1]), atoi(param[2]));
 		matchea = true;
 	}
 
@@ -110,7 +177,13 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 
 	if(strcmp(nombre_funcion,"Tabla de Paginas")==0){
 		char** parametros = string_split(lista_parametros, ",");
-		tabla_paginas(_parametro_int(parametros[0]));
+		char* param = string_substring_from(parametros[0],1);
+
+		if(!_hay_parametro(param)){
+			return false;
+		}
+
+		tabla_paginas(atoi(param));
 		matchea = true;
 	}
 
@@ -122,12 +195,11 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 	return matchea;
 }
 
-int _parametro_int(char* param){
-	return atoi(string_substring_from(param,1));
-}
-
-char* _parametro_string(char* param){
-	return string_substring_from(param,1);
+bool _hay_parametro(char* param){
+	return (strcmp(param, " ")!=0)
+			&& (!string_is_empty(param))
+			&& (!string_starts_with(param, " ")
+			&&(!string_ends_with(param," ")));
 }
 
 void crear_segment(uint32_t pid, uint32_t tamanio){
@@ -196,11 +268,20 @@ void tabla_segmentos(){
 }
 
 void tabla_paginas(uint32_t pid){
+	bool _es_proceso(proceso_msp_t* proc) {
+		return proc->pid==pid;
+	}
 	void _listar_paginas(segmento_t* segmento) {
 		listar_paginas_de_un_segmento(segmento);
 	}
-	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
-	list_iterate(proceso->segmentos, (void*) _listar_paginas);
+
+	if(list_any_satisfy(get_lista_procesos(),(void*) _es_proceso)){
+		proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+		list_iterate(proceso->segmentos, (void*) _listar_paginas);
+	}else{
+		printf("ERROR No se pudo encontrar el proceso con pid: %d \n\n", pid);
+	}
+
 }
 
 void listar_marcos(){
