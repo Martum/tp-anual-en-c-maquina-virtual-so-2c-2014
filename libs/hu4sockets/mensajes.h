@@ -161,6 +161,7 @@ typedef struct pedido_salida_estadar {
 	uint32_t pid;
 	uint32_t tamanio;
 	char* cadena_de_texto;
+	idetificador_tipo_t identificador_de_tipo;
 } pedido_salida_estandar_t;
 
 typedef struct pedido_crear_hilo {

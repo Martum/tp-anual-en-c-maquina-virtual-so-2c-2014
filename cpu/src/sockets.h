@@ -148,7 +148,7 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer, uint32
  * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
  */
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
-	char* buffer);
+	char* buffer, idetificador_tipo_t identificador);
 
 /*
  * @DESC: 	Le manda al kernel un mensaje con el nuevo_tcb para que lo programe

@@ -892,11 +892,11 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
-	char buffer[4];
+	char buffer[3];
 
 	dividir_en_bytes(numero, buffer);
 
-	if (comunicar_salida_estandar(tcb, 4, buffer) != OK)
+	if (comunicar_salida_estandar(tcb, 4, buffer, ENTERO) != OK)
 	{
 		return ERROR_EN_EJECUCION;
 	}
@@ -941,7 +941,7 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
 		return ERROR_EN_EJECUCION;
 	}
 
-	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer) != OK)
+	if (comunicar_salida_estandar(tcb, cantidad_de_bytes, buffer, CADENA) != OK)
 	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;

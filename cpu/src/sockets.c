@@ -624,14 +624,16 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	return OK;
 }
 
+// TODO avisar a mati que tiene que serializar de nuevo pedido salida estandar
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
-	char* buffer)
+	char* buffer, idetificador_tipo_t identificador)
 {
 	pedido_salida_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.tamanio = bytes_a_enviar;
 	cuerpo_del_mensaje.cadena_de_texto = buffer;
+	cuerpo_del_mensaje.identificador_de_tipo = identificador;
 
 	char* chorro_de_envio = serializar_pedido_salida_estandar_t(
 		&cuerpo_del_mensaje);
