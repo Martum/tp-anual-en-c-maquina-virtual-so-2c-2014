@@ -57,15 +57,9 @@ int32_t main(int32_t argc, char** argv)
 	// TODO eliminar (solo para pruebas)
 	destruir_segmento(12, direccion);
 
-	// TODO eliminar (solo para pruebas)
-	char bytes = 'a';
-	escribir_en_memoria(12, direccion, 1, &bytes);
-
-	// TODO eliminar (solo para pruebas)
-	_liberar_recursos();
-
-	// TODO eliminar (solo para pruebas)
-	return 0;
+//	// TODO eliminar (solo para pruebas)
+//	char bytes = 'a';
+//	escribir_en_memoria(12, direccion, 1, &bytes);
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
@@ -76,6 +70,12 @@ int32_t main(int32_t argc, char** argv)
 	inicializar_dic_de_instrucciones();
 
 	loggear_trace("Cargadas todas las estructuras administrativas");
+
+	// TODO eliminar (solo para pruebas)
+	_liberar_recursos();
+
+	// TODO eliminar (solo para pruebas)
+	return 0;
 
 	while (1)
 	{
