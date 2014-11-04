@@ -11,12 +11,13 @@
 #include "pagina.h"
 #include "swapping.h"
 
-bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, proceso_msp_t* proceso, segmento_t* segmento, pagina_t* pagina,uint16_t desplazamiento)
+bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, proceso_msp_t *proceso, segmento_t *segmento, pagina_t* pagina,uint16_t desplazamiento)
 {
-	proceso = buscar_proceso_segun_pid(pid);
+
+	*(proceso) = *(buscar_proceso_segun_pid(pid));
 	if(proceso != NULL)
 	{
-		segmento= buscar_segmento_segun_id_en_lista_segmentos(direccion_logica>>20, proceso->segmentos);
+		*(segmento)= *(buscar_segmento_segun_id_en_lista_segmentos(direccion_logica>>20, proceso->segmentos));
 		if(segmento != NULL)
 		{
 			uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;

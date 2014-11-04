@@ -48,7 +48,7 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 
 	//unlock_lista_procesos();
 
-	proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
+	 proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
 
 	//lock_lista_procesos();
 

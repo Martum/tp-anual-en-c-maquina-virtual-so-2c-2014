@@ -86,7 +86,10 @@ segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t id_segmento, t_
 	bool _es_segmento(segmento_t* segmento) {
 		return segmento->id==id_segmento;
 	}
-	return list_find(lista_segmentos, (void*) _es_segmento);
+	// Semaforo
+	segmento_t* segm= list_find(lista_segmentos, (void*) _es_segmento);
+	//Fin Semaforo
+	return segm;
 }
 
 bool puedo_crear_paginas(uint32_t tamanio_en_bytes, uint32_t cant_paginas){
