@@ -83,7 +83,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
-	proceso_msp_t* proceso=NULL;
+	proceso_msp_t* proceso=malloc(sizeof(proceso_msp_t));
 	segmento_t* segmento=malloc(sizeof(segmento_t));
 	pagina_t* pagina=malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
@@ -128,7 +128,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 
 
-void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado){
+void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado)
+{
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
@@ -171,6 +172,9 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 
 	}
+	free(proceso);
+	free(segmento);
+	free(pagina);
 
 }
 

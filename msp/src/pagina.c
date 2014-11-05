@@ -51,7 +51,7 @@ pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* li
 	return list_find(lista_paginas, (void*) _es_pagina);
 }
 
-void asignar_marco(pagina_t* pagina, uint32_t pid)
+void asignar_marco(pagina_t *pagina, uint32_t pid)
 {
 	marco_t* marco = buscar_marco_libre();
 	//Si no hay ningun marco libre, swappeo
@@ -62,9 +62,10 @@ void asignar_marco(pagina_t* pagina, uint32_t pid)
 	}
 	else
 	{
-		pagina->marco=marco->id;
-		pagina->tiene_marco= true;
+		(*pagina).marco=marco->id;
+		(*pagina).tiene_marco= true;
 		marco->id_proceso = pid;
+		marco->ocupado= true;
 	}
 
 }
