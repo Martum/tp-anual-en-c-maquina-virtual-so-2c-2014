@@ -123,7 +123,7 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 			return false;
 		}
 
-		destruir_segment(atoi(param[0]), atoi(param[1]));
+		destruir_segment(atoi(param[0]), strtol(param[1], NULL, 16));
 		matchea = true;
 	}
 
@@ -146,7 +146,7 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 			return false;
 		}
 
-		escribir_memo(atoi(param[0]), atoi(param[1]), atoi(param[2]), param[3]);
+		escribir_memo(atoi(param[0]), strtol(param[1], NULL, 16), atoi(param[2]), param[3]);
 		matchea = true;
 	}
 
@@ -166,7 +166,7 @@ bool _matcheo_cadena_con_funcion(char *cadena){
 			return false;
 		}
 
-		leer_memo(atoi(param[0]), atoi(param[1]), atoi(param[2]));
+		leer_memo(atoi(param[0]), strtol(param[1], NULL, 16), atoi(param[2]));
 		matchea = true;
 	}
 
