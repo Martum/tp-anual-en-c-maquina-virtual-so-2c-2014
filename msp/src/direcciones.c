@@ -21,7 +21,7 @@ bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, pr
 		if(segmento != NULL)
 		{
 			uint16_t id_pagina = div(direccion_logica>>8,0x1000).rem;
-			pagina = buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas);
+			*(pagina) = *(buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas));
 			if(pagina != NULL)
 			{
 				//Si esta en disco, lo traigo a memoria

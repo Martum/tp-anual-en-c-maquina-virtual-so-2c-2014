@@ -107,7 +107,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
-		while((tamanio==0)&&(mas_paginas))
+		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
 			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
@@ -117,7 +117,10 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente.
 			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
-			marco = buscar_marco_segun_id(pagina_siguiente->marco);
+			if(pagina_siguiente!=NULL)
+			{
+				marco = buscar_marco_segun_id(pagina_siguiente->marco);
+			}
 		}
 
 
@@ -157,7 +160,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
-		while((tamanio==0)&&(mas_paginas))
+		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			escribir_marco(marco->datos, desplazamiento,tamanio, bytes_a_escribir, mas_paginas);
@@ -167,7 +170,11 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
 			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
-			marco = buscar_marco_segun_id(pagina_siguiente->marco);
+			if(pagina_siguiente!=NULL)
+			{
+				marco = buscar_marco_segun_id(pagina_siguiente->marco);
+			}
+
 		}
 
 

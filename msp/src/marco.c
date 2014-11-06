@@ -92,7 +92,7 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, b
 void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
 {
 
-
+	//No cambia el Tamanio
 	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
 
 	int i;
