@@ -102,15 +102,15 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	{
 		*(resultado) = RESULTADO_OK;
 
-
-		bool mas_paginas = true;
+		//Con bool no anda, int cumple el proposito
+		int mas_paginas = true;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
-			string_append(&datos, leer_marco(marco->datos, desplazamiento,tamanio, mas_paginas));
+			string_append(&datos, leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas));
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
@@ -163,7 +163,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
-			escribir_marco(marco->datos, desplazamiento,&tamanio, bytes_a_escribir, &mas_paginas);
+			escribir_marco(&marco, desplazamiento,&tamanio, bytes_a_escribir, &mas_paginas);
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
