@@ -155,15 +155,15 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 	{
 		*(resultado) = RESULTADO_OK;
 
-		//NO CAMBIA EL MARCO TERRIBLE BUG
-		bool mas_paginas = true;
+		//Sin razon aparente anda mal con el tipo bool, asique tiro int
+		int mas_paginas = 1;
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
-			escribir_marco(marco->datos, desplazamiento,tamanio, bytes_a_escribir, mas_paginas);
+			escribir_marco(marco->datos, desplazamiento,&tamanio, bytes_a_escribir, &mas_paginas);
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;

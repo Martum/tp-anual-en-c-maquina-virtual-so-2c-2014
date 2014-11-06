@@ -61,26 +61,28 @@ uint32_t cantidad_marcos_libre(){
 	return cant_marcos;
 }
 
-uint32_t _calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas)
+uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas)
 {
-	uint32_t tamanio_aux = tamanio;
+	//Calculo el tamanio real
+		uint32_t tamanio_aux;
+		tamanio_aux= *tamanio;
 
-	if((256-desplazamiento-tamanio)<0)
-		{
-			tamanio_aux= 256-desplazamiento;
-			mas_paginas=true;
-		}
-		else
-		{
-			mas_paginas=false;
-		}
+		if((256-desplazamiento-*(tamanio))<0)
+			{
+				tamanio_aux= 256-desplazamiento;
+				*mas_paginas=1;
+			}
+			else
+			{
+				*(mas_paginas)=0;
+			}
 
-		tamanio=tamanio-tamanio_aux;
+		*(tamanio)=*(tamanio)-tamanio_aux;
 
 		return tamanio_aux;
 }
 
-char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas)
+char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t *tamanio, int *mas_paginas)
 {
 
 	uint32_t tamano_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
@@ -89,11 +91,12 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, b
 	return string_substring(datos_marco,desplazamiento,tamano_aux);
 }
 
-void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas)
+void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio, char* bytes_a_escribir, int * mas_paginas)
 {
 
-	//No cambia el Tamanio
+
 	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
+
 
 	int i;
 	int j=0;
