@@ -226,4 +226,9 @@ void remover_de_conclusion_km_a_exit(uint32_t pid);
  */
 void eliminar_tcbs_en_exit(uint32_t pid);
 
+/**
+ * Remueve de EXEC hacia Exit
+ */
+void remover_de_exec_a_exit(uint32_t pid);
+
 #endif /* LSTESTADOS_H_ */

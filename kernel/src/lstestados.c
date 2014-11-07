@@ -465,3 +465,24 @@ void eliminar_tcbs_en_exit(uint32_t pid)
 
 	list_destroy(et->lista_tcbs);
 }
+
+void remover_de_exec_a_exit(uint32_t pid)
+{
+	bool _buscar_por_pid_no_km(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid &&
+				!((tcb_t*) elemento)->km;
+	}
+
+	uint32_t cantidad = list_count_satisfying(EXEC, _buscar_por_pid_no_km);
+
+	uint32_t i;
+	for(i = 0; i < cantidad; i++)
+	{
+		ejecutando_t* et = list_remove_by_condition(EXEC, _buscar_por_pid_no_km);
+
+		agregar_a_exit(et->tcb);
+
+		free(et);
+	}
+}
