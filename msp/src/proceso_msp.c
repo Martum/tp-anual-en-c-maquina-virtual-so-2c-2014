@@ -48,7 +48,7 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 
 	//unlock_lista_procesos();
 
-	proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
+	 proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
 
 	//lock_lista_procesos();
 
@@ -56,24 +56,21 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 }
 
 bool quitar_segmento(proceso_msp_t *proceso, direccion base){
-	bool puedo_quitar_segmento = true;
+	bool puedo_quitar_segmento;
 
 	bool _encuentro_segmento_con_base(segmento_t *s) {
 		return direccion_virtual_base_de_segmento(s->id) == base;
 	}
 
 	// me fijo si encuentro el segmento
-//	t_list* lista = list_create();
-	//segmento_t* segmento = malloc(sizeof(segmento_t));
-	segmento_t* segmento = list_find(proceso->segmentos, (void*)_encuentro_segmento_con_base);
-	//if(list_is_empty(lista)){
-	if(segmento == NULL){
+	if(list_any_satisfy(proceso->segmentos, (void*) _encuentro_segmento_con_base)){
+		puedo_quitar_segmento = true;
+
+		// remuevo los que cumplen la condicion
+		list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _encuentro_segmento_con_base, (void*)_destruye_segmento);
+	}else{
 		puedo_quitar_segmento = false;
 	}
-//	free(lista);
-
-	// remuevo los que cumplen la condicion
-	list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _encuentro_segmento_con_base, (void*)_destruye_segmento);
 
 	return puedo_quitar_segmento;
 }

@@ -28,14 +28,14 @@ uint32_t cantidad_marcos_libre();
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
 //Toma los datos que hay en el marco y los inserta despues del desplzamiento.
 //Modifica tamanio para saber claramente cuanto tamaño queda leer.
-char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, bool mas_paginas);
+char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio, int * mas_paginas);
 
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
 //Toma los bytes_a_escribir y los inserta en datos_marco a partir del desplazamiento.
 //Modifica tamanio para saber claramente cuanto tamaño queda escribir.
-void escribir_marco(char* datos_marco, uint16_t desplazamiento, uint32_t tamanio, char* bytes_a_escribir, bool mas_paginas);
+void escribir_marco(marco_t* * datos_marco, uint16_t desplazamiento, uint32_t * tamanio, char* bytes_a_escribir, int * mas_paginas);
 
 //Funcion auxiliar. Calcula el tamanio que realmente voy a usar, no el total.
-uint32_t _calcular_tamanio_real(uint32_t tamanio, uint16_t desplazamiento, bool mas_paginas);
+uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
 
 #endif /* MARCO_H_ */
