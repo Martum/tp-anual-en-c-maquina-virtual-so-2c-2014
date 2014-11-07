@@ -131,6 +131,8 @@ void mover_tcbs_a_exit(uint32_t pid)
 
 	remover_de_ready_a_exit(pid);
 
+	remover_de_exec_a_exit(pid);
+
 	// TODO: Verificar la cola rdy del KM
 	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
 	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
@@ -142,6 +144,17 @@ void mover_tcbs_a_exit(uint32_t pid)
 	remover_de_join_a_exit(pid);
 
 	remover_de_block_recursos_a_exit(pid);	// Es de la lista de bloqueados y de las del diccionario
+
+	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
+}
+
+void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
+{
+	tcb_t* tcb = tcbv;
+
+	destruir_segmento(tcb->pid, tcb->base_stack);
+
+	free(tcb);
 }
 
 void eliminar_y_destruir_tcb(void* tcbv)

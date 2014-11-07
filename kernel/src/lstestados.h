@@ -220,4 +220,10 @@ void remover_de_block_recursos_a_exit(uint32_t pid);
  */
 void remover_de_conclusion_km_a_exit(uint32_t pid);
 
+/**
+ * Elimina todos los TCBs de la lista correspondiente al PID.
+ * Dealloca completamente los recursos.
+ */
+void eliminar_tcbs_en_exit(uint32_t pid);
+
 #endif /* LSTESTADOS_H_ */
