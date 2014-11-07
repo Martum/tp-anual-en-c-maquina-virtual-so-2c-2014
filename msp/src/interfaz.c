@@ -88,7 +88,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	pagina_t* pagina=malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 
-	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
 	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
@@ -109,6 +109,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
+
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
 			string_append(&datos, leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas));
 
@@ -136,12 +137,13 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
-	proceso_msp_t* proceso=malloc(sizeof(proceso_msp_t));
-	segmento_t* segmento=malloc(sizeof(segmento_t));
-	pagina_t* pagina=malloc(sizeof(pagina_t));
+	proceso_msp_t* proceso=NULL;//malloc(sizeof(proceso_msp_t));
+	segmento_t* segmento=NULL;//malloc(sizeof(segmento_t));
+	pagina_t* pagina=NULL;//malloc(sizeof(pagina_t));
+	marco_t* marco= NULL;//malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 
-	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,proceso,segmento,pagina,desplazamiento);
+	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
 	bool hay_error = memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
@@ -157,8 +159,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 		//Sin razon aparente anda mal con el tipo bool, asique tiro int
 		int mas_paginas = 1;
-		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
-		marco_t* marco = buscar_marco_segun_id(pagina->marco);
+		marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
@@ -179,9 +180,10 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 
 	}
-	free(proceso);
-	free(segmento);
-	free(pagina);
+	//free(proceso);
+	//free(segmento);
+	//free(pagina);
+	//free(marco);
 
 }
 
