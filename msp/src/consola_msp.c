@@ -292,6 +292,8 @@ void listar_marcos(){
 		if(marco->ocupado){
 			printf("Esta ocupado: %s ", "SI");
 			printf("por el proceso con id %d \n", marco->id_proceso);
+			//todo Esto tenes que sacarlo nacho acordate!
+			printf("Datos:%s",marco->datos);
 		}else{
 			printf("Esta ocupado: %s \n", "NO");
 		}
