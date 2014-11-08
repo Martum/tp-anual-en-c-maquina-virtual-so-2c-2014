@@ -35,6 +35,10 @@ void* quitar_de_cpu_en_espera_de_tcb() {
 //tcb_t* _proximo_tcb(uint32_t cpu_id)
 tcb_t* _proximo_tcb() {
 	tcb_t* tcb = NULL;
+
+	if(tcb_km_ocioso() && hay_hilos_block_espera_km())
+		replanificar_tcb_km();
+
 	if (hay_hilo_km_ready()) {
 		tcb = quitar_de_ready_km();
 		//agregar_a_exec(tcb, cpu_id);
@@ -131,6 +135,8 @@ void mover_tcbs_a_exit(uint32_t pid)
 
 	remover_de_ready_a_exit(pid);
 
+	remover_de_exec_a_exit(pid);
+
 	// TODO: Verificar la cola rdy del KM
 	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
 	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
@@ -142,11 +148,21 @@ void mover_tcbs_a_exit(uint32_t pid)
 	remover_de_join_a_exit(pid);
 
 	remover_de_block_recursos_a_exit(pid);	// Es de la lista de bloqueados y de las del diccionario
+
+	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
+}
+
+void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
+{
+	tcb_t* tcb = tcbv;
+
+	destruir_segmento(tcb->pid, tcb->base_stack);
+
+	free(tcb);
 }
 
 void eliminar_y_destruir_tcb(void* tcbv)
 {
-	// TODO: Continuar aca
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_codigo);
@@ -155,3 +171,11 @@ void eliminar_y_destruir_tcb(void* tcbv)
 	free(tcb);
 }
 
+void replanificar_tcb_km()
+{
+	esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
+
+	preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
+
+	free(ekm);
+}

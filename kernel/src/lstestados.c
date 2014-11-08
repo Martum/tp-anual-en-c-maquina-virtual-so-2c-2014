@@ -212,6 +212,11 @@ bool tcb_km_is_running()
 	return !list_is_empty(BLOCK_CONCLUSION_KM);
 }
 
+bool tcb_km_ocioso()
+{
+	return !tcb_km_is_running() && !hay_hilo_km_ready();
+}
+
 bool hay_hilos_block_espera_km()
 {
 	return !list_is_empty(BLOCK_ESPERA_KM);
@@ -279,14 +284,13 @@ void _eliminar_exit_t(uint32_t pid)
 }
 
 /**
- * Verifica si una de las listas internas de EXIT ya esta completa (o sea,
- * ya se pueden eliminar los TCBs)
+ * Si la entrada de EXIT es para eliminar un solo Hilo, lo elimina.
  */
 void _verificar_salida_proceso(exit_t* et)
 {
-	if((et->muere_proceso && et->hilos_totales == list_size(et->lista_tcbs)) || !et->muere_proceso)
-	{// Ya podemos eliminar los TCBs y liberar la memoria
-		list_clean_and_destroy_elements(et->lista_tcbs, eliminar_y_destruir_tcb);
+	if(!et->muere_proceso)
+	{// En caso de que un solo TCB muere, lo eliminamos. Si muere el proceso no entra aca
+		list_clean_and_destroy_elements(et->lista_tcbs, eliminar_y_destruir_tcb_sin_codigo);
 		_eliminar_exit_t(et->pid);
 	}
 }
@@ -394,8 +398,8 @@ void _eliminar_de_listas_recursos(tcb_t* tcb)
 
 		int i;
 		for(i = 0; i < cantidad; i++)
-		{
-			tcb_t* tcb = list_remove_by_condition(lista, _satisface_pid_tid);
+		{// Se elimina de la lista, no se agrega a exit porque se agrega en el llamado a esta funcion
+			list_remove_by_condition(lista, _satisface_pid_tid);
 		}
 
 	}
@@ -432,7 +436,7 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 
 		if(list_size(READY[0]) == 1)
 		{// Todavia no entro a ejecutar
-			list_remove(READY[0], 0);
+			list_remove(READY[0], 0);	// Removemos el TCB KM
 
 			// Elimina el struct conclusion_km_t
 			eliminar_conclusion_tcb();
@@ -444,5 +448,46 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 		{// Ya se esta ejecutando
 			set_enviar_a_rdy(false);
 		}
+	}
+}
+
+void eliminar_tcbs_en_exit(uint32_t pid)
+{
+	// TODO: Hacer esta funcion
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((exit_t*)elemento)->pid == pid;
+	}
+
+	exit_t* et = list_find(EXIT_COLA, _buscar_por_pid);
+
+	direccion direccion_codigo = ((tcb_t*)list_get(et->lista_tcbs, 0))->base_codigo;
+
+	// Eliminamos todos los TCBs, pero no el segmento de codigo
+	list_clean_and_destroy_elements(et->lista_tcbs, eliminar_y_destruir_tcb_sin_codigo);
+
+	destruir_segmento(pid, direccion_codigo);
+
+	list_destroy(et->lista_tcbs);
+}
+
+void remover_de_exec_a_exit(uint32_t pid)
+{
+	bool _buscar_por_pid_no_km(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid &&
+				!((tcb_t*) elemento)->km;
+	}
+
+	uint32_t cantidad = list_count_satisfying(EXEC, _buscar_por_pid_no_km);
+
+	uint32_t i;
+	for(i = 0; i < cantidad; i++)
+	{
+		ejecutando_t* et = list_remove_by_condition(EXEC, _buscar_por_pid_no_km);
+
+		agregar_a_exit(et->tcb);
+
+		free(et);
 	}
 }

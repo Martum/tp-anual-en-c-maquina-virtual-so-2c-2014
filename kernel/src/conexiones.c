@@ -390,6 +390,15 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
 
+				// TODO: Aca hay que verificar si el TCB recibido no es de un proceso que esta muriendo.
+				// En caso de serlo significa que ya esta agregado en la lista de EXIT y no hay que hacerle nada
+				// Con un IF no entrar a Interrupcion (o quizas si, verificar) y liberar el TCB KM y replanificarlo.
+
+				// TODO: Se puede crear un MUTEX global que sea algo asi como EN_SALIDA. Este MUTEX se puede
+				// lockear dentro de mover_tcbs_a_exit() e intenar lockear aca (dentro de interrupcion), de forma
+				// que no pase JUSTO que cuando se sacan los TCBs de una lista y se pongan en otras se procese
+				// el exit de dicha lista, quedando el TCB colgado.
+
 				interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
 
 				_enviar_completadook(conexion_cpu->socket);

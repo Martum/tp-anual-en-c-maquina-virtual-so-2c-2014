@@ -126,6 +126,11 @@ tcb_t* get_tcb_km();
  */
 bool tcb_km_is_running();
 
+/**
+ * Verifica si el TCB KM esta ocioso (no esta corriendo ni en RDY)
+ */
+bool tcb_km_ocioso();
+
 
 // FUNCIONES DE BLOCK_ESPERA_KM
 
@@ -140,6 +145,10 @@ bool hay_hilos_block_espera_km();
  */
 void agregar_a_block_espera_km(esperando_km_t* ekm);
 
+/**
+ * Remueve el primer esperando_km_t* de la lista.
+ */
+esperando_km_t* remover_primer_tcb_block_espera_km();
 
 // FUNCIONES DE BLOCK_CONCLUSION_KM
 
@@ -219,5 +228,16 @@ void remover_de_block_recursos_a_exit(uint32_t pid);
  * y si corresponde.
  */
 void remover_de_conclusion_km_a_exit(uint32_t pid);
+
+/**
+ * Elimina todos los TCBs de la lista correspondiente al PID.
+ * Dealloca completamente los recursos.
+ */
+void eliminar_tcbs_en_exit(uint32_t pid);
+
+/**
+ * Remueve de EXEC hacia Exit
+ */
+void remover_de_exec_a_exit(uint32_t pid);
 
 #endif /* LSTESTADOS_H_ */
