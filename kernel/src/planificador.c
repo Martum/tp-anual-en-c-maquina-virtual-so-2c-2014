@@ -35,6 +35,10 @@ void* quitar_de_cpu_en_espera_de_tcb() {
 //tcb_t* _proximo_tcb(uint32_t cpu_id)
 tcb_t* _proximo_tcb() {
 	tcb_t* tcb = NULL;
+
+	if(tcb_km_ocioso() && hay_hilos_block_espera_km())
+		replanificar_tcb_km();
+
 	if (hay_hilo_km_ready()) {
 		tcb = quitar_de_ready_km();
 		//agregar_a_exec(tcb, cpu_id);
@@ -159,7 +163,6 @@ void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
 
 void eliminar_y_destruir_tcb(void* tcbv)
 {
-	// TODO: Continuar aca
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_codigo);
@@ -168,3 +171,11 @@ void eliminar_y_destruir_tcb(void* tcbv)
 	free(tcb);
 }
 
+void replanificar_tcb_km()
+{
+	esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
+
+	preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
+
+	free(ekm);
+}

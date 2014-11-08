@@ -392,6 +392,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				// TODO: Aca hay que verificar si el TCB recibido no es de un proceso que esta muriendo.
 				// En caso de serlo significa que ya esta agregado en la lista de EXIT y no hay que hacerle nada
+				// Con un IF no entrar a Interrupcion (o quizas si, verificar) y liberar el TCB KM y replanificarlo.
 
 				// TODO: Se puede crear un MUTEX global que sea algo asi como EN_SALIDA. Este MUTEX se puede
 				// lockear dentro de mover_tcbs_a_exit() e intenar lockear aca (dentro de interrupcion), de forma

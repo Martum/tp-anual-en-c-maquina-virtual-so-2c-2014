@@ -47,5 +47,11 @@ void eliminar_y_destruir_tcb_sin_codigo(void* tcbv);
  */
 void eliminar_y_destruir_tcb(void* tcb);
 
+/**
+ * En caso de poderse, replanifica el TCB KM poniendolo en RDY (si hay
+ * TCBs esperando por una syscall)
+ */
+void replanificar_tcb_km();
+
 
 #endif /* PLANIFICADOR_H_ */

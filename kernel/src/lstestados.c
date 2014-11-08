@@ -212,6 +212,11 @@ bool tcb_km_is_running()
 	return !list_is_empty(BLOCK_CONCLUSION_KM);
 }
 
+bool tcb_km_ocioso()
+{
+	return !tcb_km_is_running() && !hay_hilo_km_ready();
+}
+
 bool hay_hilos_block_espera_km()
 {
 	return !list_is_empty(BLOCK_ESPERA_KM);
