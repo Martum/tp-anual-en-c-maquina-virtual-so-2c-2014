@@ -109,9 +109,11 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
-
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
-			string_append(&datos, leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas));
+			char* txt= leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas);
+			//TODO Cambiar esta funcion katinga por la de las commons
+			//TODO Sacar la funcion katinga de marco.c
+			datos=concat_string(datos, txt);
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;

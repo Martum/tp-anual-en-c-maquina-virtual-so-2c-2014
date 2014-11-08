@@ -38,4 +38,5 @@ void escribir_marco(marco_t* * datos_marco, uint16_t desplazamiento, uint32_t * 
 //Funcion auxiliar. Calcula el tamanio que realmente voy a usar, no el total.
 uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
 
+char* concat_string(char* a, char* b);
 #endif /* MARCO_H_ */
