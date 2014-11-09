@@ -22,7 +22,7 @@ int32_t main(int32_t argc, char** argv)
 
 	if (cargar_configuraciones() == FALLO_CARGA_DE_CONFIGURACIONES)
 	{
-		loggear_error("No se pudieron cargar las configuraciones");
+		loggear_error("No pudo cargar las configuraciones");
 		loggear_info("Liberando recursos para cierre...");
 		finalizar_loggeo();
 		error_show(" Al cargar configuraciones");
@@ -55,11 +55,16 @@ int32_t main(int32_t argc, char** argv)
 	crear_segmento(12, 123, &direccion);
 
 	// TODO eliminar (solo para pruebas)
+	char bytes = 'a';
+	escribir_en_memoria(12, direccion, 1, &bytes);
+
+	// TODO eliminar (solo para pruebas)
+//	char buffer;
+//	leer_de_memoria(12, direccion, 1, &buffer);
+
+	// TODO eliminar (solo para pruebas)
 	destruir_segmento(12, direccion);
 
-//	// TODO eliminar (solo para pruebas)
-//	char bytes = 'a';
-//	escribir_en_memoria(12, direccion, 1, &bytes);
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
@@ -69,7 +74,7 @@ int32_t main(int32_t argc, char** argv)
 
 	inicializar_dic_de_instrucciones();
 
-	loggear_trace("Cargadas todas las estructuras administrativas");
+	loggear_info("Cargadas todas las estructuras administrativas");
 
 	// TODO eliminar (solo para pruebas)
 	_liberar_recursos();
