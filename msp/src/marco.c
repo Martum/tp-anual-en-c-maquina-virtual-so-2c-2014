@@ -67,8 +67,8 @@ uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int
 	//Calculo el tamanio real
 		uint32_t tamanio_aux;
 		tamanio_aux= *tamanio;
-
-		if((256-desplazamiento-*(tamanio))<0)
+		int aux = (256-desplazamiento-*(tamanio));
+		if(aux<0)
 			{
 				tamanio_aux= 256-desplazamiento;
 				*mas_paginas=1;
