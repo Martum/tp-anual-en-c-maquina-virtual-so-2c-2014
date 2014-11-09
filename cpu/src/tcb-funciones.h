@@ -13,20 +13,22 @@
 
 #include "hu4sockets/tcb.h"
 
+// TODO eliminar (ya no se necesita)
 /*
  * @DESC: Reserva memoria para un dato de tipo tcb.
  * @RETURNS: puntero a la memoria reservada
  */
-tcb_t* crear_tcb();
+//tcb_t* crear_tcb();
 
+// TODO eliminar (ya no se necesita)
 /*
  * @DESC: Libera la memoria reservada para tcb.
  * @RETURNS:
  */
-void liberar_tcb(tcb_t* tcb);
+//void liberar_tcb(tcb_t* tcb);
 
 // TODO eliminar (ya no se necesita)
-void clonar_tcb(tcb_t* destino, tcb_t* fuente);
+//void clonar_tcb(tcb_t* destino, tcb_t* fuente);
 
 /*
  * @DESC: Comprueba si el tcb es de tipo kernel
@@ -63,17 +65,19 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
  */
 void actualizar_pc(tcb_t* tcb, direccion nuevo_pc);
 
+// TODO eliminar (ya no se necesita mas)
 /**
  * @DESC: Actualiza el valor del tid con el valor.
  * @RETURNS:
  */
-void actualizar_tid(tcb_t* tcb, int32_t nuevo_tid);
+//void actualizar_tid(tcb_t* tcb, int32_t nuevo_tid);
 
+// TODO eliminar (ya no se necesita mas)
 /**
  * @DESC: Actualiza el valor del km con el nuevo_km.
  * @RETURNS:
  */
-void actualizar_km(tcb_t* tcb, bool nuevo_km);
+//void actualizar_km(tcb_t* tcb, bool nuevo_km);
 
 /**
  * @DESC: Actualiza el valor del registro a con nuevo_valor.
@@ -87,11 +91,12 @@ void actualizar_registro_a(tcb_t* tcb, int32_t nuevo_valor);
  */
 void actualizar_registro_b(tcb_t* tcb, int32_t nuevo_valor);
 
+// TODO eliminar (ya no se necesita mas)
 /**
  * @DESC: Actualiza la base del stack con nueva_base.
  * @RETURNS:
  */
-void actualizar_base_del_stack(tcb_t* tcb, direccion nuevo_base);
+//void actualizar_base_del_stack(tcb_t* tcb, direccion nuevo_base);
 
 /**
  * @DESC: Obtiene la direccion de la base de codigo de la tcb.
