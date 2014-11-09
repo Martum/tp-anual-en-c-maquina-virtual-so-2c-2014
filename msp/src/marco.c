@@ -101,7 +101,7 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 
 	int i;
 	int j=0;
-	for(i=desplazamiento;i<tamanio_aux;i++)
+	for(i=0;i<tamanio_aux;i++)
 	{
 		char caracter = (char)bytes_a_escribir[j];
 		if(caracter=='\0')
@@ -109,7 +109,7 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 			caracter = ' ';
 		}
 
-		(*marco)->datos[i]=caracter;
+		(*marco)->datos[i+desplazamiento]=caracter;
 		//(*marco)->ocupado=true;
 
 
