@@ -198,6 +198,12 @@ typedef struct respuesta_entrada_estandar {
 	char* cadena;
 } respuesta_entrada_estandar_t;
 
+typedef struct respuesta_crear_hilo {
+	flag_t flag;
+	resultado_t resultado;
+	uint32_t nuevo_tid;
+} respuesta_crear_hilo_t;
+
 /**
  * Mensaje es el chorro de bytes recibidos a traves del socket.
  *
