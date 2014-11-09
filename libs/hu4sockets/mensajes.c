@@ -198,86 +198,87 @@ uint32_t tamanio_pedido_con_resultado_t_serializado()
 
 // COMIENZO DE PEDIDO NUEVO TID
 
-char* serializar_pedido_nuevo_tid_t(
-	pedido_nuevo_tid_t* pedido_con_resultado)
-{
-	char* bytes = malloc(tamanio_pedido_nuevo_tid_t_serializado());
-
-	uint32_t offset = 0;
-	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
-
-	offset += sizeof(flag_t);
-	memcpy(bytes + offset, serializar_tcb(pedido_con_resultado->tcb),
-		tamanio_tcb_serializado());
-
-	return bytes;
-}
-
-pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char* chorro)
-{
-	pedido_nuevo_tid_t* pedido_con_resultado = malloc(
-		sizeof(pedido_nuevo_tid_t));
-
-	uint32_t offset = 0;
-	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
-
-	offset += sizeof(flag_t);
-	pedido_con_resultado->tcb = malloc(sizeof(tcb_t));
-	memcpy(pedido_con_resultado->tcb, deserializar_tcb(chorro + offset),
-		sizeof(tcb_t));
-
-	return pedido_con_resultado;
-}
-
-uint32_t tamanio_pedido_nuevo_tid_t_serializado()
-{
-	uint32_t t = 0;
-	t += sizeof(flag_t);
-	t += tamanio_tcb_serializado();
-
-	return t;
-}
-
-// FIN DE PEDIDO NUEVO TID
-
-// COMIENZO DE RESPUESTA NUEVO TID
-
-char* serializar_respuesta_nuevo_tid_t(
-	respuesta_nuevo_tid_t* pedido_con_resultado)
-{
-	char* bytes = malloc(tamanio_respuesta_nuevo_tid_t_serializado());
-
-	uint32_t offset = 0;
-	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
-
-	offset += sizeof(flag_t);
-	memcpy(bytes + offset, &pedido_con_resultado->tid, sizeof(direccion));
-
-	return bytes;
-}
-
-respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char* chorro)
-{
-	respuesta_nuevo_tid_t* pedido_con_resultado = malloc(
-		sizeof(respuesta_nuevo_tid_t));
-
-	uint32_t offset = 0;
-	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
-
-	offset += sizeof(flag_t);
-	memcpy(&pedido_con_resultado->tid, chorro + offset, sizeof(direccion));
-
-	return pedido_con_resultado;
-}
-
-uint32_t tamanio_respuesta_nuevo_tid_t_serializado()
-{
-	uint32_t t = 0;
-	t += sizeof(flag_t);
-	t += sizeof(direccion);
-
-	return t;
-}
+// TODO eliminar (ya no se necesita mas)
+//char* serializar_pedido_nuevo_tid_t(
+//	pedido_nuevo_tid_t* pedido_con_resultado)
+//{
+//	char* bytes = malloc(tamanio_pedido_nuevo_tid_t_serializado());
+//
+//	uint32_t offset = 0;
+//	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
+//
+//	offset += sizeof(flag_t);
+//	memcpy(bytes + offset, serializar_tcb(pedido_con_resultado->tcb),
+//		tamanio_tcb_serializado());
+//
+//	return bytes;
+//}
+//
+//pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char* chorro)
+//{
+//	pedido_nuevo_tid_t* pedido_con_resultado = malloc(
+//		sizeof(pedido_nuevo_tid_t));
+//
+//	uint32_t offset = 0;
+//	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
+//
+//	offset += sizeof(flag_t);
+//	pedido_con_resultado->tcb = malloc(sizeof(tcb_t));
+//	memcpy(pedido_con_resultado->tcb, deserializar_tcb(chorro + offset),
+//		sizeof(tcb_t));
+//
+//	return pedido_con_resultado;
+//}
+//
+//uint32_t tamanio_pedido_nuevo_tid_t_serializado()
+//{
+//	uint32_t t = 0;
+//	t += sizeof(flag_t);
+//	t += tamanio_tcb_serializado();
+//
+//	return t;
+//}
+//
+//// FIN DE PEDIDO NUEVO TID
+//
+//// COMIENZO DE RESPUESTA NUEVO TID
+//
+//char* serializar_respuesta_nuevo_tid_t(
+//	respuesta_nuevo_tid_t* pedido_con_resultado)
+//{
+//	char* bytes = malloc(tamanio_respuesta_nuevo_tid_t_serializado());
+//
+//	uint32_t offset = 0;
+//	memcpy(bytes + offset, &pedido_con_resultado->flag, sizeof(flag_t));
+//
+//	offset += sizeof(flag_t);
+//	memcpy(bytes + offset, &pedido_con_resultado->tid, sizeof(direccion));
+//
+//	return bytes;
+//}
+//
+//respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char* chorro)
+//{
+//	respuesta_nuevo_tid_t* pedido_con_resultado = malloc(
+//		sizeof(respuesta_nuevo_tid_t));
+//
+//	uint32_t offset = 0;
+//	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
+//
+//	offset += sizeof(flag_t);
+//	memcpy(&pedido_con_resultado->tid, chorro + offset, sizeof(direccion));
+//
+//	return pedido_con_resultado;
+//}
+//
+//uint32_t tamanio_respuesta_nuevo_tid_t_serializado()
+//{
+//	uint32_t t = 0;
+//	t += sizeof(flag_t);
+//	t += sizeof(direccion);
+//
+//	return t;
+//}
 
 // FIN DE RESPUESTA NUEVO TID
 

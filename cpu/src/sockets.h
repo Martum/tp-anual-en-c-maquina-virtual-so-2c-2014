@@ -182,10 +182,10 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso);
  */
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso);
 
-// TODO eliminar (probablemente ya no sirva)
-resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid);
+// TODO eliminar (ya no hace falta)
+//resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid);
 
-// TODO eliminar (ya no se hace falta)
+// TODO eliminar (ya no hace falta)
 //void pedir_al_kernel_tamanio_stack(uint32_t* tamanio_stack);
 
 #endif /* MEMORIA_H_ */

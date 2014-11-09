@@ -28,7 +28,6 @@ typedef enum {
 	PEDI_ENTERO = 155,		// Pedir un Entero al usuario
 	MOSTRA_CADENA = 156,
 
-
 	// Mensajes del CPU al Kernel: 201 -> 250
 	NUEVO_CPU = 201,
 	MANDA_TCB = 202,
@@ -51,7 +50,7 @@ typedef enum {
 	TOMA_TID = 253,
 
 	// Mensajes del CPU a Memoria: 301 -> 350
-	CREAME_UN_SEGMENTO = 301,
+	CREA_UN_SEGMENTO = 301, // TODO avisar de cambiar
 	DESTRUI_SEGMENTO = 302,
 	LEE_DE_MEMORIA = 303,
 	ESCRIBI_EN_MEMORIA = 304,
@@ -85,10 +84,12 @@ typedef struct pedido_con_resultado {
 	int32_t informacion;
 } pedido_con_resultado_t;
 
-typedef struct pedido_nuevo_tid {
-	flag_t flag;
-	tcb_t* tcb;
-} pedido_nuevo_tid_t;
+
+// TODO eliminar (ya no se necesita mas)
+//typedef struct pedido_nuevo_tid {
+//	flag_t flag;
+//	tcb_t* tcb;
+//} pedido_nuevo_tid_t;
 
 typedef struct respuesta_de_nuevo_tcb {
 	flag_t flag;
@@ -96,10 +97,11 @@ typedef struct respuesta_de_nuevo_tcb {
 	uint32_t quantum;
 } respuesta_de_nuevo_tcb_t;
 
-typedef struct respuesta_nuevo_tid {
-	flag_t flag;
-	direccion tid;
-} respuesta_nuevo_tid_t;
+// TODO eliminar (ya no se necesita mas)
+//typedef struct respuesta_nuevo_tid {
+//	flag_t flag;
+//	direccion tid;
+//} respuesta_nuevo_tid_t;
 
 typedef struct pedido_de_crear_segmento {
 	flag_t flag;
@@ -225,15 +227,13 @@ pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char*);
 char* serializar_pedido_con_resultado_t(pedido_con_resultado_t*);
 uint32_t tamanio_pedido_con_resultado_t_serializado();
 
-// TODO implementar estos dos
-
-pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char*);
-char* serializar_pedido_nuevo_tid_t(pedido_nuevo_tid_t*);
-uint32_t tamanio_pedido_nuevo_tid_t_serializado();
-
-respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char*);
-char* serializar_respuesta_nuevo_tid_t(respuesta_nuevo_tid_t*);
-uint32_t tamanio_respuesta_nuevo_tid_t_serializado();
+// TODO eliminar (ya no se necesitan mas)
+//pedido_nuevo_tid_t* deserializar_pedido_nuevo_tid_t(char*);
+//char* serializar_pedido_nuevo_tid_t(pedido_nuevo_tid_t*);
+//uint32_t tamanio_pedido_nuevo_tid_t_serializado();
+//respuesta_nuevo_tid_t* deserializar_respuesta_nuevo_tid_t(char*);
+//char* serializar_respuesta_nuevo_tid_t(respuesta_nuevo_tid_t*);
+//uint32_t tamanio_respuesta_nuevo_tid_t_serializado();
 
 pedido_de_crear_segmento_t* deserializar_pedido_de_crear_segmento_t(char*);
 char* serializar_pedido_de_crear_segmento_t(pedido_de_crear_segmento_t*);
