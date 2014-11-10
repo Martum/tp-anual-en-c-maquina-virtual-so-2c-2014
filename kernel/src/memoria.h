@@ -11,6 +11,12 @@
 #include <hu4sockets/tcb.h>
 
 /**
+ * Conecta con la memoria.
+ * @RETURNS: 0 en caso de exito; -1 en caso de fallar
+ */
+int32_t conectar_con_memoria();
+
+/**
  * @NAME: crear_segmento
  * @DESC: Solicita la creacion de un segmento a la MSP.
  * 		Deja en direccion la direccion del segmento

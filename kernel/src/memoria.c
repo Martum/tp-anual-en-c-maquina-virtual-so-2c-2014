@@ -23,9 +23,33 @@ int32_t escribir_memoria(uint32_t pid, direccion base_segmento, char* chorro_byt
 
 sock_t* memoria;
 
-void conectar_memoria()
+resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
-	// TODO: Codificar esto
+	loggear_trace("IP %s -- Puerto %d", ip, puerto);
+
+	*socket = crear_socket_hablador(ip, puerto);
+
+	if (conectar(*socket) == -1)
+	{
+		loggear_warning("No pudo conectarse a ip: %s y puerto: %d", ip, puerto);
+		return -1;
+	}
+
+	loggear_trace("Conexion realizada con exito");
+
+	return 0;
+}
+
+int32_t conectar_con_memoria()
+{
+	loggear_trace("Intento conectarme con memoria");
+
+	if (_conectar(&memoria, ip_msp(), puerto_msp()) == -1)
+		return -1;
+
+	loggear_info("Conexion con memoria realizada con exito");
+
+	return 0;
 }
 
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
