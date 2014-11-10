@@ -41,6 +41,8 @@ int main(void){
 	pthread_join(consola_msp_thread, NULL);
 	pthread_join(conexiones_thread, NULL);
 
+
+
 	destruir_configuraciones();
 	return 0;
 }
