@@ -119,10 +119,11 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 	case ERROR_EN_EJECUCION:
 		// NACHO GAY
+
 		break;
 
 	case FIN_EJECUCION:
-		notificar_join_finalizacion_proceso(tcb_posta);
+		notificar_join_finalizacion_hilo(tcb_posta);
 		if (tcb->km) {
 			agregar_a_ready(tcb_posta);
 		} else {
