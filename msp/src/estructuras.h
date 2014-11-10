@@ -20,6 +20,7 @@ typedef struct pagina {
 	uint32_t marco;
 	uint64_t id_en_indice;
 	int bit_referencia;
+	uint8_t max_modificable;
 } pagina_t;
 
 typedef struct segmento {
