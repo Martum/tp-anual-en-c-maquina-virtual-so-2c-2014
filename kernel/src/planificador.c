@@ -154,6 +154,8 @@ void mover_tcbs_a_exit(uint32_t pid) {
 
 	remover_de_block_recursos_a_exit(pid);// Es de la lista de bloqueados y de las del diccionario
 
+	// TODO: Destruir los Segmentos que van a estar en la lista de segmentos por hilo
+
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 }
 
