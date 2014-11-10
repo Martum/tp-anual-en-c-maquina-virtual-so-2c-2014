@@ -77,7 +77,7 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 }
 
 
-//Falta lanzar mensaje de error y leer la memoria propiamente dicha
+
 char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,resultado_t *resultado)
 {
 
@@ -95,7 +95,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	char* datos="";
 	if(hay_error)
 	{
-		//LANZAR ERROR
+
 		*(resultado) = SEGMENTATION_FAULT;
 	}
 	else
@@ -123,6 +123,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			if(pagina_siguiente!=NULL)
 			{
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
+				*pagina = *pagina_siguiente;
 			}
 		}
 
@@ -172,7 +173,8 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 			desplazamiento=0;
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
-			pagina_t* pagina_siguiente = siguiente_pagina(pagina->id, segmento->paginas);
+			uint16_t id_pagina_siguiente= (pagina->id)+1;
+			pagina_t* pagina_siguiente = siguiente_pagina(id_pagina_siguiente, segmento->paginas);
 			if(pagina_siguiente!=NULL)
 			{
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);

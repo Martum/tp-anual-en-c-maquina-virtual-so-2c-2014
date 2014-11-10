@@ -48,7 +48,8 @@ pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* li
 	bool _es_pagina(pagina_t* pagina) {
 		return pagina->id==id_pagina;
 	}
-	return list_find(lista_paginas, (void*) _es_pagina);
+	pagina_t* pagina_requerida =(pagina_t*)list_find(lista_paginas, (void*) _es_pagina);
+	return pagina_requerida;
 }
 
 void asignar_marco(pagina_t* * pagina, uint32_t pid)
@@ -87,6 +88,7 @@ bool hay_siguiente_pagina(uint16_t * id_pagina, t_list* lista_paginas)
 pagina_t* siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas)
 {
 
-	return list_get(lista_paginas, id_pagina+1);
+
+	return buscar_pagina_segun_id_en_lista_paginas(id_pagina, lista_paginas);
 }
 
