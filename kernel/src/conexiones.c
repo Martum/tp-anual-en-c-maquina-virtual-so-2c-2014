@@ -424,6 +424,31 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				pedir_tcb(conexion_cpu->id);
 				break;
 
+			case TOMA_RESULTADO:
+				;
+				pedido_con_resultado_t* pedido_resultado = deserializar_pedido_con_resultado_t(mensaje);
+
+				if(!proceso_muriendo(pedido_resultado->tcb->pid))
+				{	// Recibimos el TCB y esta todos OK
+					recibir_tcb(pedido_resultado);
+				}
+				else if(pedido_resultado->tcb->km)
+				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM
+					//TODO: Codificar esta parte.
+				}
+				else
+				{// Recibimos el TCB de un proceso muriendo
+					//TODO: Codificar esta parte.
+				}
+
+				free(pedido_resultado->tcb);
+				free(pedido_resultado);
+				break;
+
+			case DESCONEXION_CPU:
+
+				break;
+
 			default:
 				break;
 		}

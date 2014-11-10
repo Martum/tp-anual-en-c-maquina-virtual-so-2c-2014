@@ -26,7 +26,7 @@ void* quitar_de_cpu_en_espera_de_tcb();
 void pedir_tcb(uint32_t cpu_id);
 
 // SE ENCARGA DE OBTENER UN TCB EN CASO DE QUE HAYA UNA DISPONIBLE Y DARSELO A LA CPU CORRESPONDIENTE
-void _planificar();
+void planificar();
 
 // ENVIA LA RTA CON EL TCB A LA CPU.
 void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id);

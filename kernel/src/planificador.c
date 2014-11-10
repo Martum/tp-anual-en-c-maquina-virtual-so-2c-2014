@@ -37,7 +37,7 @@ void* quitar_de_cpu_en_espera_de_tcb() {
 tcb_t* _proximo_tcb() {
 	tcb_t* tcb = NULL;
 
-	if(tcb_km_ocioso() && hay_hilos_block_espera_km())
+	if (tcb_km_ocioso() && hay_hilos_block_espera_km())
 		replanificar_tcb_km();
 
 	if (hay_hilo_km_ready()) {
@@ -59,10 +59,10 @@ tcb_t* _proximo_tcb() {
 
 void pedir_tcb(uint32_t cpu_id) {
 	agregar_a_cpu_en_espera_de_tcb(cpu_id);
-	_planificar();
+	planificar();
 }
 
-void _planificar() {
+void planificar() {
 	if (!queue_is_empty(cpu_en_espera_de_tcb)) {
 		tcb_t* tcb = _proximo_tcb();
 		if (tcb != NULL ) {
@@ -82,6 +82,8 @@ void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
 	enviar(socket, respuesta, &tamanio);
+
+	free(respuesta);
 }
 
 // TODO: FALTA EL FREE. Vos... el que me llama... hacelo!
@@ -89,49 +91,53 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
-	//tcb_t* tcb = _proximo_tcb(cpu_id);
 	rta->tcb = tcb;			// No hacer free de esto eh!
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
 
 	char* salida = serializar_respuesta_de_nuevo_tcb_t(rta);
 	free(rta);
-	// TODO: Y si no hay TCBs en RDY que hacemos??? BUG!
 	return salida;
 }
 
 // FALTA EL WRAPPER QUE DESERIALICE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
 // QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN UN SUPER CASE EN CONEXIONES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
-	quitar_de_exec(tcb);
+
+	tcb_t* tcb_posta = quitar_de_exec(tcb);
+	if (tcb->km) {
+		copiar_registros_programacion(tcb_posta, tcb);
+	} else {
+		copiar_tcb(tcb_posta, tcb);
+	}
 // TODO: OJO que esto ya no es tan asi. Ver bien entre todos
-	/*
-	 *
-	 switch(resultado){
-	 case FIN_QUANTUM:
-	 agregar_a_ready(tcb);
-	 break;
 
-	 case BLOCK:
-	 agregar_a_block(tcb);
-	 break;
+	switch (resultado) {
+	case FIN_QUANTUM:
+		agregar_a_ready(tcb_posta);
+		break;
 
-	 case DESCONEXION_CPU:
-	 case ERROR:
-	 agregar_a_exit(tcb);
-	 break;
-	 case FIN_EJECUCION:
-	 // TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
-	 agregar_a_exit(tcb);
-	 break;
-	 default:
-	 break;
+	case ERROR_EN_EJECUCION:
+		// NACHO GAY
 
-	 } */
+		break;
+
+	case FIN_EJECUCION:
+		notificar_join_finalizacion_hilo(tcb_posta);
+		if (tcb->km) {
+			agregar_a_ready(tcb_posta);
+		} else {
+			agregar_a_exit(tcb_posta);
+		}
+		break;
+
+	default:
+		break;
+
+	}
 }
 
-void mover_tcbs_a_exit(uint32_t pid)
-{
+void mover_tcbs_a_exit(uint32_t pid) {
 	preparar_exit_para_proceso(pid, true);
 
 	remover_de_ready_a_exit(pid);
@@ -148,13 +154,12 @@ void mover_tcbs_a_exit(uint32_t pid)
 
 	remover_de_join_a_exit(pid);
 
-	remover_de_block_recursos_a_exit(pid);	// Es de la lista de bloqueados y de las del diccionario
+	remover_de_block_recursos_a_exit(pid);// Es de la lista de bloqueados y de las del diccionario
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 }
 
-void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
-{
+void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_stack);
@@ -162,8 +167,7 @@ void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
 	free(tcb);
 }
 
-void eliminar_y_destruir_tcb(void* tcbv)
-{
+void eliminar_y_destruir_tcb(void* tcbv) {
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_codigo);
@@ -172,8 +176,7 @@ void eliminar_y_destruir_tcb(void* tcbv)
 	free(tcb);
 }
 
-void replanificar_tcb_km()
-{
+void replanificar_tcb_km() {
 	esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
 
 	preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
