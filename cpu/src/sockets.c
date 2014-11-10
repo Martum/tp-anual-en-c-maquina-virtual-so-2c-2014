@@ -341,7 +341,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
-	memcpy(buffer, respuesta->bytes_leido, 1);
+	memcpy(buffer, respuesta->bytes_leido, respuesta->tamano);
 
 //	free(respuesta->bytes_leido);
 
@@ -349,9 +349,9 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	loggear_trace("Cantidad de bytes leidos %d", respuesta->tamano);
 
-//	buffer[1] = '\0';
+	buffer[1] = '\0';
 
-	loggear_trace("Bytes: %s", buffer);
+	loggear_trace("Bytes: %s", respuesta->bytes_leido);
 
 	free(respuesta);
 

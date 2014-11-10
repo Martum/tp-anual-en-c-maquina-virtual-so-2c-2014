@@ -62,16 +62,15 @@ int32_t main(int32_t argc, char** argv)
 	crear_segmento(12, 123, &direccion);
 
 	// TODO eliminar (solo para pruebas)
-	char bytes = 'a';
-	escribir_en_memoria(12, direccion, 1, &bytes);
+	char* bytes = "aa";
+	escribir_en_memoria(12, direccion, 2, bytes);
 
 	// TODO eliminar (solo para pruebas)
-	char buffer;
-	leer_de_memoria(12, direccion, 1, &buffer);
+	char buffer[1];
+	leer_de_memoria(12, direccion, 2, buffer);
 
 	// TODO eliminar (solo para pruebas)
 	destruir_segmento(12, direccion);
-
 
 	tcb_t tcb;
 	resultado_t (*funcion)(tcb_t*);
