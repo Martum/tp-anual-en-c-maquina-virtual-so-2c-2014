@@ -182,7 +182,7 @@ resultado_t crear_segmento(direccion pid, uint32_t tamanio,
 	loggear_trace("Preparando mensaje para crear segmento");
 
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = CREAME_UN_SEGMENTO;
+	cuerpo_del_mensaje.flag = CREA_UN_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
 	cuerpo_del_mensaje.tamano = tamanio;
 
@@ -194,7 +194,7 @@ resultado_t crear_segmento(direccion pid, uint32_t tamanio,
 	loggear_trace("PID %d", pid);
 	loggear_trace("Tamanio del segmento %d", tamanio);
 
-	if (_enviar_y_recibir(kernel, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
@@ -246,7 +246,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	loggear_trace("PID: %d", pid);
 	loggear_trace("Direccion %d", direccion);
 
-	if (_enviar_y_recibir(kernel, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
 	{
@@ -316,14 +316,14 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	{
 		loggear_warning(
 			"La lectura no pudo realizarse por violacion de segmento");
-		free(respuesta->bytes_leido);
+//		free(respuesta->bytes_leido);
 		free(respuesta);
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
 	memcpy(buffer, respuesta->bytes_leido, respuesta->tamano);
 
-	free(respuesta->bytes_leido);
+//	free(respuesta->bytes_leido);
 	free(respuesta);
 
 	loggear_debug("Lectura de memorira satisfactoria");
