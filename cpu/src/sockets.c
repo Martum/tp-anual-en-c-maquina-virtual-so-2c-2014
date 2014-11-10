@@ -129,6 +129,25 @@ resultado_t conectar_con_memoria()
 	return OK;
 }
 
+resultado_t _mandar_desconexion_cpu_a_memoria()
+{
+	char* chorro_a_enviar = malloc(sizeof(resultado_t));
+	uint32_t tamanio = sizeof(resultado_t);
+	resultado_t resultado = DESCONEXION_CPU;
+
+	memcpy(chorro_a_enviar, &resultado, tamanio);
+
+	loggear_trace("Me preparo para enviar DESCONEXION_CPU a memoria");
+
+	enviar(memoria, chorro_a_enviar, &tamanio);
+
+	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
+
+	free(chorro_a_enviar);
+
+	return OK;
+}
+
 resultado_t _mandar_desconexion_cpu_a_kernel()
 {
 	char* chorro_a_enviar = malloc(sizeof(resultado_t));
@@ -151,7 +170,8 @@ resultado_t _mandar_desconexion_cpu_a_kernel()
 resultado_t desconectar_memoria()
 {
 	loggear_trace("Intento desconectarme de memoria");
-	cerrar_liberar(MEMORIA);
+	_mandar_desconexion_cpu_a_memoria();
+	cerrar_liberar(memoria);
 	loggear_info("Desconexion de memoria realizada con exito");
 
 	return OK;
@@ -321,14 +341,19 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
-	memcpy(buffer, respuesta->bytes_leido, respuesta->tamano);
+	memcpy(buffer, respuesta->bytes_leido, 1);
 
 //	free(respuesta->bytes_leido);
-	free(respuesta);
 
 	loggear_debug("Lectura de memorira satisfactoria");
 
 	loggear_trace("Cantidad de bytes leidos %d", respuesta->tamano);
+
+//	buffer[1] = '\0';
+
+	loggear_trace("Bytes: %s", buffer);
+
+	free(respuesta);
 
 	return OK;
 }

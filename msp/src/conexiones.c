@@ -100,6 +100,10 @@ void* _atiendo_hilo_conexion(void* conexion){
 			_atiendo_escribir_memoria(conexion, msg);
 			break;
 
+		case DESCONEXION_CPU:
+			pthread_exit(NULL);
+			break;
+
 		default:
 			break;
 		}
