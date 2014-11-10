@@ -25,7 +25,6 @@ int main(void){
 	inicializar_lista_marcos();
 	inicializar_indice_paginas();
 	inicializar_memoria_fisica_total();
-	inicializar_lista_conexiones_cpu();
 	inicializar_cantidad_archivos_swap();
 
 	if(strcmp(algoritmo_sustitucion_de_paginas(),"CLOCK")==0){
