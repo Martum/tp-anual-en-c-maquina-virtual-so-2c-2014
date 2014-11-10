@@ -118,18 +118,16 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	case ERROR_EN_EJECUCION:
-
+		// NACHO GAY
 		break;
 
 	case FIN_EJECUCION:
-		// TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
 		notificar_join_finalizacion_proceso(tcb_posta);
 		if (tcb->km) {
 			agregar_a_ready(tcb_posta);
 		} else {
 			agregar_a_exit(tcb_posta);
 		}
-
 		break;
 
 	default:
