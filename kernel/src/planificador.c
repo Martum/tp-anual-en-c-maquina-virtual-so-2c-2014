@@ -82,6 +82,8 @@ void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
 	enviar(socket, respuesta, &tamanio);
+
+	free(respuesta);
 }
 
 // TODO: FALTA EL FREE. Vos... el que me llama... hacelo!
@@ -89,45 +91,40 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 
 	respuesta_de_nuevo_tcb_t* rta = malloc(sizeof(respuesta_de_nuevo_tcb_t));
 
-	//tcb_t* tcb = _proximo_tcb(cpu_id);
 	rta->tcb = tcb;			// No hacer free de esto eh!
 	rta->quantum = quantum();
 	rta->flag = TOMA_TCB;
 
 	char* salida = serializar_respuesta_de_nuevo_tcb_t(rta);
 	free(rta);
-	// TODO: Y si no hay TCBs en RDY que hacemos??? BUG!
 	return salida;
 }
 
 // FALTA EL WRAPPER QUE DESERIALICE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
 // QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN UN SUPER CASE EN CONEXIONES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
+
 	quitar_de_exec(tcb);
 // TODO: OJO que esto ya no es tan asi. Ver bien entre todos
-	/*
-	 *
-	 switch(resultado){
-	 case FIN_QUANTUM:
-	 agregar_a_ready(tcb);
-	 break;
 
-	 case BLOCK:
-	 agregar_a_block(tcb);
-	 break;
+	switch(resultado){
+		case FIN_QUANTUM:
+			agregar_a_ready(tcb);
+			break;
 
-	 case DESCONEXION_CPU:
-	 case ERROR:
-	 agregar_a_exit(tcb);
-	 break;
-	 case FIN_EJECUCION:
-	 // TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
-	 agregar_a_exit(tcb);
-	 break;
-	 default:
-	 break;
+		case ERROR_EN_EJECUCION:
+			agregar_a_exit(tcb);
+			break;
 
-	 } */
+		case FIN_EJECUCION:
+		// TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
+			agregar_a_exit(tcb);
+			break;
+
+		default:
+			break;
+
+	}
 }
 
 void mover_tcbs_a_exit(uint32_t pid)
