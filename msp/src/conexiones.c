@@ -72,32 +72,32 @@ void* escuchar_conexiones(void* otro_ente){
 	return NULL;
 }
 
-void* _atiendo_hilo_conexion(void* principal){
+void* _atiendo_hilo_conexion(void* conexion){
 
 	while(1){
 
 		char* msg;
 		uint32_t len;
 		// Recibimos la identificacion de la conexion
-		recibir(principal, &msg, &len);
+		recibir(conexion, &msg, &len);
 		flag_t codop = codigo_operacion(msg);
 
 		switch(codop){
 
 		case CREA_UN_SEGMENTO:
-			_atiendo_crear_segmento(principal,msg);
+			_atiendo_crear_segmento(conexion,msg);
 			break;
 
 		case DESTRUI_SEGMENTO:
-			_atiendo_destruir_segmento(principal, msg);
+			_atiendo_destruir_segmento(conexion, msg);
 			break;
 
 		case LEE_DE_MEMORIA:
-			_atiendo_leer_memoria(principal, msg);
+			_atiendo_leer_memoria(conexion, msg);
 			break;
 
 		case ESCRIBI_EN_MEMORIA:
-			_atiendo_escribir_memoria(principal, msg);
+			_atiendo_escribir_memoria(conexion, msg);
 			break;
 
 		default:
