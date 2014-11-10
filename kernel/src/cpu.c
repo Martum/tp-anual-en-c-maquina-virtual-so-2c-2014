@@ -14,6 +14,19 @@
 
 uint32_t ID_CPU_GLOBAL = 1;
 
+// lista de segmentos por hilo (struct: pid, tid, lista de direcciones(segmentos))
+t_list* segmentos_por_hilo = NULL;
+
+void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos) {
+	if (segmentos_por_hilo == NULL ) {
+		segmentos_por_hilo = list_create();
+	}
+
+	list_add(segmentos_por_hilo, segmentos);
+}
+
+
+
 uint32_t dame_nuevo_id_cpu()
 {
 	return ID_CPU_GLOBAL++;
