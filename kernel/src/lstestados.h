@@ -185,6 +185,11 @@ void eliminar_conclusion_tcb();
  */
 void agregar_a_block_join(esperando_join_t* ej);
 
+/**
+ * Desencola los TCBs que esten esperando por el que termino
+ */
+void notificar_join_finalizacion_hilo(tcb_t* que_termina);
+
 
 // FUNCIONES DE EXIT Y SIMILARES
 
@@ -239,5 +244,10 @@ void eliminar_tcbs_en_exit(uint32_t pid);
  * Remueve de EXEC hacia Exit
  */
 void remover_de_exec_a_exit(uint32_t pid);
+
+/**
+ * @RETURNS: True si el proceso esta muriendo; False caso contrario
+ */
+bool proceso_muriendo(uint32_t pid);
 
 #endif /* LSTESTADOS_H_ */
