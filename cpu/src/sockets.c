@@ -349,9 +349,9 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	loggear_trace("Cantidad de bytes leidos %d", respuesta->tamano);
 
-	buffer[1] = '\0';
+	*(buffer + respuesta->tamano) = '\0';
 
-	loggear_trace("Bytes: %s", respuesta->bytes_leido);
+	loggear_trace("Bytes: %s", buffer);
 
 	free(respuesta);
 

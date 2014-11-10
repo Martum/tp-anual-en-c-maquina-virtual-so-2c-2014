@@ -61,13 +61,15 @@ int32_t main(int32_t argc, char** argv)
 	direccion direccion;
 	crear_segmento(12, 123, &direccion);
 
-	// TODO eliminar (solo para pruebas)
-	char* bytes = "aa";
-	escribir_en_memoria(12, direccion, 2, bytes);
 
 	// TODO eliminar (solo para pruebas)
-	char buffer[1];
-	leer_de_memoria(12, direccion, 2, buffer);
+	char* bytes = "santiago perez torre";
+	int tam = strlen(bytes);
+	escribir_en_memoria(12, direccion, tam, bytes);
+
+	// TODO eliminar (solo para pruebas)
+	char* buffer = malloc(tam);
+	leer_de_memoria(12, direccion, tam, buffer);
 
 	// TODO eliminar (solo para pruebas)
 	destruir_segmento(12, direccion);
