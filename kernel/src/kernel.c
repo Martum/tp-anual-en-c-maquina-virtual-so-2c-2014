@@ -19,6 +19,8 @@
 
 #include <hu4sockets/sockets.h>
 
+#define FALLO_CONEXION_MEMORIA -2
+
 int jose = 5;
 
 int main(void) {
@@ -38,6 +40,10 @@ int main(void) {
 
 
 	// - Conectar con la memoria (agregar funcion en conexiones.h)
+	if(conectar_con_memoria() == -1)
+	{
+		return FALLO_CONEXION_MEMORIA;
+	}
 
 	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
 	pthread_t conexiones_procesos_thread;
