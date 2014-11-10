@@ -1,5 +1,9 @@
-// TODO preguntar si cpu puede escribir en memoria
-// TODO preguntar si cpu puede crear segmentos
+/*
+ * instrucciones.c
+ *
+ *  Created on: 03/11/2014
+ *      Author: utnso
+ */
 
 #include "instrucciones.h"
 
@@ -28,6 +32,7 @@ resultado_t load(tcb_t* tcb)
 	return OK;
 }
 
+// TODO cambiar sizeof(char) por LEN_1_BYTE
 /*
  * 	GETM [Registro], [Registro]
  *
@@ -51,7 +56,7 @@ resultado_t getm(tcb_t* tcb)
 
 	char buffer;
 
-	if (leer_de_memoria(tcb->pid, valor_del_registro_2, 1, &buffer)
+	if (leer_de_memoria(tcb->pid, valor_del_registro_2, sizeof(char), &buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
@@ -1028,15 +1033,15 @@ resultado_t outc(tcb_t* tcb)
 //}
 
 // TODO eliminar (ya no hace falta)
-resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
-{
-	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
-	{
-		return ERROR_EN_EJECUCION;
-	}
-
-	return OK;
-}
+//resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
+//{
+//	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
+//	{
+//		return ERROR_EN_EJECUCION;
+//	}
+//
+//	return OK;
+//}
 
 // TODO arreglar con kernel que va a pasar con crea
 /*
@@ -1065,23 +1070,23 @@ resultado_t crea(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-	direccion nuevo_tid;
-	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
-		return ERROR_EN_EJECUCION;
+//	direccion nuevo_tid;
+//	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
+//		return ERROR_EN_EJECUCION;
 
-	tcb_t* nuevo_tcb = crear_tcb();
+//	tcb_t* nuevo_tcb = crear_tcb();
 
-	clonar_tcb(nuevo_tcb, tcb);
+//	clonar_tcb(nuevo_tcb, tcb);
 
-	direccion nuevo_pc = obtener_valor_registro_b(tcb);
+//	direccion nuevo_pc = obtener_valor_registro_b(tcb);
+//
+//	actualizar_pc(nuevo_tcb, nuevo_pc);
+//	actualizar_tid(nuevo_tcb, nuevo_tid);
+//	actualizar_km(nuevo_tcb, false);
 
-	actualizar_pc(nuevo_tcb, nuevo_pc);
-	actualizar_tid(nuevo_tcb, nuevo_tid);
-	actualizar_km(nuevo_tcb, false);
+//	actualizar_registro_a(tcb, nuevo_tid);
 
-	actualizar_registro_a(tcb, nuevo_tid);
-
-	// TODO eliminar (ya no hace falta)
+// TODO eliminar (ya no hace falta)
 //	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
@@ -1089,7 +1094,7 @@ resultado_t crea(tcb_t* tcb)
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	if (comunicar_nuevo_tcb(nuevo_tcb) != OK)
+	if (comunicar_nuevo_tcb(tcb) != OK)
 	{
 		return ERROR_EN_EJECUCION;
 	}
