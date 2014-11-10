@@ -24,6 +24,11 @@ int32_t crear_segmento(uint32_t pid, uint32_t tamanio, direccion* direccion);
 void destruir_segmento(uint32_t pid, direccion base_segmento);
 
 /**
+ * Lee memoria
+ */
+resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t cantidad_de_bytes, char* buffer);
+
+/**
  * Escribe en la memoria los bytes enviados
  *
  * @RETURNS: 0 en caso de exito; -1 si existe Segmentatio Fault
