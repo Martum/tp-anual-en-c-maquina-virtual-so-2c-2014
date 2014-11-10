@@ -110,7 +110,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 	} else {
 		copiar_tcb(tcb_posta, tcb);
 	}
-// TODO: OJO que esto ya no es tan asi. Ver bien entre todos
 
 	switch (resultado) {
 	case FIN_QUANTUM:
@@ -118,8 +117,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	case ERROR_EN_EJECUCION:
-		// NACHO GAY
-
+		mover_tcbs_a_exit(tcb_posta->pid);
 		break;
 
 	case FIN_EJECUCION:
