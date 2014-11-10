@@ -59,10 +59,10 @@ tcb_t* _proximo_tcb() {
 
 void pedir_tcb(uint32_t cpu_id) {
 	agregar_a_cpu_en_espera_de_tcb(cpu_id);
-	_planificar();
+	planificar();
 }
 
-void _planificar() {
+void planificar() {
 	if (!queue_is_empty(cpu_en_espera_de_tcb)) {
 		tcb_t* tcb = _proximo_tcb();
 		if (tcb != NULL ) {

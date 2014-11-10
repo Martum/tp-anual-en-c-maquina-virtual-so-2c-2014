@@ -271,6 +271,27 @@ void agregar_a_block_join(esperando_join_t* ej)
 	list_add(BLOCK_JOIN, ej);
 }
 
+void notificar_join_finalizacion_proceso(tcb_t* que_termina)
+{
+	bool _esperando_por(void* elemento)
+	{
+		return ((esperando_join_t*) elemento)->tcb->pid == que_termina->pid
+				&& ((esperando_join_t*) elemento)->esperando_a == que_termina->tid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(BLOCK_JOIN, _esperando_por);
+
+	uint32_t i;
+	for(i=0; i < cantidad; i++)
+	{
+		esperando_join_t* ej = list_remove_by_condition(BLOCK_JOIN, _esperando_por);
+
+		agregar_a_ready(ej->tcb);
+		free(ej);
+	}
+
+}
+
 /**
  * Dealloca un exit_t que busca por PID en EXIT_COLA
  */
@@ -498,4 +519,17 @@ void remover_de_exec_a_exit(uint32_t pid)
 
 		free(et);
 	}
+}
+
+bool proceso_muriendo(uint32_t pid)
+{
+	// TODO: Hacer esta funcion
+	bool _buscar_por_pid(void* elemento)
+	{
+		return ((exit_t*)elemento)->pid == pid;
+	}
+
+	exit_t* et = list_find(EXIT_COLA, _buscar_por_pid);
+
+	return et != NULL && et->muere_proceso;
 }
