@@ -110,7 +110,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 	} else {
 		copiar_tcb(tcb_posta, tcb);
 	}
-// TODO: OJO que esto ya no es tan asi. Ver bien entre todos
 
 	switch (resultado) {
 	case FIN_QUANTUM:
@@ -118,8 +117,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	case ERROR_EN_EJECUCION:
-		// NACHO GAY
-
+		mover_tcbs_a_exit(tcb_posta->pid);
 		break;
 
 	case FIN_EJECUCION:
@@ -145,7 +143,7 @@ void mover_tcbs_a_exit(uint32_t pid) {
 	remover_de_exec_a_exit(pid);
 
 	// TODO: Verificar la cola rdy del KM
-	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
+	// Si el KM en rdy es de un hilo de este proceso, sacarloz y replanificarlo.
 	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
 
 	remover_de_conclusion_km_a_exit(pid);
@@ -155,6 +153,8 @@ void mover_tcbs_a_exit(uint32_t pid) {
 	remover_de_join_a_exit(pid);
 
 	remover_de_block_recursos_a_exit(pid);// Es de la lista de bloqueados y de las del diccionario
+
+	// TODO: Destruir los Segmentos que van a estar en la lista de segmentos por hilo
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 }
