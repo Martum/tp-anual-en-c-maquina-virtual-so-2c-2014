@@ -118,6 +118,16 @@ typedef struct segmentos_por_hilo {
  */
 void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos);
 
+/*
+ * Quita el segmento que se corresponde con la direccion virtual recibida,
+ * del hilo correspondiente.
+ */
+void quitar_segmento_de_hilo(uint32_t pid, uint32_t tid, direccion dir_virtual);
 
+void crear_segmento_cpu(uint32_t pid, uint32_t tamanio);
+
+void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual);
+
+segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid);
 
 #endif /* SERVICIOSACPU_H_ */

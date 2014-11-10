@@ -28,7 +28,7 @@ int32_t escribir_memoria(uint32_t pid, direccion base_segmento, char* chorro_byt
 	return -1;
 }*/
 
-sock_t* memoria;
+sock_t* MEMORIA;
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
@@ -51,7 +51,7 @@ int32_t conectar_con_memoria()
 {
 	//loggear_trace("Intento conectarme con memoria");
 
-	if (_conectar(&memoria, ip_msp(), puerto_msp()) == -1)
+	if (_conectar(&MEMORIA, ip_msp(), puerto_msp()) == -1)
 		return -1;
 
 	//loggear_info("Conexion con memoria realizada con exito");
@@ -90,7 +90,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	return OK;
 }
 
-int32_t crear_segmento(direccion pid, uint32_t tamanio,
+int32_t crear_segmento(uint32_t pid, uint32_t tamanio,
 	direccion* direccion)
 {
 	//loggear_trace("Preparando mensaje para crear segmento");
@@ -108,7 +108,7 @@ int32_t crear_segmento(direccion pid, uint32_t tamanio,
 	//loggear_trace("PID %d", pid);
 	//loggear_trace("Tamanio del segmento %d", tamanio);
 
-	if (_enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
@@ -160,7 +160,7 @@ int32_t destruir_segmento(uint32_t pid, direccion direccion)
 	//loggear_trace("PID: %d", pid);
 	//loggear_trace("Direccion %d", direccion);
 
-	if (_enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
 	{
@@ -209,7 +209,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	//loggear_trace("Cantidad de bytes a leer %d", cantidad_de_bytes);
 
-	if (_enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
@@ -247,7 +247,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	return OK;
 }
 
-resultado_t escribir_en_memoria(direccion pid, direccion direccion, char* bytes_a_escribir,
+int32_t escribir_memoria(uint32_t pid, direccion direccion, char* bytes_a_escribir,
 		uint32_t cantidad_de_bytes)
 {
 	//loggear_trace("Preparando mensaje escribir en memoria");
@@ -266,7 +266,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion, char* bytes_
 	//loggear_trace("Cantidad de bytes a escribir %d", cantidad_de_bytes);
 	//loggear_trace("Bytes %s", bytes_a_escribir);
 
-	if (_enviar_y_recibir(memoria, chorro_de_envio,
+	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(cantidad_de_bytes),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
 	{

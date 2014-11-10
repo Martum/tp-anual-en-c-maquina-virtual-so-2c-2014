@@ -39,5 +39,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion, uint32_t cantida
  *
  * @RETURNS: 0 en caso de exito; -1 si existe Segmentatio Fault
  */
-int32_t escribir_memoria(uint32_t pid, direccion base_segmento, char* chorro_bytes, uint32_t len);
+int32_t escribir_memoria(uint32_t pid, direccion direccion, char* bytes_a_escribir, uint32_t cantidad_de_bytes);
+
+
 #endif /* MEMORIA22_H_ */

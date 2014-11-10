@@ -457,7 +457,7 @@ char* serializar_pedido_de_escribir_en_memoria_t(
 	memcpy(bytes + offset, &pedido->tamano, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->bytes_a_escribir, pedido->tamano);
+	memcpy(bytes + offset, pedido->bytes_a_escribir, pedido->tamano);
 
 	return bytes;
 }
@@ -482,7 +482,7 @@ pedido_de_escribir_en_memoria_t* deserializar_pedido_de_escribir_en_memoria_t(
 
 	offset += sizeof(uint32_t);
 	pedido->bytes_a_escribir = malloc(pedido->tamano);
-	memcpy(&pedido->bytes_a_escribir, chorro + offset, pedido->tamano);
+	memcpy(pedido->bytes_a_escribir, chorro + offset, pedido->tamano);
 
 	return pedido;
 }
@@ -519,7 +519,7 @@ char* serializar_respuesta_de_leer_de_memoria_t(
 	memcpy(bytes + offset, &pedido->tamano, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->bytes_leido, pedido->tamano);
+	memcpy(bytes + offset, pedido->bytes_leido, pedido->tamano);
 
 	return bytes;
 }
@@ -540,7 +540,7 @@ respuesta_de_leer_de_memoria_t* deserializar_respuesta_de_leer_de_memoria_t(
 
 	offset += sizeof(uint32_t);
 	respuesta->bytes_leido = malloc(respuesta->tamano);
-	memcpy(&respuesta->bytes_leido, chorro + offset, respuesta->tamano);
+	memcpy(respuesta->bytes_leido, chorro + offset, respuesta->tamano);
 
 	return respuesta;
 }

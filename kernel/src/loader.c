@@ -15,6 +15,7 @@
 #include <commons/collections/list.h>
 #include "configuraciones.h"
 #include <pthread.h>
+
 #include "memoria.h"
 
 uint32_t PID_GLOBAL = 1;
