@@ -1,3 +1,10 @@
+/*
+ * main.c
+ *
+ *  Created on: 03/11/2014
+ *      Author: utnso
+ */
+
 #include <unistd.h>
 
 #include "commons/error.h"
@@ -59,8 +66,8 @@ int32_t main(int32_t argc, char** argv)
 	escribir_en_memoria(12, direccion, 1, &bytes);
 
 	// TODO eliminar (solo para pruebas)
-//	char buffer;
-//	leer_de_memoria(12, direccion, 1, &buffer);
+	char buffer;
+	leer_de_memoria(12, direccion, 1, &buffer);
 
 	// TODO eliminar (solo para pruebas)
 	destruir_segmento(12, direccion);
