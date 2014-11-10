@@ -90,7 +90,7 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	return OK;
 }
 
-int32_t crear_segmento(direccion pid, uint32_t tamanio,
+int32_t crear_segmento(uint32_t pid, uint32_t tamanio,
 	direccion* direccion)
 {
 	//loggear_trace("Preparando mensaje para crear segmento");
