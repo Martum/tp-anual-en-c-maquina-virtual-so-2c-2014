@@ -88,8 +88,8 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 
 	uint32_t tamano_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
 
-	char *meh = string_substring(datos_marco,desplazamiento,tamano_aux);
-	return meh;
+	char *aux = string_substring(datos_marco,desplazamiento,tamano_aux);
+	return aux;
 }
 
 void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* bytes_a_escribir, int * mas_paginas)

@@ -120,7 +120,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			desplazamiento=0;
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente.
-			pagina_siguiente=siguiente_pagina(pagina->id, segmento->paginas);
+			uint16_t id_pagina_siguiente= (pagina->id)+1;
+			pagina_siguiente = siguiente_pagina(id_pagina_siguiente, segmento->paginas);
 			if(pagina_siguiente!=NULL)
 			{
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);

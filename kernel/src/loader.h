@@ -12,7 +12,6 @@
 #include <stdbool.h>
 #include <hu4sockets/tcb.h>
 
-#include "memoria.h"
 
 typedef struct pid {
 	uint32_t pid;
