@@ -105,6 +105,7 @@ void join(uint32_t llamador, uint32_t esperando_a);
  */
 void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion);
 
+
 typedef struct segmentos_por_hilo {
 	t_list* segmentos;
 	uint32_t pid;

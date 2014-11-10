@@ -25,6 +25,23 @@ void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos) {
 	list_add(segmentos_por_hilo, segmentos);
 }
 
+// TODO: recordar hacer malloc para las direcciones cuando las cree.
+void quitar_segmento_de_hilo(uint32_t pid, uint32_t tid, direccion dir_virtual) {
+
+	bool _elementoConListaDeSegmentos(void* elemento){
+		return ((segmentos_por_hilo_t*)elemento)->pid == pid &&
+				((segmentos_por_hilo_t*)elemento)->tid == tid;
+	}
+
+	segmentos_por_hilo_t* segmentos_hilo = list_find(segmentos_por_hilo, _elementoConListaDeSegmentos);
+
+	bool _segmentoQueQuiero(void* elemento){
+		return *((direccion*)elemento) == dir_virtual;
+	}
+
+	direccion* dir = list_remove_by_condition(segmentos_hilo->segmentos, _segmentoQueQuiero);
+	free(dir);
+}
 
 
 uint32_t dame_nuevo_id_cpu()
