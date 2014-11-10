@@ -227,6 +227,14 @@ void agregar_a_block_espera_km(esperando_km_t* ekm)
 	list_add(BLOCK_ESPERA_KM, ekm);
 }
 
+esperando_km_t* remover_primer_tcb_block_espera_km()
+{
+	if(!list_is_empty(BLOCK_ESPERA_KM))
+		return list_remove(BLOCK_ESPERA_KM, 0);
+
+	return NULL;
+}
+
 void agregar_a_block_conclusion_km(tcb_t* tcb)
 {
 	conclusion_km_t* ckm = malloc(sizeof(conclusion_km_t));
@@ -442,7 +450,7 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 			eliminar_conclusion_tcb();
 
 			// Replanificamos KM para otro TCB
-			replanificar_tcb_km_aca!!!
+			replanificar_tcb_km();
 		}
 		else
 		{// Ya se esta ejecutando
