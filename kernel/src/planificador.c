@@ -37,7 +37,7 @@ void* quitar_de_cpu_en_espera_de_tcb() {
 tcb_t* _proximo_tcb() {
 	tcb_t* tcb = NULL;
 
-	if(tcb_km_ocioso() && hay_hilos_block_espera_km())
+	if (tcb_km_ocioso() && hay_hilos_block_espera_km())
 		replanificar_tcb_km();
 
 	if (hay_hilo_km_ready()) {
@@ -104,31 +104,41 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 // QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN UN SUPER CASE EN CONEXIONES.C
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
-	quitar_de_exec(tcb);
+	tcb_t* tcb_posta = quitar_de_exec(tcb);
+	if (tcb->km) {
+		copiar_registros_programacion(tcb_posta, tcb);
+	} else {
+		copiar_tcb(tcb_posta, tcb);
+	}
 // TODO: OJO que esto ya no es tan asi. Ver bien entre todos
 
-	switch(resultado){
-		case FIN_QUANTUM:
-			agregar_a_ready(tcb);
-			break;
+	switch (resultado) {
+	case FIN_QUANTUM:
+		agregar_a_ready(tcb_posta);
+		break;
 
-		case ERROR_EN_EJECUCION:
-			agregar_a_exit(tcb);
-			break;
+	case ERROR_EN_EJECUCION:
 
-		case FIN_EJECUCION:
+		break;
+
+	case FIN_EJECUCION:
 		// TODO: Recordar que hay que verificar los TCBs bloqueados con JOIN
-			agregar_a_exit(tcb);
-			break;
+		notificar_join_finalizacion_proceso(tcb_posta);
+		if (tcb->km) {
+			agregar_a_ready(tcb_posta);
+		} else {
+			agregar_a_exit(tcb_posta);
+		}
 
-		default:
-			break;
+		break;
+
+	default:
+		break;
 
 	}
 }
 
-void mover_tcbs_a_exit(uint32_t pid)
-{
+void mover_tcbs_a_exit(uint32_t pid) {
 	preparar_exit_para_proceso(pid, true);
 
 	remover_de_ready_a_exit(pid);
@@ -145,13 +155,12 @@ void mover_tcbs_a_exit(uint32_t pid)
 
 	remover_de_join_a_exit(pid);
 
-	remover_de_block_recursos_a_exit(pid);	// Es de la lista de bloqueados y de las del diccionario
+	remover_de_block_recursos_a_exit(pid);// Es de la lista de bloqueados y de las del diccionario
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 }
 
-void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
-{
+void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_stack);
@@ -159,8 +168,7 @@ void eliminar_y_destruir_tcb_sin_codigo(void* tcbv)
 	free(tcb);
 }
 
-void eliminar_y_destruir_tcb(void* tcbv)
-{
+void eliminar_y_destruir_tcb(void* tcbv) {
 	tcb_t* tcb = tcbv;
 
 	destruir_segmento(tcb->pid, tcb->base_codigo);
@@ -169,8 +177,7 @@ void eliminar_y_destruir_tcb(void* tcbv)
 	free(tcb);
 }
 
-void replanificar_tcb_km()
-{
+void replanificar_tcb_km() {
 	esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
 
 	preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
