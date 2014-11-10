@@ -10,24 +10,18 @@
 
 #include <hu4sockets/sockets.h>
 
-//
 
 typedef struct conexion {
 	sock_t* socket;
 	uint32_t id;
 } conexion_t;
 
-void inicializar_lista_conexiones_cpu();
 void* escuchar_conexiones(void*);
-void _procesar_nueva_conexion(sock_t*, sock_t**);
-conexion_t* buscar_conexion_cpu_por_fd(int32_t);
-void _recalcular_mayor_fd(int32_t*, int32_t);
-int _atender_socket(conexion_t*);
-void _agregar_conexion(sock_t*, uint32_t);
+void* _atiendo_hilo_conexion(void* conexion);
 
-void _atiendo_crear_segmento(conexion_t*, char*);
-void _atiendo_destruir_segmento(conexion_t*, char*);
-void _atiendo_leer_memoria(conexion_t*, char*);
-void _atiendo_escribir_memoria(conexion_t*, char*);
+void _atiendo_crear_segmento(sock_t*, char*);
+void _atiendo_destruir_segmento(sock_t*, char*);
+void _atiendo_leer_memoria(sock_t*, char*);
+void _atiendo_escribir_memoria(sock_t*, char*);
 
 #endif /* CONEXIONES_CPU_H_ */
