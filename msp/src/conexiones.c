@@ -138,7 +138,7 @@ int _atender_socket(conexion_t* conexion){
 
 	switch(codop){
 
-		case CREAME_UN_SEGMENTO:
+		case CREA_UN_SEGMENTO:
 			salida = 1;
 			_atiendo_crear_segmento(conexion,msg);
 			break;
