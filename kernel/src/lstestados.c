@@ -271,7 +271,7 @@ void agregar_a_block_join(esperando_join_t* ej)
 	list_add(BLOCK_JOIN, ej);
 }
 
-void notificar_join_finalizacion_proceso(tcb_t* que_termina)
+void notificar_join_finalizacion_hilo(tcb_t* que_termina)
 {
 	bool _esperando_por(void* elemento)
 	{

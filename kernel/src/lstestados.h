@@ -188,7 +188,7 @@ void agregar_a_block_join(esperando_join_t* ej);
 /**
  * Desencola los TCBs que esten esperando por el que termino
  */
-void notificar_join_finalizacion_proceso(tcb_t* que_termina);
+void notificar_join_finalizacion_hilo(tcb_t* que_termina);
 
 
 // FUNCIONES DE EXIT Y SIMILARES
