@@ -446,7 +446,9 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESCONEXION_CPU:
-
+					// TODO: Si esta ejecutando, matar proceso, sino no hacer nada.
+					// Recordar sacar a la CPU de las listas y del FDSET y del cpu_en_espera_de_tcb (planificador.c)
+					// si corresponde.
 				break;
 
 			default:
