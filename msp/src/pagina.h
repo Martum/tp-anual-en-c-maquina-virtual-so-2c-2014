@@ -31,7 +31,7 @@ pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* li
 void asignar_marco(pagina_t* * pagina, uint32_t pid);
 
 //Busca en la tabla de paginas si la pagina pasada por parametro no es la ultima pagina
-bool hay_siguiente_pagina(uint16_t * id_pagina, t_list* lista_paginas);
+bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas, pagina_t* *encontro_pagina);
 
 //Devuelve la pagina siguiente al id pasado por parametro, dentro de la lista_paginas
 pagina_t* siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas);

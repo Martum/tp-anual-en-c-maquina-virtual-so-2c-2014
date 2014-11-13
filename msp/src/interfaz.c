@@ -88,6 +88,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	pagina_t* pagina=NULL;//malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
+	bool aux;
+	uint16_t id_pagina_siguiente;
 
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
@@ -105,6 +107,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 		//Con bool no anda, int cumple el proposito
 		int mas_paginas = true;
+
 		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
@@ -120,8 +123,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			desplazamiento=0;
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente.
-			uint16_t id_pagina_siguiente= (pagina->id)+1;
-			pagina_siguiente = siguiente_pagina(id_pagina_siguiente, segmento->paginas);
+			id_pagina_siguiente= (pagina->id);
+			aux = hay_siguiente_pagina(id_pagina_siguiente, segmento->paginas,&pagina_siguiente);
 			if(pagina_siguiente!=NULL)
 			{
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
@@ -148,6 +151,8 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 	marco_t* marco= NULL;//malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
+	bool aux;
+	uint16_t id_pagina;
 
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
@@ -170,17 +175,18 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
-			escribir_marco(&marco, desplazamiento,&tamanio, bytes_a_escribir, &mas_paginas);
+			escribir_marco(&marco, desplazamiento,&tamanio, &bytes_a_escribir, &mas_paginas);
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
-			uint16_t id_pagina_siguiente= (pagina->id)+1;
-			pagina_siguiente = siguiente_pagina(id_pagina_siguiente, segmento->paginas);
+			id_pagina= (pagina->id);
+			aux = hay_siguiente_pagina(id_pagina,segmento->paginas,&pagina_siguiente);
 			if(pagina_siguiente!=NULL)
 			{
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
+				pagina=pagina_siguiente;
 			}
 
 		}

@@ -48,7 +48,7 @@ bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, pr
 bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina_t* pagina, uint16_t desplazamiento, uint32_t tamanio)
 {
 	uint16_t id_pagina = pagina->id;
-
+	pagina_t * pag_aux=NULL;
 	//Si no entra en una pagina, checkeo si hay otras paginas donde pueda entrar.
 	if((desplazamiento+tamanio)>256)
 	{
@@ -58,15 +58,18 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 			/*Pregunto si hay otra pagina, y si la hay cambio el id por
 			 * el de la nueva pagina
 			 */
-			if(!hay_siguiente_pagina(&id_pagina, segmento->paginas))
+			if(!hay_siguiente_pagina(id_pagina, segmento->paginas, &pag_aux))
 			{
+
 				return true;
 			}
+			id_pagina=pag_aux->id;
 			tamanio_restante= (tamanio_restante)-256;
 
 		}
 
 	}
+
 	return false;
 }
 

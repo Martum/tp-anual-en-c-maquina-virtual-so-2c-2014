@@ -92,30 +92,32 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 	return aux;
 }
 
-void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* bytes_a_escribir, int * mas_paginas)
+void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas)
 {
-
 
 	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
 
-
 	int i;
-	int j=0;
 	for(i=0;i<tamanio_aux;i++)
 	{
-		char caracter = (char)bytes_a_escribir[j];
+		char caracter = (char)(*bytes_a_escribir)[0];
 		if(caracter=='\0')
 		{
 			caracter = ' ';
 		}
 
 		(*marco)->datos[i+desplazamiento]=caracter;
-		//(*marco)->ocupado=true;
+
+		/*
+		 * Esto borra el caracter que ya fue escrito
+		 */
+		char* aux =strchr(*bytes_a_escribir,(*bytes_a_escribir)[1]);
+		*bytes_a_escribir=aux;
 
 
 
-		j++;
 	}
+
 
 
 
