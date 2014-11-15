@@ -15,16 +15,12 @@
 
 
 
-void swap(pagina_t*);
-
-uint32_t liberar_un_marco();
-
 //Dada una pagina que quiere insertar, busca un marco que liberar y lo inseta ahi
-void swap_in(pagina_t* *);
+void swap_in(pagina_t* *, uint32_t pid);
 
 
 //Mediante un algoritmo libera un marco y lo devuelve
-uint32_t liberar_un_marco();
+marco_t* liberar_un_marco();
 
 //Con un algoritmo predeterminado, toma un marco de la tabla de marcos y devuelve la pagina
 //que lo contiene para liberarlo. Tambien devuelve el PID y el id_segmento de esa pagina

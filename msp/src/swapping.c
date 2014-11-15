@@ -36,19 +36,19 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 }
 
 
-uint32_t liberar_un_marco()
+marco_t* liberar_un_marco()
 {
 	//SACAR EL NULL
 	pagina_t* pagina_a_liberar=NULL;//= realizar_algoritmo_swapping(pid, id_segmento);
 
 
-	uint32_t direccion_marco_a_liberar= pagina_a_liberar->marco;
+	marco_t* marco_liberado= buscar_marco_segun_id(pagina_a_liberar->marco);
 
 	mover_a_disco(pagina_a_liberar, pid, id_segmento);
 
 
 
-	return direccion_marco_a_liberar;
+	return marco_liberado;
 }
 
 //Debe deolver una pagina*
