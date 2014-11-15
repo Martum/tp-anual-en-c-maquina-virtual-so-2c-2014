@@ -21,7 +21,7 @@ void setear_puntero_clock(){
 	puntero_clock = 0;
 }
 
-uint32_t algoritmo_clock(){
+uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	uint32_t retorno;
 	bool encontro = false;
 
@@ -64,12 +64,15 @@ uint32_t algoritmo_clock(){
 		}
 	}
 
+	//TODO Checkear que esto no se borra con el free
+	*id_pagina_a_swappear=pag->id;
+
 	free(paginas_con_marco);
 	free(pag);
 	return retorno;
 }
 
-uint32_t algoritmo_lru(){
+uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 	// filtro segun paginas que tienen marco
 	bool _paginas_con_marco(pagina_t* pagina){
 		return pagina->tiene_marco;
@@ -82,6 +85,11 @@ uint32_t algoritmo_lru(){
 	// saco el ultimo elemento (el menos usado recientemente)
 	pagina_t* pag = list_get(paginas_con_marco,list_size(paginas_con_marco)-1);
 	uint32_t resultado = pag->marco;
+
+
+	//TODO Checkear que esto no se borra con el free
+	*id_pagina_a_swappear=pag->id;
+
 	free(pag);
 	free(paginas_con_marco);
 	return resultado;
