@@ -23,15 +23,16 @@ uint32_t pid;
 uint16_t id_segmento;
 
 
-void swap_in(pagina_t* pagina)
+void swap_in(pagina_t* * pagina, uint32_t pid)
 {
-	uint32_t direccion_marco_libre = liberar_un_marco();
+	marco_t* marco = liberar_un_marco();
 
 
-	pagina->marco=direccion_marco_libre;
+	(*pagina)->marco=marco->id;
 
-
-
+	marco->id_proceso = pid;
+	marco->datos="";
+	marco->ocupado=true;
 }
 
 
