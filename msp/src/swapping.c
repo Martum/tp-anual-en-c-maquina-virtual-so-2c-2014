@@ -19,13 +19,12 @@
 #include <commons/txt.h>
 #include <commons/string.h>
 
-uint32_t pid;
-uint16_t id_segmento;
 
 
-void swap_in(pagina_t* * pagina, uint32_t pid)
+
+void swap_in(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
-	marco_t* marco = liberar_un_marco();
+	marco_t* marco = liberar_un_marco(pid, id_segmento);
 
 
 	(*pagina)->marco=marco->id;
@@ -36,7 +35,7 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 }
 
 
-marco_t* liberar_un_marco()
+marco_t* liberar_un_marco(uint32_t pid, uint16_t id_segmento)
 {
 	//SACAR EL NULL
 	pagina_t* pagina_a_liberar=NULL;//= realizar_algoritmo_swapping(pid, id_segmento);
@@ -60,14 +59,14 @@ int realizar_algoritmo_swapping(uint32_t pid, uint16_t id_segmento)
 
 
 
-void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
+void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
 
 	//Convierte cada id a string y despues los concatena de 2 en 2
 	char* nombre_archivo="";
 	string_append(&nombre_archivo,string_itoa(pid));
 	string_append(&nombre_archivo,string_itoa(id_segmento));
-	string_append(&nombre_archivo,string_itoa(pagina->id));
+	string_append(&nombre_archivo,string_itoa((*pagina)->id));
 
 
 	char* path="";
@@ -80,7 +79,7 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 	FILE* arch = txt_open_for_append(path);
 
 	//Consigo la direccion de donde voy a escribir los datos
-	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,pagina->id);
+	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,(*pagina)->id);
 
 	//Preparo el string que voy a escribir
 	resultado_t* resultado = malloc(sizeof(resultado_t));
@@ -90,9 +89,9 @@ void mover_a_disco(pagina_t* pagina, uint32_t pid, uint16_t id_segmento)
 	//Escribo en el archivo
 	txt_write_in_file(arch, string_a_escribir);
 
-	pagina->en_disco=true;
+	(*pagina)->en_disco=true;
 
-	pagina->tiene_marco=false;
+	(*pagina)->tiene_marco=false;
 
 	txt_close_file(arch);
 
