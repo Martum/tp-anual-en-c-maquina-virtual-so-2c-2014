@@ -113,6 +113,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	string_append(&nombre_archivo,string_itoa((*pagina)->id));
 
 
+
 	char* path="";
 	string_append(&path,"en_disco/");
 	string_append(&path,nombre_archivo);
