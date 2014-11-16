@@ -132,7 +132,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 						asignar_marco(&pagina_siguiente, 1);
 					}
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
-				*pagina = *pagina_siguiente;
+				pagina = pagina_siguiente;
 			}
 		}
 
