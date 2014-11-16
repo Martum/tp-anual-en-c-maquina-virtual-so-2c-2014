@@ -83,12 +83,23 @@ uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int
 		return tamanio_aux;
 }
 
+char* _substringear(char* datos, uint16_t desp, uint32_t tam)
+{
+	int i;
+	char* aux="";
+	for(i=desp; i<tam; i++)
+	{
+		aux[i]=datos[i];
+	}
+	return aux;
+}
+
 char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio, int * mas_paginas)
 {
 
 	uint32_t tamano_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
 
-	char *aux = string_substring(datos_marco,desplazamiento,tamano_aux);
+	char* aux = string_substring(datos_marco,desplazamiento,tamano_aux);
 	return aux;
 }
 
@@ -132,5 +143,7 @@ char* concat_string(char* a, char* b)
 
 	return aux;
 }
+
+
 
 

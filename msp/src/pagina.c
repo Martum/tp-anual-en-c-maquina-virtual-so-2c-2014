@@ -60,7 +60,7 @@ void asignar_marco(pagina_t* * pagina, uint32_t pid)
 	//Si hay un marco libre, se lo asigno a la pagina
 	if(marco == NULL)
 	{
-		swap_in(*pagina);
+		swap_in(pagina, pid);
 	}
 	else
 	{

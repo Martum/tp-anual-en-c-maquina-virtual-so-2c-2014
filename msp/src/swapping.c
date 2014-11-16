@@ -23,7 +23,7 @@
 
 
 
-void swap_in(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
+void swap_in(pagina_t* * pagina, uint32_t pid)
 {
 	marco_t* marco = liberar_un_marco();
 
@@ -68,7 +68,7 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
 	char* clock="CLOCK";
-	if(algoritmo==clock)
+	if(algoritmo==clock)//TODO bug, no considera iguales
 	{
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}
@@ -95,7 +95,7 @@ void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_co
 			return list_any_satisfy(seg->paginas, (void*)_es_pagina);
 		}
 	proceso_msp_t* proceso_contenedor = buscar_proceso_segun_pid(pid);
-	(*segmento_contenedor)=(segmento_t*)list_find(proceso_contenedor->segmentos,(void*)_segmento_contiene_pagina);
+	(*segmento_contenedor)=(segmento_t*)list_find(proceso_contenedor->segmentos,(void*)_segmento_contiene_pagina);//TODO no lo encuentra, creo que porque no esta bien cargado desde interfaz
 
 	(*pagina_swap)=buscar_pagina_segun_id_en_lista_paginas(id_pag_swap, (*segmento_contenedor)->paginas);
 

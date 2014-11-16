@@ -39,4 +39,5 @@ void escribir_marco(marco_t* * datos_marco, uint16_t desplazamiento, uint32_t * 
 uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
 
 char* concat_string(char* a, char* b);
+char* _substringear(char* datos, uint16_t desp, uint32_t tam);
 #endif /* MARCO_H_ */
