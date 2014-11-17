@@ -107,7 +107,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
 
 	//Convierte cada id a string y despues los concatena de 2 en 2
-	char* nombre_archivo="";
+	char *nombre_archivo="";
 	string_append(&nombre_archivo,string_itoa(pid));
 	string_append(&nombre_archivo,string_itoa(id_segmento));
 	string_append(&nombre_archivo,string_itoa((*pagina)->id));

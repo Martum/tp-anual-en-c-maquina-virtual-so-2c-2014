@@ -19,6 +19,7 @@
 #include "marco.h"
 #include "pagina.h"
 #include "algoritmos_sustitucion.h"
+#include "funciones_streams.h"
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
