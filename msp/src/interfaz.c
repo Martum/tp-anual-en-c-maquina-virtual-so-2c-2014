@@ -160,7 +160,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
-	bool hay_error = memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio)|| tamanio_incorrecto(tamanio, strlen(bytes_a_escribir));
+	bool hay_error = memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio)|| tamanio_incorrecto(tamanio, strlen(bytes_a_escribir), pagina);
 
 
 	if(hay_error)
@@ -189,7 +189,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 			aux = hay_siguiente_pagina(id_pagina,segmento->paginas,&pagina_siguiente);
 			if(pagina_siguiente!=NULL)
 			{
-				if(!(pagina_siguiente->tiene_marco))
+				if(mas_paginas)
 				{
 					asignar_marco(&pagina_siguiente, 1);
 				}

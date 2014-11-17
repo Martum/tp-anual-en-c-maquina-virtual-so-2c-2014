@@ -35,7 +35,7 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 	marco->ocupado=true;
 }
 
-//TODO Este pid e id_segmento no son los que deberian
+
 marco_t* liberar_un_marco()
 {
 	uint16_t id_pag_swap;
@@ -68,7 +68,7 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
 	char* clock="CLOCK";
-	if(algoritmo==clock)//TODO bug, no considera iguales
+	if(string_equals_ignore_case(clock, algoritmo))//TODO bug, no considera iguales
 	{
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}

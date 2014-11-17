@@ -22,7 +22,7 @@ void setear_puntero_clock(){
 }
 
 uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
-	uint32_t retorno;
+	uint32_t retorno=-1;
 	bool encontro = false;
 
 	// filtro a las paginas segun las que tienen marco
