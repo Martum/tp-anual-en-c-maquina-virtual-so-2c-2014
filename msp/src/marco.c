@@ -13,6 +13,7 @@
 #include "configuraciones.h"
 #include "estructuras.h"
 #include "semaforos.h"
+#include "funciones_streams.h"
 
 #include <commons/log.h>
 #include <commons/string.h>
@@ -90,7 +91,7 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 
 	uint32_t tamano_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas);
 
-	char* aux = string_substring(datos_marco,desplazamiento,tamano_aux);
+	char* aux = _substringear(datos_marco,desplazamiento,tamano_aux);
 	return aux;
 }
 

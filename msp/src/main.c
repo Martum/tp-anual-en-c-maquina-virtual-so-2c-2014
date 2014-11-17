@@ -14,9 +14,6 @@
 
 #include "algoritmos_sustitucion.h"
 
-
-
-
 #include "commons/string.h"
 /* EJEMPLO DE LOG
 	 * t_log* logger = log_create("logs.txt", "LOG",true, LOG_LEVEL_INFO);
@@ -25,14 +22,6 @@
 	*/
 
 int main(void){
-	int pid=1;
-	int id_segmento=1;
-	int id=1;
-	char* nombre_archivo=" ";
-		string_append(&nombre_archivo,string_itoa(pid));
-		string_append(&nombre_archivo,string_itoa(id_segmento));
-		string_append(&nombre_archivo,string_itoa(id));
-		printf("%s",nombre_archivo);
 	cargar_configuraciones();
 	inicializar_lista_procesos();
 	inicializar_lista_marcos();

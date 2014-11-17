@@ -21,10 +21,20 @@ char* concat_string(char* a, char* b)
 char* _substringear(char* datos, uint16_t desp, uint32_t tam)
 {
 	int i;
-	char* aux="";
+	char caracter;
+	char* aux=malloc(tam-desp);
 	for(i=desp; i<tam; i++)
 	{
-		aux[i]=datos[i];
+		caracter= datos[i];
+		if(caracter!='\0')
+		{
+			aux[i]=datos[i];
+		}
+		else
+		{
+			aux[i]=' ';
+		}
+
 	}
 	return aux;
 }
