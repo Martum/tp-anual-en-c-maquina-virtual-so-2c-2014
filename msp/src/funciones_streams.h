@@ -10,5 +10,5 @@
 
 
 char* concat_string(char* a, char* b);
-char* _substringear(char* datos, uint16_t desp, uint32_t tam);
+char* substream(char* datos, uint16_t desp, uint32_t tam);
 #endif /* FUNCIONES_STREAMS_H_ */

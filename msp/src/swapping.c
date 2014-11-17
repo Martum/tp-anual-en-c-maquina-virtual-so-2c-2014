@@ -16,6 +16,7 @@
 #include "interfaz.h"
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
+#include "funciones_streams.h"
 
 #include <commons/txt.h>
 #include <commons/string.h>
@@ -30,8 +31,8 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 
 	//Modifico la pagina y el marco para que se relacionen entre si
 	(*pagina)->marco=marco->id;
+	(*pagina)->tiene_marco=true;
 	marco->id_proceso = pid;
-	marco->datos="";
 	marco->ocupado=true;
 }
 
@@ -68,7 +69,7 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
 	char* clock="CLOCK";
-	if(string_equals_ignore_case(clock, algoritmo))//TODO bug, no considera iguales
+	if(string_equals_ignore_case(clock, algoritmo))
 	{
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}
@@ -107,29 +108,24 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
 
 	//Convierte cada id a string y despues los concatena de 2 en 2
-	char *nombre_archivo="";
-	string_append(&nombre_archivo,string_itoa(pid));
-	string_append(&nombre_archivo,string_itoa(id_segmento));
-	string_append(&nombre_archivo,string_itoa((*pagina)->id));
+	char *nombre_archivo;
+	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
+	nombre_archivo=concat_string(nombre_archivo,string_itoa((*pagina)->id));
 
-
-
-	char* path="";
-	string_append(&path,"en_disco/");
-	string_append(&path,nombre_archivo);
-	string_append(&path,".txt");
-
+	char* path;
+	path=concat_string("en_disco/",nombre_archivo);
+	path=concat_string(path,".txt");
+	free(nombre_archivo);
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
+	free(path);
 
-	//Consigo la direccion de donde voy a escribir los datos
-	uint32_t direccion_logica = direccion_virtual_segmento_base_pagina(id_segmento,(*pagina)->id);
-
+	marco_t* marco= buscar_marco_segun_id((*pagina)->marco);
 	//Preparo el string que voy a escribir
-	resultado_t* resultado = malloc(sizeof(resultado_t));
-	char* string_a_escribir=leer_memoria(pid, direccion_logica, 256, resultado);
-	free(resultado);
+
+	char* string_a_escribir=marco->datos;
+
 
 	//Escribo en el archivo
 	txt_write_in_file(arch, string_a_escribir);
@@ -137,6 +133,9 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	(*pagina)->en_disco=true;
 
 	(*pagina)->tiene_marco=false;
+
+
+
 
 	txt_close_file(arch);
 

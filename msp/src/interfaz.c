@@ -119,7 +119,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			//TODO Cambiar esta funcion katinga por la de las commons
 			//TODO Sacar la funcion katinga de marco.c
 			datos=concat_string(datos, txt);
-
+			free(txt);
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
 

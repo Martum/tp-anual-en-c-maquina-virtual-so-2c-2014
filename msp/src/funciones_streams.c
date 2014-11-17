@@ -18,7 +18,7 @@ char* concat_string(char* a, char* b)
 	return aux;
 }
 
-char* _substringear(char* datos, uint16_t desp, uint32_t tam)
+char* substream(char* datos, uint16_t desp, uint32_t tam)
 {
 	int i;
 	char caracter;
