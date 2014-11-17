@@ -70,7 +70,7 @@ void inicializar_lista_marcos(){
 	lista_marcos = list_create();
 //	unlock_lista_marcos();
 
-	uint32_t cant_marcos = 2; //cantidad_memoria(); TODO Descomentar esto
+	uint32_t cant_marcos = cantidad_memoria();
 	int i = 0;
 
 	for(i=0;i<cant_marcos;i++){
