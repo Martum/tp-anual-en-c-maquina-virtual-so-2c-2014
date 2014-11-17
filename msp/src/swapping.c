@@ -50,7 +50,7 @@ marco_t* liberar_un_marco()
 	marco_t* marco_a_liberar= buscar_marco_segun_id(id_marco_a_liberar);
 
 
-	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id);
+	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id_proceso);
 
 
 
