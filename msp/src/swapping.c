@@ -144,7 +144,50 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 void swap_out(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina)
 {
+	// ----Abro el archivo----
 
+	//Convierte cada id a string y despues los concatena de 2 en 2
+	char *nombre_archivo;
+	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
+	nombre_archivo=concat_string(nombre_archivo,string_itoa(id_pagina));
+
+	char* path;
+	path=concat_string("en_disco/",nombre_archivo);
+	path=concat_string(path,".txt");
+	free(nombre_archivo);
+	//crea un archivo y lo guarda en una carpeta interna.
+	//el nombre se compone de pid, idsegmento y id pagina
+	FILE* arch = fopen(path,"r");
+
+
+	// ----Consigo la pagina----
+
+	proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
+	segmento_t* segmento = buscar_segmento_segun_id_en_lista_segmentos(id_segmento, proceso->segmentos);
+	pagina_t* pagina = buscar_pagina_segun_id_en_lista_paginas(id_pagina, segmento->paginas);
+
+	// ----Le consigo un marco a la pagina----
+	marco_t* marco = buscar_marco_libre();
+	if(marco==NULL)
+	{
+		swap_in(&pagina, pid);
+	}
+	else
+	{
+		pagina->marco=marco->id;
+	}
+	//Ahora pagina es de su marco
+	pagina->tiene_marco=true;
+	pagina->en_disco=false;
+	//Ahora el marco es de su pagina
+	marco = buscar_marco_segun_id(pagina->marco);
+	marco->id_proceso=pid;
+	marco->ocupado=true;
+	fgets(marco->datos,256,arch);
+	// ----Finalizo----
+
+	remove(path);
+	free(path);
 	disminuyo_cantidad_archivos_swap();
 }
 
