@@ -32,7 +32,7 @@ void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_co
 void mover_a_disco(pagina_t* * pagina, uint32_t pid,uint16_t id_segmento);
 
 //Dado un pid, id_segmento e id_pagina, busca la pagina en disco y la lleva a memoria
-void swap_out(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina);
+void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * id_pagina);
 
 
 #endif /* SWAPPING_H_ */

@@ -28,7 +28,7 @@ bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, pr
 				if((*pagina)->en_disco)
 				{
 					//TODO No se va a cambiar las cosas si necesito que haga eso
-					swap_out((*proceso)->pid, (*segmento)->id,(*pagina)->id);
+					swap_out((*proceso)->pid, (*segmento)->id,pagina);
 				}
 				//TODO Realmente debe asignar un marco o deberia tirar un error?
 				//Si la pagina que quiero leer no tiene marco, se lo asigno
