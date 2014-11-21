@@ -109,7 +109,6 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 		//Con bool no anda, int cumple el proposito
 		int mas_paginas = true;
 
-		uint16_t desplazamiento = div(direccion_logica,0x100).rem;
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
 		while((tamanio!=0)&&(mas_paginas))
