@@ -21,20 +21,21 @@ char* concat_string(char* a, char* b)
 char* substream(char* datos, uint16_t desp, uint32_t tam)
 {
 	int i;
+	int j=0;
 	char caracter;
-	char* aux=malloc(tam-desp);
-	for(i=desp; i<tam; i++)
+	char* aux=malloc(tam);
+	for(i=0; i<tam; i++)
 	{
-		caracter= datos[i];
+		caracter= *(datos+i+desp);
 		if(caracter!='\0')
 		{
-			aux[i]=datos[i];
+			*(aux+j)=caracter;
 		}
 		else
 		{
-			aux[i]=' ';
+			*(aux+j)=' ';
 		}
-
+		j++;
 	}
 	return aux;
 }

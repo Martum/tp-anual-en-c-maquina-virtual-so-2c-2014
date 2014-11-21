@@ -22,6 +22,7 @@ void atrapar_interrupcion(int sig)
 	liberar_configuraciones();
 	liberar_dic_de_instrucciones();
 	desconectarse();
+	finalizar_loggeo();
 	exit(0);
 }
 

@@ -9,7 +9,7 @@
 
 #define PID_KERNEL 1;
 
-sock_t* MEMORIA;
+sock_t* memoria;
 sock_t* kernel;
 
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
@@ -121,7 +121,7 @@ resultado_t conectar_con_memoria()
 {
 	loggear_trace("Intento conectarme con memoria");
 
-	if (_conectar(&MEMORIA, ip_msp(), puerto_msp()) == FALLO_CONEXION)
+	if (_conectar(&memoria, ip_msp(), puerto_msp()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
 	loggear_info("Conexion con memoria realizada con exito");
@@ -139,7 +139,7 @@ resultado_t _mandar_desconexion_cpu_a_memoria()
 
 	loggear_trace("Me preparo para enviar DESCONEXION_CPU a memoria");
 
-	enviar(MEMORIA, chorro_a_enviar, &tamanio);
+	enviar(memoria, chorro_a_enviar, &tamanio);
 
 	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
 
@@ -171,7 +171,7 @@ resultado_t desconectar_memoria()
 {
 	loggear_trace("Intento desconectarme de memoria");
 	_mandar_desconexion_cpu_a_memoria();
-	cerrar_liberar(MEMORIA);
+	cerrar_liberar(memoria);
 	loggear_info("Desconexion de memoria realizada con exito");
 
 	return OK;
@@ -214,7 +214,7 @@ resultado_t crear_segmento(direccion pid, uint32_t tamanio,
 	loggear_trace("PID %d", pid);
 	loggear_trace("Tamanio del segmento %d", tamanio);
 
-	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
@@ -266,7 +266,7 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 	loggear_trace("PID: %d", pid);
 	loggear_trace("Direccion %d", direccion);
 
-	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_destruir_segmento_t_serializado(),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
 	{
@@ -315,7 +315,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	loggear_trace("Cantidad de bytes a leer %d", cantidad_de_bytes);
 
-	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
 		== FALLO_COMUNICACION)
 	{
@@ -377,7 +377,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	loggear_trace("Cantidad de bytes a escribir %d", cantidad_de_bytes);
 	loggear_trace("Bytes %s", bytes_a_escribir);
 
-	if (_enviar_y_recibir(MEMORIA, chorro_de_envio,
+	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(cantidad_de_bytes),
 		chorro_de_respuesta) == FALLO_COMUNICACION)
 	{
@@ -614,6 +614,7 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	return OK;
 }
 
+// TODO pensar si no conviene un COMPLETADO_OK de respuesta
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
@@ -663,7 +664,6 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	return OK;
 }
 
-// TODO avisar a mati que tiene que serializar de nuevo pedido salida estandar
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer, idetificador_tipo_t identificador)
 {
