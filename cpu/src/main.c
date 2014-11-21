@@ -59,26 +59,26 @@ int32_t main(int32_t argc, char** argv)
 
 	// TODO eliminar (solo para pruebas)
 	direccion direccion;
-	crear_segmento(12, 123, &direccion);
+	crear_segmento(123, 50, &direccion);
 
 
 	// TODO eliminar (solo para pruebas)
 	char* bytes = "santiago perez torre";
 	int tam = strlen(bytes);
-	escribir_en_memoria(12, direccion, tam, bytes);
+	escribir_en_memoria(123, direccion, tam, bytes);
 
 	// TODO eliminar (solo para pruebas)
 	char* buffer = malloc(tam);
-	leer_de_memoria(12, direccion, tam, buffer);
+	leer_de_memoria(123, direccion, tam, buffer);
 
 	// TODO eliminar (solo para pruebas)
-	destruir_segmento(12, direccion);
+	destruir_segmento(123, direccion);
 
-	tcb_t tcb;
+	instruccion_t instruccion;
+	int32_t quantum;
 	resultado_t (*funcion)(tcb_t*);
 	resultado_t resultado = OK;
-	int32_t quantum;
-	instruccion_t instruccion;
+	tcb_t tcb;
 
 	inicializar_dic_de_instrucciones();
 
@@ -95,8 +95,7 @@ int32_t main(int32_t argc, char** argv)
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			loggear_error("No pudo pedir tcb a kernel");
-			liberar_configuraciones();
-			finalizar_loggeo();
+			_liberar_recursos();
 			error_show(" Al pedir tcb a kernel");
 			return 0;
 		}
@@ -140,8 +139,7 @@ int32_t main(int32_t argc, char** argv)
 			== FALLO_INFORME_A_KERNEL)
 		{
 			loggear_error("No pudo informar al kernel");
-			liberar_configuraciones();
-			finalizar_loggeo();
+			_liberar_recursos();
 			error_show(" Al enviar informe a kernel");
 			return 0;
 		}
