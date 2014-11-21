@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <pthread.h>
 
@@ -29,8 +31,15 @@ int main(void){
 	inicializar_memoria_fisica_total();
 	inicializar_cantidad_archivos_swap();
 
+	// Seteo variable necesaria para algoritmo clock
 	if(strcmp(algoritmo_sustitucion_de_paginas(),"CLOCK")==0){
 		setear_puntero_clock();
+	}
+
+	// Creo el directorio en_disco si no existe, alli se guardaran los archivos swap
+	struct stat info;
+	if( stat("en_disco", &info ) != 0 ){
+		mkdir("en_disco",0777);
 	}
 
 	// Creo hilos
@@ -42,8 +51,6 @@ int main(void){
 	// Esperamos a que ambos terminen
 	pthread_join(consola_msp_thread, NULL);
 	pthread_join(conexiones_thread, NULL);
-
-
 
 	destruir_configuraciones();
 	return 0;

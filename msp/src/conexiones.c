@@ -168,13 +168,13 @@ void _atiendo_leer_memoria(sock_t* sock, char* msg){
 	respuesta_leer->flag = TOMA_BYTES;
 	respuesta_leer->bytes_leido = bytes;
 	respuesta_leer->resultado = *(resultado);
-	respuesta_leer->tamano = (uint32_t)strlen(bytes);
+	respuesta_leer->tamano = pedido_leer->tamano;
 
 	free(resultado);
 
 	char* msg_respuesta_leer = serializar_respuesta_de_leer_de_memoria_t(respuesta_leer);
 
-	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(strlen(bytes));
+	uint32_t len_msg_leer = tamanio_respuesta_de_leer_de_memoria_t_serializado(pedido_leer->tamano);
 
 	enviar(sock,msg_respuesta_leer, &len_msg_leer);
 
