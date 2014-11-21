@@ -16,7 +16,7 @@
 #include "marco.h"
 
 //Crea una pagina a partir de un segmento y la incluye en la tabla de paginas del segmento
-void crear_pagina(segmento_t*);
+void crear_pagina(segmento_t*, uint32_t);
 
 //Incluye en la tabla de paginas del segmento
 void agregar_pagina_a_segmento(segmento_t*, pagina_t*);

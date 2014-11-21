@@ -20,7 +20,7 @@
 #include <commons/collections/list.h>
 #include <commons/bitarray.h>
 
-segmento_t* crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t cant_paginas) {
+segmento_t* crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t cant_paginas, uint32_t tamanio_en_bytes) {
 	segmento_t *segmento = malloc(sizeof(segmento_t));
 	segmento->tamanio = cant_paginas;
 	segmento->paginas = list_create();
@@ -28,7 +28,8 @@ segmento_t* crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t cant_pag
 	// creo las paginas en el segmento
 	int i;
 	for(i=0; i< cant_paginas; i++){
-		crear_pagina(segmento);
+		crear_pagina(segmento, tamanio_en_bytes);
+		tamanio_en_bytes -= 256;
 	}
 
 	// agrego el segmento a la tabla de segmentos del proceso
@@ -54,6 +55,7 @@ void listar_paginas_de_un_segmento(segmento_t *segmento){
 	void _lista_paginas(pagina_t *pagina) {
 		printf("Nro segmento: %d \n", segmento->id);
 		printf("Nro pagina: %d \n", pagina->id);
+		printf("Bytes disponibles: %d \n", pagina->max_modificable+1);
 		if(pagina->en_disco){
 			printf("La pagina esta en: %s \n ------------------ \n", "disco");
 		}else{
