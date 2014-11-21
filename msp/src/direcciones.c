@@ -73,10 +73,6 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 	return false;
 }
 
-bool tamanio_incorrecto(uint32_t tam,uint32_t tam_escribir, pagina_t* pagina)
-{
-	return (tam<tam_escribir);//||((pagina->max_modificable)<tam);
-}
 
 
 
