@@ -17,7 +17,7 @@
 
 #include <commons/collections/list.h>
 
-void crear_pagina(segmento_t *segmento){
+void crear_pagina(segmento_t *segmento, uint32_t bytes){
 	pagina_t *pagina = malloc(sizeof(pagina_t));
 	pagina->tiene_marco = false;
 	pagina->en_disco = false;
@@ -26,6 +26,12 @@ void crear_pagina(segmento_t *segmento){
 	pagina->id = list_size(segmento->paginas)-1;
 
 	pagina->bit_referencia = 0;
+
+	if(bytes >= 256){
+		pagina->max_modificable = 255;
+	}else{
+		pagina->max_modificable = bytes - 1;
+	}
 
 	// agrego pagina a indice de paginas
 	//lock_lista_indice_paginas();
