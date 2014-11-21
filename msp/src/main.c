@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <pthread.h>
 
@@ -31,6 +33,11 @@ int main(void){
 
 	if(strcmp(algoritmo_sustitucion_de_paginas(),"CLOCK")==0){
 		setear_puntero_clock();
+	}
+
+	struct stat info;
+	if( stat("en_disco", &info ) != 0 ){
+		mkdir("en_disco",0777);
 	}
 
 	// Creo hilos
