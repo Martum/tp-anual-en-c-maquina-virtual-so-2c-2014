@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "estructuras.h"
 #include "proceso_msp.h"
@@ -89,7 +90,6 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	pagina_t* pagina=NULL;//malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
-	bool aux;
 	uint16_t id_pagina_siguiente;
 
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
@@ -125,8 +125,8 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente.
 			id_pagina_siguiente= (pagina->id);
-			aux = hay_siguiente_pagina(id_pagina_siguiente, segmento->paginas,&pagina_siguiente);
-			if((pagina_siguiente!=NULL)&mas_paginas)
+			hay_siguiente_pagina(id_pagina_siguiente, segmento->paginas,&pagina_siguiente);
+			if((pagina_siguiente!=NULL) && mas_paginas)
 			{
 				if(!(pagina_siguiente->tiene_marco))
 				{
@@ -156,7 +156,6 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 	marco_t* marco= NULL;//malloc(sizeof(pagina_t));
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
-	bool aux;
 	uint16_t id_pagina;
 
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
@@ -187,8 +186,8 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 			//En este punto ya lei todo lo que podia del marco y debo buscar el siguiente
 			id_pagina= (pagina->id);
-			aux = hay_siguiente_pagina(id_pagina,segmento->paginas,&pagina_siguiente);
-			if((pagina_siguiente!=NULL)&mas_paginas)
+			hay_siguiente_pagina(id_pagina,segmento->paginas,&pagina_siguiente);
+			if((pagina_siguiente!=NULL) && mas_paginas)
 			{
 				if(!(pagina_siguiente->tiene_marco))
 				{
