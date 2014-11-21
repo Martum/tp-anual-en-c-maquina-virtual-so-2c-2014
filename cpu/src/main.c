@@ -64,7 +64,7 @@ int32_t main(int32_t argc, char** argv)
 
 	// TODO eliminar (solo para pruebas)
 	char* bytes = "santiago perez torre";
-	int tam = strlen(bytes);
+	int tam = 20;
 	escribir_en_memoria(123, direccion, tam, bytes);
 
 	// TODO eliminar (solo para pruebas)
