@@ -50,9 +50,9 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 	uint16_t id_pagina = pagina->id;
 	pagina_t * pag_aux=NULL;
 	//Si no entra en una pagina, checkeo si hay otras paginas donde pueda entrar.
-	if((desplazamiento+tamanio)>256)
+	if((desplazamiento+tamanio)>((pagina->max_modificable)+1))
 	{
-		int tamanio_restante= (tamanio+desplazamiento)-256;
+		int tamanio_restante= (tamanio+desplazamiento)-((pagina->max_modificable)+1);
 		while(tamanio_restante>0)
 		{
 			/*Pregunto si hay otra pagina, y si la hay cambio el id por
@@ -64,7 +64,7 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 				return true;
 			}
 			id_pagina=pag_aux->id;
-			tamanio_restante= (tamanio_restante)-256;
+			tamanio_restante= (tamanio_restante)-((pagina->max_modificable)+1);
 
 		}
 
