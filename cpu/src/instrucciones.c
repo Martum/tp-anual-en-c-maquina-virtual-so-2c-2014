@@ -342,7 +342,7 @@ resultado_t incr(tcb_t* tcb)
 
 	int32_t sumar_1(int32_t valor)
 	{
-		return valor++;
+		return ++valor;
 	}
 
 	return _funcion_incr_decr(tcb, sumar_1);
@@ -358,7 +358,7 @@ resultado_t decr(tcb_t* tcb)
 
 	int32_t restar_1(int32_t valor)
 	{
-		return valor--;
+		return --valor;
 	}
 
 	return _funcion_incr_decr(tcb, restar_1);
