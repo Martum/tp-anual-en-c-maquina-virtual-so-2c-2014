@@ -351,7 +351,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 
 	*(buffer + respuesta->tamano) = '\0';
 
-	loggear_trace("Bytes: %s", buffer);
+	loggear_trace("Bytes: %x", *buffer);
 
 	free(respuesta);
 
@@ -375,7 +375,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
 
 	loggear_trace("Cantidad de bytes a escribir %d", cantidad_de_bytes);
-	loggear_trace("Bytes %s", bytes_a_escribir);
+	loggear_trace("Bytes %x", *bytes_a_escribir);
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_escribir_en_memoria_t_serializado(cantidad_de_bytes),
@@ -569,7 +569,7 @@ resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
 	loggear_trace("Me preparo para leer una instruccion");
 
-	if (_obtener(tcb, instruccion, sizeof(instruccion_t) - 1)
+	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
@@ -591,7 +591,7 @@ resultado_t leer_registro(tcb_t* tcb, char* registro)
 
 	loggear_debug("Lectura de registro satisfactoria");
 
-	loggear_trace("Registro %c", registro);
+	loggear_trace("Registro %c", *registro);
 
 	return OK;
 }
