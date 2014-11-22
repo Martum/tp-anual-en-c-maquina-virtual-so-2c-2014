@@ -14,6 +14,8 @@
 
 #include <hu4sockets/resultados.h>
 
+#include "logs.h"
+
 /*
  * @DESC: Carga el archivo de configuraciones
  * @RETURNS:

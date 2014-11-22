@@ -408,6 +408,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	return OK;
 }
 
+// TODO pensar si no conviene un COMPLETADO_OK
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 {
 	loggear_trace("Preparando mensaje para pedir TCB");
@@ -614,7 +615,7 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	return OK;
 }
 
-// TODO pensar si no conviene un COMPLETADO_OK de respuesta
+// TODO pensar si no conviene un COMPLETADO_OK
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
@@ -875,41 +876,3 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 
 	return OK;
 }
-
-// TODO eliminar (ya no sirve mas)
-// TODO avisar a mati que tiene que implementar las serializaciones
-//resultado_t pedir_tid_a_kernel(tcb_t tcb, direccion* nuevo_tid)
-//{
-//	pedido_nuevo_tid_t cuerpo_del_mensaje;
-//	cuerpo_del_mensaje.flag = DAME_TID;
-//	cuerpo_del_mensaje.tcb = &tcb;
-//
-//	char* chorro_de_envio = serializar_pedido_nuevo_tid_t(&cuerpo_del_mensaje);
-//	char* chorro_de_respuesta = malloc(
-//		tamanio_respuesta_nuevo_tid_t_serializado());
-//
-//	if (_enviar_y_recibir(kernel, chorro_de_envio,
-//		tamanio_pedido_nuevo_tid_t_serializado(), chorro_de_respuesta)
-//		== FALLO_COMUNICACION)
-//	{
-//		free(chorro_de_envio);
-//		free(chorro_de_respuesta);
-//		return FALLO_COMUNICACION;
-//	}
-//
-//	respuesta_nuevo_tid_t* respuesta = deserializar_respuesta_nuevo_tid_t(
-//		chorro_de_respuesta);
-//
-//	*nuevo_tid = respuesta->tid;
-//
-//	free(chorro_de_envio);
-//	free(chorro_de_respuesta);
-//
-//	return OK;
-//}
-
-// TODO eliminar (ya no se hace falta)
-//void pedir_al_kernel_tamanio_stack(uint32_t *tamano_stack)
-//{
-//
-//}

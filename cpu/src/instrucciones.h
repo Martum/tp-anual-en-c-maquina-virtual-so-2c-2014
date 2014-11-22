@@ -28,12 +28,6 @@ void inicializar_dic_de_instrucciones();
 void liberar_dic_de_instrucciones();
 
 /*
- * 	@DESC: Carga todas las instrucciones en dic
- * 	@RETURN:
- */
-void cargar_diccionario_de_instrucciones(t_dictionary* dic);
-
-/*
  * 	@DESC: Lee la siguiente instruccion y la decodifica
  * 	@RETURN:
  */
@@ -42,7 +36,7 @@ void leer_siguiente_instruccion(tcb_t* tcb);
 /*
  * 	@DESC: Ejecuta la instruccion
  * 	@RETURN:
- * 		OK si todo salio bien
+ * 		OK si salio bien
  *		ERROR_EN_EJECUCION si algo fallo en la instruccion o no habia instruccion a ejecutar
  */
 resultado_t ejecutar_instruccion(tcb_t* tcb);

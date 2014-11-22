@@ -6,7 +6,6 @@
  */
 
 #include "configuraciones.h"
-#include "logs.h"
 
 t_config* configs_cpu;
 

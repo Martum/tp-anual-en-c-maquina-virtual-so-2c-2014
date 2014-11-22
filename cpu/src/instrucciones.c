@@ -36,7 +36,6 @@ resultado_t load(tcb_t* tcb)
 	return OK;
 }
 
-// TODO cambiar sizeof(char) por LEN_1_BYTE
 /*
  * 	GETM [Registro], [Registro]
  *
@@ -982,7 +981,7 @@ resultado_t outc(tcb_t* tcb)
 		cantidad_de_bytes_de_la_cadena);
 }
 
-// TODO eliminar (ya no hace falta)
+// TODO eliminar crear stack (ya no hace falta)
 ///*
 // * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
 // */
@@ -1003,7 +1002,7 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
-// TODO eliminar (ya no hace falta)
+// TODO eliminar clonar stack (ya no hace falta)
 ///*
 // * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
 // */
@@ -1036,18 +1035,7 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
-// TODO eliminar (ya no hace falta)
-//resultado_t _obtener_nuevo_tid(tcb_t* tcb, direccion* nuevo_tid)
-//{
-//	if (pedir_tid_a_kernel(*tcb, nuevo_tid) == FALLO_COMUNICACION)
-//	{
-//		return ERROR_EN_EJECUCION;
-//	}
-//
-//	return OK;
-//}
-
-// TODO arreglar con kernel que va a pasar con crea
+// TODO eliminar codigo innecesario de crea (ya no hace falta)
 /*
  * 	CREA
  *
@@ -1090,11 +1078,9 @@ resultado_t crea(tcb_t* tcb)
 
 //	actualizar_registro_a(tcb, nuevo_tid);
 
-// TODO eliminar (ya no hace falta)
 //	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-// TODO eliminar (ya no hace falta)
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
@@ -1179,50 +1165,7 @@ resultado_t wake(tcb_t* tcb)
 	return OK;
 }
 
-void inicializar_dic_de_instrucciones()
-{
-	loggear_trace("Intento crear el diccionario de instrucciones");
-	dic_instrucciones = dictionary_create();
-	loggear_info("Creacion de diccionario con exito");
-
-	loggear_trace("Intento cargar el diccionario de instrucciones");
-	cargar_diccionario_de_instrucciones(dic_instrucciones);
-	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones");
-}
-
-void liberar_dic_de_instrucciones()
-{
-	loggear_trace("Intento liberar el diccionario de instrucciones");
-	dictionary_destroy(dic_instrucciones);
-	loggear_info("Diccionario de instrucciones liberado correctamente");
-}
-
-void leer_siguiente_instruccion(tcb_t* tcb)
-{
-	instruccion_t instruccion;
-
-	if (leer_proxima_instruccion(tcb, instruccion) == FALLO_LECTURA_DE_MEMORIA)
-	{
-		instruccion_leida = false;
-		return;
-	}
-
-	instruccion_leida = true;
-
-	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
-	funcion = dictionary_get(dic_instrucciones, instruccion);
-	loggear_trace("Instruccion a ejecutar %s encontrada", instruccion);
-}
-
-resultado_t ejecutar_instruccion(tcb_t* tcb)
-{
-	if (instruccion_leida == false) {
-		return ERROR_EN_EJECUCION;
-	}
-	return funcion(tcb);
-}
-
-void cargar_diccionario_de_instrucciones(t_dictionary* dic)
+void _cargar_diccionario_de_instrucciones(t_dictionary* dic)
 {
 	dictionary_put(dic, "LOAD", load);
 	dictionary_put(dic, "GETM", getm);
@@ -1257,4 +1200,47 @@ void cargar_diccionario_de_instrucciones(t_dictionary* dic)
 	dictionary_put(dic, "JOIN", join);
 	dictionary_put(dic, "BLOK", blok);
 	dictionary_put(dic, "WAKE", wake);
+}
+
+void inicializar_dic_de_instrucciones()
+{
+	loggear_trace("Intento crear el diccionario de instrucciones");
+	dic_instrucciones = dictionary_create();
+	loggear_info("Creacion de diccionario con exito");
+
+	loggear_trace("Intento cargar el diccionario de instrucciones");
+	_cargar_diccionario_de_instrucciones(dic_instrucciones);
+	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones");
+}
+
+void liberar_dic_de_instrucciones()
+{
+	loggear_trace("Intento liberar el diccionario de instrucciones");
+	dictionary_destroy(dic_instrucciones);
+	loggear_info("Diccionario de instrucciones liberado correctamente");
+}
+
+void leer_siguiente_instruccion(tcb_t* tcb)
+{
+	instruccion_t instruccion;
+
+	if (leer_proxima_instruccion(tcb, instruccion) == FALLO_LECTURA_DE_MEMORIA)
+	{
+		instruccion_leida = false;
+		return;
+	}
+
+	instruccion_leida = true;
+
+	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
+	funcion = dictionary_get(dic_instrucciones, instruccion);
+	loggear_trace("Instruccion a ejecutar %s encontrada", instruccion);
+}
+
+resultado_t ejecutar_instruccion(tcb_t* tcb)
+{
+	if (instruccion_leida == false) {
+		return ERROR_EN_EJECUCION;
+	}
+	return funcion(tcb);
 }

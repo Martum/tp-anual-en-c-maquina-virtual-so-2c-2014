@@ -6,6 +6,7 @@
  */
 
 #include <unistd.h>
+#include <signal.h>
 
 #include "commons/error.h"
 
@@ -15,12 +16,10 @@
 
 void _liberar_recursos();
 
-// TODO ver que pasa cuando hay ERROR_EN_EJECUCION
+void _retardar();
 
 int32_t main(int32_t argc, char** argv)
 {
-//	setvbuf(stdout, NULL, _IONBF, 0); // funcion necesiaria para imprimir en pantalla en eclipse
-
 	empezar_loggeo();
 
 	escuchar_signals();
@@ -44,16 +43,15 @@ int32_t main(int32_t argc, char** argv)
 		return 0;
 	}
 
-	// TODO descomentar (solamente comentado para pruebas)
-//	if (conectar_con_kernel() == FALLO_CONEXION)
-//	{
-//		loggear_error("No pudo conectarse con memoria");
-//		loggear_info("Liberando recursos para cierre...");
-//		liberar_configuraciones();
-//		finalizar_loggeo();
-//		error_show(" Al tratar de conectarse con kernel");
-//		return 0;
-//	}
+	if (conectar_con_kernel() == FALLO_CONEXION)
+	{
+		loggear_error("No pudo conectarse con memoria");
+		loggear_info("Liberando recursos para cierre...");
+		liberar_configuraciones();
+		finalizar_loggeo();
+		error_show(" Al tratar de conectarse con kernel");
+		return 0;
+	}
 
 	int32_t quantum;
 	resultado_t resultado = OK;
@@ -87,7 +85,7 @@ int32_t main(int32_t argc, char** argv)
 			loggear_trace("Quantum restante", quantum);
 			loggear_trace("Modo kernel %d", tcb.km);
 
-			sleep(retardo());
+			_retardar();
 
 			leer_siguiente_instruccion(&tcb);
 
@@ -126,4 +124,9 @@ void _liberar_recursos()
 	liberar_dic_de_instrucciones();
 	desconectarse();
 	finalizar_loggeo();
+}
+
+void _retardar()
+{
+	sleep(retardo());
 }

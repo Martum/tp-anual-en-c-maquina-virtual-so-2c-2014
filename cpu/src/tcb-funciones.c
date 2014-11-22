@@ -5,35 +5,12 @@
  *      Author: utnso
  */
 
-#include "logs.h"
 #include "tcb-funciones.h"
-
-// TODO eliminar (ya no se necesita)
-//tcb_t* crear_tcb()
-//{
-//	return malloc(sizeof(tcb_t));
-//}
-//
-//void liberar_tcb(tcb_t* tcb)
-//{
-//	free(tcb);
-//}
-//
-//void clonar_tcb(tcb_t* destino, tcb_t* fuente)
-//{
-//	memcpy(destino, fuente, sizeof(tcb_t));
-//}
 
 bool es_tcb_kernel(tcb_t* tcb)
 {
 	return tcb->km;
 }
-
-// TODO eliminar (ya no se necesita)
-//uint32_t obtener_ocupacion_stack(tcb_t* tcb)
-//{
-//	return tcb->cursor_stack - tcb->base_stack;
-//}
 
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	int32_t numero)
@@ -125,24 +102,6 @@ void actualizar_pc(tcb_t* tcb, direccion nuevo_pc)
 	loggear_trace("Vieja pc %d -> Nueva pc %d", tcb->pc, nuevo_pc);
 	tcb->pc = nuevo_pc;
 }
-
-// TODO eliminar (ya no se necesita)
-//void actualizar_tid(tcb_t* tcb, int32_t nuevo_tid)
-//{
-//	tcb->km = nuevo_tid;
-//}
-
-// TODO eliminar (ya no se necesita)
-//void actualizar_km(tcb_t* tcb, bool nuevo_km)
-//{
-//	tcb->km = nuevo_km;
-//}
-
-// TODO eliminar (ya no se necesita)
-//void actualizar_base_del_stack(tcb_t* tcb, direccion nueva_base)
-//{
-//	tcb->base_stack = nueva_base;
-//}
 
 void actualizar_registro_a(tcb_t* tcb, int32_t nuevo_valor)
 {
