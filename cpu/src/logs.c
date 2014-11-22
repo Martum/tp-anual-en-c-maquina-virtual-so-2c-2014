@@ -11,7 +11,7 @@ FILE *fp;
 
 t_log* logger;
 
-// TODO eliminar logger historial (ya no sirve)
+// ELIMINAR logger historial (ya no sirve)
 //t_log* logger_historial;
 
 void empezar_loggeo()

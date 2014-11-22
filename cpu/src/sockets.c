@@ -190,7 +190,7 @@ resultado_t desconectar_kernel()
 resultado_t desconectarse()
 {
 	desconectar_memoria();
-	// TODO descomentar (solo comentado para pruebas de memoria)
+	// DESCOMENTAR (solo comentado para pruebas de memoria)
 //	desconectar_kernel();
 
 	return OK;

@@ -981,7 +981,7 @@ resultado_t outc(tcb_t* tcb)
 		cantidad_de_bytes_de_la_cadena);
 }
 
-// TODO eliminar crear stack (ya no hace falta)
+// ELIMINAR crear stack (ya no hace falta)
 ///*
 // * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
 // */
@@ -1002,7 +1002,7 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
-// TODO eliminar clonar stack (ya no hace falta)
+// ELIMINAR clonar stack (ya no hace falta)
 ///*
 // * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
 // */
@@ -1035,7 +1035,7 @@ resultado_t outc(tcb_t* tcb)
 //	return OK;
 //}
 
-// TODO eliminar codigo innecesario de crea (ya no hace falta)
+// ELIMINAR codigo innecesario de crea (ya no hace falta)
 /*
  * 	CREA
  *
