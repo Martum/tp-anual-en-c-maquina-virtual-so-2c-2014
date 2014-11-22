@@ -68,10 +68,10 @@ uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int
 	//Calculo el tamanio real
 		uint32_t tamanio_aux;
 		tamanio_aux= *tamanio;
-		int aux = (max_modificable-desplazamiento-*(tamanio));
+		int aux = ((max_modificable+1)-desplazamiento-*(tamanio));
 		if(aux<0)
 			{
-				tamanio_aux= max_modificable-desplazamiento;
+				tamanio_aux= (max_modificable+1)-desplazamiento;
 				*mas_paginas=1;
 			}
 			else
@@ -109,7 +109,7 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 			caracter = ' ';
 		}
 
-		(*marco)->datos[i+desplazamiento]=caracter;
+		*((*marco)->datos+i+desplazamiento)=caracter;
 
 	}
 
