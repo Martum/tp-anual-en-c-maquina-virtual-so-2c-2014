@@ -15,8 +15,6 @@
 
 void _liberar_recursos();
 
-// TODO agregar logs
-// TODO cambiar los printf de errores faltes por commons/error
 // TODO ver que pasa cuando hay ERROR_EN_EJECUCION
 
 int32_t main(int32_t argc, char** argv)
@@ -57,26 +55,8 @@ int32_t main(int32_t argc, char** argv)
 //		return 0;
 //	}
 
-	// TODO eliminar (solo para pruebas)
-	direccion direccion;
-	crear_segmento(123, 50, &direccion);
-
-
-	// TODO eliminar (solo para pruebas)
-	char* bytes = "santiago perez torre";
-	int tam = 20;
-	escribir_en_memoria(123, direccion, tam, bytes);
-
-	// TODO eliminar (solo para pruebas)
-	char* buffer = malloc(tam);
-	leer_de_memoria(123, direccion, tam, buffer);
-
-	// TODO eliminar (solo para pruebas)
-	destruir_segmento(123, direccion);
-
 	instruccion_t instruccion;
 	int32_t quantum;
-	resultado_t (*funcion)(tcb_t*);
 	resultado_t resultado = OK;
 	tcb_t tcb;
 
@@ -84,11 +64,7 @@ int32_t main(int32_t argc, char** argv)
 
 	loggear_info("Cargadas todas las estructuras administrativas");
 
-	// TODO eliminar (solo para pruebas)
-	_liberar_recursos();
-
-	// TODO eliminar (solo para pruebas)
-	return 0;
+	loggear_trace("Resultado de la ejecucion: %d", resultado);
 
 	while (1)
 	{
@@ -120,9 +96,9 @@ int32_t main(int32_t argc, char** argv)
 				resultado = ERROR_EN_EJECUCION;
 			}
 
-			obtener_funcion_segun_instruccion(funcion, instruccion);
+			obtener_funcion_segun_instruccion(instruccion);
 
-			resultado = funcion(&tcb);
+			resultado = ejecutar_funcion(&tcb);
 
 			loggear_trace("Resultado de la ejecucion: %d", resultado);
 

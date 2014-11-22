@@ -37,6 +37,8 @@ void cargar_diccionario_de_instrucciones(t_dictionary* dic);
  * 	@DESC: Devuelve la funcion asosiada a la instruccion
  * 	@RETURN: una funcion
  */
-void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*), instruccion_t instruccion);
+void obtener_funcion_segun_instruccion(instruccion_t instruccion);
+
+resultado_t ejecutar_funcion(tcb_t* tcb);
 
 #endif /* INSTRUCCIONES_H_ */

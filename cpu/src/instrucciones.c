@@ -9,6 +9,8 @@
 
 t_dictionary* dic_instrucciones;
 
+resultado_t (*funcion)(tcb_t*) = NULL;
+
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -1193,12 +1195,15 @@ void liberar_dic_de_instrucciones()
 	loggear_info("Diccionario de instrucciones liberado correctamente");
 }
 
-void obtener_funcion_segun_instruccion(resultado_t (*funcion)(tcb_t*),
-	instruccion_t instruccion)
+void obtener_funcion_segun_instruccion(instruccion_t instruccion)
 {
 	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
 	loggear_trace("Instruccion a ejecutar %s encontrada", instruccion);
+}
+
+resultado_t ejecutar_funcion(tcb_t* tcb) {
+	return funcion(tcb);
 }
 
 void cargar_diccionario_de_instrucciones(t_dictionary* dic)
