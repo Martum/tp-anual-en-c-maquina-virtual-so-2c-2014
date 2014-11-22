@@ -55,7 +55,6 @@ int32_t main(int32_t argc, char** argv)
 //		return 0;
 //	}
 
-	instruccion_t instruccion;
 	int32_t quantum;
 	resultado_t resultado = OK;
 	tcb_t tcb;
@@ -90,15 +89,9 @@ int32_t main(int32_t argc, char** argv)
 
 			sleep(retardo());
 
-			if (leer_proxima_instruccion(&tcb, instruccion)
-				== FALLO_LECTURA_DE_MEMORIA)
-			{
-				resultado = ERROR_EN_EJECUCION;
-			}
+			leer_siguiente_instruccion(&tcb);
 
-			obtener_funcion_segun_instruccion(instruccion);
-
-			resultado = ejecutar_funcion(&tcb);
+			resultado = ejecutar_instruccion(&tcb);
 
 			loggear_trace("Resultado de la ejecucion: %d", resultado);
 

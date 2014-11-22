@@ -11,6 +11,8 @@ t_dictionary* dic_instrucciones;
 
 resultado_t (*funcion)(tcb_t*) = NULL;
 
+bool instruccion_leida = true;
+
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -1195,14 +1197,28 @@ void liberar_dic_de_instrucciones()
 	loggear_info("Diccionario de instrucciones liberado correctamente");
 }
 
-void obtener_funcion_segun_instruccion(instruccion_t instruccion)
+void leer_siguiente_instruccion(tcb_t* tcb)
 {
+	instruccion_t instruccion;
+
+	if (leer_proxima_instruccion(tcb, instruccion) == FALLO_LECTURA_DE_MEMORIA)
+	{
+		instruccion_leida = false;
+		return;
+	}
+
+	instruccion_leida = true;
+
 	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
 	loggear_trace("Instruccion a ejecutar %s encontrada", instruccion);
 }
 
-resultado_t ejecutar_funcion(tcb_t* tcb) {
+resultado_t ejecutar_instruccion(tcb_t* tcb)
+{
+	if (instruccion_leida == false) {
+		return ERROR_EN_EJECUCION;
+	}
 	return funcion(tcb);
 }
 
