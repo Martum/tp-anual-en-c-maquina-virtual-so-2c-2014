@@ -27,14 +27,8 @@ char* substream(char* datos, uint16_t desp, uint32_t tam)
 	for(i=0; i<tam; i++)
 	{
 		caracter= *(datos+i+desp);
-		if(caracter!='\0')
-		{
-			*(aux+j)=caracter;
-		}
-		else
-		{
-			*(aux+j)=' ';
-		}
+		*(aux+j)=caracter;
+
 		j++;
 	}
 	return aux;
