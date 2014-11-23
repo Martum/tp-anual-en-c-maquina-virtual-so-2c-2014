@@ -106,8 +106,10 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
  */
 resultado_t setm(tcb_t* tcb)
 {
-	int32_t cantidad_de_bytes_a_copiar;
 	char registro1, registro2;
+	direccion hacia, desde;
+	int32_t valor_del_registro_1, valor_del_registro_2;
+	int32_t cantidad_de_bytes_a_copiar;
 
 	if (leer_numero(tcb, &cantidad_de_bytes_a_copiar)
 		== FALLO_LECTURA_DE_MEMORIA)
@@ -119,8 +121,6 @@ resultado_t setm(tcb_t* tcb)
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	int32_t valor_del_registro_1, valor_del_registro_2;
-
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -129,8 +129,8 @@ resultado_t setm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	direccion hacia = valor_del_registro_1;
-	direccion desde = valor_del_registro_2;
+	hacia = valor_del_registro_1;
+	desde = valor_del_registro_2;
 
 	return _copiar_valores(cantidad_de_bytes_a_copiar, hacia, desde, tcb);
 }
@@ -572,16 +572,15 @@ resultado_t inte(tcb_t* tcb)
  */
 resultado_t shif(tcb_t* tcb)
 {
-	int32_t bits_a_desplazar;
 	char registro;
+	int32_t valor_de_registro;
+	int32_t bits_a_desplazar;
 
 	if (leer_numero(tcb, &bits_a_desplazar) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
-
-	int32_t valor_de_registro;
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_de_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -647,8 +646,10 @@ resultado_t push(tcb_t* tcb)
 
 	 */
 
-	int32_t cantidad_de_bytes;
+	char bytes[4];
 	char registro;
+	int32_t valor_a_pushear;
+	int32_t cantidad_de_bytes;
 
 	if (leer_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
@@ -659,13 +660,9 @@ resultado_t push(tcb_t* tcb)
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
-	int32_t valor_a_pushear;
-
 	if (obtener_valor_del_registro(tcb, registro, &valor_a_pushear)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
-
-	char bytes[4];
 
 	dividir_en_bytes(valor_a_pushear, bytes);
 
@@ -677,8 +674,8 @@ resultado_t push(tcb_t* tcb)
  */
 resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
 {
-	if (leer_de_memoria(tcb->pid, tcb->cursor_stack, cantidad_de_bytes, bytes)
-		== FALLO_LECTURA_DE_MEMORIA)
+	if (leer_de_memoria(tcb->pid, tcb->cursor_stack - cantidad_de_bytes,
+		cantidad_de_bytes, bytes) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
 	if (mover_cursor_stack(tcb, -cantidad_de_bytes)
@@ -696,8 +693,10 @@ resultado_t _pop(tcb_t* tcb, int32_t cantidad_de_bytes, char bytes[4])
  */
 resultado_t take(tcb_t* tcb)
 {
-	int32_t cantidad_de_bytes;
+	char bytes[4];
 	char registro;
+	int32_t valor_a_popeado;
+	int32_t cantidad_de_bytes;
 
 	if (leer_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
@@ -708,16 +707,12 @@ resultado_t take(tcb_t* tcb)
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
-	char bytes[4];
-
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
-	int32_t valor;
+	unir_bytes(&valor_a_popeado, bytes);
 
-	unir_bytes(&valor, bytes);
-
-	if (actualizar_valor_del_registro(tcb, registro, valor)
+	if (actualizar_valor_del_registro(tcb, registro, valor_a_popeado)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
@@ -1239,7 +1234,8 @@ void leer_siguiente_instruccion(tcb_t* tcb)
 
 resultado_t ejecutar_instruccion(tcb_t* tcb)
 {
-	if (instruccion_leida == false) {
+	if (instruccion_leida == false)
+	{
 		return ERROR_EN_EJECUCION;
 	}
 	return funcion(tcb);
