@@ -78,8 +78,6 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 	}
 }
 
-
-
 char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,resultado_t *resultado)
 {
 
@@ -96,7 +94,9 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 	bool hay_error= memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
 
-	char* datos="";
+	char* datos = malloc(0);
+	int32_t tam_restante = tamanio;
+	int32_t tam_datos = 0;
 	if(hay_error)
 	{
 
@@ -117,7 +117,16 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			char* txt= leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas, (pagina->max_modificable));
 			//TODO Cambiar esta funcion katinga por la de las commons
 			//TODO Sacar la funcion katinga de marco.c
-			datos=concat_string(datos, txt);
+
+			int32_t tam_a_copiar = tam_restante - tamanio;
+			char* datos_aux = malloc(tam_datos + tam_a_copiar);
+			memcpy(datos_aux, datos, tam_datos);
+			free(datos);
+			memcpy(datos_aux + tam_datos, txt, tam_a_copiar);
+			datos = datos_aux;
+			tam_datos = tam_datos + tam_a_copiar;
+			tam_restante = tam_restante - tam_a_copiar;
+
 			free(txt);
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
@@ -141,8 +150,6 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 	return datos;
 }
-
-
 
 void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado)
 {
