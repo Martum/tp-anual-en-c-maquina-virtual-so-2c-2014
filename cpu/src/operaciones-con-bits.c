@@ -7,7 +7,7 @@
 
 #include "operaciones-con-bits.h"
 
-void unir_bytes(int32_t* valor, char buffer[3])
+void unir_bytes(int32_t* valor, char buffer[4])
 {
 	*valor = (unsigned char) buffer[3]
 		| ((int32_t) (unsigned char) buffer[2] << 8)
@@ -23,7 +23,7 @@ void unir_bytes(int32_t* valor, char buffer[3])
 
 }
 
-void dividir_en_bytes(int32_t valor, char bytes[3])
+void dividir_en_bytes(int32_t valor, char bytes[4])
 {
 	/*
 	 bytes[0] = (valor >> 24) & 0xFF;
