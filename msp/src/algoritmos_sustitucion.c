@@ -17,6 +17,7 @@
 #include "semaforos.h"
 
 uint32_t puntero_clock;
+
 void setear_puntero_clock(){
 	puntero_clock = 0;
 }
@@ -37,11 +38,11 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	// itero las paginas
 	pagina_t* pag = NULL;
 
-	while(puntero_clock<list_size(paginas_con_marco) && (retorno == -1)){
-		pag = list_get(paginas_con_marco,puntero_clock);
+	while((puntero_clock < list_size(paginas_con_marco)) && (retorno == -1)){
+		pag = list_get(paginas_con_marco, puntero_clock);
 		if(pag->bit_referencia == 1){
 			pag->bit_referencia = 0;
-			list_replace(paginas_con_marco,puntero_clock,pag);
+			list_replace(paginas_con_marco, puntero_clock, pag);
 		}else{
 			retorno = pag->marco;
 			encontro = true;
@@ -52,8 +53,8 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	if(!encontro){
 		puntero_clock = 0;
 
-		while(puntero_clock<list_size(paginas_con_marco) && (retorno == -1)){
-			pag = list_get(paginas_con_marco,puntero_clock);
+		while((puntero_clock<list_size(paginas_con_marco)) && (retorno == -1)){
+			pag = list_get(paginas_con_marco, puntero_clock);
 			if(pag->bit_referencia == 1){
 				pag->bit_referencia = 0;
 				list_replace(paginas_con_marco,puntero_clock,pag);
@@ -65,10 +66,11 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	}
 
 	//TODO Checkear que esto no se borra con el free
-	*id_pagina_a_swappear=pag->id;
+	*id_pagina_a_swappear = pag->id;
 
 	free(paginas_con_marco);
-	//free(pag);
+	free(pag);
+
 	return retorno;
 }
 
@@ -92,6 +94,7 @@ uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 
 	free(pag);
 	free(paginas_con_marco);
+
 	return resultado;
 }
 
@@ -104,7 +107,10 @@ void ubico_al_principio(pagina_t* pag){
 }
 
 void set_bit_referencia(pagina_t* pag){
+	pagina_t* pagina = list_get(indice_paginas, pag->id_en_indice);
+
 	pag->bit_referencia = 1;
+	pagina->bit_referencia = 1;
 }
 
 
