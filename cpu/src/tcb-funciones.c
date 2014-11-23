@@ -50,7 +50,7 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 		return OK;
 	}
 
-	loggear_warning("El registro %c no existe", registro);
+	loggear_warning("No existe el registro %c, byte %x", registro, registro);
 
 	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
@@ -91,7 +91,7 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 		return OK;
 	}
 
-	loggear_warning("No existe el registro %c", registro);
+	loggear_warning("No existe el registro %c, byte %x", registro, registro);
 
 	return EXCEPCION_NO_ENCONTRO_EL_REGISTRO;
 }
@@ -140,7 +140,7 @@ resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
 	loggear_trace("Me preparo para mover curso del stack del tcb PID %d", tcb->pid);
 	loggear_trace("Posicion actual %d -- Bytes a mover %d", tcb->cursor_stack, cantidad_de_bytes);
-	if (tcb->base_stack < tcb->cursor_stack + cantidad_de_bytes) {
+	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes) {
 		loggear_warning("La cantidad de bytes a mover sobrepasa la base");
 		return EXCEPCION_POR_POSICION_DE_STACK_INVALIDA;
 	}
