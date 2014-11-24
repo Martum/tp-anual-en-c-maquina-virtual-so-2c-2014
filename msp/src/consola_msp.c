@@ -50,7 +50,7 @@ void _dar_instrucciones_por_consola(){
 	scanf("%[^\n]%*c",cadena);
 
 	if(strcmp(cadena,"Cerrar")== 0){
-		printf("Cerrando consola MSP ... \n");
+		printf("Cerrando consola MSP ... \n\n");
 		return;
 	}else{
 		// printf("la cadena es: %s \n", cadena);
@@ -288,7 +288,7 @@ void tabla_paginas(uint32_t pid){
 void listar_marcos(){
 	void _listar_marcos(marco_t* marco){
 
-		printf("Nro marco: %d \n", marco->id);
+		printf("Nro marco: %d   ", marco->id);
 
 		if(marco->ocupado){
 			printf("Esta ocupado: %s ", "SI");
@@ -301,6 +301,7 @@ void listar_marcos(){
 	//lock_lista_marcos();
 	list_iterate(get_lista_marcos(), (void*) _listar_marcos);
 	//unlock_lista_marcos();
+	printf("------------------------------- \n");
 }
 
 

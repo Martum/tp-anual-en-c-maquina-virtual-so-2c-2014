@@ -25,9 +25,25 @@ int32_t conectar_con_memoria();
 int32_t crear_segmento(uint32_t pid, uint32_t tamanio, direccion* direccion);
 
 /**
+ * @NAME: crear_segmento
+ * @DESC: Solicita la creacion de un segmento a la MSP.
+ * 		Deja en direccion la direccion del segmento
+ * @RETURNS: Devuelve la respuesta serializada que reteorna la msp ante la petición.
+ */
+char* crear_segmento_retornando_rta_serializada(uint32_t pid, uint32_t tamanio, direccion* direccion);
+
+
+
+/**
  * Destruye el segmento correspondiente
  */
 int32_t destruir_segmento(uint32_t pid, direccion base_segmento);
+
+/**
+ * Destruye el segmento correspondiente. Retorna la rta serializada que responde la msp.
+ */
+char* destruir_segmento_retornando_rta_serializada(uint32_t pid, direccion base_segmento);
+
 
 /**
  * Lee memoria

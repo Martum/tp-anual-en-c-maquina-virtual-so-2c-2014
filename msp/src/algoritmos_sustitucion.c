@@ -107,9 +107,7 @@ void ubico_al_principio(pagina_t* pag){
 }
 
 void set_bit_referencia(pagina_t* pag){
-	pagina_t* pagina = list_get(indice_paginas, pag->id_en_indice);
-
-	pag->bit_referencia = 1;
+	pagina_t* pagina = list_get(get_indice_paginas(), pag->id_en_indice);
 	pagina->bit_referencia = 1;
 }
 
