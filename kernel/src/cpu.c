@@ -62,6 +62,7 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio) {
 			segmentos->segmentos = list_create();
 		}
 		list_add(segmentos->segmentos, dir);
+		/* TODO: NOTIFICAR A SANTI QUE SE PUDO CREAR EL SEGMENTO */
 	} else {
 		/*TODO: NOTIFIACAR A SANTI QUE NO SE PUDO CREAR EL SEGMENTO*/
 	}
