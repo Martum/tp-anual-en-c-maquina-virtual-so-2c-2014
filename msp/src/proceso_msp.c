@@ -26,7 +26,7 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 		// agregar log de las cosas que hago printf
 	}
 	list_iterate(proceso->segmentos, (void*) _lista_segmentos);
-
+	printf("\n");
 }
 
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
