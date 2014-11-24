@@ -15,8 +15,23 @@
 #include <stdlib.h>
 #include "memoria.h"
 #include "cpu.h"
+#include <pthread.h>
+
+// MUTEX para garantizar unicidad y atomicidad de planificar
+pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
 
 t_list* CPU_EN_ESPERA_DE_TCB = NULL;
+
+
+void bloquear_planificar()
+{
+	pthread_mutex_lock(&PLANIFICANDO);
+}
+
+void desbloquear_planificar()
+{
+	pthread_mutex_unlock(&PLANIFICANDO);
+}
 
 void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
 	if (CPU_EN_ESPERA_DE_TCB == NULL ) {
@@ -75,7 +90,8 @@ void pedir_tcb(uint32_t cpu_id) {
 }
 
 void planificar() {
-	if (!queue_is_empty(CPU_EN_ESPERA_DE_TCB)) {
+	bloquear_planificar();
+	if (!list_is_empty(CPU_EN_ESPERA_DE_TCB)) {
 		tcb_t* tcb = _proximo_tcb();
 		if (tcb != NULL ) {
 			uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();
@@ -84,6 +100,7 @@ void planificar() {
 		}
 	}
 
+	desbloquear_planificar();
 }
 
 void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id) {
