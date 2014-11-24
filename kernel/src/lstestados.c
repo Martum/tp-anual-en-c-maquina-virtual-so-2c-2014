@@ -263,8 +263,12 @@ tcb_t* get_bloqueado_conclusion_tcb()
 
 void eliminar_conclusion_tcb()
 {
-	free(get_bloqueado_conclusion_tcb);
+	free(get_conclusion_km_t());
 	list_remove(BLOCK_CONCLUSION_KM, 0);
+
+	// Eliminamos el TCB KM de EXEC
+	tcb_t* tcb = get_tcb_km();
+	quitar_de_exec(tcb->pid, tcb->tid);
 }
 
 void agregar_a_block_join(esperando_join_t* ej)

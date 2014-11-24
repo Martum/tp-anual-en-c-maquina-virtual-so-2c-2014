@@ -146,9 +146,9 @@ void mover_tcbs_a_exit(uint32_t pid) {
 	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
 	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
 
-	remover_de_conclusion_km_a_exit(pid);
-
 	remover_de_esperando_km_a_exit(pid);
+
+	remover_de_conclusion_km_a_exit(pid);	// VER QUE ELIMINA Y QUE NO ESTA FUNCION -> LINEA 462 CONEXIONES.C
 
 	remover_de_join_a_exit(pid);
 
@@ -176,10 +176,17 @@ void eliminar_y_destruir_tcb(void* tcbv) {
 	free(tcb);
 }
 
-void replanificar_tcb_km() {
-	esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
+void replanificar_tcb_km()
+{
+	if(tcb_km_ocioso())
+	{
+		esperando_km_t* ekm = remover_primer_tcb_block_espera_km();
 
-	preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
+		if(ekm!= NULL)
+		{
+			preparar_km_para_ejecutar(ekm->tcb, ekm->direccion_syscall);
 
-	free(ekm);
+			free(ekm);
+		}
+	}
 }

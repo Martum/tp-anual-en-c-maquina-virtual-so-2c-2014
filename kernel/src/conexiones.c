@@ -461,6 +461,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
 					//TODO: Codificar esta parte.
+
+					eliminar_conclusion_tcb();
+
+					replanificar_tcb_km();
 				}
 				else
 				{// Recibimos el TCB de un proceso muriendo
