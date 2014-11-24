@@ -40,6 +40,17 @@ void* escuchar_cpus(void* p);
 void inicializar_listas_conexiones(void);
 
 
+/**
+ * Bloquea el MUTEX para Exit
+ */
+void bloquear_exit();
+
+/**
+ * Desbloquea el MUTEX para Exit
+ */
+void desbloquear_exit();
+
+
 // ********* BUSQUEDA DE PROCESOS ***************
 
 /**

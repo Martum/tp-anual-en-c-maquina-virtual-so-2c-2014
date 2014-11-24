@@ -27,6 +27,9 @@ t_list* CONEXIONES_PROCESOS;
 // SET para conexiones unasigned y de procesos
 fd_set READFDS_PROCESOS;
 
+
+pthread_mutex_t MUTEX_BLOQUEAR_EXIT = PTHREAD_MUTEX_INITIALIZER;
+
 //---------------------
 
 // Lista y mutex para conexiones cpu
@@ -43,6 +46,16 @@ int32_t MAYOR_FD_CPU = -1;
 // Socket y mutex de la conexion con memoria
 pthread_mutex_t MUTEX_CONEXION_MEMORIA = PTHREAD_MUTEX_INITIALIZER;
 sock_t* CONEXION_MEMORIA;
+
+void bloquear_exit()
+{
+	pthread_mutex_lock(&MUTEX_BLOQUEAR_EXIT);
+}
+
+void desbloquear_exit()
+{
+	pthread_mutex_lock(&MUTEX_BLOQUEAR_EXIT);
+}
 
 /**
  * Agrega una conexion a la lista de conexiones de Procesos
@@ -331,6 +344,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 	if(resultado == 0)
 	{
+		bloquear_exit();
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
 				;
@@ -454,6 +468,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 			default:
 				break;
 		}
+		desbloquear_exit();
 	}
 
 	free(mensaje);

@@ -961,6 +961,9 @@ char* serializar_respuesta_entrada_estandar_t(
 	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->resultado, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
@@ -985,6 +988,9 @@ respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(
 	memcpy(&respuesta->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(&respuesta->resultado, chorro + offset, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
 	memcpy(&respuesta->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
@@ -1004,6 +1010,7 @@ uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t tamanio)
 {
 	uint32_t t = 0;
 	t += sizeof(flag_t);
+	t += sizeof(resultado_t);
 	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
 	t += sizeof(uint32_t);
