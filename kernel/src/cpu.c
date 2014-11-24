@@ -48,12 +48,27 @@ segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid) {
 	return list_find(segmentos_por_hilo,_elementoConListaDeSegmentos);
 }
 
+void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
 
-void crear_segmento_cpu(uint32_t pid, uint32_t tamanio) {
+	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
+	enviar(socket, rta_serializada, &tamanio);
+
+	free(rta_serializada);
+}
+
+/* TODO: Agregar a conexiones.c */
+void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
 	direccion* dir = malloc(sizeof(direccion));
 	uint32_t tid = get_tcb_km()->tid;
 
-	if (crear_segmento(pid, tamanio, dir) == 0) {
+	uint32_t tamanio_rta = tamanio_respuesta_de_crear_segmento_t_serializado();
+	char * rta_serializada = malloc(tamanio_rta);
+	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio, dir);
+
+	respuesta_de_crear_segmento_t* rta_deserializada = deserializar_respuesta_de_crear_segmento_t(rta_serializada);
+
+	// TODO: REVISAR QUE LA REPSUESTA CORRECTA SEA RESULTADO_OK
+	if (rta_deserializada->resultado == RESULTADO_OK) {
 		segmentos_por_hilo_t* segmentos = find_segmento_de_hilo(pid,tid);
 		if (segmentos == NULL){
 			segmentos_por_hilo_t* segmentos = malloc(sizeof(segmentos_por_hilo_t));
@@ -62,14 +77,37 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio) {
 			segmentos->segmentos = list_create();
 		}
 		list_add(segmentos->segmentos, dir);
+
+		/* TODO: NOTIFICAR A SANTI QUE SE PUDO CREAR EL SEGMENTO. CREO QUE LA RESPUESTA ES IGUAL
+		 * YA SEA TOD BIEN O TOD MAL, Y ES LA QUE YA NOS MANDA LA MSP CUANDO LE MANDAMOS
+		 * CREAR SEGMENTO. */
 	} else {
-		/*TODO: NOTIFIACAR A SANTI QUE NO SE PUDO CREAR EL SEGMENTO*/
+		/*TODO: NOTIFIACAR A SANTI QUE NO SE PUDO CREAR EL SEGMENTO. CREO QUE LA RESPUESTA ES IGUAL
+		 * YA SEA TOD BIEN O TOD MAL, Y ES LA QUE YA NOS MANDA LA MSP CUANDO LE MANDAMOS
+		 * CREAR SEGMENTO. */
 	}
 
+	_enviar_rta_crear_segmento_a_cpu(rta_serializada, tamanio_rta, cpu_id);
 }
 
-void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual) {
-//entrar a la lista, sacarlo de la lista y mandarlo a la msp el destruir segmento
+void _enviar_rta_destruir_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
+
+	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
+	enviar(socket, rta_serializada, &tamanio);
+
+	free(rta_serializada);
+}
+
+/* TODO: Agregar a conexiones.c */
+void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id) {
+	uint32_t tid = get_tcb_km()->tid;
+	quitar_segmento_de_hilo(pid,tid,dir_virtual);
+
+	uint32_t tamanio = tamanio_respuesta_t_serializado();
+	char* rta_serializada = malloc(tamanio);
+	rta_serializada = destruir_segmento_retornando_rta_serializada(pid, dir_virtual);
+
+	_enviar_rta_destruir_segmento_a_cpu(rta_serializada, tamanio, cpu_id);
 }
 
 uint32_t dame_nuevo_id_cpu() {

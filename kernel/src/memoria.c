@@ -296,3 +296,47 @@ int32_t escribir_memoria(uint32_t pid, direccion direccion, char* bytes_a_escrib
 
 	return OK;
 }
+
+
+char* crear_segmento_retornando_rta_serializada(uint32_t pid, uint32_t tamanio, direccion* direccion){
+	//loggear_trace("Preparando mensaje para crear segmento");
+
+	pedido_de_crear_segmento_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = CREA_UN_SEGMENTO;
+	cuerpo_del_mensaje.pid = pid;
+	cuerpo_del_mensaje.tamano = tamanio;
+
+	char* chorro_de_envio = serializar_pedido_de_crear_segmento_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(
+		tamanio_respuesta_de_crear_segmento_t_serializado());
+
+	//loggear_trace("PID %d", pid);
+	//loggear_trace("Tamanio del segmento %d", tamanio);
+
+	_enviar_y_recibir(MEMORIA, chorro_de_envio, tamanio_pedido_de_crear_segmento_t_serializado(), chorro_de_respuesta);
+
+	free(chorro_de_envio);
+	return chorro_de_respuesta;
+}
+
+char* destruir_segmento_retornando_rta_serializada(uint32_t pid, direccion base_segmento){
+	//loggear_trace("Preparando mensaje para destruir segmento");
+
+	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
+	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
+	cuerpo_del_mensaje.pid = pid;
+	cuerpo_del_mensaje.direccion_virtual = direccion;
+
+	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
+		&cuerpo_del_mensaje);
+	char* chorro_de_respuesta = malloc(tamanio_respuesta_t_serializado());
+
+	//loggear_trace("PID: %d", pid);
+	//loggear_trace("Direccion %d", direccion);
+
+	_enviar_y_recibir(MEMORIA, chorro_de_envio, tamanio_pedido_de_destruir_segmento_t_serializado(), chorro_de_respuesta);
+
+	free(chorro_de_envio);
+	return chorro_de_respuesta;
+}

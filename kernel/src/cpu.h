@@ -124,9 +124,9 @@ void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos);
  */
 void quitar_segmento_de_hilo(uint32_t pid, uint32_t tid, direccion dir_virtual);
 
-void crear_segmento_cpu(uint32_t pid, uint32_t tamanio);
+void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id);
 
-void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual);
+void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id);
 
 segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid);
 
