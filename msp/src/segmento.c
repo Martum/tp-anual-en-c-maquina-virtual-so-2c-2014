@@ -39,14 +39,19 @@ segmento_t* crear_segmento_con_paginas(proceso_msp_t *proceso, uint32_t cant_pag
 }
 
 void agregar_segmento_a_proceso(segmento_t *segmento, proceso_msp_t *proceso){
-	uint32_t id_mayor = 0;
+
+	int64_t id_mayor = -1;
+
 	void _mayor_id(segmento_t* s){
 		if(s->id > id_mayor){
 			id_mayor = s->id;
 		}
 	}
+
 	list_iterate(proceso->segmentos, (void*) _mayor_id);
+
 	segmento->id = id_mayor + 1;
+
 	list_add(proceso->segmentos,segmento);
 }
 
