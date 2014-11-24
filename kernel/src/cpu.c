@@ -49,7 +49,7 @@ segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid) {
 }
 
 /* TODO: Agregar a conexiones.c */
-void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t cpu_id) {
+void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
 	direccion* dir = malloc(sizeof(direccion));
 	uint32_t tid = get_tcb_km()->tid;
 
@@ -69,25 +69,24 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t cpu_id) {
 
 }
 
-/* TODO: Agregar a conexiones.c */
-void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual) {
-	uint32_t tid = get_tcb_km()->tid;
-	quitar_segmento_de_hilo(pid,tid,dir_virtual);
-	int32_t rta_serializada = destruir_segmento(pid, dir_virtual);
-
-	_enviar_rta_destruir_segmento_a_cpu();
-//entrar a la lista, sacarlo de la lista y mandarlo a la msp el destruir segmento
-}
-
-void _enviar_rta_destruir_segmento_a_cpu(int32_t rta) {
-
-	char* respuesta = malloc(tamanio);
-	respuesta = _rta_nuevo_tcb(cpu_id, tcb);
+void _enviar_rta_destruir_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
-	enviar(socket, respuesta, &tamanio);
+	enviar(socket, rta_serializada, &tamanio);
 
-	free(respuesta);
+	free(rta_serializada);
+}
+
+/* TODO: Agregar a conexiones.c */
+void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id) {
+	uint32_t tid = get_tcb_km()->tid;
+	quitar_segmento_de_hilo(pid,tid,dir_virtual);
+
+	uint32_t tamanio = tamanio_respuesta_t_serializado();
+	char* rta_serializada = malloc(tamanio);
+	rta_serializada = destruir_segmento(pid, dir_virtual);
+
+	_enviar_rta_destruir_segmento_a_cpu(rta_serializada, tamanio, cpu_id);
 }
 
 uint32_t dame_nuevo_id_cpu() {
