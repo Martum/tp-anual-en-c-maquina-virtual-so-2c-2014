@@ -465,6 +465,15 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// si corresponde.
 				break;
 
+			case CREA_UN_SEGMENTO:
+				;
+				pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(mensaje);
+				crear_segmento_cpu(pedido->pid, pedido->tamano,&(conexion_cpu->id));
+				break;
+
+			case DESTRUI_SEGMENTO:
+				break;
+
 			default:
 				break;
 		}
