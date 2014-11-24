@@ -28,17 +28,11 @@ void inicializar_dic_de_instrucciones();
 void liberar_dic_de_instrucciones();
 
 /*
- * 	@DESC: Lee la siguiente instruccion y la decodifica
- * 	@RETURN:
- */
-void leer_siguiente_instruccion(tcb_t* tcb);
-
-/*
  * 	@DESC: Ejecuta la instruccion
  * 	@RETURN:
  * 		OK si salio bien
  *		ERROR_EN_EJECUCION si algo fallo en la instruccion o no habia instruccion a ejecutar
  */
-resultado_t ejecutar_instruccion(tcb_t* tcb);
+resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb);
 
 #endif /* INSTRUCCIONES_H_ */

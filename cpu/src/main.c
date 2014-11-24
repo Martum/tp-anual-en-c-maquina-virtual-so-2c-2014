@@ -87,9 +87,7 @@ int32_t main(int32_t argc, char** argv)
 
 			_retardar();
 
-			leer_siguiente_instruccion(&tcb);
-
-			resultado = ejecutar_instruccion(&tcb);
+			resultado = ejecutar_siguiente_instruccion(&tcb);
 
 			loggear_trace("Resultado de la ejecucion: %d", resultado);
 
