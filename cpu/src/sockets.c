@@ -587,7 +587,6 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	return OK;
 }
 
-// TODO pensar si no conviene un COMPLETADO_OK
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
@@ -621,16 +620,24 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	respuesta_entrada_estandar_t* respuesta =
 		deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
 
+	free(chorro_de_envio);
+	free(chorro_de_respuesta);
+
+	if (respuesta->resultado == FALLO_ENTRADA_ESTANDAR)
+	{
+		free(respuesta->cadena);
+		free(respuesta);
+		loggear_warning("La entrada estandar no se realizo correctamente");
+		return ERROR_EN_EJECUCION;
+	}
+
 	*bytes_leidos = respuesta->tamanio;
 	buffer = respuesta->cadena;
 
-	free(chorro_de_envio);
-	free(chorro_de_respuesta);
 	free(respuesta->cadena);
 	free(respuesta);
 
 	loggear_debug("Entrada estandar satisfactoria");
-
 	loggear_trace("Entrada %s", buffer);
 	loggear_trace("Tamanio %d", *bytes_leidos);
 
