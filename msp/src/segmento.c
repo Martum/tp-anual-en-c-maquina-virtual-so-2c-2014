@@ -68,6 +68,7 @@ void listar_paginas_de_un_segmento(segmento_t *segmento){
 		}
 	}
 	list_iterate(segmento->paginas, (void*) _lista_paginas);
+	printf("\n");
 	// falta agregar log de todo lo mismo que hago printf
 }
 
