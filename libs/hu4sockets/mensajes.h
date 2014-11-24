@@ -192,6 +192,7 @@ typedef struct pedido_despertar {
 
 typedef struct respuesta_entrada_estandar {
 	flag_t flag;
+	resultado_t resultado;
 	uint32_t pid;
 	uint32_t tid;
 	uint32_t tamanio;

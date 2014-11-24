@@ -10,6 +10,7 @@
 #include <string.h>
 #include <hu4sockets/sockets.h>
 #include <hu4sockets/mensajes.h>
+#include <signal.h>
 #include <pthread.h>
 
 #include "configuraciones.h"
@@ -24,6 +25,7 @@ typedef enum {
 } errores_t;
 
 sock_t* SOCKET_KERNEL;
+uint32_t entrada_en_progreso = 0;
 
 /**
  * Carga el codigo BESO a memoria
@@ -41,6 +43,11 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size);
  * Escucha por conexiones del KERNEL.
  */
 void escuchar_kernel();
+
+/**
+ * Escucha las signals de desconexion
+ */
+void escuchar_seniales();
 
 int main(int argc, char **argv)
 {
@@ -90,6 +97,7 @@ int main(int argc, char **argv)
 
 		case BOK:
 			free(codigo_beso);
+			escuchar_seniales();
 			escuchar_kernel();
 			return 0;
 			break;
@@ -256,7 +264,9 @@ void procesar_conexion(char* mensaje, uint32_t len)
 	switch(codop)
 	{
 		case ENTRADA_ESTANDAR:
+			entrada_en_progreso = 1;
 			enviar_respuesta_entrada(entrada_estandar(deserializar_pedido_entrada_estandar_t(mensaje)));
+			entrada_en_progreso = 0;
 			break;
 
 		case SALIDA_ESTANDAR:
@@ -266,6 +276,36 @@ void procesar_conexion(char* mensaje, uint32_t len)
 		default:
 			break;
 	}
+}
+
+void _enviar_flagt(sock_t* conxion, flag_t flag)
+{
+	char* msg = malloc(tamanio_flagt());
+	uint32_t i = tamanio_flagt();
+
+	memcpy(msg, &flag, tamanio_flagt());
+
+	enviar(conxion, msg, &i);
+
+	free(msg);
+}
+
+void notificar_desconexion_kernel()
+{
+	// Si entrada en progreso == 1 -> notificar que no se va a completar
+	// Desconectarse
+	if(entrada_en_progreso == 1)
+	{
+
+	}
+
+	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
+}
+
+void escuchar_seniales()
+{
+	signal(SIGINT, notificar_desconexion_kernel);
+	//signal(SIGUSR1, fallo_memoria);
 }
 
 void escuchar_kernel()
