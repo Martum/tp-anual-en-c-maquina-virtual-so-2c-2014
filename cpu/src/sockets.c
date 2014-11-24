@@ -568,7 +568,7 @@ resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
 	loggear_trace("Me preparo para leer una instruccion");
 
-	if (_obtener(tcb, instruccion, sizeof(instruccion_t))
+	if (_obtener(tcb, instruccion, 4)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
