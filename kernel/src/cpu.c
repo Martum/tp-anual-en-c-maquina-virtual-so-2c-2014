@@ -65,10 +65,10 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
 	char * rta_serializada = malloc(tamanio_rta);
 	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio, dir);
 
-	respuesta_de_crear_segmento_t rta_deserializada = deserializar_respuesta_de_crear_segmento_t(rta_serializada);
+	respuesta_de_crear_segmento_t* rta_deserializada = deserializar_respuesta_de_crear_segmento_t(rta_serializada);
 
 	// TODO: REVISAR QUE LA REPSUESTA CORRECTA SEA RESULTADO_OK
-	if (rta_deserializada.resultado == RESULTADO_OK) {
+	if (rta_deserializada->resultado == RESULTADO_OK) {
 		segmentos_por_hilo_t* segmentos = find_segmento_de_hilo(pid,tid);
 		if (segmentos == NULL){
 			segmentos_por_hilo_t* segmentos = malloc(sizeof(segmentos_por_hilo_t));
