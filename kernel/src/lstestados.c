@@ -138,6 +138,27 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 	//list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
 
+bool esta_ejecutando(uint32_t cpu_id)
+{
+	bool _cpu_ejecutando(void* e)
+	{
+		return ((ejecutando_t*) e)->cpu == cpu_id;
+	}
+
+	return list_any_satisfy(EXEC, _cpu_ejecutando);
+}
+
+tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id)
+{
+	bool _cpu_ejecutando(void* e)
+	{
+		return ((ejecutando_t*) e)->cpu == cpu_id;
+	}
+
+	ejecutando_t* ej = list_find(EXEC, _cpu_ejecutando);
+
+	return ej->tcb;
+}
 
 void quitar_de_block_recurso(tcb_t* tcb)
 {
@@ -267,8 +288,7 @@ void eliminar_conclusion_tcb()
 	list_remove(BLOCK_CONCLUSION_KM, 0);
 
 	// Eliminamos el TCB KM de EXEC
-	tcb_t* tcb = get_tcb_km();
-	quitar_de_exec(tcb->pid, tcb->tid);
+	quitar_de_exec(get_tcb_km());
 }
 
 void agregar_a_block_join(esperando_join_t* ej)

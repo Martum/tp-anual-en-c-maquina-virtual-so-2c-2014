@@ -70,6 +70,16 @@ void agregar_a_exit(tcb_t* tcb);
 
 tcb_t* quitar_de_exec(tcb_t* tcb);
 
+/**
+ * Verifica si un CPU esta ejecutando algo
+ */
+bool esta_ejecutando(uint32_t cpu_id);
+
+/**
+ * Devuelve el TCB ejecutando en determinado CPU
+ */
+tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id);
+
 //void quitar_de_block(tcb_t* tcb);
 
 void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb);

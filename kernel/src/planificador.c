@@ -16,21 +16,33 @@
 #include "memoria.h"
 #include "cpu.h"
 
-t_queue* cpu_en_espera_de_tcb = NULL;
+t_list* CPU_EN_ESPERA_DE_TCB = NULL;
 
 void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
-	if (cpu_en_espera_de_tcb == NULL ) {
-		cpu_en_espera_de_tcb = queue_create();
+	if (CPU_EN_ESPERA_DE_TCB == NULL ) {
+		CPU_EN_ESPERA_DE_TCB = list_create();
 	}
 
 	uint32_t* cpu = malloc(sizeof(uint32_t));
 	*cpu = cpu_id;
-	queue_push(cpu_en_espera_de_tcb, cpu);
+	list_add(CPU_EN_ESPERA_DE_TCB, cpu);
 }
 
 void* quitar_de_cpu_en_espera_de_tcb() {
-	return queue_pop(cpu_en_espera_de_tcb);
+	return list_remove(CPU_EN_ESPERA_DE_TCB, 0);
 }
+
+void quitar_cpu_de_lista_espera_tcb(uint32_t cpu_id)
+{
+	bool _cpu_por_id(void* e)
+	{
+		return *((uint32_t*)e) == cpu_id;
+	}
+
+	list_remove_and_destroy_by_condition(CPU_EN_ESPERA_DE_TCB, _cpu_por_id, free);
+}
+
+
 
 // TODO: FALTA CONTEMPLAR EL CASO QUE NO HAYA PROXIMO TCB
 //tcb_t* _proximo_tcb(uint32_t cpu_id)
@@ -63,7 +75,7 @@ void pedir_tcb(uint32_t cpu_id) {
 }
 
 void planificar() {
-	if (!queue_is_empty(cpu_en_espera_de_tcb)) {
+	if (!queue_is_empty(CPU_EN_ESPERA_DE_TCB)) {
 		tcb_t* tcb = _proximo_tcb();
 		if (tcb != NULL ) {
 			uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();

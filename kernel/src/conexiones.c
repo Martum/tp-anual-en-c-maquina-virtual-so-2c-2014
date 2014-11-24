@@ -460,8 +460,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				}
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
-					//TODO: Codificar esta parte.
-
 					eliminar_conclusion_tcb();
 
 					replanificar_tcb_km();
@@ -469,6 +467,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				else
 				{// Recibimos el TCB de un proceso muriendo
 					//TODO: Codificar esta parte.
+					// Creo que en este caso no hay que hacer nada
 				}
 
 				free(pedido_resultado->tcb);
@@ -479,6 +478,15 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// TODO: Si esta ejecutando, matar proceso, sino no hacer nada.
 					// Recordar sacar a la CPU de las listas y del FDSET y del cpu_en_espera_de_tcb (planificador.c)
 					// si corresponde.
+
+					quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
+					FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
+
+					if(esta_ejecutando(conexion_cpu->id))
+					{
+						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
+						mover_tcbs_a_exit(t->pid);
+					}
 				break;
 
 			default:
