@@ -467,11 +467,14 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 			case CREA_UN_SEGMENTO:
 				;
-				pedido_de_crear_segmento_t* pedido = deserializar_pedido_de_crear_segmento_t(mensaje);
-				crear_segmento_cpu(pedido->pid, pedido->tamano,&(conexion_cpu->id));
+				pedido_de_crear_segmento_t* pedido_crear_segmento = deserializar_pedido_de_crear_segmento_t(mensaje);
+				crear_segmento_cpu(pedido_crear_segmento->pid, pedido_crear_segmento->tamano,&(conexion_cpu->id));
 				break;
 
 			case DESTRUI_SEGMENTO:
+				;
+				pedido_de_destruir_segmento_t* pedido_destruir_segmento = deserializar_pedido_de_destruir_segmento_t(mensaje);
+				destruir_segmento_cpu(pedido_destruir_segmento->pid,pedido_destruir_segmento->direccion_virtual, &(conexion_cpu->id));
 				break;
 
 			default:
