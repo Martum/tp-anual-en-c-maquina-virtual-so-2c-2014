@@ -15,28 +15,20 @@ sock_t* kernel;
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	uint32_t len_a_enviar, char* respuesta)
 {
-	loggear_trace("Me preparo para enviar %d bytes", len_a_enviar);
-
 	if (enviar(socket, chorro_a_enviar, &len_a_enviar) == -1)
 	{
 		loggear_warning("No pudo mandar el paquete de %d bytes", len_a_enviar);
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_trace("Envio con exito paquete de %d bytes", len_a_enviar);
-
 	char* mensaje_recibido;
 	uint32_t len_devolucion;
-
-	loggear_trace("Me preparo para recibir respuesta");
 
 	if (recibir(socket, &mensaje_recibido, &len_devolucion) == -1)
 	{
 		loggear_warning("No pudo recibir respuesta");
 		return FALLO_COMUNICACION;
 	}
-
-	loggear_trace("Recibio con exito paquete de %d bytes", len_devolucion);
 
 	memcpy(respuesta, mensaje_recibido, len_devolucion);
 
@@ -54,8 +46,6 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 		loggear_warning("No pudo conectarse a ip: %s y puerto: %d", ip, puerto);
 		return FALLO_CONEXION;
 	}
-
-	loggear_trace("Conexion realizada con exito");
 
 	return OK;
 }
@@ -199,9 +189,9 @@ resultado_t desconectarse()
 resultado_t crear_segmento(direccion pid, uint32_t tamanio,
 	direccion* direccion)
 {
-	loggear_trace("Preparando mensaje para crear segmento");
-	loggear_trace("PID %d", pid);
-	loggear_trace("Tamanio del segmento a crear %d", tamanio);
+	loggear_trace("Envio mensaje para crear segmento");
+	loggear_trace("PID: %d", pid);
+	loggear_trace("Tamaño del segmento a crear %x", tamanio);
 
 	pedido_de_crear_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = CREA_UN_SEGMENTO;
@@ -251,9 +241,9 @@ resultado_t crear_segmento(direccion pid, uint32_t tamanio,
 
 resultado_t destruir_segmento(direccion pid, direccion direccion)
 {
-	loggear_trace("Preparando mensaje para destruir segmento");
+	loggear_trace("Envio mensaje para destruir segmento");
 	loggear_trace("PID: %d", pid);
-	loggear_trace("Direccion del segmento a destruir %d en bytes", direccion,
+	loggear_trace("Direccion del segmento a destruir %x en bytes", direccion,
 		direccion);
 
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
@@ -300,7 +290,10 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* buffer)
 {
-	loggear_trace("Preparando mensaje para leer de memoria");
+	loggear_trace("Envio mensaje para leer de memoria");
+	loggear_trace("PID: %d", pid);
+	loggear_trace("Direcciones a leer %x - %x", direccion,
+		direccion + cantidad_de_bytes - 1);
 
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
@@ -312,8 +305,6 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(
 		tamanio_respuesta_de_leer_de_memoria_t_serializado(cantidad_de_bytes));
-
-	loggear_trace("Cantidad de bytes a leer %d", cantidad_de_bytes);
 
 	if (_enviar_y_recibir(memoria, chorro_de_envio,
 		tamanio_pedido_de_leer_de_memoria_t_serializado(), chorro_de_respuesta)
@@ -347,9 +338,6 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	free(respuesta);
 
 	loggear_trace("Lectura de memorira satisfactoria");
-	loggear_trace("Direccion leida %d", direccion);
-	loggear_trace("Cantidad de bytes leidos %d", respuesta->tamano);
-	loggear_trace("Bytes: %x", *buffer);
 
 	return OK;
 }
@@ -357,10 +345,9 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* bytes_a_escribir)
 {
-	loggear_trace("Preparando mensaje escribir en memoria");
-	loggear_trace("Direccion en donde escribir %d", direccion);
-	loggear_trace("Cantidad de bytes a escribir %d", cantidad_de_bytes);
-	loggear_trace("Bytes %x", *bytes_a_escribir);
+	loggear_trace("Envio mensaje escribir en memoria");
+	loggear_debug("Direcciones a escribir %x - %x", direccion,
+		direccion + cantidad_de_bytes - 1);
 
 	pedido_de_escribir_en_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ESCRIBI_EN_MEMORIA;
@@ -400,8 +387,6 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	free(respuesta);
 
 	loggear_debug("Escritura en memoria satisfactoria");
-	loggear_debug("Direcciones escritas %x - %x", direccion,
-		direccion + cantidad_de_bytes - 1);
 
 	return OK;
 }
@@ -540,49 +525,41 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 resultado_t _obtener(tcb_t* tcb, char* buffer, uint32_t bytes_a_leer)
 {
-	loggear_trace("Me preparo para obtener %d bytes", bytes_a_leer);
-
 	uint32_t pid_a_leer = PID_KERNEL
 	;
 
 	if (!tcb->km)
 		pid_a_leer = tcb->pid;
 
-	loggear_trace("PID TCB %d -- Direccion a leer %d", pid_a_leer, tcb->pc);
 	loggear_trace("Modo kernel %d", tcb->km);
 
 	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
-	loggear_trace("Obtencion de bytes satisfactoria");
-
 	actualizar_pc(tcb, tcb->pc + bytes_a_leer);
-
-	loggear_trace("PC nuevo %d", tcb->pc);
 
 	return OK;
 }
 
 resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
-	loggear_trace("Me preparo para leer una instruccion");
+	loggear_trace("Leo instruccion");
 
-	if (_obtener(tcb, instruccion, 4)
-		== FALLO_LECTURA_DE_MEMORIA)
+	if (_obtener(tcb, instruccion, 4) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
 	instruccion[4] = '\0';
 
 	loggear_debug("Lectura de instruccion satisfactoria");
-	loggear_debug("Instruccion leida %s en bytes %x", instruccion, instruccion);
+	loggear_debug("Instruccion leida %s", instruccion);
 
 	return OK;
 }
 
 resultado_t leer_registro(tcb_t* tcb, char* registro)
 {
-	loggear_trace("Me preparo para leer registro");
+	loggear_trace("Leo registro");
 
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
@@ -595,7 +572,7 @@ resultado_t leer_registro(tcb_t* tcb, char* registro)
 
 resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 {
-	loggear_trace("Me preparo para leer numero");
+	loggear_trace("Leo numero");
 
 	char buffer[4];
 

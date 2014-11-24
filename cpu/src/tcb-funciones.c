@@ -15,8 +15,6 @@ bool es_tcb_kernel(tcb_t* tcb)
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	int32_t numero)
 {
-	loggear_trace("Me preparo para actualizar valor de registro");
-
 	loggear_trace("Actualizo el valor del registro %c", registro);
 
 	if ('a' == registro)
@@ -99,7 +97,7 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 void actualizar_pc(tcb_t* tcb, direccion nuevo_pc)
 {
 	loggear_trace("Actualizo valor del pc de PID %d", tcb->pid);
-	loggear_trace("Vieja pc %d -> Nueva pc %d", tcb->pc, nuevo_pc);
+	loggear_trace("Vieja pc %x -> Nueva pc %x", tcb->pc, nuevo_pc);
 	tcb->pc = nuevo_pc;
 }
 
@@ -138,7 +136,7 @@ int32_t obtener_valor_registro_b(tcb_t* tcb)
 
 resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
-	loggear_trace("Me preparo para mover curso del stack del tcb PID %d", tcb->pid);
+	loggear_trace("Muevo cursor del stack del tcb PID %d", tcb->pid);
 	loggear_trace("Posicion actual %d -- Bytes a mover %d", tcb->cursor_stack, cantidad_de_bytes);
 	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes) {
 		loggear_warning("La cantidad de bytes a mover sobrepasa la base");
