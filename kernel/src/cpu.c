@@ -69,6 +69,7 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t cpu_id) {
 
 }
 
+/* TODO: Agregar a conexiones.c */
 void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual) {
 	uint32_t tid = get_tcb_km()->tid;
 	quitar_segmento_de_hilo(pid,tid,dir_virtual);
