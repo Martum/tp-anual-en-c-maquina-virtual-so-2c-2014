@@ -105,7 +105,7 @@ void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id
 
 	uint32_t tamanio = tamanio_respuesta_t_serializado();
 	char* rta_serializada = malloc(tamanio);
-	rta_serializada = destruir_segmento(pid, dir_virtual);
+	rta_serializada = destruir_segmento_retornando_rta_serializada(pid, dir_virtual);
 
 	_enviar_rta_destruir_segmento_a_cpu(rta_serializada, tamanio, cpu_id);
 }
