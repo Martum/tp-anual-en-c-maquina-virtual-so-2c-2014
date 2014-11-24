@@ -345,7 +345,7 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* bytes_a_escribir)
 {
-	loggear_trace("Envio mensaje escribir en memoria");
+	loggear_debug("Envio mensaje escribir en memoria");
 	loggear_debug("Direcciones a escribir %x - %x", direccion,
 		direccion + cantidad_de_bytes - 1);
 
@@ -544,14 +544,14 @@ resultado_t _obtener(tcb_t* tcb, char* buffer, uint32_t bytes_a_leer)
 
 resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 {
-	loggear_trace("Leo instruccion");
+	loggear_debug("Leo instruccion");
 
 	if (_obtener(tcb, instruccion, 4) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
 	instruccion[4] = '\0';
 
-	loggear_debug("Lectura de instruccion satisfactoria");
+	loggear_trace("Lectura de instruccion satisfactoria");
 	loggear_debug("Instruccion leida %s", instruccion);
 
 	return OK;
@@ -559,12 +559,12 @@ resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 
 resultado_t leer_registro(tcb_t* tcb, char* registro)
 {
-	loggear_trace("Leo registro");
+	loggear_debug("Leo registro");
 
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
-	loggear_debug("Lectura de registro satisfactoria");
+	loggear_trace("Lectura de registro satisfactoria");
 	loggear_debug("Registro leido %c en bytes %x", *registro, *registro);
 
 	return OK;
@@ -572,7 +572,7 @@ resultado_t leer_registro(tcb_t* tcb, char* registro)
 
 resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 {
-	loggear_trace("Leo numero");
+	loggear_debug("Leo numero");
 
 	char buffer[4];
 
@@ -581,7 +581,7 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 
 	unir_bytes(numero, buffer);
 
-	loggear_debug("Lectura de numero satisfactoria");
+	loggear_trace("Lectura de numero satisfactoria");
 	loggear_debug("Numero leido %d en bytes %x", *numero, *numero);
 
 	return OK;

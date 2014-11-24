@@ -1224,7 +1224,7 @@ resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
 
 	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
-	loggear_trace("Ejecuto instruccion %s", instruccion);
+	loggear_info("Ejecuto instruccion %s", instruccion);
 
 	return funcion(tcb);
 }
