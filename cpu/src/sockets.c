@@ -590,7 +590,10 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
-	loggear_trace("Preparando mensaje comunicar entrada estandar");
+	loggear_debug("Comunico entrada estandar");
+	loggear_trace("PID %d", tcb->pid);
+	loggear_trace("Cantidad de bytes a leer %d", bytes_a_leer);
+	loggear_trace("Tipo %d", identificador);
 
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -601,10 +604,6 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 
 	char* chorro_de_envio = serializar_pedido_entrada_estandar_t(
 		&cuerpo_del_mensaje);
-
-	loggear_trace("PID %s", tcb->pid);
-	loggear_trace("Cantidad de bytes de entrada %d", bytes_a_leer);
-	loggear_trace("Tipo %d", identificador);
 
 	if (enviar(kernel, chorro_de_envio, &len_a_enviar) == -1)
 		return FALLO_COMUNICACION;
@@ -639,7 +638,7 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 
 	loggear_debug("Entrada estandar satisfactoria");
 	loggear_trace("Entrada %s", buffer);
-	loggear_trace("Tamanio %d", *bytes_leidos);
+	loggear_trace("Tamaño %d", *bytes_leidos);
 
 	return OK;
 }
@@ -647,7 +646,10 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer, idetificador_tipo_t identificador)
 {
-	loggear_trace("Me preparo para comunicar salida estandar");
+	loggear_debug("Comunico salida estandar");
+	loggear_trace("PID %d", tcb->pid);
+	loggear_trace("Cadena a imprimir %s", bytes_a_enviar);
+	loggear_trace("Tipo %d", identificador);
 
 	pedido_salida_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -659,10 +661,6 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* chorro_de_envio = serializar_pedido_salida_estandar_t(
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
-
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Cadena a imprimir %s", bytes_a_enviar);
-	loggear_trace("Tipo %d", identificador);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_salida_estandar_t_serializado(bytes_a_enviar),
@@ -686,14 +684,15 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 		return ERROR_EN_EJECUCION;
 	}
 
-	loggear_debug("Salida estantar satisfactoria");
+	loggear_debug("Salida estandar satisfactoria");
 
 	return OK;
 }
 
 resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 {
-	loggear_trace("Me preparo para comunicar nuevo tcb");
+	loggear_debug("Comunico nuevo tcb");
+	loggear_trace("PID nuevo tcb %d", nuevo_tcb);
 
 	pedido_crear_hilo_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -701,8 +700,6 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 
 	char* chorro_de_envio = serializar_pedido_crear_hilo_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
-
-	loggear_trace("PID nuevo tcb %d", nuevo_tcb);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_crear_hilo_t_serializado(), chorro_de_respuesta)
@@ -733,7 +730,9 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 
 resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 {
-	loggear_trace("Me preparo para comunicar join");
+	loggear_debug("Comunico join");
+	loggear_trace("TID llamador %d", tid_llamador);
+	loggear_trace("TID esperador %d", tid_esperador);
 
 	pedido_join_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -742,9 +741,6 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 
 	char* chorro_de_envio = serializar_pedido_join_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
-
-	loggear_trace("TID llamador %d", tid_llamador);
-	loggear_trace("TID esperador %d", tid_esperador);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_join_t_serializado(), chorro_de_respuesta)
@@ -775,7 +771,9 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 
 resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 {
-	loggear_trace("Me preparo para comunicar bloquear");
+	loggear_debug("Comunico bloquear");
+	loggear_trace("PID %d", tcb->pid);
+	loggear_trace("Id del recurso %d", id_recurso);
 
 	pedido_bloquear_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -784,9 +782,6 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 
 	char* chorro_de_envio = serializar_pedido_bloquear_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
-
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Id del recurso %d", id_recurso);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_bloquear_t_serializado(), chorro_de_respuesta)
@@ -817,7 +812,9 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 {
-	loggear_trace("Me preparo para comunicar despertar");
+	loggear_debug("Comunico despertar");
+	loggear_trace("PID %d", tcb->pid);
+	loggear_trace("Id del recurso %d", id_recurso);
 
 	pedido_despertar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -825,9 +822,6 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 
 	char* chorro_de_envio = serializar_pedido_despertar_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
-
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Id del recurso %d", id_recurso);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_despertar_t_serializado(), chorro_de_respuesta)
