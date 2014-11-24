@@ -196,12 +196,22 @@ errores_t enviar_beso_al_kernel(char* codigo_beso, uint32_t size)
  */
 void salida_estandar(pedido_salida_estandar_t* salida)
 {
-	char* texto = malloc(salida->tamanio + 1);
-	texto[salida->tamanio] = '\0';
+	if(salida->identificador_de_tipo == CADENA)
+	{
+		char* texto = malloc(salida->tamanio + 1);
+		texto[salida->tamanio] = '\0';
 
-	printf("SALIDA > %s", texto);
+		printf("SALIDA > %s\n", texto);
 
-	free(texto);
+		free(texto);
+	}
+	else
+	{
+		int32_t entero;
+		memcpy(&entero, salida->cadena_de_texto, sizeof(int32_t));
+		printf("SALIDA > %d\n", entero);
+	}
+
 	free(salida->cadena_de_texto);
 	free(salida);
 }
@@ -215,13 +225,15 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 {
 	respuesta_entrada_estandar_t* respuesta_entrada = malloc(sizeof(respuesta_entrada_estandar_t));
 	respuesta_entrada->flag = RESPUESTA_ENTRADA;
+	respuesta_entrada->resultado = COMPLETADO_OK;
 	respuesta_entrada->pid = entrada->pid;
 	respuesta_entrada->tid = entrada->tid;
 
+	// TODO: Deberiamos verificar que el tipo de entrada sea el correcto.
 	if(entrada->identificador_de_tipo == ENTERO)
 	{
 		int32_t* entero = malloc(sizeof(int32_t));
-		printf("ENTRADA (i) > ");
+		printf("ENTRADA (entero) > ");
 		scanf("%d", entero);
 
 		respuesta_entrada->tamanio = sizeof(int32_t);
@@ -231,7 +243,7 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 	else
 	{
 		char* texto = malloc(51);
-		printf("ENTRADA (s) > ");
+		printf("ENTRADA (cadena) > ");
 		scanf("%50[^\n]", texto);
 
 		respuesta_entrada->tamanio = strlen(texto);
