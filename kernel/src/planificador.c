@@ -186,6 +186,8 @@ void mover_tcbs_a_exit(uint32_t pid) {
 	// TODO: Destruir los Segmentos que van a estar en la lista de segmentos por hilo
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
+
+	destruir_segmentos_de_proceso(pid);	//TODO: Codificar esto
 }
 
 void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {

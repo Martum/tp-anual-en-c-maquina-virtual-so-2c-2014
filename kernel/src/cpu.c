@@ -48,6 +48,38 @@ segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid) {
 	return list_find(segmentos_por_hilo,_elementoConListaDeSegmentos);
 }
 
+void destruir_segmentos(t_list* lista, uint32_t pid)
+{
+	void _eliminar(void* elemento)
+	{
+		destruir_segmento(pid, *((direccion*)elemento));
+		free(elemento);
+	}
+
+	list_clean_and_destroy_elements(lista, _eliminar);
+}
+
+void destruir_segmentos_de_proceso(uint32_t pid)
+{
+	bool _coincide_pid(void* elemento)
+	{
+		return ((segmentos_por_hilo_t*) elemento)->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(segmentos_por_hilo, _coincide_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		segmentos_por_hilo_t* seg = list_find(segmentos_por_hilo, _coincide_pid);
+
+		destruir_segmentos(seg->segmentos, pid);
+
+		list_destroy(seg->segmentos);
+		free(seg);
+	}
+}
+
 void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
