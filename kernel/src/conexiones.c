@@ -133,6 +133,11 @@ void _enviar_completadook(sock_t* conexion)
 	_enviar_resultadot(conexion, COMPLETADO_OK);
 }
 
+void _informar_fallo_syscall(sock_t* conexion)
+{
+	_enviar_resultadot(conexion, FALLO_SYSCALL);
+}
+
 void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
 	char* msg = malloc(tamanio_flagt());
@@ -358,7 +363,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					_enviar_completadook(conexion_cpu->socket);
 				else
 				{
-					// TODO: Ver con Santi como informar Error
+					_informar_fallo_syscall(conexion_cpu->socket);
 				}
 
 				free(pedido_salida->cadena_de_texto);
@@ -376,6 +381,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				else
 				{
 					// TODO: Ver con Santi como informar Error
+					//_informar_fallo_syscall(conexion_cpu->socket);
 				}
 
 				free(pedido_entrada);
