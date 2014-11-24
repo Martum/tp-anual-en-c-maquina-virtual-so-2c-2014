@@ -307,8 +307,12 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 				break;
 
 			case TERMINAR_CONEXION:
+				bloquear_exit();
+
 				mover_tcbs_a_exit(conexion_proceso->pid);
 				_eliminar_conexion_proceso(conexion_proceso->socket);
+
+				desbloquear_exit();
 				break;
 
 			default:
@@ -366,7 +370,9 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
 				if(enviar_entrada_estandar(pedido_entrada) == 0)
-					_enviar_completadook(conexion_cpu->socket);
+				{
+
+				}
 				else
 				{
 					// TODO: Ver con Santi como informar Error
