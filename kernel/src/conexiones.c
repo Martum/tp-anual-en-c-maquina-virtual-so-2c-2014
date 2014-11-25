@@ -380,7 +380,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 		bloquear_exit();
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
-				;
+				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
+
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
 
 
@@ -403,7 +404,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case ENTRADA_ESTANDAR:
-				;
+				logear_instruccion_protegida("ENTRADA ESTANDAR", get_tcb_km());
+
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
 				if(!proceso_muriendo(tcbKM->pid))
@@ -423,7 +425,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
-				;
+				logear_instruccion_protegida("BLOQUEAR", get_tcb_km());
+
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
 
 				// No usamos el TCB porque el que se esta bloqueando
@@ -439,7 +442,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESPERTAR:
-				;
+				logear_instruccion_protegida("DESPERTAR", get_tcb_km());
+
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
 
@@ -452,6 +456,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case INTERRUPCION:
+				//logear_instruccion_protegida("INTERRUPCION", get_tcb_km());	//TODO: Este no es con TCB KM
 				;
 				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
 
@@ -467,7 +472,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case JOIN:
-				;
+				logear_instruccion_protegida("JOIN", get_tcb_km());
+
 				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
 
 

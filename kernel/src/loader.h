@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <hu4sockets/tcb.h>
 #include <ansisop-panel/panel/panel.h>
+#include <ansisop-panel/panel/kernel.h>
 
 
 typedef struct pid {
@@ -59,5 +60,10 @@ int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo);
  * Crea un t_hilo* en base al tcb_t recibido
  */
 t_hilo* crear_t_hilo(tcb_t*);
+
+/**
+ * Logea una instruccion protegida
+ */
+void logear_instruccion_protegida(char* instruccion, tcb_t*);
 
 #endif /* LOADER_H_ */
