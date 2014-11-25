@@ -58,9 +58,6 @@ void quitar_cpu_de_lista_espera_tcb(uint32_t cpu_id)
 }
 
 
-
-// TODO: FALTA CONTEMPLAR EL CASO QUE NO HAYA PROXIMO TCB
-//tcb_t* _proximo_tcb(uint32_t cpu_id)
 tcb_t* _proximo_tcb() {
 	tcb_t* tcb = NULL;
 
@@ -79,10 +76,6 @@ tcb_t* _proximo_tcb() {
 
 	return tcb;
 }
-
-// TODO: el planificador tiene que manejar una cola de cpus en espera de tcb. Cuando le llega una peticion
-// de tcb, encola  la cpu en la lista y corre el planificador. Cuando un tcb entra en ready,
-//debe revisar si hay alguna cpu en espera, si la hay le da el tcb.
 
 void pedir_tcb(uint32_t cpu_id) {
 	agregar_a_cpu_en_espera_de_tcb(cpu_id);
@@ -132,8 +125,7 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 	return salida;
 }
 
-// FALTA EL WRAPPER QUE DESERIALICE. YO VOY A RECIBIR UN CHORRO DE BYTES QUE TENGO
-// QUE TRANSFORMAR EN RESULTADO_T Y TCB_T. ESA FUNCION VA A ESTAR EN UN SUPER CASE EN CONEXIONES.C
+
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 	tcb_t* tcb_posta = quitar_de_exec(tcb);
@@ -148,7 +140,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		agregar_a_ready(tcb_posta);
 		break;
 
-		// TODO: Podemos caer aca por el TCB KM tambien, replicar comportamiento de abajo
 	case ERROR_EN_EJECUCION:
 		if(tcb->km)
 			eliminar_conclusion_tcb();
@@ -161,7 +152,9 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		if (tcb->km)
 		{
 			eliminar_conclusion_tcb();
-			agregar_a_ready(tcb_posta);
+			agregar_a_ready(tcb_posta); // NO!
+			//TODO: Ver si tcb_posta esta encolado en alguna cola de bloqueados,
+			// en caso de estarlo no hay que ponerlo en RDY
 		}
 		else
 		{
@@ -195,10 +188,6 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
 	remover_de_ready_a_exit(pid);
 
 	remover_de_exec_a_exit(pid);
-
-	// TODO: Verificar la cola rdy del KM
-	// Si el KM en rdy es de un hilo de este proceso, sacarlo y replanificarlo.
-	// Antes de eso recordar que el tcb en block_conclusion_km es el que hay que mnadar a exit
 
 	remover_de_esperando_km_a_exit(pid);
 
