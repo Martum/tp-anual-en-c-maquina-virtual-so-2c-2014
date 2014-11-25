@@ -133,6 +133,11 @@ void _enviar_completadook(sock_t* conexion)
 	_enviar_resultadot(conexion, COMPLETADO_OK);
 }
 
+void _informar_fallo_syscall(sock_t* conexion)
+{
+	_enviar_resultadot(conexion, FALLO_SYSCALL);
+}
+
 void _enviar_flagt(sock_t* conxion, flag_t flag)
 {
 	char* msg = malloc(tamanio_flagt());
@@ -307,8 +312,12 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 				break;
 
 			case TERMINAR_CONEXION:
+				bloquear_exit();
+
 				mover_tcbs_a_exit(conexion_proceso->pid);
 				_eliminar_conexion_proceso(conexion_proceso->socket);
+
+				desbloquear_exit();
 				break;
 
 			default:
@@ -336,6 +345,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
+	tcb_t* tcbKM = get_tcb_km();
+
 	// TODO: IMPORTANTE: Cuando se recibe un TCB KM que termino de ejecutar,
 	// el TCB UM esta en la lista BLOCK_CONCLUSION_KM. Despues de copiar los
 	// registros del KM al UM, NO HAY QUE PONERLO DIRECTAMENTE EN RDY (al UM).
@@ -350,11 +361,19 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
 
-				if(salida_estandar(pedido_salida) == 0)
-					_enviar_completadook(conexion_cpu->socket);
+
+				if(!proceso_muriendo(tcbKM->pid))
+				{
+					if(salida_estandar(pedido_salida) == 0)
+						_enviar_completadook(conexion_cpu->socket);
+					else
+					{
+						_informar_fallo_syscall(conexion_cpu->socket);
+					}
+				}
 				else
 				{
-					// TODO: Ver con Santi como informar Error
+					_enviar_completadook(conexion_cpu->socket);
 				}
 
 				free(pedido_salida->cadena_de_texto);
@@ -365,11 +384,17 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
-				if(enviar_entrada_estandar(pedido_entrada) == 0)
-					_enviar_completadook(conexion_cpu->socket);
-				else
+				if(!proceso_muriendo(tcbKM->pid))
 				{
-					// TODO: Ver con Santi como informar Error
+					if(enviar_entrada_estandar(pedido_entrada) == 0)
+					{
+
+					}
+					else
+					{
+						// TODO: Ver con Santi como informar Error
+						//_informar_fallo_syscall(conexion_cpu->socket);
+					}
 				}
 
 				free(pedido_entrada);
@@ -381,7 +406,9 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				// No usamos el TCB porque el que se esta bloqueando
 				// es el que esta esperando la conclusion del KM
-				bloquear(pedido_bloqueo->identificador_de_recurso);
+
+				if(!proceso_muriendo(tcbKM->pid))
+					bloquear(pedido_bloqueo->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
 
@@ -393,7 +420,9 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
-				despertar(pedido_despertar->identificador_de_recurso);
+
+				if(!proceso_muriendo(tcbKM->pid))
+					despertar(pedido_despertar->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
 
@@ -427,7 +456,9 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
 
-				join(pedido_join->tid_llamador, pedido_join->tid_esperador);
+
+				if(!proceso_muriendo(tcbKM->pid))
+					join(pedido_join->tid_llamador, pedido_join->tid_esperador);
 
 				_enviar_completadook(conexion_cpu->socket);
 
@@ -448,11 +479,14 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				}
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
-					//TODO: Codificar esta parte.
+					eliminar_conclusion_tcb();
+
+					replanificar_tcb_km();
 				}
 				else
 				{// Recibimos el TCB de un proceso muriendo
 					//TODO: Codificar esta parte.
+					// Creo que en este caso no hay que hacer nada
 				}
 
 				free(pedido_resultado->tcb);
@@ -463,6 +497,15 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// TODO: Si esta ejecutando, matar proceso, sino no hacer nada.
 					// Recordar sacar a la CPU de las listas y del FDSET y del cpu_en_espera_de_tcb (planificador.c)
 					// si corresponde.
+
+					quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
+					FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
+
+					if(esta_ejecutando(conexion_cpu->id))
+					{
+						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
+						mover_tcbs_a_exit(t->pid);
+					}
 				break;
 
 			case CREA_UN_SEGMENTO:

@@ -16,6 +16,7 @@
 #include "loader.h"
 #include "conexiones.h"
 #include <pthread.h>
+#include "memoria.h"
 
 #include <hu4sockets/sockets.h>
 

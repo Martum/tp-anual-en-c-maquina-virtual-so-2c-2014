@@ -22,6 +22,11 @@ void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id);
 // QUITA UNA CPU DE LA COLA DE ESPERA DE TCB.
 void* quitar_de_cpu_en_espera_de_tcb();
 
+/**
+ * Quita un CPU de la lista CPU_EN_ESPERA_DE_TCB
+ */
+void quitar_cpu_de_lista_espera_tcb(uint32_t cpu_id);
+
 // ENCOLA LA CPU EN LA COLA DE ESPERAS DE TCB Y LLAMA A PLANIFICAR
 void pedir_tcb(uint32_t cpu_id);
 
@@ -35,6 +40,11 @@ void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id);
  * Mueve todos los TCBs de este Proceso a Exit
  */
 void mover_tcbs_a_exit(uint32_t pid);
+
+/**
+ * Mueve todos los TCBs de este Proceso a Exit y el adicional
+ */
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional);
 
 /**
  * Destruye el segmento de Stack y desalloca el espacio ocupado por el TCB.

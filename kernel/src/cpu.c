@@ -14,14 +14,14 @@
 uint32_t ID_CPU_GLOBAL = 1;
 
 // lista de segmentos por hilo (struct: pid, tid, lista de direcciones(segmentos))
-t_list* segmentos_por_hilo = NULL;
+t_list* SEGMENTOS_POR_HILO = NULL;
 
 void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos) {
-	if (segmentos_por_hilo == NULL ) {
-		segmentos_por_hilo = list_create();
+	if (SEGMENTOS_POR_HILO == NULL ) {
+		SEGMENTOS_POR_HILO = list_create();
 	}
 
-	list_add(segmentos_por_hilo, segmentos);
+	list_add(SEGMENTOS_POR_HILO, segmentos);
 }
 
 // TODO: recordar hacer malloc para las direcciones cuando las cree.
@@ -45,7 +45,58 @@ segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid) {
 				&& ((segmentos_por_hilo_t*) elemento)->tid == tid;
 	}
 
-	return list_find(segmentos_por_hilo,_elementoConListaDeSegmentos);
+	return list_find(SEGMENTOS_POR_HILO, _elementoConListaDeSegmentos);
+}
+
+void destruir_segmentos(t_list* lista, uint32_t pid)
+{
+	void _eliminar(void* elemento)
+	{
+		destruir_segmento(pid, *((direccion*)elemento));
+		free(elemento);
+	}
+
+	list_clean_and_destroy_elements(lista, _eliminar);
+}
+
+void destruir_segmentos_de_proceso(uint32_t pid)
+{
+	bool _coincide_pid(void* elemento)
+	{
+		return ((segmentos_por_hilo_t*) elemento)->pid == pid;
+	}
+
+	uint32_t cantidad = list_count_satisfying(SEGMENTOS_POR_HILO, _coincide_pid);
+
+	int i;
+	for(i = 0; i < cantidad; i++)
+	{
+		segmentos_por_hilo_t* seg = list_remove_by_condition(SEGMENTOS_POR_HILO, _coincide_pid);
+
+		destruir_segmentos(seg->segmentos, pid);
+
+		list_destroy(seg->segmentos);
+		free(seg);
+	}
+}
+
+void destruir_segmentos_de_hilo(uint32_t pid, uint32_t tid)
+{
+	bool _coincide_pid_tid(void* elemento)
+	{
+		return ((segmentos_por_hilo_t*) elemento)->pid == pid
+				&& ((segmentos_por_hilo_t*) elemento)->tid == tid;
+	}
+
+	segmentos_por_hilo_t* segmentos = list_remove_by_condition(SEGMENTOS_POR_HILO, _coincide_pid_tid);
+
+	if(segmentos != NULL)
+	{
+		destruir_segmentos(segmentos->segmentos, pid);
+		list_destroy(segmentos->segmentos);
+		free(segmentos);
+	}
+
 }
 
 void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
