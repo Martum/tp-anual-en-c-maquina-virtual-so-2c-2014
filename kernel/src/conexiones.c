@@ -110,6 +110,19 @@ void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 }
 
+void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
+{
+	bool _cpu_por_id(void* elemento)
+	{
+		return ((conexion_cpu_t*) elemento)->id == cpu_id;
+	}
+
+	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
+
+	cerrar_liberar(conn->socket);
+	free(conn);
+}
+
 void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
 {
 	if(*mayor_fd < nuevo_fd)
@@ -733,17 +746,4 @@ conexion_cpu_t* buscar_cpu_por_fd(int32_t fd)
 sock_t* buscar_conexion_cpu_por_fd(int32_t fd)
 {
 	return buscar_cpu_por_fd(fd)->socket;
-}
-
-void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
-{
-	bool _cpu_por_id(void* elemento)
-	{
-		return ((conexion_cpu_t*) elemento)->id == cpu_id;
-	}
-
-	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
-
-	cerrar_liberar(conn->socket);
-	free(conn);
 }
