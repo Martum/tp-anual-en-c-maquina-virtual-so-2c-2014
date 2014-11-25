@@ -19,6 +19,8 @@
 #include <sys/time.h>
 #include "cpu.h"
 #include "planificador.h"
+#include <ansisop-panel/panel/panel.h>
+#include <ansisop-panel/panel/kernel.h>
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -215,7 +217,7 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	//conexion_consola(pid); 	//TODO: Descomentar al ver lo de la biblioteca
+	conexion_consola(pid);
 
 	return 0;
 }
@@ -281,7 +283,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 			// Le damos la bienvenida
 			_dar_bienvenida(*nueva_conexion);
 
-			//conexion_cpu(id_nuevo_cpu); 	//TODO: Descomentar al agregar biblioteca
+			conexion_cpu(id_nuevo_cpu);
 			break;
 
 		default:
@@ -332,7 +334,7 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 			case TERMINAR_CONEXION:
 				bloquear_exit();
 
-				//desconexion_consola(conexion_proceso->pid); 	//TODO: Descomentar al ver lo de la biblioteca
+				desconexion_consola(conexion_proceso->pid);
 
 				mover_tcbs_a_exit(conexion_proceso->pid);
 				_eliminar_conexion_proceso(conexion_proceso->socket);
@@ -518,7 +520,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 						mover_tcbs_a_exit(t->pid);
 					}
 
-					//desconexion_cpu(conexion_cpu->id);	//TODO: Descomentar al ver lo de la biblioteca
+					desconexion_cpu(conexion_cpu->id);
 
 					remover_y_eliminar_conexion_cpu(conexion_cpu->id);
 
