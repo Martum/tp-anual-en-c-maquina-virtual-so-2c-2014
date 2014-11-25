@@ -15,9 +15,9 @@ FILE *fp;
 t_log* logger;
 
 void empezar_loggeo(){
-	fp = fopen("logs_msp.log", "w");
-	truncate("logs_msp.log", 0);
-	logger = log_create("logs_msp.log", "MSP", false, LOG_LEVEL_TRACE);
+	fp = fopen("../logs_msp.log", "w");
+	truncate("../logs_msp.log", 0);
+	logger = log_create("../logs_msp.log", "MSP", false, LOG_LEVEL_TRACE);
 	loggear_info("Empiezo el loggeo");
 }
 
