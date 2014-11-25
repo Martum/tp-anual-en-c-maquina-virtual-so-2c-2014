@@ -92,13 +92,34 @@ void _destruye_pagina(pagina_t *pagina) {
 	bool _is_pagina(pagina_t *pagina){
 		return true;
 	}
+
 	// saco a la pagina de la lista indice de paginas
 	//lock_lista_indice_paginas();
 	list_remove_and_destroy_element(get_indice_paginas(),pagina->id_en_indice,(void*)_destruye_pagina_de_indice);
 	//unlock_lista_indice_paginas();
+
+	// tengo que actualizar el id_en_indice de todas las otras paginas del sistema
+	actualizo_id_en_indice(pagina->id_en_indice);
 }
 
 void _destruye_pagina_de_indice(pagina_t *pag) {
 	free(pag);
 }
 
+void actualizo_id_en_indice(uint64_t id){
+	int i, j, k;
+
+	for(i=0; i<list_size(get_lista_procesos()); i++){
+		proceso_msp_t* proceso = list_get(get_lista_procesos(), i);
+		for(j=0; j<list_size(proceso->segmentos); j++){
+			segmento_t* segmento = list_get(proceso->segmentos, j);
+			for(k=0; k<list_size(segmento->paginas); k++){
+				pagina_t* pagina = list_get(segmento->paginas, k);
+				if(pagina->id_en_indice > id){
+					pagina->id_en_indice--;
+				}
+			}
+		}
+	}
+
+}

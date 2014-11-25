@@ -17,5 +17,6 @@ bool quitar_segmento(proceso_msp_t*, direccion);
 void _destruye_segmento(segmento_t*);
 void _destruye_pagina(pagina_t*);
 void _destruye_pagina_de_indice(pagina_t *);
+void actualizo_id_en_indice(uint64_t);
 
 #endif /* PROCESO_MSP_H_ */
