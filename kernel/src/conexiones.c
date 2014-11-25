@@ -215,6 +215,8 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
+	//conexion_consola(pid); 	//TODO: Descomentar al ver lo de la biblioteca
+
 	return 0;
 }
 
@@ -271,12 +273,15 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 
 		case SOY_CPU:
 			salida = 2;
+			uint32_t id_nuevo_cpu = dame_nuevo_id_cpu();
 
 			// Agregamos el CPU a la lista
-			_agregar_conexion_a_cpu(*nueva_conexion, dame_nuevo_id_cpu());
+			_agregar_conexion_a_cpu(*nueva_conexion, id_nuevo_cpu);
 
 			// Le damos la bienvenida
 			_dar_bienvenida(*nueva_conexion);
+
+			//conexion_cpu(id_nuevo_cpu); 	//TODO: Descomentar al agregar biblioteca
 			break;
 
 		default:
@@ -326,6 +331,8 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 			case TERMINAR_CONEXION:
 				bloquear_exit();
+
+				//desconexion_consola(conexion_proceso->pid); 	//TODO: Descomentar al ver lo de la biblioteca
 
 				mover_tcbs_a_exit(conexion_proceso->pid);
 				_eliminar_conexion_proceso(conexion_proceso->socket);
@@ -510,6 +517,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
 						mover_tcbs_a_exit(t->pid);
 					}
+
+					//desconexion_cpu(conexion_cpu->id);	//TODO: Descomentar al ver lo de la biblioteca
 
 					remover_y_eliminar_conexion_cpu(conexion_cpu->id);
 
