@@ -42,6 +42,11 @@ void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id);
 void mover_tcbs_a_exit(uint32_t pid);
 
 /**
+ * Mueve todos los TCBs de este Proceso a Exit y el adicional
+ */
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional);
+
+/**
  * Destruye el segmento de Stack y desalloca el espacio ocupado por el TCB.
  * No destruye el segmento de Codigo.
  */
