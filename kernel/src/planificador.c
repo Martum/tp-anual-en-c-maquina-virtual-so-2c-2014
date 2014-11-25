@@ -148,6 +148,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		agregar_a_ready(tcb_posta);
 		break;
 
+		// TODO: Podemos caer aca por el TCB KM tambien, replicar comportamiento de abajo
 	case ERROR_EN_EJECUCION:
 		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
 		break;

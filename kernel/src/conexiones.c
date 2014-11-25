@@ -358,12 +358,20 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 			case SALIDA_ESTANDAR:
 				;
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
+				tcb_t* tcbKM = get_tcb_km();
 
-				if(salida_estandar(pedido_salida) == 0)
-					_enviar_completadook(conexion_cpu->socket);
+				if(!proceso_muriendo(tcbKM->pid))
+				{
+					if(salida_estandar(pedido_salida) == 0)
+						_enviar_completadook(conexion_cpu->socket);
+					else
+					{
+						_informar_fallo_syscall(conexion_cpu->socket);
+					}
+				}
 				else
 				{
-					_informar_fallo_syscall(conexion_cpu->socket);
+					_enviar_completadook(conexion_cpu->socket);
 				}
 
 				free(pedido_salida->cadena_de_texto);
@@ -374,14 +382,19 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
-				if(enviar_entrada_estandar(pedido_entrada) == 0)
-				{
+				tcb_t* tcbKM = get_tcb_km();
 
-				}
-				else
+				if(!proceso_muriendo(tcbKM->pid))
 				{
-					// TODO: Ver con Santi como informar Error
-					//_informar_fallo_syscall(conexion_cpu->socket);
+					if(enviar_entrada_estandar(pedido_entrada) == 0)
+					{
+
+					}
+					else
+					{
+						// TODO: Ver con Santi como informar Error
+						//_informar_fallo_syscall(conexion_cpu->socket);
+					}
 				}
 
 				free(pedido_entrada);
@@ -393,7 +406,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				// No usamos el TCB porque el que se esta bloqueando
 				// es el que esta esperando la conclusion del KM
-				bloquear(pedido_bloqueo->identificador_de_recurso);
+				tcb_t* tcbKM = get_tcb_km();
+
+				if(!proceso_muriendo(tcbKM->pid))
+					bloquear(pedido_bloqueo->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
 
@@ -405,7 +421,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
-				despertar(pedido_despertar->identificador_de_recurso);
+				tcb_t* tcbKM = get_tcb_km();
+
+				if(!proceso_muriendo(tcbKM->pid))
+					despertar(pedido_despertar->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
 
@@ -439,7 +458,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
 
-				join(pedido_join->tid_llamador, pedido_join->tid_esperador);
+				tcb_t* tcbKM = get_tcb_km();
+
+				if(!proceso_muriendo(tcbKM->pid))
+					join(pedido_join->tid_llamador, pedido_join->tid_esperador);
 
 				_enviar_completadook(conexion_cpu->socket);
 
