@@ -154,7 +154,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 
-		//TODO: Este case hay que reescribirlo de cero.
 	case FIN_EJECUCION:
 		if (tcb->km)
 		{
