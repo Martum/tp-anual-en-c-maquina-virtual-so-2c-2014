@@ -268,6 +268,8 @@ void bloquear(uint32_t recurso) {
 
 	agregar_a_block_recurso(tcb);
 	agregar_a_cola_recurso(recurso, tcb);
+
+	set_enviar_a_rdy(false);
 }
 
 void despertar(uint32_t recurso) {

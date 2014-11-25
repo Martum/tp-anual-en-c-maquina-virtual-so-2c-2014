@@ -151,10 +151,12 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 	case FIN_EJECUCION:
 		if (tcb->km)
 		{
+			conclusion_km_t* ckm = get_conclusion_km_t();
+
+			if(ckm->enviar_a_rdy)
+				agregar_a_ready(tcb_posta);
+
 			eliminar_conclusion_tcb();
-			agregar_a_ready(tcb_posta); // NO!
-			//TODO: Ver si tcb_posta esta encolado en alguna cola de bloqueados,
-			// en caso de estarlo no hay que ponerlo en RDY
 		}
 		else
 		{
