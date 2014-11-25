@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include "planificador.h"
 #include "loader.h"
+#include "memoria.h"
 
 
 /*t_queue* exec;
