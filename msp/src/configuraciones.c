@@ -18,7 +18,7 @@
 #include <commons/string.h>
 #include <commons/log.h>
 
-t_config* configs_cpu;
+t_config* configs_msp;
 uint32_t memoria_fisica_total;
 t_list* lista_procesos;
 t_list* lista_marcos;
@@ -29,31 +29,27 @@ t_list* indice_paginas;
 uint32_t cantidad_archivos_swap;
 
 void cargar_configuraciones(){
-	configs_cpu = config_create("../configs_msp.cfg");
+	configs_msp = config_create("../configs_msp.cfg");
 }
 
 void destruir_configuraciones(){
-	config_destroy(configs_cpu);
+	config_destroy(configs_msp);
 }
 
 uint32_t puerto(){
-	return config_get_int_value(configs_cpu, "PUERTO");
+	return config_get_int_value(configs_msp, "PUERTO");
 }
 
 uint32_t cantidad_memoria(){
-	// cambiar
-	return config_get_int_value(configs_cpu, "CANTIDAD_MEMORIA");
-    //return 20;
+	return config_get_int_value(configs_msp, "CANTIDAD_MEMORIA");
 }
 
 uint32_t cantidad_swap(){
-	// cambiar
-	return config_get_int_value(configs_cpu, "CANTIDAD_SWAP");
-//	return 5;
+	return config_get_int_value(configs_msp, "CANTIDAD_SWAP");
 }
 
 char* algoritmo_sustitucion_de_paginas(){
-	return config_get_string_value(configs_cpu, "SUST_PAGS");
+	return config_get_string_value(configs_msp, "SUST_PAGS");
 }
 
 void inicializar_lista_procesos(){

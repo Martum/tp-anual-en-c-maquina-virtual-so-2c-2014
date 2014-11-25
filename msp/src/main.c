@@ -10,10 +10,9 @@
 #include "main.h"
 #include "estructuras.h"
 #include "configuraciones.h"
-
 #include "consola_msp.h"
 #include "conexiones.h"
-
+#include "logs.h"
 #include "algoritmos_sustitucion.h"
 
 #include "commons/string.h"
@@ -37,6 +36,11 @@ int main(void){
 		mkdir("../en_disco",0777);
 	}
 
+	empezar_loggeo();
+	loggear_trace("Inicio de la msp");
+	loggear_info("Tamaño de la memoria principal: %d", cantidad_memoria());
+	loggear_info("Tamaño de la memoria swap: %d", cantidad_swap());
+
 	// Creo hilos
 	pthread_t consola_msp_thread;
 	pthread_create(&consola_msp_thread, NULL, escuchar_consola_msp, NULL);
@@ -48,5 +52,7 @@ int main(void){
 	pthread_join(conexiones_thread, NULL);
 
 	destruir_configuraciones();
+	finalizar_loggeo();
+
 	return 0;
 }
