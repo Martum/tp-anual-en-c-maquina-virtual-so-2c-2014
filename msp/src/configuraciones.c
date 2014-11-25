@@ -29,9 +29,7 @@ t_list* indice_paginas;
 uint32_t cantidad_archivos_swap;
 
 void cargar_configuraciones(){
-	configs_cpu = config_create("configs_msp.cfg");
-
-	///home/utnso/workspace/tp-2014-2c-hardcodeameun4/msp/configs_msp.cfg
+	configs_cpu = config_create("../configs_msp.cfg");
 }
 
 void destruir_configuraciones(){
