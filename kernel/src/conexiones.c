@@ -345,6 +345,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
 	flag_t cod_op = codigo_operacion(mensaje);
 
+	tcb_t* tcbKM = get_tcb_km();
+
 	// TODO: IMPORTANTE: Cuando se recibe un TCB KM que termino de ejecutar,
 	// el TCB UM esta en la lista BLOCK_CONCLUSION_KM. Despues de copiar los
 	// registros del KM al UM, NO HAY QUE PONERLO DIRECTAMENTE EN RDY (al UM).
@@ -358,7 +360,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 			case SALIDA_ESTANDAR:
 				;
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
-				tcb_t* tcbKM = get_tcb_km();
+
 
 				if(!proceso_muriendo(tcbKM->pid))
 				{
@@ -382,8 +384,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
-				tcb_t* tcbKM = get_tcb_km();
-
 				if(!proceso_muriendo(tcbKM->pid))
 				{
 					if(enviar_entrada_estandar(pedido_entrada) == 0)
@@ -406,7 +406,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				// No usamos el TCB porque el que se esta bloqueando
 				// es el que esta esperando la conclusion del KM
-				tcb_t* tcbKM = get_tcb_km();
 
 				if(!proceso_muriendo(tcbKM->pid))
 					bloquear(pedido_bloqueo->identificador_de_recurso);
@@ -421,7 +420,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
-				tcb_t* tcbKM = get_tcb_km();
 
 				if(!proceso_muriendo(tcbKM->pid))
 					despertar(pedido_despertar->identificador_de_recurso);
@@ -458,7 +456,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
 
-				tcb_t* tcbKM = get_tcb_km();
 
 				if(!proceso_muriendo(tcbKM->pid))
 					join(pedido_join->tid_llamador, pedido_join->tid_esperador);
