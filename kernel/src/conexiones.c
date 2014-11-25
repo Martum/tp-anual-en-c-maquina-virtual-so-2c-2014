@@ -491,6 +491,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				free(pedido_resultado->tcb);
 				free(pedido_resultado);
+
+				planificar();
 				break;
 
 			case DESCONEXION_CPU:
