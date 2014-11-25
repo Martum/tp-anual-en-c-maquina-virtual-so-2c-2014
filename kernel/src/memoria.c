@@ -326,7 +326,7 @@ char* destruir_segmento_retornando_rta_serializada(uint32_t pid, direccion base_
 	pedido_de_destruir_segmento_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = DESTRUI_SEGMENTO;
 	cuerpo_del_mensaje.pid = pid;
-	cuerpo_del_mensaje.direccion_virtual = direccion;
+	cuerpo_del_mensaje.direccion_virtual = base_segmento;
 
 	char* chorro_de_envio = serializar_pedido_de_destruir_segmento_t(
 		&cuerpo_del_mensaje);
