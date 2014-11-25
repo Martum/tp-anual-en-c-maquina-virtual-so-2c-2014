@@ -262,6 +262,7 @@ void agregar_a_block_conclusion_km(tcb_t* tcb)
 	conclusion_km_t* ckm = malloc(sizeof(conclusion_km_t));
 	ckm->tcb = tcb;
 	ckm->enviar_a_rdy = true;
+	ckm->pid = tcb->pid;
 
 	list_add(BLOCK_CONCLUSION_KM, ckm);
 }

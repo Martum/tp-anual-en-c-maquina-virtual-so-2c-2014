@@ -91,6 +91,9 @@ void pedir_tcb(uint32_t cpu_id) {
 
 void planificar() {
 	bloquear_planificar();
+
+	replanificar_tcb_km();
+
 	if (!list_is_empty(CPU_EN_ESPERA_DE_TCB)) {
 		tcb_t* tcb = _proximo_tcb();
 		if (tcb != NULL ) {
@@ -145,16 +148,33 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		agregar_a_ready(tcb_posta);
 		break;
 
+		// TODO: Podemos caer aca por el TCB KM tambien, replicar comportamiento de abajo
 	case ERROR_EN_EJECUCION:
-		mover_tcbs_a_exit(tcb_posta->pid);
+		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
 		break;
 
+
+		//TODO: Este case hay que reescribirlo de cero.
 	case FIN_EJECUCION:
-		notificar_join_finalizacion_hilo(tcb_posta);
-		if (tcb->km) {
+		if (tcb->km)
+		{
+			eliminar_conclusion_tcb();
 			agregar_a_ready(tcb_posta);
-		} else {
-			agregar_a_exit(tcb_posta);
+		}
+		else
+		{
+			if(tcb_posta->tid == 1)
+			{// Muere proceso por ser Hilo principal
+				mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
+			}
+			else
+			{
+				notificar_join_finalizacion_hilo(tcb_posta);
+
+				preparar_exit_para_proceso(tcb_posta->pid, false);
+				destruir_segmentos_de_hilo(tcb_posta->pid, tcb_posta->tid);
+				agregar_a_exit(tcb_posta);
+			}
 		}
 		break;
 
@@ -164,7 +184,10 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 	}
 }
 
-void mover_tcbs_a_exit(uint32_t pid) {
+
+
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
+{
 	preparar_exit_para_proceso(pid, true);
 
 	remover_de_ready_a_exit(pid);
@@ -183,11 +206,17 @@ void mover_tcbs_a_exit(uint32_t pid) {
 
 	remover_de_block_recursos_a_exit(pid);// Es de la lista de bloqueados y de las del diccionario
 
-	// TODO: Destruir los Segmentos que van a estar en la lista de segmentos por hilo
+	if(tcb_adicional != NULL)
+		agregar_a_exit(tcb_adicional);
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 
-	destruir_segmentos_de_proceso(pid);	//TODO: Codificar esto
+	destruir_segmentos_de_proceso(pid);
+}
+
+void mover_tcbs_a_exit(uint32_t pid)
+{
+	mover_tcbs_a_exit_posta(pid, NULL);
 }
 
 void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {

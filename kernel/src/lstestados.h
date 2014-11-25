@@ -50,6 +50,7 @@ typedef struct exit {
 typedef struct conclusion_km {
 	tcb_t* tcb;
 	bool enviar_a_rdy;
+	uint32_t pid;
 } conclusion_km_t;
 
 /**

@@ -44,6 +44,11 @@ void copiar_tcb(tcb_t* to, tcb_t* from);
 void destruir_segmentos_de_proceso(uint32_t pid);
 
 /**
+ * Destruye todos los segmentos de un Hilo y los remueve de la lista
+ */
+void destruir_segmentos_de_hilo(uint32_t pid, uint32_t tid);
+
+/**
  * Crea un nuevo Hilo a partir de TCB y lo asigna a la cola de RDY.
  * Devuelve 0 en caso de exito o -1 en caso de no haber memoria disponible.
  */
