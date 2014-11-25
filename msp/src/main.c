@@ -18,9 +18,6 @@
 
 #include "commons/string.h"
 
-#include "hu4sockets/resultados.h"
-#include "interfaz.h"
-
 int main(void){
 	cargar_configuraciones();
 	inicializar_lista_procesos();
