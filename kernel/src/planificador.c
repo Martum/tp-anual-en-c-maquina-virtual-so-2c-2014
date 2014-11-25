@@ -169,7 +169,9 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 			else
 			{
 				notificar_join_finalizacion_hilo(tcb_posta);
+
 				preparar_exit_para_proceso(tcb_posta->pid, false);
+				destruir_segmentos_de_hilo(tcb_posta->pid, tcb_posta->tid);
 				agregar_a_exit(tcb_posta);
 			}
 		}
