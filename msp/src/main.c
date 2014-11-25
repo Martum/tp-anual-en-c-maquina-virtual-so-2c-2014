@@ -17,11 +17,9 @@
 #include "algoritmos_sustitucion.h"
 
 #include "commons/string.h"
-/* EJEMPLO DE LOG
-	 * t_log* logger = log_create("logs.txt", "LOG",true, LOG_LEVEL_INFO);
-				log_info(logger, "LOG A NIVEL %s", "INFO");
-				log_debug(logger, "dale viejio");
-	*/
+
+#include "hu4sockets/resultados.h"
+#include "interfaz.h"
 
 int main(void){
 	cargar_configuraciones();
@@ -38,8 +36,8 @@ int main(void){
 
 	// Creo el directorio en_disco si no existe, alli se guardaran los archivos swap
 	struct stat info;
-	if( stat("en_disco", &info ) != 0 ){
-		mkdir("en_disco",0777);
+	if( stat("../en_disco", &info ) != 0 ){
+		mkdir("../en_disco",0777);
 	}
 
 	// Creo hilos
