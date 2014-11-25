@@ -456,9 +456,10 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case INTERRUPCION:
-				//logear_instruccion_protegida("INTERRUPCION", get_tcb_km());	//TODO: Este no es con TCB KM
 				;
 				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
+
+				logear_instruccion_protegida("INTERRUPCION", pedido_interrupcion->tcb);
 
 				if(!proceso_muriendo(pedido_interrupcion->tcb->pid))
 					interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
