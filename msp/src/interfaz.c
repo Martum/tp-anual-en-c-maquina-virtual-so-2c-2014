@@ -21,6 +21,7 @@
 #include "pagina.h"
 #include "algoritmos_sustitucion.h"
 #include "funciones_streams.h"
+#include "logs.h"
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
@@ -51,6 +52,12 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *r
 	// creo la direccion virtual base del segmento
 	direccion direccion_virtual = direccion_virtual_base_de_segmento(segmento->id);
 
+	if(*(resultado)== RESULTADO_OK){
+		loggear_trace("Se creo el segmento correctamente para el proceso %d.", pid);
+	}else{
+		loggear_trace("No pudo crearse el segmento solicitado por el proceso %d.", pid);
+	}
+
 	// retorno la direccion formada
 	return direccion_virtual;
 }
@@ -73,8 +80,10 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 
 	if(ok){
 		*(resultado) = RESULTADO_OK;
+		loggear_trace("Se destruyo correctamente el segmento %x del proceso %d.", base>>20, pid);
 	}else{
 		*(resultado) = ERROR_NO_ENCUENTRO_SEGMENTO;
+		loggear_trace("No pudo destruirse el segmento %x del proceso %d.", base>>20, pid);
 	}
 }
 
