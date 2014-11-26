@@ -13,6 +13,7 @@
 
 #include "hu4sockets/tcb.h"
 
+#include "ansisop.h"
 #include "logs.h"
 
 /*
