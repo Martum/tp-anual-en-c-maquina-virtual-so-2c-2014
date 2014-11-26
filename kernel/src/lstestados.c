@@ -77,6 +77,8 @@ void inicializar_listas_estados_tcb()
 
 	// Y esta?
 	SYSCALLS_COLA = queue_create();
+
+	inicializar_lista_cpu_en_espera();
 }
 
 

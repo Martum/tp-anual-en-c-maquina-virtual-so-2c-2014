@@ -70,7 +70,7 @@ int main(void) {
 	pthread_create(&conexiones_cpus_thread, NULL, escuchar_cpus, NULL);
 	printf("- Creado Thread para escuchar CPUs\n");
 
-	printf("\nBienvenido al Kernel - FULL-FUNCTIONAL\n");
+	printf("\nBienvenido al Kernel - FULLY FUNCTIONAL\n");
 
 	// Esperamos a que ambos terminen
 	pthread_join(conexiones_procesos_thread, NULL);

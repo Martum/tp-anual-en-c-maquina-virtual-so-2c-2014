@@ -9,6 +9,7 @@
 #include <hu4sockets/mensajes.h>
 #include "lstestados.h"
 #include "memoria.h"
+#include <hu4sockets/resultados.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +45,7 @@ int32_t cargar_syscalls_a_memoria(char* path)
 
 	direccion direccion;
 
-	if(crear_segmento(1, len, &direccion) != 0 || escribir_memoria(1, direccion, syscalls, len) != 0)
+	if(crear_segmento(1, len, &direccion) != 0 || escribir_memoria(1, direccion, syscalls, len) != OK)
 		return -1;
 
 	free(syscalls);

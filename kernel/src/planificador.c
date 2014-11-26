@@ -33,11 +33,13 @@ void desbloquear_planificar()
 	pthread_mutex_unlock(&PLANIFICANDO);
 }
 
-void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
-	if (CPU_EN_ESPERA_DE_TCB == NULL ) {
-		CPU_EN_ESPERA_DE_TCB = list_create();
-	}
+void inicializar_lista_cpu_en_espera()
+{
+	CPU_EN_ESPERA_DE_TCB = list_create();
+}
 
+void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id)
+{
 	uint32_t* cpu = malloc(sizeof(uint32_t));
 	*cpu = cpu_id;
 	list_add(CPU_EN_ESPERA_DE_TCB, cpu);
