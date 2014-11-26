@@ -109,7 +109,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	nombre_archivo=concat_string(nombre_archivo,string_itoa((*pagina)->id));
 
 	char* path;
-	path=concat_string("en_disco/",nombre_archivo);
+	path=concat_string("../en_disco/",nombre_archivo);
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
 	//crea un archivo y lo guarda en una carpeta interna.
@@ -150,7 +150,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	nombre_archivo=concat_string(nombre_archivo,string_itoa(id_pagina));
 
 	char* path;
-	path=concat_string("en_disco/",nombre_archivo);
+	path=concat_string("../en_disco/",nombre_archivo);
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
 	//crea un archivo y lo guarda en una carpeta interna.
