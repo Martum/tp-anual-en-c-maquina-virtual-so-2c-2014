@@ -28,7 +28,6 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 {
 	marco_t* marco = liberar_un_marco();
 
-
 	//Modifico la pagina y el marco para que se relacionen entre si
 	(*pagina)->marco=marco->id;
 	(*pagina)->tiene_marco=true;
@@ -45,19 +44,11 @@ marco_t* liberar_un_marco()
 	//SACAR EL NULL
 	uint32_t id_marco_a_liberar= realizar_algoritmo_swapping(&id_pag_swap);
 
-
-
-
 	marco_t* marco_a_liberar= buscar_marco_segun_id(id_marco_a_liberar);
-
 
 	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id_proceso);
 
-
-
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
-
-
 
 	return marco_a_liberar;
 }
@@ -65,18 +56,17 @@ marco_t* liberar_un_marco()
 //Debe deolver una pagina*
 uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 {
-
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
 	char* clock="CLOCK";
-	if(string_equals_ignore_case(clock, algoritmo))
-	{
+
+	if(string_equals_ignore_case(clock, algoritmo)){
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}
-	else
-	{
+	else{
 		id_marco=algoritmo_lru(id_pagina_swap);
 	}
+
 	return id_marco;
 
 }
@@ -133,9 +123,6 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	(*pagina)->en_disco=true;
 
 	(*pagina)->tiene_marco=false;
-
-
-
 
 	txt_close_file(arch);
 
