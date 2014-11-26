@@ -17,6 +17,7 @@
 #include "conexiones.h"
 #include <pthread.h>
 #include "memoria.h"
+#include "syscalls.h"
 
 #include <hu4sockets/sockets.h>
 
@@ -26,6 +27,10 @@ int jose = 5;
 
 int main(void) {
 	printf("- Comienza el Kernel\n");
+
+
+	//TODO: Levantar SYSCALLS. Al inicializar el TCB KM la base de codigo
+	// apunta al segmento donde estan cargadas las SYSCALLs y no se debe modificar.
 
 	// - Levanta las configuraciones del archivo
 	cargar_configuraciones();
@@ -45,6 +50,14 @@ int main(void) {
 	{
 		return FALLO_CONEXION_MEMORIA;
 	}
+
+	// - Levantamos las SYSCALLs
+	if(cargar_syscalls_a_memoria(syscalls()) != 0)
+	{
+		printf("- Fallo carga de SYSCALLs\n");
+		return -1;
+	}
+	printf("- Cargamos las SYSCALLs\n");
 
 	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
 	pthread_t conexiones_procesos_thread;

@@ -57,6 +57,7 @@ void inicializar_listas_estados_tcb()
 {
 	TCB_KM = malloc(sizeof(tcb_t));
 	TCB_KM->km = true;
+	TCB_KM->base_codigo = 0;
 
 	READY_COLA[0] = list_create();
 	READY_COLA[1] = list_create();
