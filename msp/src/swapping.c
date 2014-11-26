@@ -17,11 +17,10 @@
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
 #include "funciones_streams.h"
+#include "logs.h"
 
 #include <commons/txt.h>
 #include <commons/string.h>
-
-
 
 
 void swap_in(pagina_t* * pagina, uint32_t pid)
@@ -33,6 +32,8 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 	(*pagina)->tiene_marco=true;
 	marco->id_proceso = pid;
 	marco->ocupado=true;
+
+	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, pid);
 }
 
 
@@ -58,12 +59,11 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 {
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
-	char* clock="CLOCK";
 
-	if(string_equals_ignore_case(clock, algoritmo)){
+	if(string_equals_ignore_case("CLOCK", algoritmo)){
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}
-	else{
+	else if(string_equals_ignore_case("LRU", algoritmo)){
 		id_marco=algoritmo_lru(id_pagina_swap);
 	}
 

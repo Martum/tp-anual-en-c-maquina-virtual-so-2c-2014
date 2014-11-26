@@ -14,6 +14,7 @@
 #include "configuraciones.h"
 #include "swapping.h"
 #include "semaforos.h"
+#include "logs.h"
 
 #include <commons/collections/list.h>
 
@@ -74,6 +75,8 @@ void asignar_marco(pagina_t* * pagina, uint32_t pid){
 		(*pagina)->tiene_marco= true;
 		marco->id_proceso = pid;
 		marco->ocupado= true;
+
+		loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, pid);
 	}
 
 }
