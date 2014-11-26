@@ -479,8 +479,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 		loggear_debug("Informe de interrupcion satisfactorio");
 
-		resultado = OK;
-
 		return OK;
 	}
 

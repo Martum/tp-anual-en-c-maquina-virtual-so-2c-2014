@@ -55,7 +55,7 @@ int32_t main(int32_t argc, char** argv)
 	}
 
 	int32_t quantum;
-	resultado_t resultado = OK;
+	resultado_t resultado;
 	tcb_t tcb;
 
 	inicializar_dic_de_instrucciones();
@@ -81,6 +81,8 @@ int32_t main(int32_t argc, char** argv)
 		}
 
 		ansisop_comienzo_tcb(tcb, quantum);
+
+		resultado = OK;
 
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
