@@ -20,7 +20,12 @@ void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
 {
 	tcb_actual.pid = tcb.pid;
 	tcb_actual.tid = tcb.tid;
-	tcb_actual.kernel_mode = tcb.km;
+	tcb_actual.kernel_mode = !tcb.km;
+	tcb_actual.base_stack = tcb.base_stack;
+	tcb_actual.cursor_stack = tcb.cursor_stack;
+	tcb_actual.segmento_codigo = tcb.base_codigo;
+	tcb_actual.segmento_codigo_size = tcb.tamanio_codigo;
+	tcb_actual.cola = EXEC;
 	comienzo_ejecucion(&tcb_actual, quantum);
 }
 
@@ -31,7 +36,8 @@ void ansisop_fin_tcb()
 
 void ansisop_ejecucion_instruccion1(instruccion_t instruccion)
 {
-	ejecucion_instruccion(instruccion, NULL );
+	t_list* parametros = list_create();
+	ejecucion_instruccion(instruccion, parametros);
 }
 
 void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
