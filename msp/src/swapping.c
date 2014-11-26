@@ -35,6 +35,10 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 
 	loggear_trace("Swap in pagina %d en marco %d.", (*pagina)->id, marco->id);
 	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, marco->id_proceso);
+
+	if(cantidad_marcos_libre() == 0){
+		loggear_info("Espacio de memoria principal lleno");
+	}
 }
 
 
@@ -131,6 +135,10 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	txt_close_file(arch);
 
 	aumento_cantidad_archivos_swap();
+
+	if(get_cantidad_archivos_swap() == cantidad_swap() * 4096){
+		loggear_info("Espacio de swap lleno");
+	}
 }
 
 void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
@@ -174,6 +182,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 
 	remove(path);
 	free(path);
+
 	disminuyo_cantidad_archivos_swap();
 }
 

@@ -77,6 +77,10 @@ void asignar_marco(pagina_t* * pagina, uint32_t pid){
 		marco->ocupado= true;
 
 		loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, pid);
+
+		if(cantidad_marcos_libre() == 0){
+			loggear_info("Espacio de memoria principal lleno");
+		}
 	}
 
 }
