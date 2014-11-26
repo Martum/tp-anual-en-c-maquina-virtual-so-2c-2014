@@ -97,7 +97,6 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 
 void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas, uint8_t max_modificable)
 {
-
 	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas, max_modificable);
 
 	int i;
@@ -108,8 +107,5 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 		*((*marco)->datos+i+desplazamiento)=caracter;
 
 	}
-
-
 }
-
 

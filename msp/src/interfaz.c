@@ -165,10 +165,10 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
-	proceso_msp_t* proceso=NULL;//malloc(sizeof(proceso_msp_t));
-	segmento_t* segmento=NULL;//malloc(sizeof(segmento_t));
-	pagina_t* pagina=NULL;//malloc(sizeof(pagina_t));
-	marco_t* marco= NULL;//malloc(sizeof(pagina_t));
+	proceso_msp_t* proceso=NULL;
+	segmento_t* segmento=NULL;
+	pagina_t* pagina=NULL;
+	marco_t* marco= NULL;
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
 	uint16_t id_pagina;
@@ -217,10 +217,6 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 
 	}
-	//free(proceso);
-	//free(segmento);
-	//free(pagina);
-	//free(marco);
 
 }
 
