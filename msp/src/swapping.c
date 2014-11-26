@@ -33,7 +33,8 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 	marco->id_proceso = pid;
 	marco->ocupado=true;
 
-	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, pid);
+	loggear_trace("Swap in pagina %d en marco %d.", (*pagina)->id, marco->id);
+	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, marco->id_proceso);
 }
 
 
@@ -51,6 +52,7 @@ marco_t* liberar_un_marco()
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
 
+	loggear_trace("Swap out pagina %d del marco %d.", pagina_a_liberar->id, marco_a_liberar->id);
 	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
 
 	return marco_a_liberar;
