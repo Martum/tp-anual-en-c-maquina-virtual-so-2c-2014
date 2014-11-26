@@ -17,35 +17,35 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 {
 	loggear_debug("Actualizo el valor del registro %c", registro);
 
-	if ('a' == registro)
+	if ('A' == registro)
 	{
 		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->a, numero);
 		ansisop_cambio_registro_a(numero);
 		tcb->a = numero;
 		return OK;
 	}
-	if ('b' == registro)
+	if ('B' == registro)
 	{
 		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->b, numero);
 		ansisop_cambio_registro_b(numero);
 		tcb->b = numero;
 		return OK;
 	}
-	if ('c' == registro)
+	if ('C' == registro)
 	{
 		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->c, numero);
 		ansisop_cambio_registro_c(numero);
 		tcb->c = numero;
 		return OK;
 	}
-	if ('d' == registro)
+	if ('D' == registro)
 	{
 		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->d, numero);
 		ansisop_cambio_registro_d(numero);
 		tcb->d = numero;
 		return OK;
 	}
-	if ('e' == registro)
+	if ('E' == registro)
 	{
 		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
 		ansisop_cambio_registro_e(numero);
@@ -63,31 +63,31 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 {
 	loggear_debug("Obtengo valor de registro %c", registro);
 
-	if ('a' == registro)
+	if ('A' == registro)
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->a);
 		*numero = tcb->a;
 		return OK;
 	}
-	if ('b' == registro)
+	if ('B' == registro)
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->b);
 		*numero = tcb->b;
 		return OK;
 	}
-	if ('c' == registro)
+	if ('C' == registro)
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->c);
 		*numero = tcb->c;
 		return OK;
 	}
-	if ('d' == registro)
+	if ('D' == registro)
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->d);
 		*numero = tcb->d;
 		return OK;
 	}
-	if ('e' == registro)
+	if ('E' == registro)
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
 		*numero = tcb->e;
