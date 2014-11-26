@@ -19,6 +19,8 @@
 #include <sys/time.h>
 #include "cpu.h"
 #include "planificador.h"
+#include <ansisop-panel/panel/panel.h>
+#include <ansisop-panel/panel/kernel.h>
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -108,6 +110,19 @@ void _agregar_conexion_a_cpu(sock_t* conexion, uint32_t id)
 	FD_SET(conexion->fd, &READFDS_CPUS);
 
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
+}
+
+void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
+{
+	bool _cpu_por_id(void* elemento)
+	{
+		return ((conexion_cpu_t*) elemento)->id == cpu_id;
+	}
+
+	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
+
+	cerrar_liberar(conn->socket);
+	free(conn);
 }
 
 void _recalcular_mayor_fd(int32_t* mayor_fd, int32_t nuevo_fd)
@@ -202,6 +217,8 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
+	conexion_consola(pid);
+
 	return 0;
 }
 
@@ -258,12 +275,15 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 
 		case SOY_CPU:
 			salida = 2;
+			uint32_t id_nuevo_cpu = dame_nuevo_id_cpu();
 
 			// Agregamos el CPU a la lista
-			_agregar_conexion_a_cpu(*nueva_conexion, dame_nuevo_id_cpu());
+			_agregar_conexion_a_cpu(*nueva_conexion, id_nuevo_cpu);
 
 			// Le damos la bienvenida
 			_dar_bienvenida(*nueva_conexion);
+
+			conexion_cpu(id_nuevo_cpu);
 			break;
 
 		default:
@@ -314,6 +334,8 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 			case TERMINAR_CONEXION:
 				bloquear_exit();
 
+				desconexion_consola(conexion_proceso->pid);
+
 				mover_tcbs_a_exit(conexion_proceso->pid);
 				_eliminar_conexion_proceso(conexion_proceso->socket);
 
@@ -358,7 +380,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 		bloquear_exit();
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
-				;
+				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
+
 				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
 
 
@@ -381,7 +404,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case ENTRADA_ESTANDAR:
-				;
+				logear_instruccion_protegida("ENTRADA ESTANDAR", get_tcb_km());
+
 				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
 
 				if(!proceso_muriendo(tcbKM->pid))
@@ -401,7 +425,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
-				;
+				logear_instruccion_protegida("BLOQUEAR", get_tcb_km());
+
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
 
 				// No usamos el TCB porque el que se esta bloqueando
@@ -417,7 +442,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESPERTAR:
-				;
+				logear_instruccion_protegida("DESPERTAR", get_tcb_km());
+
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
 
@@ -433,6 +459,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				;
 				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
 
+				logear_instruccion_protegida("INTERRUPCION", pedido_interrupcion->tcb);
+
 				if(!proceso_muriendo(pedido_interrupcion->tcb->pid))
 					interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
 
@@ -445,7 +473,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case JOIN:
-				;
+				logear_instruccion_protegida("JOIN", get_tcb_km());
+
 				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
 
 
@@ -497,6 +526,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
 						mover_tcbs_a_exit(t->pid);
 					}
+
+					desconexion_cpu(conexion_cpu->id);
 
 					remover_y_eliminar_conexion_cpu(conexion_cpu->id);
 
@@ -733,17 +764,4 @@ conexion_cpu_t* buscar_cpu_por_fd(int32_t fd)
 sock_t* buscar_conexion_cpu_por_fd(int32_t fd)
 {
 	return buscar_cpu_por_fd(fd)->socket;
-}
-
-void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
-{
-	bool _cpu_por_id(void* elemento)
-	{
-		return ((conexion_cpu_t*) elemento)->id == cpu_id;
-	}
-
-	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
-
-	cerrar_liberar(conn->socket);
-	free(conn);
 }
