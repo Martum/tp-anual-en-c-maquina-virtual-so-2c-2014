@@ -21,6 +21,7 @@
 #include "pagina.h"
 #include "algoritmos_sustitucion.h"
 #include "funciones_streams.h"
+#include "logs.h"
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
@@ -51,6 +52,12 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *r
 	// creo la direccion virtual base del segmento
 	direccion direccion_virtual = direccion_virtual_base_de_segmento(segmento->id);
 
+	if(*(resultado)== RESULTADO_OK){
+		loggear_trace("Se creo el segmento correctamente para el proceso %d.", pid);
+	}else{
+		loggear_trace("No pudo crearse el segmento solicitado por el proceso %d.", pid);
+	}
+
 	// retorno la direccion formada
 	return direccion_virtual;
 }
@@ -73,8 +80,10 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 
 	if(ok){
 		*(resultado) = RESULTADO_OK;
+		loggear_trace("Se destruyo correctamente el segmento %x del proceso %d.", base>>20, pid);
 	}else{
 		*(resultado) = ERROR_NO_ENCUENTRO_SEGMENTO;
+		loggear_trace("No pudo destruirse el segmento %x del proceso %d.", base>>20, pid);
 	}
 }
 
@@ -156,10 +165,10 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
-	proceso_msp_t* proceso=NULL;//malloc(sizeof(proceso_msp_t));
-	segmento_t* segmento=NULL;//malloc(sizeof(segmento_t));
-	pagina_t* pagina=NULL;//malloc(sizeof(pagina_t));
-	marco_t* marco= NULL;//malloc(sizeof(pagina_t));
+	proceso_msp_t* proceso=NULL;
+	segmento_t* segmento=NULL;
+	pagina_t* pagina=NULL;
+	marco_t* marco= NULL;
 	uint16_t desplazamiento=0;
 	pagina_t* pagina_siguiente=NULL;
 	uint16_t id_pagina;
@@ -208,10 +217,6 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 
 
 	}
-	//free(proceso);
-	//free(segmento);
-	//free(pagina);
-	//free(marco);
 
 }
 

@@ -10,6 +10,7 @@
 
 #include <commons/collections/dictionary.h>
 
+#include "ansisop.h"
 #include "definiciones.h"
 #include "operaciones-con-bits.h"
 #include "sockets.h"
