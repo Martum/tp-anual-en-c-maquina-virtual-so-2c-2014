@@ -199,7 +199,7 @@ void _atiendo_escribir_memoria(sock_t* sock, char* msg){
 	pedido_de_escribir_en_memoria_t* pedido_escribir = deserializar_pedido_de_escribir_en_memoria_t(msg);
 
 	loggear_trace("Atiendo solicitud de Escribir Memoria.\nPID: %d\nDireccion virtual: %x\n"
-			"Bytes: %s\n Tamaño: %d", pedido_escribir->pid, pedido_escribir->direccion_virtual,
+			"Bytes: %s\nTamaño: %d", pedido_escribir->pid, pedido_escribir->direccion_virtual,
 			pedido_escribir->bytes_a_escribir, pedido_escribir->tamano);
 
 	resultado_t* resultado = malloc(sizeof(resultado_t));
