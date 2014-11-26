@@ -56,7 +56,7 @@ void bloquear_exit()
 
 void desbloquear_exit()
 {
-	pthread_mutex_lock(&MUTEX_BLOQUEAR_EXIT);
+	pthread_mutex_unlock(&MUTEX_BLOQUEAR_EXIT);
 }
 
 /**
@@ -642,6 +642,7 @@ void* escuchar_cpus(void* otro_ente)
 
 		if(rs > 0)
 		{// Podemos leer
+			printf("Solicitud desde un CPU\n");
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;

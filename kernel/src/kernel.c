@@ -28,10 +28,6 @@ int jose = 5;
 int main(void) {
 	printf("- Comienza el Kernel\n");
 
-
-	//TODO: Levantar SYSCALLS. Al inicializar el TCB KM la base de codigo
-	// apunta al segmento donde estan cargadas las SYSCALLs y no se debe modificar.
-
 	// - Levanta las configuraciones del archivo
 	cargar_configuraciones();
 	printf("- Cargadas las configuraciones\n");
