@@ -76,7 +76,6 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 	}
 
 	return id_marco;
-
 }
 
 void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint16_t id_pag_swap, uint32_t pid)
@@ -104,7 +103,6 @@ void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_co
 
 void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
-
 	//Convierte cada id a string y despues los concatena de 2 en 2
 	char *nombre_archivo;
 	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
