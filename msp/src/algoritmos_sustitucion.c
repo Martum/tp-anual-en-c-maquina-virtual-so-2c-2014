@@ -11,6 +11,7 @@
 #include <commons/collections/list.h>
 #include <commons/string.h>
 
+#include "algoritmos_sustitucion.h"
 #include "marco.h"
 #include "estructuras.h"
 #include "configuraciones.h"
@@ -100,10 +101,32 @@ uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 
 void ubico_al_principio(pagina_t* pag){
 	//lock_lista_indice_paginas();
-	list_remove(get_indice_paginas(),pag->id_en_indice);
-	list_add_in_index(get_indice_paginas(),0,pag);
+	uint64_t id_inicial = pag->id_en_indice;
+	list_remove(get_indice_paginas(), id_inicial);
+	list_add_in_index(get_indice_paginas(), 0, pag);
 	//unlock_lista_indice_paginas();
+
+	// reasigno id en indice de los demas
+	_reasigno_indices(id_inicial);
+
 	pag->id_en_indice = 0;
+}
+
+void _reasigno_indices(uint64_t id_inicial){
+	int i, j, k;
+
+	for(i=0; i<list_size(get_lista_procesos()); i++){
+		proceso_msp_t* proceso = list_get(get_lista_procesos(), i);
+		for(j=0; j<list_size(proceso->segmentos); j++){
+			segmento_t* segmento = list_get(proceso->segmentos, j);
+			for(k=0; k<list_size(segmento->paginas); k++){
+				pagina_t* pagina = list_get(segmento->paginas, k);
+				if(pagina->id_en_indice < id_inicial){
+					pagina->id_en_indice++;
+				}
+			}
+		}
+	}
 }
 
 void set_bit_referencia(pagina_t* pag){

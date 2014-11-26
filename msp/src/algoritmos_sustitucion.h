@@ -9,6 +9,8 @@
 #define ALGORITMOS_SUSTITUCION_H_
 
 #include <stdlib.h>
+#include <stdint.h>
+#include "estructuras.h"
 
 // retornan el id del marco elegido para ser desalojado
 
@@ -29,5 +31,7 @@ void setear_puntero_clock();
 void set_bit_referencia(pagina_t*);
 
 void ubico_al_principio(pagina_t*);
+
+void _reasigno_indices(uint64_t);
 
 #endif /* ALGORITMOS_SUSTITUCION_H_ */
