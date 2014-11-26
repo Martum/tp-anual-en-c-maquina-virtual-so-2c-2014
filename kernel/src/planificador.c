@@ -16,6 +16,8 @@
 #include "memoria.h"
 #include "cpu.h"
 #include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
 
 // MUTEX para garantizar unicidad y atomicidad de planificar
 pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
@@ -158,7 +160,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 			if(ckm->enviar_a_rdy)
 				agregar_a_ready(tcb_posta);
 
-			eliminar_conclusion_tcb();
+			eliminar_conclusion_tcb_sin_quitar_de_exec();
 		}
 		else
 		{
@@ -178,6 +180,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	default:
+		printf("DEFAULT VACIO\n");
+		sleep(10);
 		break;
 
 	}
