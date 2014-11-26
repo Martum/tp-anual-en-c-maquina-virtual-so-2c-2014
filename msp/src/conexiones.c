@@ -5,6 +5,7 @@
 #include "configuraciones.h"
 #include "conexiones.h"
 #include "interfaz.h"
+#include "logs.h"
 
 #include <commons/collections/list.h>
 #include <commons/string.h>
@@ -74,6 +75,8 @@ void* escuchar_conexiones(void* otro_ente){
 
 void* _atiendo_hilo_conexion(void* conexion){
 
+	loggear_trace("Nueva conexion establecida");
+
 	while(1){
 
 		char* msg;
@@ -114,6 +117,9 @@ void* _atiendo_hilo_conexion(void* conexion){
 void _atiendo_crear_segmento(sock_t* sock, char* msg){
 	pedido_de_crear_segmento_t* pedido_crear = deserializar_pedido_de_crear_segmento_t(msg);
 
+	loggear_trace("Atiendo solicitud de Crear Segmento.\nPID: %d\nBytes: %d",
+			pedido_crear->pid, pedido_crear->tamano);
+
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	direccion dir_base = crear_segmento(pedido_crear->pid, pedido_crear->tamano, resultado);
 
@@ -138,6 +144,9 @@ void _atiendo_crear_segmento(sock_t* sock, char* msg){
 void _atiendo_destruir_segmento(sock_t* sock, char* msg){
 	pedido_de_destruir_segmento_t* pedido_borrar = deserializar_pedido_de_destruir_segmento_t(msg);
 
+	loggear_trace("Atiendo solicitud de Destruir Segmento.\nPID: %d\nDireccion virtual: %x",
+			pedido_borrar->pid, pedido_borrar->direccion_virtual);
+
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	destruir_segmento(pedido_borrar->pid, pedido_borrar->direccion_virtual, resultado);
 
@@ -160,6 +169,9 @@ void _atiendo_destruir_segmento(sock_t* sock, char* msg){
 
 void _atiendo_leer_memoria(sock_t* sock, char* msg){
 	pedido_de_leer_de_memoria_t* pedido_leer = deserializar_pedido_de_leer_de_memoria_t(msg);
+
+	loggear_trace("Atiendo solicitud de Leer Memoria.\nPID: %d\nDireccion virtual: %x\n"
+			"Tamaño: %d", pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano);
 
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	char* bytes = leer_memoria(pedido_leer->pid, pedido_leer->direccion_virtual, pedido_leer->tamano, resultado);
@@ -185,6 +197,10 @@ void _atiendo_leer_memoria(sock_t* sock, char* msg){
 
 void _atiendo_escribir_memoria(sock_t* sock, char* msg){
 	pedido_de_escribir_en_memoria_t* pedido_escribir = deserializar_pedido_de_escribir_en_memoria_t(msg);
+
+	loggear_trace("Atiendo solicitud de Escribir Memoria.\nPID: %d\nDireccion virtual: %x\n"
+			"Bytes: %s\n Tamaño: %d", pedido_escribir->pid, pedido_escribir->direccion_virtual,
+			pedido_escribir->bytes_a_escribir, pedido_escribir->tamano);
 
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	escribir_memoria(pedido_escribir->pid,
