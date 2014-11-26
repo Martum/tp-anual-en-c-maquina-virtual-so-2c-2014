@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <commons/collections/list.h>
+#include <pthread.h>
 
 typedef uint32_t direccion;
 
@@ -31,8 +32,8 @@ typedef struct segmento {
 
 typedef struct proceso_msp{
 	uint32_t pid;
-	uint32_t tid;
 	t_list* segmentos;
+	pthread_rwlock_t *semaforo_rw;
 }proceso_msp_t;
 
 typedef struct marco{
