@@ -51,6 +51,8 @@ marco_t* liberar_un_marco()
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
 
+	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
+
 	return marco_a_liberar;
 }
 
