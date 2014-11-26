@@ -33,7 +33,7 @@ typedef struct segmento {
 typedef struct proceso_msp{
 	uint32_t pid;
 	t_list* segmentos;
-	pthread_rwlock_t *semaforo_rw;
+	pthread_rwlock_t semaforo_rw;
 }proceso_msp_t;
 
 typedef struct marco{
