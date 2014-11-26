@@ -104,8 +104,8 @@ void* _atiendo_hilo_conexion(void* conexion){
 			break;
 
 		case DESCONEXION_CPU:
-			pthread_exit(NULL);
 			loggear_trace("Finalizo una conexion");
+			pthread_exit(NULL);
 			break;
 
 		default:
