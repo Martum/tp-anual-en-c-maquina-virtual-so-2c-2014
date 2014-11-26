@@ -10,6 +10,7 @@
 
 #include "commons/error.h"
 
+#include "ansisop.h"
 #include "instrucciones.h"
 #include "logs.h"
 #include "signals.h"
@@ -20,6 +21,8 @@ void _retardar();
 
 int32_t main(int32_t argc, char** argv)
 {
+	empezar_ansisop();
+
 	empezar_loggeo();
 
 	escuchar_signals();
@@ -61,8 +64,6 @@ int32_t main(int32_t argc, char** argv)
 
 	loggear_info("Cargadas todas las estructuras administrativas");
 
-	loggear_trace("Resultado de la ejecucion: %d", resultado);
-
 	while (1)
 	{
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
@@ -78,6 +79,8 @@ int32_t main(int32_t argc, char** argv)
 			loggear_warning("Se recibio un quantum %d menor a 0", quantum);
 			resultado = ERROR_EN_EJECUCION;
 		}
+
+		ansisop_comienzo_tcb(tcb, quantum);
 
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
@@ -108,6 +111,8 @@ int32_t main(int32_t argc, char** argv)
 			error_show(" Al enviar informe a kernel");
 			return 0;
 		}
+
+		ansisop_fin_tcb();
 	}
 
 	_liberar_recursos();
