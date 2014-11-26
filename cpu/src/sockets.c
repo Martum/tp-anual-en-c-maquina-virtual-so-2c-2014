@@ -596,7 +596,7 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	loggear_trace("Tipo %d", identificador);
 
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = ENTRADA_ESTANDAR;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.identificador_de_tipo = identificador;
 
@@ -652,7 +652,7 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	loggear_trace("Tipo %d", identificador);
 
 	pedido_salida_estandar_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = SALIDA_ESTANDAR;
 	cuerpo_del_mensaje.pid = tcb->pid;
 	cuerpo_del_mensaje.tamanio = bytes_a_enviar;
 	cuerpo_del_mensaje.cadena_de_texto = buffer;
@@ -695,7 +695,7 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 	loggear_trace("PID nuevo tcb %d", nuevo_tcb);
 
 	pedido_crear_hilo_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = CREAR_HILO;
 	cuerpo_del_mensaje.tcb = nuevo_tcb;
 
 	char* chorro_de_envio = serializar_pedido_crear_hilo_t(&cuerpo_del_mensaje);
@@ -735,7 +735,7 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 	loggear_trace("TID esperador %d", tid_esperador);
 
 	pedido_join_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = JOIN;
 	cuerpo_del_mensaje.tid_llamador = tid_llamador;
 	cuerpo_del_mensaje.tid_esperador = tid_esperador;
 
@@ -776,7 +776,7 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 	loggear_trace("Id del recurso %d", id_recurso);
 
 	pedido_bloquear_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = BLOQUEAR;
 	cuerpo_del_mensaje.tcb = tcb;
 	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
 
@@ -817,7 +817,7 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 	loggear_trace("Id del recurso %d", id_recurso);
 
 	pedido_despertar_t cuerpo_del_mensaje;
-	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
+	cuerpo_del_mensaje.flag = DESPERTAR;
 	cuerpo_del_mensaje.identificador_de_recurso = id_recurso;
 
 	char* chorro_de_envio = serializar_pedido_despertar_t(&cuerpo_del_mensaje);
