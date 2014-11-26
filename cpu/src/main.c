@@ -17,8 +17,6 @@
 
 void _liberar_recursos();
 
-void _retardar();
-
 int32_t main(int32_t argc, char** argv)
 {
 	empezar_ansisop();
@@ -66,6 +64,8 @@ int32_t main(int32_t argc, char** argv)
 
 	while (1)
 	{
+		loggear_info("Pido un tcb");
+
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			loggear_error("No pudo pedir tcb a kernel");
@@ -85,10 +85,10 @@ int32_t main(int32_t argc, char** argv)
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
 			loggear_trace("Me preparo para ejecutar otra instruccion.");
-			loggear_trace("Quantum restante", quantum);
+			loggear_trace("Quantum restante %d", quantum);
 			loggear_trace("Modo kernel %d", tcb.km);
 
-			_retardar();
+			sleep(retardo());
 
 			resultado = ejecutar_siguiente_instruccion(&tcb);
 
@@ -127,9 +127,4 @@ void _liberar_recursos()
 	liberar_dic_de_instrucciones();
 	desconectarse();
 	finalizar_loggeo();
-}
-
-void _retardar()
-{
-	sleep(retardo());
 }
