@@ -29,14 +29,75 @@ void ansisop_fin_tcb()
 	fin_ejecucion();
 }
 
-void ansisop_ejecucion_instruccion(instruccion_t instruccion,
-	int32_t param_numero, t_list* param_registros)
+void ansisop_ejecucion_instruccion1(instruccion_t instruccion)
+{
+	ejecucion_instruccion(instruccion, NULL );
+}
+
+void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
+	int32_t param_numero, char param_registro)
+{
+	t_list* parametros = list_create();
+	char* numero = string_itoa(param_numero);
+	char* registro = malloc(sizeof(char) + 1);
+	*(registro) = param_registro;
+	*(registro + 1) = '\0';
+	list_add(parametros, numero);
+	list_add(parametros, registro);
+	ejecucion_instruccion(instruccion, parametros);
+}
+
+void ansisop_ejecucion_instruccion3(instruccion_t instruccion,
+	int32_t param_numero)
 {
 	t_list* parametros = list_create();
 	char* numero = string_itoa(param_numero);
 	list_add(parametros, numero);
-	list_add_all(parametros, param_registros);
-	ejecucion_instruccion( instruccion, parametros);
+	ejecucion_instruccion(instruccion, parametros);
+}
+
+void ansisop_ejecucion_instruccion4(instruccion_t instruccion,
+	int32_t param_numero, char param_registro1, char param_registro2)
+{
+	t_list* parametros = list_create();
+	char* numero = string_itoa(param_numero);
+	list_add(parametros, numero);
+	char* registro1 = malloc(sizeof(char) + 1);
+	*(registro1) = param_registro1;
+	*(registro1 + 1) = '\0';
+	char* registro2 = malloc(sizeof(char) + 1);
+	*(registro2) = param_registro2;
+	*(registro2 + 1) = '\0';
+	list_add(parametros, numero);
+	list_add(parametros, registro1);
+	list_add(parametros, registro2);
+	ejecucion_instruccion(instruccion, parametros);
+}
+
+void ansisop_ejecucion_instruccion5(instruccion_t instruccion,
+	char param_registro)
+{
+	t_list* parametros = list_create();
+	char* registro = malloc(sizeof(char) + 1);
+	*(registro) = param_registro;
+	*(registro + 1) = '\0';
+	list_add(parametros, registro);
+	ejecucion_instruccion(instruccion, parametros);
+}
+
+void ansisop_ejecucion_instruccion6(instruccion_t instruccion,
+	char param_registro1, char param_registro2)
+{
+	t_list* parametros = list_create();
+	char* registro1 = malloc(sizeof(char) + 1);
+	*(registro1) = param_registro1;
+	*(registro1 + 1) = '\0';
+	char* registro2 = malloc(sizeof(char) + 1);
+	*(registro2) = param_registro2;
+	*(registro2 + 1) = '\0';
+	list_add(parametros, registro1);
+	list_add(parametros, registro2);
+	ejecucion_instruccion(instruccion, parametros);
 }
 
 void _actualizar_registro(int32_t registro, int32_t nuevo_valor)
