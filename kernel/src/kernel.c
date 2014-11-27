@@ -46,6 +46,7 @@ int main(void) {
 	{
 		return FALLO_CONEXION_MEMORIA;
 	}
+	printf("- Conectado con memoria");
 
 	// - Levantamos las SYSCALLs
 	if(cargar_syscalls_a_memoria(syscalls()) != 0)
