@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "logs.h"
+
 /*
  * 	@DESC: Forma un int a partir de un array de cuatro bytes
  * 	@RETURN:

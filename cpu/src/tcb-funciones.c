@@ -52,6 +52,48 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 		tcb->e = numero;
 		return OK;
 	}
+	if ('M' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->base_codigo = numero;
+		return OK;
+	}
+	if ('P' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->pc = numero;
+		return OK;
+	}
+	if ('X' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->base_stack = numero;
+		return OK;
+	}
+	if ('S' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->cursor_stack = numero;
+		return OK;
+	}
+	if ('K' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->km = numero;
+		return OK;
+	}
+	if ('I' == registro)
+	{
+		loggear_debug("Valor viejo %d -> Valor nuevo %d", tcb->e, numero);
+		ansisop_cambio_registro_e(numero);
+		tcb->pid = numero;
+		return OK;
+	}
 
 	loggear_warning("No existe el registro %c, byte %x", registro, registro);
 
@@ -91,6 +133,42 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 	{
 		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
 		*numero = tcb->e;
+		return OK;
+	}
+	if ('M' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->base_codigo;
+		return OK;
+	}
+	if ('P' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->pc;
+		return OK;
+	}
+	if ('X' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->base_stack;
+		return OK;
+	}
+	if ('S' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->cursor_stack;
+		return OK;
+	}
+	if ('K' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->km;
+		return OK;
+	}
+	if ('I' == registro)
+	{
+		loggear_debug("Valor del registro %c es %d", registro, tcb->e);
+		*numero = tcb->pid;
 		return OK;
 	}
 
