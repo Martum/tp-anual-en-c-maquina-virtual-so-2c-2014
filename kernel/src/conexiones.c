@@ -569,8 +569,8 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 5;
-	timer.tv_usec = 0;
+	timer.tv_sec = 0;
+	timer.tv_usec = 500000;
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;

@@ -293,11 +293,13 @@ void procesar_conexion(char* mensaje, uint32_t len)
 			break;
 
 		case TERMINAR_CONEXION:
+			cerrar_liberar(SOCKET_KERNEL);
 			printf("- Se cierra el proceso (KERNEL REQ - ter)");
 			exit(-1);
 			break;
 
 		default:
+			cerrar_liberar(SOCKET_KERNEL);
 			printf("- Se cierra el proceso (KERNEL REQ - def)");
 			exit(-1);
 			break;
@@ -338,6 +340,7 @@ void notificar_desconexion_kernel()
 
 	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
 
+	cerrar_liberar(SOCKET_KERNEL);
 	printf("- Se cierra el proceso (SIGINT)");
 	exit(-1);
 }
@@ -360,6 +363,7 @@ void escuchar_kernel()
 		}
 		else
 		{
+			cerrar_liberar(SOCKET_KERNEL);
 			printf("- Se cierra el proceso (KERNEL REQ - nop)");
 			exit(-1);
 		}
