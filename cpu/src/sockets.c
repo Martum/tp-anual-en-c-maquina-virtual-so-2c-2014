@@ -579,7 +579,9 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	if (_obtener(tcb, buffer, sizeof(int32_t)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
-	unir_bytes(numero, buffer);
+	memcpy(numero, buffer, sizeof(int32_t));
+
+//	unir_bytes(numero, buffer);
 
 	loggear_trace("Lectura de numero satisfactoria");
 	loggear_debug("Numero leido %d en bytes %x", *numero, *numero);
@@ -633,10 +635,10 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	}
 
 	*bytes_leidos = respuesta->tamanio;
-	buffer = respuesta->cadena;
+	memcpy(buffer, respuesta->cadena, *bytes_leidos);
 
-	free(respuesta->cadena);
 	free(respuesta);
+	free(respuesta->cadena);
 
 	loggear_debug("Entrada estandar satisfactoria");
 	loggear_trace("Entrada %s", buffer);
@@ -650,7 +652,9 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 {
 	loggear_debug("Comunico salida estandar");
 	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Cadena a imprimir %s", bytes_a_enviar);
+	int32_t d;
+	memcpy(&d, buffer, 4);
+	loggear_trace("Cadena a imprimir %d", d);
 	loggear_trace("Tipo %d", identificador);
 
 	pedido_salida_estandar_t cuerpo_del_mensaje;
