@@ -260,7 +260,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 			if(recibir(*nueva_conexion, &codigo_beso, &len) == -1)
 			{// Si el mensaje no se recibe completo
 				//_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
-				free(codigo_beso);
+				//free(codigo_beso);
 				break;
 			}
 
