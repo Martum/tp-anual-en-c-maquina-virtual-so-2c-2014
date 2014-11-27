@@ -197,7 +197,7 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconecta
 
 	remover_de_ready_a_exit(pid);
 
-	remover_de_exec_a_exit(pid);
+	remover_de_exec_a_exit(pid);	// TODO: Revisar esta funcion
 
 	remover_de_esperando_km_a_exit(pid);
 
