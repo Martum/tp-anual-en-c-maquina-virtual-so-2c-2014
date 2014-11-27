@@ -292,7 +292,14 @@ void procesar_conexion(char* mensaje, uint32_t len)
 			salida_estandar(deserializar_pedido_salida_estandar_t(mensaje));
 			break;
 
+		case TERMINAR_CONEXION:
+			printf("- Se cierra el proceso (KERNEL REQ)");
+			exit(-1);
+			break;
+
 		default:
+			printf("- Se cierra el proceso (KERNEL REQ - d)");
+			exit(-1);
 			break;
 	}
 }
@@ -331,7 +338,8 @@ void notificar_desconexion_kernel()
 
 	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
 
-	exit(0);
+	printf("- Se cierra el proceso (SIGINT)");
+	exit(-1);
 }
 
 void escuchar_seniales()
@@ -349,6 +357,11 @@ void escuchar_kernel()
 		if(recibir(SOCKET_KERNEL, &mensaje, &len) == 0)
 		{
 			procesar_conexion(mensaje, len);
+		}
+		else
+		{
+			printf("- Se cierra el proceso (KERNEL REQ)");
+			exit(-1);
 		}
 
 		free(mensaje);

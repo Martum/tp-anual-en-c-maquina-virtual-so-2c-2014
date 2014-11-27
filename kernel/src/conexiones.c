@@ -76,7 +76,7 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 }
 
-void _eliminar_conexion_proceso(sock_t* conexion)
+void eliminar_conexion_proceso(sock_t* conexion)
 {
 	bool _buscar_conexion(void* elemento)
 	{
@@ -181,6 +181,11 @@ void _enviar_ok(sock_t* conexion)
 {
 	_enviar_flagt(conexion, RECIBIDO_OK);
 
+}
+
+void enviar_desconectate(sock_t* conexion)
+{
+	_enviar_flagt(conexion, TERMINAR_CONEXION);
 }
 
 /**
@@ -336,8 +341,8 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 				desconexion_consola(conexion_proceso->pid);
 
-				mover_tcbs_a_exit(conexion_proceso->pid);
-				_eliminar_conexion_proceso(conexion_proceso->socket);
+				mover_tcbs_a_exit(conexion_proceso->pid, false);
+				eliminar_conexion_proceso(conexion_proceso->socket);
 
 				desbloquear_exit();
 				break;
@@ -526,7 +531,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					if(esta_ejecutando(conexion_cpu->id))
 					{
 						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
-						mover_tcbs_a_exit(t->pid);
+						mover_tcbs_a_exit(t->pid, true);
 					}
 
 					desconexion_cpu(conexion_cpu->id);
