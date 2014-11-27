@@ -23,7 +23,7 @@
 #include <commons/string.h>
 
 
-void swap_in(pagina_t* * pagina, uint32_t pid)
+void swap_in(pagina_t* * pagina, uint32_t id_segmento, uint32_t pid)
 {
 	marco_t* marco = liberar_un_marco();
 
@@ -33,7 +33,8 @@ void swap_in(pagina_t* * pagina, uint32_t pid)
 	marco->id_proceso = pid;
 	marco->ocupado=true;
 
-	loggear_trace("Swap in pagina %d en marco %d.", (*pagina)->id, marco->id);
+	loggear_trace("Swap in pagina %d del segmento %d del proceso %d en marco %d.",
+			(*pagina)->id, id_segmento, marco->id_proceso, marco->id);
 	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, marco->id_proceso);
 
 	if(cantidad_marcos_libre() == 0){
@@ -51,13 +52,13 @@ marco_t* liberar_un_marco()
 	uint32_t id_marco_a_liberar= realizar_algoritmo_swapping(&id_pag_swap);
 
 	marco_t* marco_a_liberar= buscar_marco_segun_id(id_marco_a_liberar);
+	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
 
 	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id_proceso);
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
 
-	loggear_trace("Swap out pagina %d del marco %d.", pagina_a_liberar->id, marco_a_liberar->id);
-	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
+	loggear_trace("Swap out pagina %d del segmento %d del proceso %d.", pagina_a_liberar->id, segmento_contenedor->id, marco_a_liberar->id_proceso);
 
 	return marco_a_liberar;
 }
@@ -109,9 +110,11 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	nombre_archivo=concat_string(nombre_archivo,string_itoa((*pagina)->id));
 
 	char* path;
-	path=concat_string("../en_disco/",nombre_archivo);
+	path=concat_string("en_disco/",nombre_archivo);
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
+
+	printf("Archivo: %s. Path: %s", nombre_archivo, path);
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
@@ -150,7 +153,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	nombre_archivo=concat_string(nombre_archivo,string_itoa(id_pagina));
 
 	char* path;
-	path=concat_string("../en_disco/",nombre_archivo);
+	path=concat_string("en_disco/",nombre_archivo);
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
 	//crea un archivo y lo guarda en una carpeta interna.
@@ -162,7 +165,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	marco_t* marco = buscar_marco_libre();
 	if(marco==NULL)
 	{
-		swap_in(pagina, pid);
+		swap_in(pagina, id_segmento, pid);
 	}
 	else
 	{

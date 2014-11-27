@@ -29,7 +29,7 @@ t_list* indice_paginas;
 uint32_t cantidad_archivos_swap;
 
 void cargar_configuraciones(){
-	configs_msp = config_create("../configs_msp.cfg");
+	configs_msp = config_create("configs_msp.cfg");
 }
 
 void destruir_configuraciones(){

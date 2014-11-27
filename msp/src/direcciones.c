@@ -34,7 +34,7 @@ bool descomposicion_direccion_logica(uint32_t direccion_logica, uint32_t pid, pr
 				//Si la pagina que quiero leer no tiene marco, se lo asigno
 				if(!((*pagina)->tiene_marco))
 				{
-					asignar_marco(pagina, (*proceso)->pid);
+					asignar_marco(pagina, segmento, (*proceso)->pid);
 				}
 				(*desplazamiento) = div(direccion_logica,0x100).rem;
 				return false;
