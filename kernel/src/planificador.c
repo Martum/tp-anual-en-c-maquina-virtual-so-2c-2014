@@ -149,8 +149,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	case ERROR_EN_EJECUCION:
-		if(tcb->km)
-			eliminar_conclusion_tcb();
+		/*if(tcb->km)
+			eliminar_conclusion_tcb();*/	//TODO: Creo que este codigo no va
 
 		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta, true);
 		break;
