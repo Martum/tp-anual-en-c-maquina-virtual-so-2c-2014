@@ -106,7 +106,7 @@ int32_t _recibir_todo(sock_t* socket, char* buff, uint32_t* len)
 		n = _recibir(socket, buff + recibidos, *len - recibidos);
 
 		// Si falla la recepcion cortamos el loop
-		if (n == -1)
+		if (n == -1 || n == 0)
 			break;
 
 		recibidos += n;
@@ -114,7 +114,7 @@ int32_t _recibir_todo(sock_t* socket, char* buff, uint32_t* len)
 	}
 
 	*len = recibidos;
-	return (n == -1)?-1:0;
+	return (n == -1 || n == 0)?-1:0;
 }
 
 

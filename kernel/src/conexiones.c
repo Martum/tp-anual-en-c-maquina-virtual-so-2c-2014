@@ -531,6 +531,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESCONEXION_CPU:
+				desconexion_cpu(conexion_cpu->id);
 
 				quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
 				FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
@@ -540,8 +541,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
 					mover_tcbs_a_exit(t->pid, true);
 				}
-
-				desconexion_cpu(conexion_cpu->id);
 
 				remover_y_eliminar_conexion_cpu(conexion_cpu->id);
 
@@ -576,8 +575,8 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 1;
-	timer.tv_usec = 500000;
+	timer.tv_sec = 2;
+	timer.tv_usec = 0;
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
@@ -628,7 +627,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 		readfds = READFDS_PROCESOS;
 
 		// Reseteamos el timer
-		timer.tv_sec = 5;
+		timer.tv_sec = 2;
 		timer.tv_usec = 0;
 	}
 
@@ -640,7 +639,7 @@ void* escuchar_cpus(void* otro_ente)
 {
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 5;
+	timer.tv_sec = 2;
 	timer.tv_usec = 0;
 
 	// Inicializamos el readfds maestro y el mayor
@@ -669,7 +668,7 @@ void* escuchar_cpus(void* otro_ente)
 		}
 
 		// Reseteamos el timer
-		timer.tv_sec = 5;
+		timer.tv_sec = 2;
 		timer.tv_usec = 0;
 
 		// Rearmamos el readfds
