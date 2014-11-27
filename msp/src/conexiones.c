@@ -6,6 +6,7 @@
 #include "conexiones.h"
 #include "interfaz.h"
 #include "logs.h"
+#include "semaforos.h"
 
 #include <commons/collections/list.h>
 #include <commons/string.h>
