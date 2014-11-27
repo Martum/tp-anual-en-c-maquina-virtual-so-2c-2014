@@ -16,7 +16,7 @@
 #include <pthread.h>
 
 
-pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_pedido_msp = PTHREAD_MUTEX_INITIALIZER;
 
 fd_set readfds;
 int32_t mayor_fd = -1;
@@ -85,6 +85,8 @@ void* _atiendo_hilo_conexion(void* conexion){
 		recibir(conexion, &msg, &len);
 		flag_t codop = codigo_operacion(msg);
 
+		pthread_mutex_lock(&mutex_pedido_msp);
+
 		switch(codop){
 
 		case CREA_UN_SEGMENTO:
@@ -111,7 +113,7 @@ void* _atiendo_hilo_conexion(void* conexion){
 		default:
 			break;
 		}
-
+		pthread_mutex_unlock(&mutex_pedido_msp);
 	}
 }
 
