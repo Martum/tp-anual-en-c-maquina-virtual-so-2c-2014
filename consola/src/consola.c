@@ -308,17 +308,18 @@ void notificar_desconexion_kernel()
 	// Desconectarse
 	if(entrada_en_progreso == 1)
 	{
-
+		// TODO: Terminar esto
 	}
 
 	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
+
+	exit(0);
 }
 
 void escuchar_seniales()
 {
 	signal(SIGINT, notificar_desconexion_kernel);
 	//signal(SIGUSR1, fallo_memoria);
-	exit(0);
 }
 
 void escuchar_kernel()
