@@ -237,7 +237,7 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 		scanf("%d", entero);
 
 		respuesta_entrada->tamanio = sizeof(int32_t);
-		respuesta_entrada->cadena = (char*)entero;
+		memcpy(respuesta_entrada->cadena, entero, sizeof(int32_t));
 
 	}
 	else
