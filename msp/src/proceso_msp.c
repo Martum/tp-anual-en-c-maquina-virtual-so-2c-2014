@@ -33,12 +33,13 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
 	proceso->pid = un_pid;
+	proceso->segmentos = list_create();
+	pthread_rwlock_init(&(proceso->semaforo_rw), NULL);
 
 	//unlock_lista_procesos();
 	list_add(get_lista_procesos(),proceso);
 	//lock_lista_procesos();
 
-	proceso->segmentos = list_create();
 	return proceso;
 }
 

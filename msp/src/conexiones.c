@@ -16,7 +16,7 @@
 #include <pthread.h>
 
 
-pthread_mutex_t mutex_conexiones = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_pedido_msp = PTHREAD_MUTEX_INITIALIZER;
 
 fd_set readfds;
 int32_t mayor_fd = -1;
@@ -85,6 +85,8 @@ void* _atiendo_hilo_conexion(void* conexion){
 		recibir(conexion, &msg, &len);
 		flag_t codop = codigo_operacion(msg);
 
+		pthread_mutex_lock(&mutex_pedido_msp);
+
 		switch(codop){
 
 		case CREA_UN_SEGMENTO:
@@ -104,13 +106,14 @@ void* _atiendo_hilo_conexion(void* conexion){
 			break;
 
 		case DESCONEXION_CPU:
+			loggear_trace("Finalizo una conexion");
 			pthread_exit(NULL);
 			break;
 
 		default:
 			break;
 		}
-
+		pthread_mutex_unlock(&mutex_pedido_msp);
 	}
 }
 
@@ -199,7 +202,7 @@ void _atiendo_escribir_memoria(sock_t* sock, char* msg){
 	pedido_de_escribir_en_memoria_t* pedido_escribir = deserializar_pedido_de_escribir_en_memoria_t(msg);
 
 	loggear_trace("Atiendo solicitud de Escribir Memoria.\nPID: %d\nDireccion virtual: %x\n"
-			"Bytes: %s\n Tamaño: %d", pedido_escribir->pid, pedido_escribir->direccion_virtual,
+			"Bytes: %s\nTamaño: %d", pedido_escribir->pid, pedido_escribir->direccion_virtual,
 			pedido_escribir->bytes_a_escribir, pedido_escribir->tamano);
 
 	resultado_t* resultado = malloc(sizeof(resultado_t));
