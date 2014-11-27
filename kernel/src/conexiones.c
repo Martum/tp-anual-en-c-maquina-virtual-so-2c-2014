@@ -183,6 +183,11 @@ void _enviar_ok(sock_t* conexion)
 
 }
 
+void enviar_desconectate(sock_t* conexion)
+{
+	_enviar_flagt(conexion, TERMINAR_CONEXION);
+}
+
 /**
  * Informa al destinatario que el mensaje no se recibio correctamente
  * Usar solo si el destinatario esta esperando una confirmacion de recepcion

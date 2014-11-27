@@ -34,6 +34,11 @@ void* escuchar_conexiones_entrantes_y_procesos(void* p);
 void eliminar_conexion_proceso(sock_t*);
 
 /**
+ * Envia el flag TERMINAR_CONEXION
+ */
+void enviar_desconectate(sock_t* conexion);
+
+/**
  * Escucha las solicitudes de los CPUs
  * Se corre en un thread inmortal.
  */
