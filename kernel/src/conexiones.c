@@ -510,6 +510,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// Creo que en este caso no hay que hacer nada
 				}
 
+				_enviar_completadook(conexion_cpu->socket);
+
 				free(pedido_resultado->tcb);
 				free(pedido_resultado);
 

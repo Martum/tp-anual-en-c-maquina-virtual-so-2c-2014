@@ -38,8 +38,8 @@ int main(void){
 
 	empezar_loggeo();
 	loggear_trace("Inicio de la msp");
-	loggear_info("Tamaño de la memoria principal: %d", cantidad_memoria());
-	loggear_info("Tamaño de la memoria swap: %d", cantidad_swap());
+	loggear_info("Tamaño de la memoria principal: %d KB", cantidad_memoria());
+	loggear_info("Tamaño de la memoria swap: %d MB", cantidad_swap());
 
 	// Creo hilos
 	pthread_t consola_msp_thread;
