@@ -331,6 +331,7 @@ void notificar_desconexion_kernel()
 
 	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
 
+	printf("- Se cierra el proceso (SIGINT)");
 	exit(0);
 }
 
@@ -349,6 +350,11 @@ void escuchar_kernel()
 		if(recibir(SOCKET_KERNEL, &mensaje, &len) == 0)
 		{
 			procesar_conexion(mensaje, len);
+		}
+		else
+		{
+			printf("- Se cierra el proceso (KERNEL REQ)");
+			exit(-1);
 		}
 
 		free(mensaje);

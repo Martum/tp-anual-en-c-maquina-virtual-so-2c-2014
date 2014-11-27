@@ -29,6 +29,11 @@ typedef struct conexion_procesos {
 void* escuchar_conexiones_entrantes_y_procesos(void* p);
 
 /**
+ * Elimina la conexion de la consola de la lista
+ */
+void eliminar_conexion_proceso(sock_t*);
+
+/**
  * Escucha las solicitudes de los CPUs
  * Se corre en un thread inmortal.
  */

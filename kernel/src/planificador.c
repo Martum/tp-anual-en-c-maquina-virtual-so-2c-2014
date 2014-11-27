@@ -152,7 +152,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		if(tcb->km)
 			eliminar_conclusion_tcb();
 
-		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
+		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta, true);
 		break;
 
 
@@ -170,7 +170,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		{
 			if(tcb_posta->tid == 1)
 			{// Muere proceso por ser Hilo principal
-				mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
+				mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta, true);
 			}
 			else
 			{
@@ -193,7 +193,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 
 
-void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconectar_consola)
 {
 	preparar_exit_para_proceso(pid, true);
 
@@ -215,11 +215,15 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 
 	destruir_segmentos_de_proceso(pid);
+
+	// TODO: Creo que con esto basta, quizas habria que enviar un msj de desconexion adicional
+	if(desconectar_consola)
+		eliminar_conexion_proceso(buscar_conexion_proceso_por_pid(pid));
 }
 
-void mover_tcbs_a_exit(uint32_t pid)
+void mover_tcbs_a_exit(uint32_t pid, bool desconectar_consola)
 {
-	mover_tcbs_a_exit_posta(pid, NULL);
+	mover_tcbs_a_exit_posta(pid, NULL, desconectar_consola);
 }
 
 void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {

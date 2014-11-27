@@ -43,12 +43,12 @@ void _enviar_tcb_a_cpu(tcb_t* tcb, uint32_t* cpu_id);
 /**
  * Mueve todos los TCBs de este Proceso a Exit
  */
-void mover_tcbs_a_exit(uint32_t pid);
+void mover_tcbs_a_exit(uint32_t pid, bool desconectar_consola);
 
 /**
  * Mueve todos los TCBs de este Proceso a Exit y el adicional
  */
-void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional);
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconectar_consola);
 
 /**
  * Destruye el segmento de Stack y desalloca el espacio ocupado por el TCB.
