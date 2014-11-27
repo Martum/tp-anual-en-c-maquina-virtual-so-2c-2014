@@ -287,7 +287,10 @@ void set_enviar_a_rdy(bool un_bool)
 
 tcb_t* get_bloqueado_conclusion_tcb()
 {
-	return (get_conclusion_km_t())->tcb;
+	if(get_conclusion_km_t() != NULL)
+		return (get_conclusion_km_t())->tcb;
+
+	return NULL;
 }
 
 void eliminar_conclusion_tcb_sin_quitar_de_exec()
@@ -498,23 +501,27 @@ void remover_de_block_recursos_a_exit(uint32_t pid)
 void remover_de_conclusion_km_a_exit(uint32_t pid)
 {
 	tcb_t* tcb = get_bloqueado_conclusion_tcb();
-	if(tcb->pid == pid)
+
+	if(tcb != NULL)
 	{
-		agregar_a_exit(tcb);
+		if(tcb->pid == pid)
+		{
+			agregar_a_exit(tcb);
 
-		if(list_size(READY_COLA[0]) == 1)
-		{// Todavia no entro a ejecutar
-			list_remove(READY_COLA[0], 0);	// Removemos el TCB KM
+			if(list_size(READY_COLA[0]) == 1)
+			{// Todavia no entro a ejecutar
+				list_remove(READY_COLA[0], 0);	// Removemos el TCB KM
 
-			// Elimina el struct conclusion_km_t
-			eliminar_conclusion_tcb();
+				// Elimina el struct conclusion_km_t
+				eliminar_conclusion_tcb();
 
-			// Replanificamos KM para otro TCB
-			replanificar_tcb_km();
-		}
-		else
-		{// Ya se esta ejecutando
-			set_enviar_a_rdy(false);
+				// Replanificamos KM para otro TCB
+				replanificar_tcb_km();
+			}
+			else
+			{// Ya se esta ejecutando
+				set_enviar_a_rdy(false);
+			}
 		}
 	}
 }
