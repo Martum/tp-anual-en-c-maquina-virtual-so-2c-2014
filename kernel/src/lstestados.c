@@ -15,6 +15,7 @@
 #include "planificador.h"
 #include "loader.h"
 #include "memoria.h"
+#include "cpu.h"
 
 
 /*t_queue* exec;
@@ -79,6 +80,8 @@ void inicializar_listas_estados_tcb()
 	SYSCALLS_COLA = queue_create();
 
 	inicializar_lista_cpu_en_espera();
+
+	inicializar_lista_segmentos_por_hilo();
 }
 
 

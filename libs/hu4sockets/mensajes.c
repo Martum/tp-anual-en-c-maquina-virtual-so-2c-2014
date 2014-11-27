@@ -757,7 +757,7 @@ pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(char* chorro)
 	offset += sizeof(uint32_t);
 	memcpy(&pedido->identificador_de_tipo, chorro + offset, sizeof(idetificador_tipo_t));
 
-	offset += sizeof(uint32_t);
+	offset += sizeof(idetificador_tipo_t);
 	memcpy(&pedido->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);

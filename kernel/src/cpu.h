@@ -24,6 +24,11 @@
 uint32_t dame_nuevo_id_cpu();
 
 /**
+ * Inicializa la lista SEGMENTOS_POR_HILO
+ */
+void inicializar_lista_segmentos_por_hilo();
+
+/**
  * Copia el TID y el PID
  */
 void copiar_encabezado(tcb_t* to, tcb_t* from);
