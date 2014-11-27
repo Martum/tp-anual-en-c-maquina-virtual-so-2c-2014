@@ -7,9 +7,21 @@
 
 #include <pthread.h>
 
+pthread_mutex_t mutex_pedido_msp = PTHREAD_MUTEX_INITIALIZER;
+
 pthread_mutex_t mutex_lista_procesos = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_lista_marcos = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_lista_indice_paginas = PTHREAD_MUTEX_INITIALIZER;
+
+void lock_mutex_pedido_msp(){
+	pthread_mutex_lock(&mutex_pedido_msp);
+}
+
+void unlock_mutex_pedido_msp(){
+	pthread_mutex_unlock(&mutex_pedido_msp);
+}
+
+
 
 void lock_lista_procesos(){
 	pthread_mutex_lock(&mutex_lista_procesos);

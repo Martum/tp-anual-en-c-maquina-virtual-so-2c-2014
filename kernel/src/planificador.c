@@ -133,9 +133,13 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 	tcb_t* tcb_posta = quitar_de_exec(tcb);
-	if (tcb->km) {
+	if (tcb->km)
+	{
+		tcb_posta = ((conclusion_km_t*)get_conclusion_km_t())->tcb;
 		copiar_registros_programacion(tcb_posta, tcb);
-	} else {
+	}
+	else
+	{
 		copiar_tcb(tcb_posta, tcb);
 	}
 
