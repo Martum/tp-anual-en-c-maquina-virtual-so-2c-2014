@@ -643,11 +643,11 @@ pedido_interrupcion_t* deserializar_pedido_interrupcion_t(char* chorro)
 	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(&pedido->direccion_de_memoria, chorro + offset, sizeof(direccion));
+
+	offset += sizeof(direccion);
 	pedido->tcb = malloc(sizeof(tcb_t));
 	memcpy(pedido->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
-
-	offset += sizeof(tcb_t);
-	memcpy(&pedido->direccion_de_memoria, chorro + offset, sizeof(direccion));
 
 	return pedido;
 }
