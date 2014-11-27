@@ -339,7 +339,7 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t), char* nom
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_registro_a(tcb, operacion(valor_del_registro));
+	actualizar_valor_del_registro(tcb, registro, operacion(valor_del_registro));
 
 	return OK;
 }
