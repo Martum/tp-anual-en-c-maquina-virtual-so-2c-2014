@@ -293,12 +293,12 @@ void procesar_conexion(char* mensaje, uint32_t len)
 			break;
 
 		case TERMINAR_CONEXION:
-			printf("- Se cierra el proceso (KERNEL REQ)");
+			printf("- Se cierra el proceso (KERNEL REQ - ter)");
 			exit(-1);
 			break;
 
 		default:
-			printf("- Se cierra el proceso (KERNEL REQ - d)");
+			printf("- Se cierra el proceso (KERNEL REQ - def)");
 			exit(-1);
 			break;
 	}
@@ -360,7 +360,7 @@ void escuchar_kernel()
 		}
 		else
 		{
-			printf("- Se cierra el proceso (KERNEL REQ)");
+			printf("- Se cierra el proceso (KERNEL REQ - nop)");
 			exit(-1);
 		}
 
