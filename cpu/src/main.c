@@ -90,7 +90,7 @@ int32_t main(int32_t argc, char** argv)
 			loggear_trace("Quantum restante %d", quantum);
 			loggear_trace("Modo kernel %d", tcb.km);
 
-			sleep(retardo());
+			usleep(retardo() * 1000);
 
 			resultado = ejecutar_siguiente_instruccion(&tcb);
 

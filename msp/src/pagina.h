@@ -28,7 +28,7 @@ direccion direccion_virtual_segmento_base_pagina(uint16_t id_segmento, uint16_t 
 pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* lista_paginas);
 
 //Le da a una pagina un espacio en memoria(el pid es necesario)
-void asignar_marco(pagina_t* * pagina, uint32_t pid);
+void asignar_marco(pagina_t* * pagina, segmento_t** segmento, uint32_t pid);
 
 //Busca en la tabla de paginas si la pagina pasada por parametro no es la ultima pagina
 bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas, pagina_t* *encontro_pagina);

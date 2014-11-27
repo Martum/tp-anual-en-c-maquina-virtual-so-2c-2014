@@ -147,7 +147,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			{
 				if(!(pagina_siguiente->tiene_marco))
 				{
-					asignar_marco(&pagina_siguiente, pid);
+					asignar_marco(&pagina_siguiente, &segmento, pid);
 				}
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
 				pagina = pagina_siguiente;
@@ -206,7 +206,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 			{
 				if(!(pagina_siguiente->tiene_marco))
 				{
-					asignar_marco(&pagina_siguiente, pid);
+					asignar_marco(&pagina_siguiente, &segmento, pid);
 				}
 
 				marco = buscar_marco_segun_id(pagina_siguiente->marco);
