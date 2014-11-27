@@ -259,15 +259,15 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 
 			if(recibir(*nueva_conexion, &codigo_beso, &len) == -1)
 			{// Si el mensaje no se recibe completo
-				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
-				free(codigo_beso);
+				//_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
+				//free(codigo_beso);
 				break;
 			}
 
 			// Procesamos el nuevo programa
 			if(_procesar_conexion_nuevo_programa(codigo_beso, len, *nueva_conexion) == -1)
 			{// Si no hay memoria, informamos y seteamos salida con -1
-				_informar_no_hay_memoria(*nueva_conexion);
+				//_informar_no_hay_memoria(*nueva_conexion);
 				salida = -1;
 			}
 			else
@@ -307,10 +307,15 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 	// SE LIBERA AL FINAL DEL SWITCH
 	char* mensaje;
 	uint32_t len;
+	int32_t resultado = -1;
+	flag_t cod_op;
 
 	// Recibimos el mensaje y obtenemos el codigo operacion
-	int32_t resultado = recibir(conexion_proceso->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
+	if(conexion_proceso != NULL)
+	{
+		resultado = recibir(conexion_proceso->socket, &mensaje, &len);
+		cod_op = codigo_operacion(mensaje);
+	}
 
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
@@ -348,12 +353,11 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 				break;
 
 			default:
-				_informar_mensaje_incompleto(conexion_proceso->socket);
 				break;
 		}
 	}
-	else
-		_informar_mensaje_incompleto(conexion_proceso->socket);
+	/*else
+		_informar_mensaje_incompleto(conexion_proceso->socket);*/
 
 	// Liberamos el buffer
 	free(mensaje);
@@ -368,9 +372,14 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
 	char* mensaje;
 	uint32_t len;
+	int32_t resultado = -1;
+	flag_t cod_op;
 
-	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
+	if(conexion_cpu != NULL)
+	{
+		resultado = recibir(conexion_cpu->socket, &mensaje, &len);
+		cod_op = codigo_operacion(mensaje);
+	}
 
 	tcb_t* tcbKM = get_tcb_km();
 
@@ -505,7 +514,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				}
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
-					eliminar_conclusion_tcb();
+					//eliminar_conclusion_tcb();	// Creo que no va, porque ya lo elimino en otra instancia
 
 					replanificar_tcb_km();
 				}
@@ -569,8 +578,8 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 5;
-	timer.tv_usec = 0;
+	timer.tv_sec = 1;
+	timer.tv_usec = 500000;
 
 	// Seteamos este como el socket mas grande
 	int32_t mayor_fd = principal->fd;
