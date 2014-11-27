@@ -57,6 +57,7 @@ void inicializar_listas_estados_tcb()
 {
 	TCB_KM = malloc(sizeof(tcb_t));
 	TCB_KM->km = true;
+	TCB_KM->base_codigo = 0;
 
 	READY_COLA[0] = list_create();
 	READY_COLA[1] = list_create();
@@ -76,6 +77,8 @@ void inicializar_listas_estados_tcb()
 
 	// Y esta?
 	SYSCALLS_COLA = queue_create();
+
+	inicializar_lista_cpu_en_espera();
 }
 
 
@@ -282,6 +285,12 @@ void set_enviar_a_rdy(bool un_bool)
 tcb_t* get_bloqueado_conclusion_tcb()
 {
 	return (get_conclusion_km_t())->tcb;
+}
+
+void eliminar_conclusion_tcb_sin_quitar_de_exec()
+{
+	free(get_conclusion_km_t());
+	list_remove(BLOCK_CONCLUSION_KM, 0);
 }
 
 void eliminar_conclusion_tcb()

@@ -56,7 +56,7 @@ void bloquear_exit()
 
 void desbloquear_exit()
 {
-	pthread_mutex_lock(&MUTEX_BLOQUEAR_EXIT);
+	pthread_mutex_unlock(&MUTEX_BLOQUEAR_EXIT);
 }
 
 /**
@@ -217,7 +217,7 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	conexion_consola(pid);
+	conexion_consola((uint32_t)pid);
 
 	return 0;
 }
@@ -510,6 +510,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// Creo que en este caso no hay que hacer nada
 				}
 
+				_enviar_completadook(conexion_cpu->socket);
+
 				free(pedido_resultado->tcb);
 				free(pedido_resultado);
 
@@ -642,6 +644,7 @@ void* escuchar_cpus(void* otro_ente)
 
 		if(rs > 0)
 		{// Podemos leer
+			printf("Solicitud desde un CPU\n");
 			// Vemos si hay sockets para leer
 			int32_t i;
 			int32_t copia_mayor_fd = mayor_fd;

@@ -994,10 +994,10 @@ respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(
 	memcpy(&respuesta->tamanio, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(&respuesta->pid, chorro + offset, sizeof(uint32_t));
+	memcpy(&respuesta->tid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(&respuesta->tid, chorro + offset, sizeof(uint32_t));
+	memcpy(&respuesta->pid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
 	respuesta->cadena = malloc(respuesta->tamanio);

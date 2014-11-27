@@ -72,6 +72,11 @@ void agregar_a_exit(tcb_t* tcb);
 tcb_t* quitar_de_exec(tcb_t* tcb);
 
 /**
+ * Elimina de conclusion_tcb pero no lo quita de EXEC
+ */
+void eliminar_conclusion_tcb_sin_quitar_de_exec();
+
+/**
  * Verifica si un CPU esta ejecutando algo
  */
 bool esta_ejecutando(uint32_t cpu_id);

@@ -23,6 +23,10 @@ void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id);
 void* quitar_de_cpu_en_espera_de_tcb();
 
 /**
+ * Inicializa la lista de CPU EN ESPERA DE TCB
+ */
+void inicializar_lista_cpu_en_espera();
+/**
  * Quita un CPU de la lista CPU_EN_ESPERA_DE_TCB
  */
 void quitar_cpu_de_lista_espera_tcb(uint32_t cpu_id);

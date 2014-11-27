@@ -10,6 +10,10 @@
 
 #include <hu4sockets/mensajes.h>
 
-void recibir_syscall(tcb_t* tcb, direccion dir);
+/**
+ * Carga las SYSCALLs en memoria.
+ * Devuelve 0 en caso de exito; -1 si falla
+ */
+int32_t cargar_syscalls_a_memoria();
 
 #endif /* SYSCALLS_H_ */

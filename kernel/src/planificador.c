@@ -16,6 +16,8 @@
 #include "memoria.h"
 #include "cpu.h"
 #include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
 
 // MUTEX para garantizar unicidad y atomicidad de planificar
 pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
@@ -33,11 +35,13 @@ void desbloquear_planificar()
 	pthread_mutex_unlock(&PLANIFICANDO);
 }
 
-void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
-	if (CPU_EN_ESPERA_DE_TCB == NULL ) {
-		CPU_EN_ESPERA_DE_TCB = list_create();
-	}
+void inicializar_lista_cpu_en_espera()
+{
+	CPU_EN_ESPERA_DE_TCB = list_create();
+}
 
+void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id)
+{
 	uint32_t* cpu = malloc(sizeof(uint32_t));
 	*cpu = cpu_id;
 	list_add(CPU_EN_ESPERA_DE_TCB, cpu);
@@ -156,7 +160,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 			if(ckm->enviar_a_rdy)
 				agregar_a_ready(tcb_posta);
 
-			eliminar_conclusion_tcb();
+			eliminar_conclusion_tcb_sin_quitar_de_exec();
 		}
 		else
 		{
@@ -176,6 +180,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	default:
+		printf("DEFAULT VACIO\n");
+		sleep(10);
 		break;
 
 	}

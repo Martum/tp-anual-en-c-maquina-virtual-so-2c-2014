@@ -318,6 +318,7 @@ void escuchar_seniales()
 {
 	signal(SIGINT, notificar_desconexion_kernel);
 	//signal(SIGUSR1, fallo_memoria);
+	exit(0);
 }
 
 void escuchar_kernel()

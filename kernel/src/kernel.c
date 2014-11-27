@@ -17,6 +17,7 @@
 #include "conexiones.h"
 #include <pthread.h>
 #include "memoria.h"
+#include "syscalls.h"
 
 #include <hu4sockets/sockets.h>
 
@@ -46,6 +47,14 @@ int main(void) {
 		return FALLO_CONEXION_MEMORIA;
 	}
 
+	// - Levantamos las SYSCALLs
+	if(cargar_syscalls_a_memoria(syscalls()) != 0)
+	{
+		printf("- Fallo carga de SYSCALLs\n");
+		return -1;
+	}
+	printf("- Cargamos las SYSCALLs\n");
+
 	// - Crear thread para escuchar_conexiones_entrantes_y_procesos()
 	pthread_t conexiones_procesos_thread;
 	pthread_create(&conexiones_procesos_thread, NULL, escuchar_conexiones_entrantes_y_procesos, NULL);
@@ -57,7 +66,7 @@ int main(void) {
 	pthread_create(&conexiones_cpus_thread, NULL, escuchar_cpus, NULL);
 	printf("- Creado Thread para escuchar CPUs\n");
 
-	printf("\nBienvenido al Kernel - FULL-FUNCTIONAL\n");
+	printf("\nBienvenido al Kernel - FULLY FUNCTIONAL\n");
 
 	// Esperamos a que ambos terminen
 	pthread_join(conexiones_procesos_thread, NULL);
