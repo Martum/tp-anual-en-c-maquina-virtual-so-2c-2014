@@ -352,8 +352,8 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 				break;
 		}
 	}
-	else
-		_informar_mensaje_incompleto(conexion_proceso->socket);
+	/*else
+		_informar_mensaje_incompleto(conexion_proceso->socket);*/
 
 	// Liberamos el buffer
 	free(mensaje);
