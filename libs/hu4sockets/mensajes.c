@@ -772,6 +772,7 @@ uint32_t tamanio_pedido_salida_estandar_t_serializado(uint32_t tamanio)
 	uint32_t t = 0;
 	t += sizeof(flag_t);
 	t += sizeof(uint32_t);
+	t += sizeof(idetificador_tipo_t);
 	t += sizeof(uint32_t);
 	t += tamanio;
 
