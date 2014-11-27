@@ -587,6 +587,7 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	return OK;
 }
 
+// TODO ver el tema de como llega los bytes cuando son numeros
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
@@ -598,6 +599,7 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ENTRADA_ESTANDAR;
 	cuerpo_del_mensaje.pid = tcb->pid;
+	cuerpo_del_mensaje.tid = tcb->tid;
 	cuerpo_del_mensaje.identificador_de_tipo = identificador;
 
 	uint32_t len_a_enviar = tamanio_pedido_entrada_estandar_t_serializado();
