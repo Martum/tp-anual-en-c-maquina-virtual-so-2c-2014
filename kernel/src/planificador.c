@@ -184,8 +184,6 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	default:
-		printf("DEFAULT VACIO\n");
-		sleep(10);
 		break;
 
 	}
