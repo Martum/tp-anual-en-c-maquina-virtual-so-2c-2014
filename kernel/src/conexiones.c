@@ -534,13 +534,18 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
 
-
 				if(!proceso_muriendo(tcbKM->pid))
 					despertar(pedido_despertar->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
-
 				free(pedido_despertar);
+				break;
+
+			case CREAR_HILO:
+				printf("Pedido de Crear_Hilo de CPU %d\n", conexion_cpu->id);
+				printf("");
+				pedido_crear_hilo_t* pedido_crea = deserializar_pedido_crear_hilo_t(mensaje);
+				crea(pedido_crea->tcb, conexion_cpu->id);
 				break;
 
 			case DESCONEXION_CPU:
