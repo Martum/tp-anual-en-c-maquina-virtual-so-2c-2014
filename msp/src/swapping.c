@@ -106,9 +106,7 @@ void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_co
 void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
 	//Convierte cada id a string y despues los concatena de 2 en 2
-	char *nombre_archivo;
-	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
-	nombre_archivo=concat_string(nombre_archivo,string_itoa((*pagina)->id));
+	char *nombre_archivo=generar_nombre_archivo_swap(pid, id_segmento, (*pagina)->id);
 
 	char* path;
 	path=concat_string("en_disco/",nombre_archivo);
@@ -148,9 +146,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 
 	uint16_t id_pagina = (*pagina)->id;
 	//Convierte cada id a string y despues los concatena de 2 en 2
-	char *nombre_archivo;
-	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
-	nombre_archivo=concat_string(nombre_archivo,string_itoa(id_pagina));
+	char *nombre_archivo=generar_nombre_archivo_swap(pid, id_segmento, id_pagina);
 
 	char* path;
 	path=concat_string("en_disco/",nombre_archivo);
@@ -188,3 +184,31 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 }
 
 
+char* generar_nombre_archivo_swap(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina)
+{
+	char *nombre_archivo;
+	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
+	nombre_archivo=concat_string(nombre_archivo,string_itoa(id_pagina));
+	return nombre_archivo;
+}
+
+void destruir_archivos_swapp_proceso(uint32_t pid, segmento_t* segmento)
+{
+	int i;
+	char* nombre_archivo;
+	for(i=0;i<list_size(segmento->paginas);i++)
+	{
+		pagina_t* pagina=list_get(segmento->paginas,i);
+		if(pagina->en_disco)
+		{
+			nombre_archivo=generar_nombre_archivo_swap(pid, segmento->id, pagina->id);
+			char* path;
+			path=concat_string("en_disco/",nombre_archivo);
+			path=concat_string(path,".txt");
+			free(nombre_archivo);
+			remove(path);
+			free(path);
+
+		}
+	}
+}

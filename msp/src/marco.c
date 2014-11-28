@@ -109,3 +109,16 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 	}
 }
 
+void liberar_marcos_proceso(uint32_t pid)
+{
+	int i;
+	for(i=0;i<list_size(get_lista_marcos());i++)
+	{
+		marco_t* marco=list_get(get_lista_marcos(),i);
+		if(marco->id_proceso==pid)
+		{
+			marco->ocupado=false;
+		}
+	}
+}
+

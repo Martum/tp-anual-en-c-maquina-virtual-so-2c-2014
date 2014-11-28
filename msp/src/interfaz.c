@@ -22,6 +22,7 @@
 #include "algoritmos_sustitucion.h"
 #include "funciones_streams.h"
 #include "logs.h"
+#include "swapping.h"
 
 #include <commons/string.h>
 #include <hu4sockets/resultados.h>
@@ -68,12 +69,36 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		return proceso->pid==pid;
 	}
 
+	void _destruyo_proceso(proceso_msp_t* proceso, direccion base, bool* ok)
+	{
+		int i;
+		for(i=0; i<list_size(proceso->segmentos); i++)
+		{
+			segmento_t* segmento=list_get(proceso->segmentos, i);
+			destruir_archivos_swapp_proceso(pid, segmento);
+		}
+		(*ok) = quitar_segmento(proceso, base);
+		list_destroy(proceso->segmentos);
+		liberar_marcos_proceso(proceso->pid);
+		free(proceso);
+	}
+
 	bool ok;
 
 	if(list_any_satisfy(get_lista_procesos(),(void*) _es_proceso)){
 		// busco el proceso pid
 		proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
-		ok = quitar_segmento(proceso,base);
+
+		if(list_size(proceso->segmentos)==1)
+		{
+			proceso_msp_t* proc = list_get(get_lista_procesos(),(proceso->pid)-1);
+			_destruyo_proceso(proc, base, &ok);
+		}
+		else
+		{
+			ok = quitar_segmento(proceso,base);
+		}
+
 	}else{
 		ok = false;
 	}
