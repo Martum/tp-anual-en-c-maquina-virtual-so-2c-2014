@@ -197,6 +197,36 @@ int crear_hilo(tcb_t* tcb) {
 	return -1;
 }
 
+
+
+resultado_t crea(tcb_t* tcb)
+{
+
+	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
+	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
+	copiar_tcb(nuevo_tcb, tcb);
+	nuevo_tcb->tid = nuevo_tid;
+	nuevo_tcb->pc = tcb->b;
+	nuevo_tcb->km = 0;
+	tcb->a = nuevo_tcb->tid;
+
+	/*
+	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
+
+	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+		return ERROR_EN_EJECUCION;
+
+	if (comunicar_nuevo_tcb(tcb) != OK)
+	{
+		return ERROR_EN_EJECUCION;
+	}
+	 */
+	return OK;
+}
+
+
+
 /*// NO GO
  void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
  //REVISAR. Utilizar el enviar y recibir para evitar espera activa.
