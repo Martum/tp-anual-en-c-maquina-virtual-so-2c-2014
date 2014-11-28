@@ -15,6 +15,8 @@
 #include "planificador.h"
 #include "loader.h"
 #include "memoria.h"
+#include "cpu.h"
+#include <pthread.h>
 
 
 /*t_queue* exec;
@@ -25,12 +27,14 @@ tcb_t* TCB_KM;
 
 // Cola de ready para procesos (1) y para KM (0)
 t_list* READY_COLA[2];
+pthread_mutex_t MUTEX_READY = PTHREAD_MUTEX_INITIALIZER;
 
 // Cola de exit
 t_list* EXIT_COLA;
 
 // Procesos en ejecucion
 t_list* EXEC_COLA;
+pthread_mutex_t MUTEX_EXEC = PTHREAD_MUTEX_INITIALIZER;
 
 // Procesos que estan esperando a que otro hilo termine
 t_list* BLOCK_JOIN;
@@ -48,6 +52,26 @@ t_list* BLOCK_RECURSO;
 
 t_queue* SYSCALLS_COLA; // Que es esto?
 
+void bloquear_ready()
+{
+	pthread_mutex_lock(&MUTEX_READY);
+}
+
+void desbloquear_ready()
+{
+	pthread_mutex_unlock(&MUTEX_READY);
+}
+
+void bloquear_exec()
+{
+	pthread_mutex_lock(&MUTEX_EXEC);
+}
+
+void desbloquear_exec()
+{
+	pthread_mutex_unlock(&MUTEX_EXEC);
+}
+
 void _eliminar_tcb(void* elemento)
 {
 	free((tcb_t*) elemento);
@@ -57,6 +81,7 @@ void inicializar_listas_estados_tcb()
 {
 	TCB_KM = malloc(sizeof(tcb_t));
 	TCB_KM->km = true;
+	TCB_KM->base_codigo = 0;
 
 	READY_COLA[0] = list_create();
 	READY_COLA[1] = list_create();
@@ -76,22 +101,36 @@ void inicializar_listas_estados_tcb()
 
 	// Y esta?
 	SYSCALLS_COLA = queue_create();
+
+	inicializar_lista_cpu_en_espera();
+
+	inicializar_lista_segmentos_por_hilo();
 }
 
 
 void agregar_a_ready(tcb_t* tcb) {
+	bloquear_ready();
 	list_add(READY_COLA[!tcb->km], tcb);
+	desbloquear_ready();
+
 	planificar();
-	// TODO: Llamar al planificador acá? Revisar en qué lugares se llama esta función.
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
 bool hay_hilo_km_ready(){
-	return !list_is_empty(READY_COLA[0]);
+	bloquear_ready();
+	int is_empty = list_is_empty(READY_COLA[0]);
+	desbloquear_ready();
+
+	return !is_empty;
 }
 
 bool hay_hilo_ready(){
-	return !list_is_empty(READY_COLA[1]);
+	bloquear_ready();
+	int is_empty = list_is_empty(READY_COLA[1]);
+	desbloquear_ready();
+
+	return !is_empty;
 }
 
 void agregar_a_block_recurso(tcb_t* tcb)
@@ -108,7 +147,9 @@ void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id) {
 	ej->tcb = tcb;
 	ej->cpu = cpu_id;
 
+	bloquear_exec();
 	list_add(EXEC_COLA, ej);
+	desbloquear_exec();
 }
 
 void agregar_a_exit_cola(tcb_t* tcb) {
@@ -130,7 +171,10 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
+	bloquear_exec();
 	ejecutando_t* ejecutando = list_remove_by_condition(EXEC_COLA, _igual_pid_tid );
+	desbloquear_exec();
+
 	tcb_t* tcb_salida = ejecutando->tcb;
 	free(ejecutando);
 
@@ -146,7 +190,11 @@ bool esta_ejecutando(uint32_t cpu_id)
 		return ((ejecutando_t*) e)->cpu == cpu_id;
 	}
 
-	return list_any_satisfy(EXEC_COLA, _cpu_ejecutando);
+	bloquear_exec();
+	bool salida = list_any_satisfy(EXEC_COLA, _cpu_ejecutando);
+	desbloquear_exec();
+
+	return salida;
 }
 
 tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id)
@@ -156,7 +204,9 @@ tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id)
 		return ((ejecutando_t*) e)->cpu == cpu_id;
 	}
 
+	bloquear_exec();
 	ejecutando_t* ej = list_find(EXEC_COLA, _cpu_ejecutando);
+	desbloquear_exec();
 
 	return ej->tcb;
 }
@@ -184,7 +234,6 @@ void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
 	free(recurso);
 }
 
-// TODO: Recibe TCB y no hace nada con eso??
 void quitar_de_syscalls_cola(tcb_t* tcb) {
 	queue_pop(SYSCALLS_COLA);
 }
@@ -200,11 +249,19 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
 }
 
 tcb_t* quitar_de_ready_km(){
-	return list_remove(READY_COLA[0], 0);
+	bloquear_ready();
+	tcb_t* tcb = list_remove(READY_COLA[0], 0);
+	desbloquear_ready();
+
+	return tcb;
 }
 
 tcb_t* quitar_de_ready(){
-	return list_remove(READY_COLA[1], 0);
+	bloquear_ready();
+	tcb_t* tcb = list_remove(READY_COLA[1], 0);
+	desbloquear_ready();
+
+	return tcb;
 }
 
 char* identificador_de_recurso(uint32_t identificador_int)
@@ -222,7 +279,11 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 		return ((ejecutando_t*) elemento)->tcb->pid == pid && ((ejecutando_t*) elemento)->tcb->tid == tid;
 	}
 
-	return list_find(EXEC_COLA, _buscar_pid_tid);
+	bloquear_exec();
+	ejecutando_t* ejec = list_find(EXEC_COLA, _buscar_pid_tid);
+	desbloquear_exec();
+
+	return ejec;
 }
 
 tcb_t* get_tcb_km()
@@ -281,7 +342,16 @@ void set_enviar_a_rdy(bool un_bool)
 
 tcb_t* get_bloqueado_conclusion_tcb()
 {
-	return (get_conclusion_km_t())->tcb;
+	if(get_conclusion_km_t() != NULL)
+		return (get_conclusion_km_t())->tcb;
+
+	return NULL;
+}
+
+void eliminar_conclusion_tcb_sin_quitar_de_exec()
+{
+	free(get_conclusion_km_t());
+	list_remove(BLOCK_CONCLUSION_KM, 0);
 }
 
 void eliminar_conclusion_tcb()
@@ -372,7 +442,9 @@ void remover_de_ready_a_exit(uint32_t pid)
 		return ((tcb_t*) elemento)->pid == pid;
 	}
 
+	bloquear_ready();
 	uint32_t cantidad = list_count_satisfying(READY_COLA[1], _satisface_pid);
+	desbloquear_ready();
 
 	int i;
 	for(i = 0; i < cantidad; i++)
@@ -486,30 +558,39 @@ void remover_de_block_recursos_a_exit(uint32_t pid)
 void remover_de_conclusion_km_a_exit(uint32_t pid)
 {
 	tcb_t* tcb = get_bloqueado_conclusion_tcb();
-	if(tcb->pid == pid)
+
+	if(tcb != NULL)
 	{
-		agregar_a_exit(tcb);
+		if(tcb->pid == pid)
+		{
+			agregar_a_exit(tcb);
 
-		if(list_size(READY_COLA[0]) == 1)
-		{// Todavia no entro a ejecutar
-			list_remove(READY_COLA[0], 0);	// Removemos el TCB KM
+			bloquear_ready();
+			int32_t cant = list_size(READY_COLA[0]);
+			desbloquear_ready();
 
-			// Elimina el struct conclusion_km_t
-			eliminar_conclusion_tcb();
+			if(cant == 1)
+			{// Todavia no entro a ejecutar
+				bloquear_ready();
+				list_remove(READY_COLA[0], 0);	// Removemos el TCB KM
+				desbloquear_ready();
 
-			// Replanificamos KM para otro TCB
-			replanificar_tcb_km();
-		}
-		else
-		{// Ya se esta ejecutando
-			set_enviar_a_rdy(false);
+				// Elimina el struct conclusion_km_t
+				eliminar_conclusion_tcb();
+
+				// Replanificamos KM para otro TCB
+				replanificar_tcb_km();
+			}
+			else
+			{// Ya se esta ejecutando
+				eliminar_conclusion_tcb();
+			}
 		}
 	}
 }
 
 void eliminar_tcbs_en_exit(uint32_t pid)
 {
-	// TODO: Hacer esta funcion
 	bool _buscar_por_pid(void* elemento)
 	{
 		return ((exit_t*)elemento)->pid == pid;
@@ -533,14 +614,24 @@ void remover_de_exec_a_exit(uint32_t pid)
 	{
 		return ((tcb_t*) elemento)->pid == pid &&
 				!((tcb_t*) elemento)->km;
+	}	//TODO: Creo que si es TCB KM hay que sacarlo igual, pero no ponerlo en exit
+
+	bool _buscar_por_pid_y_km(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid &&
+				((tcb_t*) elemento)->km;
 	}
 
+	bloquear_exec();
 	uint32_t cantidad = list_count_satisfying(EXEC_COLA, _buscar_por_pid_no_km);
+	desbloquear_exec();
 
 	uint32_t i;
 	for(i = 0; i < cantidad; i++)
 	{
+		bloquear_exec();
 		ejecutando_t* et = list_remove_by_condition(EXEC_COLA, _buscar_por_pid_no_km);
+		desbloquear_exec();
 
 		agregar_a_exit(et->tcb);
 
@@ -550,7 +641,6 @@ void remover_de_exec_a_exit(uint32_t pid)
 
 bool proceso_muriendo(uint32_t pid)
 {
-	// TODO: Hacer esta funcion
 	bool _buscar_por_pid(void* elemento)
 	{
 		return ((exit_t*)elemento)->pid == pid;

@@ -15,6 +15,7 @@
 #include "estructuras.h"
 #include "marco.h"
 #include "semaforos.h"
+#include "logs.h"
 
 void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 
@@ -32,12 +33,13 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
 	proceso_msp_t *proceso = malloc(sizeof(proceso_msp_t));
 	proceso->pid = un_pid;
+	proceso->segmentos = list_create();
+	pthread_rwlock_init(&(proceso->semaforo_rw), NULL);
 
 	//unlock_lista_procesos();
 	list_add(get_lista_procesos(),proceso);
 	//lock_lista_procesos();
 
-	proceso->segmentos = list_create();
 	return proceso;
 }
 
@@ -88,6 +90,7 @@ void _destruye_pagina(pagina_t *pagina) {
 	if(pagina->tiene_marco){
 		marco_t* m = buscar_marco_segun_id(pagina->marco);
 		m->ocupado = false;
+		loggear_trace("Se libero el marco %d.", m->id);
 	}
 	bool _is_pagina(pagina_t *pagina){
 		return true;

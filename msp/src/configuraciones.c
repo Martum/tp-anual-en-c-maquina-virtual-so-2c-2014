@@ -29,7 +29,7 @@ t_list* indice_paginas;
 uint32_t cantidad_archivos_swap;
 
 void cargar_configuraciones(){
-	configs_msp = config_create("../configs_msp.cfg");
+	configs_msp = config_create("configs_msp.cfg");
 }
 
 void destruir_configuraciones(){
@@ -64,7 +64,7 @@ void inicializar_lista_marcos(){
 	lista_marcos = list_create();
 //	unlock_lista_marcos();
 
-	uint32_t cant_marcos = cantidad_memoria();
+	uint32_t cant_marcos = cantidad_memoria() * 4;
 	int i = 0;
 
 	for(i=0;i<cant_marcos;i++){

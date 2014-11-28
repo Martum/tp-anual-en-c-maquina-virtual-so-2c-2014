@@ -45,12 +45,16 @@ void* escuchar_consola_msp(void* otro_ente){
 
 
 void _dar_instrucciones_por_consola(){
+
 	char cadena[350] = "";
 
 	scanf("%[^\n]%*c",cadena);
 
+	lock_mutex_pedido_msp();
+
 	if(strcmp(cadena,"Cerrar")== 0){
 		printf("Cerrando consola MSP ... \n\n");
+		unlock_mutex_pedido_msp();
 		return;
 	}else{
 		// printf("la cadena es: %s \n", cadena);
@@ -60,7 +64,7 @@ void _dar_instrucciones_por_consola(){
 		if(!resultado){
 			printf("Instruccion invalida \n\n");
 		}
-
+		unlock_mutex_pedido_msp();
 		_dar_instrucciones_por_consola();
 	}
 }

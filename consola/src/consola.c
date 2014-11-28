@@ -26,6 +26,8 @@ typedef enum {
 
 sock_t* SOCKET_KERNEL;
 uint32_t entrada_en_progreso = 0;
+uint32_t entrada_estandar_pid = 0;
+uint32_t entrada_estandar_tid = 0;
 
 /**
  * Carga el codigo BESO a memoria
@@ -229,6 +231,9 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 	respuesta_entrada->pid = entrada->pid;
 	respuesta_entrada->tid = entrada->tid;
 
+	entrada_estandar_pid = entrada->pid;
+	entrada_estandar_tid = entrada->tid;
+
 	// TODO: Deberiamos verificar que el tipo de entrada sea el correcto.
 	if(entrada->identificador_de_tipo == ENTERO)
 	{
@@ -237,8 +242,10 @@ respuesta_entrada_estandar_t* entrada_estandar(pedido_entrada_estandar_t* entrad
 		scanf("%d", entero);
 
 		respuesta_entrada->tamanio = sizeof(int32_t);
-		respuesta_entrada->cadena = (char*)entero;
+		respuesta_entrada->cadena = malloc(sizeof(int32_t));
+		memcpy(respuesta_entrada->cadena, entero, sizeof(int32_t));
 
+		free(entero);
 	}
 	else
 	{
@@ -285,7 +292,16 @@ void procesar_conexion(char* mensaje, uint32_t len)
 			salida_estandar(deserializar_pedido_salida_estandar_t(mensaje));
 			break;
 
+		case TERMINAR_CONEXION:
+			cerrar_liberar(SOCKET_KERNEL);
+			printf("- Se cierra el proceso (KERNEL REQ - ter)");
+			exit(-1);
+			break;
+
 		default:
+			cerrar_liberar(SOCKET_KERNEL);
+			printf("- Se cierra el proceso (KERNEL REQ - def)");
+			exit(-1);
 			break;
 	}
 }
@@ -308,10 +324,25 @@ void notificar_desconexion_kernel()
 	// Desconectarse
 	if(entrada_en_progreso == 1)
 	{
+		respuesta_entrada_estandar_t* respuesta_entrada = malloc(sizeof(respuesta_entrada_estandar_t));
+		respuesta_entrada->flag = RESPUESTA_ENTRADA;
+		respuesta_entrada->resultado = FALLO_ENTRADA_ESTANDAR;
+		respuesta_entrada->pid = entrada_estandar_pid;
+		respuesta_entrada->tid = entrada_estandar_tid;
 
+		// Para que no quede vacio
+		respuesta_entrada->tamanio = 1;
+		respuesta_entrada->cadena = malloc(2);
+		strcpy(respuesta_entrada->cadena, "a");
+
+		enviar_respuesta_entrada(respuesta_entrada);
 	}
 
 	_enviar_flagt(SOCKET_KERNEL, TERMINAR_CONEXION);
+
+	cerrar_liberar(SOCKET_KERNEL);
+	printf("- Se cierra el proceso (SIGINT)");
+	exit(-1);
 }
 
 void escuchar_seniales()
@@ -329,6 +360,12 @@ void escuchar_kernel()
 		if(recibir(SOCKET_KERNEL, &mensaje, &len) == 0)
 		{
 			procesar_conexion(mensaje, len);
+		}
+		else
+		{
+			cerrar_liberar(SOCKET_KERNEL);
+			printf("- Se cierra el proceso (KERNEL REQ - nop)");
+			exit(-1);
 		}
 
 		free(mensaje);

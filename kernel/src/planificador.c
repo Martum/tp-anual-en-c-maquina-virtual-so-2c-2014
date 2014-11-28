@@ -16,6 +16,8 @@
 #include "memoria.h"
 #include "cpu.h"
 #include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
 
 // MUTEX para garantizar unicidad y atomicidad de planificar
 pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
@@ -33,11 +35,13 @@ void desbloquear_planificar()
 	pthread_mutex_unlock(&PLANIFICANDO);
 }
 
-void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id) {
-	if (CPU_EN_ESPERA_DE_TCB == NULL ) {
-		CPU_EN_ESPERA_DE_TCB = list_create();
-	}
+void inicializar_lista_cpu_en_espera()
+{
+	CPU_EN_ESPERA_DE_TCB = list_create();
+}
 
+void agregar_a_cpu_en_espera_de_tcb(uint32_t cpu_id)
+{
 	uint32_t* cpu = malloc(sizeof(uint32_t));
 	*cpu = cpu_id;
 	list_add(CPU_EN_ESPERA_DE_TCB, cpu);
@@ -129,9 +133,13 @@ char* _rta_nuevo_tcb(uint32_t cpu_id, tcb_t* tcb) {
 void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 	tcb_t* tcb_posta = quitar_de_exec(tcb);
-	if (tcb->km) {
+	if (tcb->km)
+	{
+		tcb_posta = ((conclusion_km_t*)get_conclusion_km_t())->tcb;
 		copiar_registros_programacion(tcb_posta, tcb);
-	} else {
+	}
+	else
+	{
 		copiar_tcb(tcb_posta, tcb);
 	}
 
@@ -141,10 +149,10 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	case ERROR_EN_EJECUCION:
-		if(tcb->km)
-			eliminar_conclusion_tcb();
+		/*if(tcb->km)
+			eliminar_conclusion_tcb();*/	//TODO: Creo que este codigo no va
 
-		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
+		mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta, true);
 		break;
 
 
@@ -156,13 +164,15 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 			if(ckm->enviar_a_rdy)
 				agregar_a_ready(tcb_posta);
 
-			eliminar_conclusion_tcb();
+			eliminar_conclusion_tcb_sin_quitar_de_exec();
+
+			replanificar_tcb_km();
 		}
 		else
 		{
 			if(tcb_posta->tid == 1)
 			{// Muere proceso por ser Hilo principal
-				mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta);
+				mover_tcbs_a_exit_posta(tcb_posta->pid, tcb_posta, true);
 			}
 			else
 			{
@@ -183,7 +193,7 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 
 
 
-void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
+void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconectar_consola)
 {
 	preparar_exit_para_proceso(pid, true);
 
@@ -193,7 +203,7 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
 
 	remover_de_esperando_km_a_exit(pid);
 
-	remover_de_conclusion_km_a_exit(pid);	// VER QUE ELIMINA Y QUE NO ESTA FUNCION -> LINEA 462 CONEXIONES.C
+	remover_de_conclusion_km_a_exit(pid);
 
 	remover_de_join_a_exit(pid);
 
@@ -205,11 +215,17 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional)
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 
 	destruir_segmentos_de_proceso(pid);
+
+	if(desconectar_consola)
+	{
+		enviar_desconectate(buscar_conexion_proceso_por_pid(pid));
+		eliminar_conexion_proceso(buscar_conexion_proceso_por_pid(pid));
+	}
 }
 
-void mover_tcbs_a_exit(uint32_t pid)
+void mover_tcbs_a_exit(uint32_t pid, bool desconectar_consola)
 {
-	mover_tcbs_a_exit_posta(pid, NULL);
+	mover_tcbs_a_exit_posta(pid, NULL, desconectar_consola);
 }
 
 void eliminar_y_destruir_tcb_sin_codigo(void* tcbv) {

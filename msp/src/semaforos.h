@@ -9,6 +9,9 @@
 #define SEMAFOROS_H_
 
 
+void lock_mutex_pedido_msp();
+void unlock_mutex_pedido_msp();
+
 void lock_lista_procesos();
 void unlock_lista_procesos();
 

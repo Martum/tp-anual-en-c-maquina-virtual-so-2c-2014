@@ -1,6 +1,6 @@
-PUERTO=7766
+PUERTO=18257
 IP_MSP=127.0.0.1
-PUERTO_MSP=17291
+PUERTO_MSP=18200
 QUANTUM=8
 SYSCALLS=/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/kernel/syscalls.bc
 TAMANIO_STACK=500

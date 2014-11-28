@@ -17,23 +17,30 @@
 #include "configuraciones.h"
 #include "algoritmos_sustitucion.h"
 #include "funciones_streams.h"
+#include "logs.h"
 
 #include <commons/txt.h>
 #include <commons/string.h>
 
 
 
-
-void swap_in(pagina_t* * pagina, uint32_t pid)
+void swap_in(pagina_t* * pagina, uint32_t id_segmento, uint32_t pid)
 {
 	marco_t* marco = liberar_un_marco();
-
 
 	//Modifico la pagina y el marco para que se relacionen entre si
 	(*pagina)->marco=marco->id;
 	(*pagina)->tiene_marco=true;
 	marco->id_proceso = pid;
 	marco->ocupado=true;
+
+	loggear_trace("Swap in pagina %d del segmento %d del proceso %d en marco %d.",
+			(*pagina)->id, id_segmento, marco->id_proceso, marco->id);
+	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, marco->id_proceso);
+
+	if(cantidad_marcos_libre() == 0){
+		loggear_info("Espacio de memoria principal lleno");
+	}
 }
 
 
@@ -45,19 +52,14 @@ marco_t* liberar_un_marco()
 	//SACAR EL NULL
 	uint32_t id_marco_a_liberar= realizar_algoritmo_swapping(&id_pag_swap);
 
-
-
-
 	marco_t* marco_a_liberar= buscar_marco_segun_id(id_marco_a_liberar);
-
+	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
 
 	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id_proceso);
 
-
-
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
 
-
+	loggear_trace("Swap out pagina %d del segmento %d del proceso %d.", pagina_a_liberar->id, segmento_contenedor->id, marco_a_liberar->id_proceso);
 
 	return marco_a_liberar;
 }
@@ -65,20 +67,17 @@ marco_t* liberar_un_marco()
 //Debe deolver una pagina*
 uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 {
-
 	char* algoritmo=algoritmo_sustitucion_de_paginas();
 	uint32_t id_marco;
-	char* clock="CLOCK";
-	if(string_equals_ignore_case(clock, algoritmo))
-	{
+
+	if(string_equals_ignore_case("CLOCK", algoritmo)){
 		id_marco=algoritmo_clock(id_pagina_swap);
 	}
-	else
-	{
+	else if(string_equals_ignore_case("LRU", algoritmo)){
 		id_marco=algoritmo_lru(id_pagina_swap);
 	}
-	return id_marco;
 
+	return id_marco;
 }
 
 void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint16_t id_pag_swap, uint32_t pid)
@@ -106,7 +105,6 @@ void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_co
 
 void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 {
-
 	//Convierte cada id a string y despues los concatena de 2 en 2
 	char *nombre_archivo;
 	nombre_archivo=concat_string(string_itoa(pid),string_itoa(id_segmento));
@@ -116,6 +114,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	path=concat_string("en_disco/",nombre_archivo);
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
+
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
@@ -134,12 +133,13 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 	(*pagina)->tiene_marco=false;
 
-
-
-
 	txt_close_file(arch);
 
 	aumento_cantidad_archivos_swap();
+
+	if(get_cantidad_archivos_swap() == cantidad_swap() * 4096){
+		loggear_info("Espacio de swap lleno");
+	}
 }
 
 void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
@@ -165,7 +165,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	marco_t* marco = buscar_marco_libre();
 	if(marco==NULL)
 	{
-		swap_in(pagina, pid);
+		swap_in(pagina, id_segmento, pid);
 	}
 	else
 	{
@@ -183,6 +183,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 
 	remove(path);
 	free(path);
+
 	disminuyo_cantidad_archivos_swap();
 }
 

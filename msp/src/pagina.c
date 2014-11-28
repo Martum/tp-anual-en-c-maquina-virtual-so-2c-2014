@@ -14,6 +14,7 @@
 #include "configuraciones.h"
 #include "swapping.h"
 #include "semaforos.h"
+#include "logs.h"
 
 #include <commons/collections/list.h>
 
@@ -58,15 +59,15 @@ pagina_t* buscar_pagina_segun_id_en_lista_paginas(uint16_t id_pagina, t_list* li
 	return pagina_requerida;
 }
 
-void asignar_marco(pagina_t* * pagina, uint32_t pid)
-{
-	marco_t* marco= malloc(sizeof(marco_t));
+void asignar_marco(pagina_t* * pagina, segmento_t** segmento, uint32_t pid){
+	marco_t* marco=NULL;
 	marco = buscar_marco_libre();
+
 	//Si no hay ningun marco libre, swappeo
 	//Si hay un marco libre, se lo asigno a la pagina
 	if(marco == NULL)
 	{
-		swap_in(pagina, pid);
+		swap_in(pagina, (*segmento)->id, pid);
 	}
 	else
 	{
@@ -74,27 +75,30 @@ void asignar_marco(pagina_t* * pagina, uint32_t pid)
 		(*pagina)->tiene_marco= true;
 		marco->id_proceso = pid;
 		marco->ocupado= true;
+
+		loggear_trace("Se asigno el marco %d a la pagina %d del segmento %d del proceso %d.",
+				marco->id, (*pagina)->id, (*segmento)->id, pid);
+
+		if(cantidad_marcos_libre() == 0){
+			loggear_info("Espacio de memoria principal lleno");
+		}
 	}
 
 }
 
 bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas, pagina_t* * encontro_pagina)
 {
-
 	*encontro_pagina=list_get(lista_paginas, (id_pagina)+1);
 	if((*encontro_pagina)==NULL)
 	{
 		return false;
 	}
 
-
 	return true;
 }
 
 pagina_t* siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas)
 {
-
-
 	return buscar_pagina_segun_id_en_lista_paginas(id_pagina, lista_paginas);
 }
 

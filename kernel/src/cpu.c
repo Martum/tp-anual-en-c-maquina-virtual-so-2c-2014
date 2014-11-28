@@ -17,11 +17,13 @@ uint32_t ID_CPU_GLOBAL = 1;
 // lista de segmentos por hilo (struct: pid, tid, lista de direcciones(segmentos))
 t_list* SEGMENTOS_POR_HILO = NULL;
 
-void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos) {
-	if (SEGMENTOS_POR_HILO == NULL ) {
-		SEGMENTOS_POR_HILO = list_create();
-	}
+void inicializar_lista_segmentos_por_hilo()
+{
+	SEGMENTOS_POR_HILO = list_create();
+}
 
+void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos)
+{
 	list_add(SEGMENTOS_POR_HILO, segmentos);
 }
 

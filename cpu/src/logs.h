@@ -9,6 +9,7 @@
 #define LOGS_H_
 
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "commons/log.h"
 #include "commons/string.h"

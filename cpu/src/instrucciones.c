@@ -29,6 +29,8 @@ resultado_t load(tcb_t* tcb)
 	if (leer_numero(tcb, &numero) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion2("LOAD", numero, registro);
+
 	if (actualizar_valor_del_registro(tcb, registro, numero)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -50,6 +52,8 @@ resultado_t getm(tcb_t* tcb)
 
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
+	ansisop_ejecucion_instruccion6("GETM", registro1, registro2);
 
 	int32_t valor_del_registro_2;
 
@@ -121,6 +125,8 @@ resultado_t setm(tcb_t* tcb)
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion4("SETM", cantidad_de_bytes_a_copiar, registro1, registro2);
+
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -150,6 +156,8 @@ resultado_t movr(tcb_t* tcb)
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion6("MOVR", registro1, registro2);
+
 	int32_t valor_del_registro_2;
 
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
@@ -169,7 +177,7 @@ resultado_t movr(tcb_t* tcb)
  * 			Busca el valor del registro.
  */
 resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
-	int32_t condicion(int32_t))
+	int32_t condicion(int32_t), char* nombre)
 {
 	char registro1, registro2;
 
@@ -178,6 +186,8 @@ resultado_t _funcion_operacion(tcb_t* tcb, int32_t operacion(int32_t, int32_t),
 
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
+	ansisop_ejecucion_instruccion6(nombre, registro1, registro2);
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
 
@@ -217,7 +227,7 @@ resultado_t addr(tcb_t* tcb)
 		return false;
 	}
 
-	return _funcion_operacion(tcb, sumar, condicion);
+	return _funcion_operacion(tcb, sumar, condicion, "ADDR");
 }
 
 /*
@@ -239,7 +249,7 @@ resultado_t subr(tcb_t* tcb)
 		return false;
 	}
 
-	return _funcion_operacion(tcb, restar, condicion);
+	return _funcion_operacion(tcb, restar, condicion, "SUBR");
 }
 
 /*
@@ -261,7 +271,7 @@ resultado_t mulr(tcb_t* tcb)
 		return false;
 	}
 
-	return _funcion_operacion(tcb, multiplicar, condicion);
+	return _funcion_operacion(tcb, multiplicar, condicion, "MULR");
 }
 
 /*
@@ -284,7 +294,7 @@ resultado_t modr(tcb_t* tcb)
 		return false;
 	}
 
-	return _funcion_operacion(tcb, modulo, condicion);
+	return _funcion_operacion(tcb, modulo, condicion, "MODR");
 }
 
 /*
@@ -306,7 +316,7 @@ resultado_t divr(tcb_t* tcb)
 		return valor == 0;
 	}
 
-	return _funcion_operacion(tcb, division, condicion);
+	return _funcion_operacion(tcb, division, condicion, "DIVR");
 }
 
 /*
@@ -314,12 +324,14 @@ resultado_t divr(tcb_t* tcb)
  * 			El byte es una letra de un registro.
  * 			Busca el valor del registro.
  */
-resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
+resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t), char* nombre)
 {
 	char registro;
 
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
+	ansisop_ejecucion_instruccion5(nombre, registro);
 
 	int32_t valor_del_registro;
 
@@ -327,7 +339,7 @@ resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t))
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	actualizar_registro_a(tcb, operacion(valor_del_registro));
+	actualizar_valor_del_registro(tcb, registro, operacion(valor_del_registro));
 
 	return OK;
 }
@@ -345,7 +357,7 @@ resultado_t incr(tcb_t* tcb)
 		return ++valor;
 	}
 
-	return _funcion_incr_decr(tcb, sumar_1);
+	return _funcion_incr_decr(tcb, sumar_1, "INCR");
 }
 
 /*
@@ -361,7 +373,7 @@ resultado_t decr(tcb_t* tcb)
 		return --valor;
 	}
 
-	return _funcion_incr_decr(tcb, restar_1);
+	return _funcion_incr_decr(tcb, restar_1, "DECR");
 }
 
 /*
@@ -370,7 +382,7 @@ resultado_t decr(tcb_t* tcb)
  * 	Busca el valor del registro.
  */
 resultado_t _funcion_comparacion(tcb_t* tcb,
-	int32_t comparador(int32_t, int32_t))
+	int32_t comparador(int32_t, int32_t), char* nombre)
 {
 	char registro1, registro2;
 
@@ -379,6 +391,8 @@ resultado_t _funcion_comparacion(tcb_t* tcb,
 
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
+	ansisop_ejecucion_instruccion6(nombre, registro1, registro2);
 
 	int32_t valor_del_registro_1, valor_del_registro_2;
 
@@ -414,7 +428,7 @@ resultado_t comp(tcb_t* tcb)
 		return 0;
 	}
 
-	return _funcion_comparacion(tcb, comparador);
+	return _funcion_comparacion(tcb, comparador, "COMP");
 }
 
 /*
@@ -435,7 +449,7 @@ resultado_t cgeq(tcb_t* tcb)
 		return 0;
 	}
 
-	return _funcion_comparacion(tcb, comparador);
+	return _funcion_comparacion(tcb, comparador, "CGEQ");
 }
 
 /*
@@ -456,7 +470,7 @@ resultado_t cleq(tcb_t* tcb)
 		return 0;
 	}
 
-	return _funcion_comparacion(tcb, comparador);
+	return _funcion_comparacion(tcb, comparador, "CLEQ");
 }
 
 /*
@@ -471,6 +485,8 @@ resultado_t _goto(tcb_t* tcb)
 
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
+
+	ansisop_ejecucion_instruccion5("GOTO", registro);
 
 	int32_t valor_del_registro;
 
@@ -491,11 +507,13 @@ resultado_t _goto(tcb_t* tcb)
  * 			Efectua condicion el valor del registro 'a'.
  * 			Actualiza el valor del pc con base de codigo + numero leido.
  */
-resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t))
+resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t), char* nombre)
 {
 	int32_t offset;
 
 	leer_numero(tcb, &offset);
+
+	ansisop_ejecucion_instruccion3(nombre, offset);
 
 	int32_t valor_del_registro_a = obtener_valor_registro_a(tcb);
 
@@ -524,7 +542,7 @@ resultado_t jmpz(tcb_t* tcb)
 		return valor != 0;
 	}
 
-	return _funcion_de_salto(tcb, condicion);
+	return _funcion_de_salto(tcb, condicion, "JMPZ");
 }
 
 /*
@@ -542,7 +560,7 @@ resultado_t jpnz(tcb_t* tcb)
 		return valor == 0;
 	}
 
-	return _funcion_de_salto(tcb, condicion);
+	return _funcion_de_salto(tcb, condicion, "JPNZ");
 }
 
 /*
@@ -582,6 +600,8 @@ resultado_t shif(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion2("SHIF", bits_a_desplazar, registro);
+
 	if (obtener_valor_del_registro(tcb, registro, &valor_de_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
@@ -600,6 +620,7 @@ resultado_t shif(tcb_t* tcb)
  */
 resultado_t nopp(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("NOPP");
 	return OK;
 }
 
@@ -657,6 +678,8 @@ resultado_t push(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion2("PUSH", cantidad_de_bytes, registro);
+
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
@@ -664,7 +687,7 @@ resultado_t push(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	dividir_en_bytes(valor_a_pushear, bytes);
+	memcpy(bytes, &valor_a_pushear, 4);
 
 	return _push(tcb, cantidad_de_bytes, bytes);
 }
@@ -704,13 +727,15 @@ resultado_t take(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
+	ansisop_ejecucion_instruccion2("TAKE", cantidad_de_bytes, registro);
+
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
 
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
-	unir_bytes(&valor_a_popeado, bytes);
+	memcpy(&valor_a_popeado, bytes, 4);
 
 	if (actualizar_valor_del_registro(tcb, registro, valor_a_popeado)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -726,6 +751,7 @@ resultado_t take(tcb_t* tcb)
  */
 resultado_t xxxx(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("XXXX");
 	return FIN_EJECUCION;
 }
 
@@ -739,6 +765,8 @@ resultado_t xxxx(tcb_t* tcb)
  */
 resultado_t malc(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("MALC");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -767,6 +795,8 @@ resultado_t malc(tcb_t* tcb)
  */
 resultado_t _free(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("FREE");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -787,18 +817,18 @@ resultado_t _free(tcb_t* tcb)
  */
 resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 {
-	char* buffer = malloc(sizeof(char) * 4);
+	char* buffer = malloc(sizeof(int32_t));
 
 	uint32_t cantidad_de_bytes_leidos;
 
-	if (comunicar_entrada_estandar(tcb, 4, &cantidad_de_bytes_leidos, buffer,
+	if (comunicar_entrada_estandar(tcb, 0, &cantidad_de_bytes_leidos, buffer,
 		ENTERO) != OK)
 	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-	unir_bytes(numero_ingresado, buffer);
+	memcpy(numero_ingresado, buffer, cantidad_de_bytes_leidos);
 
 	free(buffer);
 
@@ -815,6 +845,8 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
  */
 resultado_t innn(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("INNN");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -877,6 +909,8 @@ resultado_t _pedir_por_consola_cadena(tcb_t* tcb, int32_t direccion,
  */
 resultado_t innc(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("INNC");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -895,9 +929,8 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
-	char buffer[3];
-
-	dividir_en_bytes(numero, buffer);
+	char buffer[4];
+	memcpy(buffer, &numero, sizeof(int32_t));
 
 	if (comunicar_salida_estandar(tcb, 4, buffer, ENTERO) != OK)
 	{
@@ -915,6 +948,8 @@ resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
  */
 resultado_t outn(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("OUTN");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -964,6 +999,8 @@ resultado_t _imprimir_por_consola_cadena(tcb_t* tcb,
  */
 resultado_t outc(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("OUTC");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -1031,6 +1068,7 @@ resultado_t outc(tcb_t* tcb)
 //}
 
 // ELIMINAR codigo innecesario de crea (ya no hace falta)
+// TODO terminar la instruccion crea
 /*
  * 	CREA
  *
@@ -1052,12 +1090,15 @@ resultado_t outc(tcb_t* tcb)
  */
 resultado_t crea(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("CREA");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
 	}
 
-//	direccion nuevo_tid;
+	uint32_t nuevo_tid;
+
 //	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
@@ -1079,10 +1120,12 @@ resultado_t crea(tcb_t* tcb)
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	if (comunicar_nuevo_tcb(tcb) != OK)
+	if (comunicar_nuevo_tcb(tcb, &nuevo_tid) != OK)
 	{
 		return ERROR_EN_EJECUCION;
 	}
+
+	actualizar_registro_a(tcb, nuevo_tid);
 
 	return OK;
 }
@@ -1096,6 +1139,8 @@ resultado_t crea(tcb_t* tcb)
  */
 resultado_t join(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("JOIN");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -1121,6 +1166,8 @@ resultado_t join(tcb_t* tcb)
  */
 resultado_t blok(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("BLOK");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -1145,6 +1192,8 @@ resultado_t blok(tcb_t* tcb)
  */
 resultado_t wake(tcb_t* tcb)
 {
+	ansisop_ejecucion_instruccion1("WAKE");
+
 	if (!es_tcb_kernel(tcb))
 	{
 		return ERROR_EN_EJECUCION;
@@ -1210,9 +1259,14 @@ void inicializar_dic_de_instrucciones()
 
 void liberar_dic_de_instrucciones()
 {
-	loggear_trace("Intento liberar el diccionario de instrucciones");
-	dictionary_destroy(dic_instrucciones);
-	loggear_info("Diccionario de instrucciones liberado correctamente");
+	if (dic_instrucciones != NULL)
+	{
+		loggear_trace("Intento liberar el diccionario de instrucciones");
+
+		dictionary_destroy(dic_instrucciones);
+
+		loggear_info("Diccionario de instrucciones liberado correctamente");
+	}
 }
 
 resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)

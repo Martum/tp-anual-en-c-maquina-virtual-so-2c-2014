@@ -56,7 +56,7 @@ void bloquear_exit()
 
 void desbloquear_exit()
 {
-	pthread_mutex_lock(&MUTEX_BLOQUEAR_EXIT);
+	pthread_mutex_unlock(&MUTEX_BLOQUEAR_EXIT);
 }
 
 /**
@@ -76,7 +76,7 @@ void _agregar_conexion_a_procesos(sock_t* conexion, uint32_t pid)
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
 }
 
-void _eliminar_conexion_proceso(sock_t* conexion)
+void eliminar_conexion_proceso(sock_t* conexion)
 {
 	bool _buscar_conexion(void* elemento)
 	{
@@ -119,7 +119,9 @@ void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
 		return ((conexion_cpu_t*) elemento)->id == cpu_id;
 	}
 
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
 	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 
 	cerrar_liberar(conn->socket);
 	free(conn);
@@ -183,6 +185,11 @@ void _enviar_ok(sock_t* conexion)
 
 }
 
+void enviar_desconectate(sock_t* conexion)
+{
+	_enviar_flagt(conexion, TERMINAR_CONEXION);
+}
+
 /**
  * Informa al destinatario que el mensaje no se recibio correctamente
  * Usar solo si el destinatario esta esperando una confirmacion de recepcion
@@ -217,7 +224,7 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	conexion_consola(pid);
+	conexion_consola((uint32_t)pid);
 
 	return 0;
 }
@@ -254,15 +261,15 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 
 			if(recibir(*nueva_conexion, &codigo_beso, &len) == -1)
 			{// Si el mensaje no se recibe completo
-				_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
-				free(codigo_beso);
+				//_informar_mensaje_incompleto(buscar_conexion_proceso_por_fd((*nueva_conexion)->fd));
+				//free(codigo_beso);
 				break;
 			}
 
 			// Procesamos el nuevo programa
 			if(_procesar_conexion_nuevo_programa(codigo_beso, len, *nueva_conexion) == -1)
 			{// Si no hay memoria, informamos y seteamos salida con -1
-				_informar_no_hay_memoria(*nueva_conexion);
+				//_informar_no_hay_memoria(*nueva_conexion);
 				salida = -1;
 			}
 			else
@@ -297,6 +304,9 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 // Atiende las conexiones de procesos y de conexiones que todavia no se asignaron
 void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 {
+	if(conexion_proceso == NULL)
+		return;
+
 	// Variables para el mensaje
 	// IMPORTANTE: NO LIBERAR MENSAJE DENTRO DE UNA FUNCION,
 	// SE LIBERA AL FINAL DEL SWITCH
@@ -336,19 +346,18 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 				desconexion_consola(conexion_proceso->pid);
 
-				mover_tcbs_a_exit(conexion_proceso->pid);
-				_eliminar_conexion_proceso(conexion_proceso->socket);
+				mover_tcbs_a_exit(conexion_proceso->pid, false);
+				eliminar_conexion_proceso(conexion_proceso->socket);
 
 				desbloquear_exit();
 				break;
 
 			default:
-				_informar_mensaje_incompleto(conexion_proceso->socket);
 				break;
 		}
 	}
-	else
-		_informar_mensaje_incompleto(conexion_proceso->socket);
+	/*else
+		_informar_mensaje_incompleto(conexion_proceso->socket);*/
 
 	// Liberamos el buffer
 	free(mensaje);
@@ -361,6 +370,9 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
  */
 void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 {
+	if(conexion_cpu == NULL)
+		return;
+
 	char* mensaje;
 	uint32_t len;
 
@@ -377,7 +389,12 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 	if(resultado == 0)
 	{
+		printf("-- Recibimos request de CPU %d\n", conexion_cpu->id);
+		printf("");
 		bloquear_exit();
+
+		printf("- Pasamos el bloqueo con codigo %d\n", cod_op);
+		printf("");
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
 				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
@@ -487,6 +504,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case MANDA_TCB:
+				printf("Pedido de TCB de CPU %d\n", conexion_cpu->id);
+				printf("");
 				pedir_tcb(conexion_cpu->id);
 				break;
 
@@ -496,11 +515,13 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				if(!proceso_muriendo(pedido_resultado->tcb->pid))
 				{	// Recibimos el TCB y esta todos OK
+					printf("- Recibimos TCB con resultado %d\n", pedido_resultado->resultado);
+					printf("");
 					recibir_tcb(pedido_resultado->resultado, pedido_resultado->tcb);
 				}
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
-					eliminar_conclusion_tcb();
+					//eliminar_conclusion_tcb();
 
 					replanificar_tcb_km();
 				}
@@ -510,6 +531,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					// Creo que en este caso no hay que hacer nada
 				}
 
+				_enviar_completadook(conexion_cpu->socket);
+
 				free(pedido_resultado->tcb);
 				free(pedido_resultado);
 
@@ -517,19 +540,18 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESCONEXION_CPU:
+				desconexion_cpu(conexion_cpu->id);
 
-					quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
-					FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
+				quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
+				FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
 
-					if(esta_ejecutando(conexion_cpu->id))
-					{
-						tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
-						mover_tcbs_a_exit(t->pid);
-					}
+				if(esta_ejecutando(conexion_cpu->id))
+				{
+					tcb_t* t = get_tcb_ejecutando_en_cpu(conexion_cpu->id);
+					mover_tcbs_a_exit(t->pid, true);
+				}
 
-					desconexion_cpu(conexion_cpu->id);
-
-					remover_y_eliminar_conexion_cpu(conexion_cpu->id);
+				remover_y_eliminar_conexion_cpu(conexion_cpu->id);
 
 				break;
 
@@ -549,9 +571,11 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 		}
 		desbloquear_exit();
-	}
+		printf("-- Terminamos request de CPU %d\n", conexion_cpu->id);
+		printf("");
 
-	free(mensaje);
+		free(mensaje);
+	}
 }
 
 // Corre en un THREAD
@@ -562,7 +586,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 5;
+	timer.tv_sec = 2;
 	timer.tv_usec = 0;
 
 	// Seteamos este como el socket mas grande
@@ -614,7 +638,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 		readfds = READFDS_PROCESOS;
 
 		// Reseteamos el timer
-		timer.tv_sec = 5;
+		timer.tv_sec = 2;
 		timer.tv_usec = 0;
 	}
 
@@ -626,7 +650,7 @@ void* escuchar_cpus(void* otro_ente)
 {
 	// Seteamos el timer
 	struct timeval timer;
-	timer.tv_sec = 5;
+	timer.tv_sec = 2;
 	timer.tv_usec = 0;
 
 	// Inicializamos el readfds maestro y el mayor
@@ -655,7 +679,7 @@ void* escuchar_cpus(void* otro_ente)
 		}
 
 		// Reseteamos el timer
-		timer.tv_sec = 5;
+		timer.tv_sec = 2;
 		timer.tv_usec = 0;
 
 		// Rearmamos el readfds

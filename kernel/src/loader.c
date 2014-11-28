@@ -116,13 +116,13 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 	// No puede haber SEGMENTATION FAULT porque pedimos el Segmento con este LEN
 	if(escribir_memoria(tcb->pid, tcb->base_codigo, codigo_beso, len) == -1)
 	{
-		// TODO: Fallo al escribir en memoria. Que hacemos?
+		return -1;
 	}
 
 	// Agregamos el TCB a rdy
 	agregar_a_ready(tcb);
 
-	return 0;
+	return pid;
 }
 
 

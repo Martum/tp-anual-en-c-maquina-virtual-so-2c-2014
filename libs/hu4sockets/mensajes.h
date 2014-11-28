@@ -43,6 +43,7 @@ typedef enum {
 	JOIN = 209,
 	BLOQUEAR = 210,
 	DESPERTAR = 211,
+	DESCONEXION_CPU = 212,
 
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
@@ -297,5 +298,9 @@ uint32_t tamanio_pedido_despertar_t_serializado();
 respuesta_entrada_estandar_t* deserializar_respuesta_entrada_estandar_t(char*);
 char* serializar_respuesta_entrada_estandar_t(respuesta_entrada_estandar_t*);
 uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t);
+
+respuesta_crear_hilo_t* deserializar_respuesta_crear_hilo_t(char*);
+char* serializar_respuesta_crear_hilo_t(respuesta_crear_hilo_t*);
+uint32_t tamanio_respuesta_crear_hilo_t_serializado();
 
 #endif /* MENSAJES_H_ */

@@ -11,17 +11,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "logs.h"
+
 /*
  * 	@DESC: Forma un int a partir de un array de cuatro bytes
  * 	@RETURN:
  */
-void unir_bytes(int32_t* valor, char buffer[3]);
+//void unir_bytes(int32_t* valor, char buffer[3]);
 
 /*
  * 	@DESC: Divide un int en cuatro bytes
  * 	@RETURN:
  */
-void dividir_en_bytes(int32_t valor, char bytes[3]);
+//void dividir_en_bytes(int32_t valor, char bytes[3]);
 
 /*
  * 	@DESC: Desplaza bits_a_desplazar bits en valor
