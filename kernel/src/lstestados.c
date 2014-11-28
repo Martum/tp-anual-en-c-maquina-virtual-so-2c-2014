@@ -16,6 +16,7 @@
 #include "loader.h"
 #include "memoria.h"
 #include "cpu.h"
+#include <pthread.h>
 
 
 /*t_queue* exec;
@@ -26,6 +27,7 @@ tcb_t* TCB_KM;
 
 // Cola de ready para procesos (1) y para KM (0)
 t_list* READY_COLA[2];
+pthread_mutex_t MUTEX_READY = PTHREAD_MUTEX_INITIALIZER;
 
 // Cola de exit
 t_list* EXIT_COLA;
@@ -48,6 +50,16 @@ t_list* BLOCK_RECURSO;
 
 
 t_queue* SYSCALLS_COLA; // Que es esto?
+
+void bloquear_ready()
+{
+	pthread_mutex_lock(&MUTEX_READY);
+}
+
+void desbloquear_ready()
+{
+	pthread_mutex_unlock(&MUTEX_READY);
+}
 
 void _eliminar_tcb(void* elemento)
 {
@@ -86,17 +98,28 @@ void inicializar_listas_estados_tcb()
 
 
 void agregar_a_ready(tcb_t* tcb) {
+	bloquear_ready();
 	list_add(READY_COLA[!tcb->km], tcb);
+	desbloquear_ready();
+
 	planificar();
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
 bool hay_hilo_km_ready(){
-	return !list_is_empty(READY_COLA[0]);
+	bloquear_ready();
+	int is_empty = list_is_empty(READY_COLA[0]);
+	desbloquear_ready();
+
+	return !is_empty;
 }
 
 bool hay_hilo_ready(){
-	return !list_is_empty(READY_COLA[1]);
+	bloquear_ready();
+	int is_empty = list_is_empty(READY_COLA[1]);
+	desbloquear_ready();
+
+	return !is_empty;
 }
 
 void agregar_a_block_recurso(tcb_t* tcb)
@@ -204,11 +227,19 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
 }
 
 tcb_t* quitar_de_ready_km(){
-	return list_remove(READY_COLA[0], 0);
+	bloquear_ready();
+	tcb_t* tcb = list_remove(READY_COLA[0], 0);
+	desbloquear_ready();
+
+	return tcb;
 }
 
 tcb_t* quitar_de_ready(){
-	return list_remove(READY_COLA[1], 0);
+	bloquear_ready();
+	tcb_t* tcb = list_remove(READY_COLA[1], 0);
+	desbloquear_ready();
+
+	return tcb;
 }
 
 char* identificador_de_recurso(uint32_t identificador_int)
@@ -385,7 +416,9 @@ void remover_de_ready_a_exit(uint32_t pid)
 		return ((tcb_t*) elemento)->pid == pid;
 	}
 
+	bloquear_ready();
 	uint32_t cantidad = list_count_satisfying(READY_COLA[1], _satisface_pid);
+	desbloquear_ready();
 
 	int i;
 	for(i = 0; i < cantidad; i++)
@@ -506,9 +539,15 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 		{
 			agregar_a_exit(tcb);
 
-			if(list_size(READY_COLA[0]) == 1)
+			bloquear_ready();
+			int32_t cant = list_size(READY_COLA[0]);
+			desbloquear_ready();
+
+			if(cant == 1)
 			{// Todavia no entro a ejecutar
+				bloquear_ready();
 				list_remove(READY_COLA[0], 0);	// Removemos el TCB KM
+				desbloquear_ready();
 
 				// Elimina el struct conclusion_km_t
 				eliminar_conclusion_tcb();
