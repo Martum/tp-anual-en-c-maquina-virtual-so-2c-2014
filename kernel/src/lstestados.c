@@ -34,6 +34,7 @@ t_list* EXIT_COLA;
 
 // Procesos en ejecucion
 t_list* EXEC_COLA;
+pthread_mutex_t MUTEX_EXEC = PTHREAD_MUTEX_INITIALIZER;
 
 // Procesos que estan esperando a que otro hilo termine
 t_list* BLOCK_JOIN;
@@ -59,6 +60,16 @@ void bloquear_ready()
 void desbloquear_ready()
 {
 	pthread_mutex_unlock(&MUTEX_READY);
+}
+
+void bloquear_exec()
+{
+	pthread_mutex_lock(&MUTEX_EXEC);
+}
+
+void desbloquear_exec()
+{
+	pthread_mutex_unlock(&MUTEX_EXEC);
 }
 
 void _eliminar_tcb(void* elemento)
@@ -136,7 +147,9 @@ void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id) {
 	ej->tcb = tcb;
 	ej->cpu = cpu_id;
 
+	bloquear_exec();
 	list_add(EXEC_COLA, ej);
+	desbloquear_exec();
 }
 
 void agregar_a_exit_cola(tcb_t* tcb) {
@@ -158,7 +171,10 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 	}
 
 	// Buscamos el ejecutando_t, nos guardamos la referencia al tcb_t y liberamos
+	bloquear_exec();
 	ejecutando_t* ejecutando = list_remove_by_condition(EXEC_COLA, _igual_pid_tid );
+	desbloquear_exec();
+
 	tcb_t* tcb_salida = ejecutando->tcb;
 	free(ejecutando);
 
@@ -174,7 +190,11 @@ bool esta_ejecutando(uint32_t cpu_id)
 		return ((ejecutando_t*) e)->cpu == cpu_id;
 	}
 
-	return list_any_satisfy(EXEC_COLA, _cpu_ejecutando);
+	bloquear_exec();
+	bool salida = list_any_satisfy(EXEC_COLA, _cpu_ejecutando);
+	desbloquear_exec();
+
+	return salida;
 }
 
 tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id)
@@ -184,7 +204,9 @@ tcb_t* get_tcb_ejecutando_en_cpu(uint32_t cpu_id)
 		return ((ejecutando_t*) e)->cpu == cpu_id;
 	}
 
+	bloquear_exec();
 	ejecutando_t* ej = list_find(EXEC_COLA, _cpu_ejecutando);
+	desbloquear_exec();
 
 	return ej->tcb;
 }
@@ -257,7 +279,11 @@ ejecutando_t* buscar_exec_por_pid_tid(uint32_t pid, uint32_t tid)
 		return ((ejecutando_t*) elemento)->tcb->pid == pid && ((ejecutando_t*) elemento)->tcb->tid == tid;
 	}
 
-	return list_find(EXEC_COLA, _buscar_pid_tid);
+	bloquear_exec();
+	ejecutando_t* ejec = list_find(EXEC_COLA, _buscar_pid_tid);
+	desbloquear_exec();
+
+	return ejec;
 }
 
 tcb_t* get_tcb_km()
@@ -596,12 +622,16 @@ void remover_de_exec_a_exit(uint32_t pid)
 				((tcb_t*) elemento)->km;
 	}
 
+	bloquear_exec();
 	uint32_t cantidad = list_count_satisfying(EXEC_COLA, _buscar_por_pid_no_km);
+	desbloquear_exec();
 
 	uint32_t i;
 	for(i = 0; i < cantidad; i++)
 	{
+		bloquear_exec();
 		ejecutando_t* et = list_remove_by_condition(EXEC_COLA, _buscar_por_pid_no_km);
+		desbloquear_exec();
 
 		agregar_a_exit(et->tcb);
 
