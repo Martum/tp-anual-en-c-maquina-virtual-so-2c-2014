@@ -370,11 +370,12 @@ respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
 		return rta_crea;
 
 	agregar_a_ready(nuevo_tcb);
+	rta_crea->resultado = COMPLETADO_OK;
 
 	return rta_crea;
 }
 
-void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t* cpu_id){
+void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t cpu_id){
 
 	rta->flag = CREAR_HILO;
 
@@ -384,13 +385,13 @@ void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t* cpu_id)
 
 	free(rta);
 
-	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
+	sock_t* socket = buscar_conexion_cpu_por_id(cpu_id);
 	enviar(socket, rta_serializada, &tamanio);
 
 	free(rta_serializada);
 }
 
-void crea(tcb_t* tcb, uint32_t* cpu_id)
+void crea(tcb_t* tcb, uint32_t cpu_id)
 {
 	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
 	_enviar_respuesta_crea_a_cpu(rta_crea, cpu_id);
