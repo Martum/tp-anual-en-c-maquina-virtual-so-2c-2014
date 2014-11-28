@@ -202,6 +202,7 @@ void salida_estandar(pedido_salida_estandar_t* salida)
 	if(salida->identificador_de_tipo == CADENA)
 	{
 		char* texto = malloc(salida->tamanio + 1);
+		memcpy(texto, salida->cadena_de_texto, salida->tamanio);
 		texto[salida->tamanio] = '\0';
 
 		printf("SALIDA > %s\n", texto);
