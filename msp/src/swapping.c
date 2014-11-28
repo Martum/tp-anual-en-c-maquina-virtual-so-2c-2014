@@ -115,7 +115,6 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	path=concat_string(path,".txt");
 	free(nombre_archivo);
 
-	printf("Archivo: %s. Path: %s\n", nombre_archivo, path);
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = txt_open_for_append(path);
