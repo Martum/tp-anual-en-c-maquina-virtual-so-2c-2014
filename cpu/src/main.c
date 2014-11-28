@@ -30,7 +30,7 @@ int32_t main(int32_t argc, char** argv)
 		loggear_error("No pudo cargar las configuraciones");
 		loggear_info("Liberando recursos para cierre...");
 		finalizar_loggeo();
-		error_show(" Al cargar configuraciones");
+		error_show(" Al cargar configuraciones\n");
 		return 0;
 	}
 
@@ -40,7 +40,7 @@ int32_t main(int32_t argc, char** argv)
 		loggear_info("Liberando recursos para cierre...");
 		liberar_configuraciones();
 		finalizar_loggeo();
-		error_show(" Al tratar de conectarse con memoria");
+		error_show(" Al tratar de conectarse con memoria\n");
 		return 0;
 	}
 
@@ -50,7 +50,7 @@ int32_t main(int32_t argc, char** argv)
 		loggear_info("Liberando recursos para cierre...");
 		liberar_configuraciones();
 		finalizar_loggeo();
-		error_show(" Al tratar de conectarse con kernel");
+		error_show(" Al tratar de conectarse con kernel\n");
 		return 0;
 	}
 
@@ -60,17 +60,15 @@ int32_t main(int32_t argc, char** argv)
 
 	inicializar_dic_de_instrucciones();
 
-	loggear_info("Cargadas todas las estructuras administrativas");
+	loggear_info("Cargadas todas las estructuras administrativas\n");
 
 	while (1)
 	{
-		loggear_info("Pido un tcb");
-
 		if (pedir_tcb(&tcb, &quantum) == FALLO_PEDIDO_DE_TCB)
 		{
 			loggear_error("No pudo pedir tcb a kernel");
 			_liberar_recursos();
-			error_show(" Al pedir tcb a kernel");
+			error_show(" Al pedir tcb a kernel\n");
 			return 0;
 		}
 
@@ -86,15 +84,17 @@ int32_t main(int32_t argc, char** argv)
 
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
-			loggear_trace("Me preparo para ejecutar otra instruccion.");
-			loggear_trace("Quantum restante %d", quantum);
-			loggear_trace("Modo kernel %d", tcb.km);
+			loggear_debug("Ejecuto instruccion nueva instruccion [Quantum: %d, Modo kernel: %d]", quantum, tcb.km);
+//			ELIMINAR logeo en main
+//			loggear_trace("Me preparo para ejecutar otra instruccion.");
+//			loggear_trace("Quantum restante %d", quantum);
+//			loggear_trace("Modo kernel %d", tcb.km);
 
 			usleep(retardo() * 1000);
 
 			resultado = ejecutar_siguiente_instruccion(&tcb);
 
-			loggear_trace("Resultado de la ejecucion: %d", resultado);
+			loggear_trace("Resultado de la ejecucion: %d\n", resultado);
 
 			quantum--;
 		}
@@ -110,7 +110,7 @@ int32_t main(int32_t argc, char** argv)
 		{
 			loggear_error("No pudo informar al kernel");
 			_liberar_recursos();
-			error_show(" Al enviar informe a kernel");
+			error_show(" Al enviar informe a kernel\n");
 			return 0;
 		}
 

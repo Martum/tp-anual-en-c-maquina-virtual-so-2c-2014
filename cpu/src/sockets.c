@@ -37,8 +37,6 @@ resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 
 resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 {
-	loggear_trace("IP %s -- Puerto %d", ip, puerto);
-
 	*socket = crear_socket_hablador(ip, puerto);
 
 	if (conectar(*socket) == -1)
@@ -90,7 +88,8 @@ resultado_t _mandar_soy_cpu_a_kernel()
 
 resultado_t conectar_con_kernel()
 {
-	loggear_trace("Intento conectarme con kernel");
+	loggear_trace("Intento conectarme con kernel [IP: %s, Puerto %d]",
+		ip_kernel(), puerto_kernel());
 
 	if (_conectar(&kernel, ip_kernel(), puerto_kernel()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
@@ -98,19 +97,20 @@ resultado_t conectar_con_kernel()
 	if (_mandar_soy_cpu_a_kernel() == FALLO_COMUNICACION)
 		return FALLO_CONEXION;
 
-	loggear_info("Conexion con kernel realizada con exito");
+	loggear_info("Conexion con kernel realizada con exito\n");
 
 	return OK;
 }
 
 resultado_t conectar_con_memoria()
 {
-	loggear_trace("Intento conectarme con memoria");
+	loggear_trace("Intento conectarme con memoria [IP: %s, Puerto %d]",
+		ip_msp(), puerto_msp());
 
 	if (_conectar(&memoria, ip_msp(), puerto_msp()) == FALLO_CONEXION)
 		return FALLO_CONEXION;
 
-	loggear_info("Conexion con memoria realizada con exito");
+	loggear_info("Conexion con memoria realizada con exito\n");
 
 	return OK;
 }
@@ -170,10 +170,10 @@ void desconectar_kernel()
 
 void desconectarse()
 {
-	if (memoria != NULL)
+	if (memoria != NULL )
 		desconectar_memoria();
 
-	if (kernel != NULL)
+	if (kernel != NULL )
 		desconectar_kernel();
 }
 
@@ -281,10 +281,8 @@ resultado_t destruir_segmento(direccion pid, direccion direccion)
 resultado_t leer_de_memoria(direccion pid, direccion direccion,
 	uint32_t cantidad_de_bytes, char* buffer)
 {
-	loggear_trace("Envio mensaje para leer de memoria");
-	loggear_trace("PID: %d", pid);
-	loggear_trace("Direcciones a leer %x - %x", direccion,
-		direccion + cantidad_de_bytes - 1);
+	loggear_trace("Leo memoria [PID: %d, Direccion a leer %x - %x]", pid,
+		direccion, direccion + cantidad_de_bytes - 1);
 
 	pedido_de_leer_de_memoria_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = LEE_DE_MEMORIA;
@@ -306,7 +304,8 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
-	loggear_trace("Recibi respuesta por lectura de memoria");
+//	ELIMINAR logeo en leer de memoria
+//	loggear_trace("Recibi respuesta por lectura de memoria");
 
 	respuesta_de_leer_de_memoria_t* respuesta =
 		deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
@@ -384,7 +383,7 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 {
-	loggear_trace("Preparando mensaje para pedir TCB");
+	loggear_trace("Pido TCB");
 
 	pedido_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = MANDA_TCB;
@@ -402,7 +401,8 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-	loggear_trace("Recibi respuesta por pedido de TCB");
+//	ELIMINAR logeo en pedir tcb
+//	loggear_trace("Recibi respuesta por pedido de TCB");
 
 	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
 		chorro_de_respuesta);
@@ -415,10 +415,12 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	free(respuesta->tcb);
 	free(respuesta);
 
-	loggear_debug("Pedido de TCB satisfactorio");
+	loggear_debug("Pedido de TCB satisfactorio [PID: %d, TID %d, Quantum %d]\n",
+		tcb->pid, tcb->tid, *quantum);
 
-	loggear_trace("PID TCB %d -- TID TCB %d", tcb->pid, tcb->tid);
-	loggear_trace("Quantum %d", *quantum);
+//	ELIMINAR logeo en pedir tcb
+//	loggear_trace("PID TCB %d -- TID TCB %d", tcb->pid, tcb->tid);
+//	loggear_trace("Quantum %d", *quantum);
 
 	return OK;
 }
@@ -454,7 +456,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 			return FALLO_INFORME_A_KERNEL;
 		}
 
-		loggear_trace("Recibi respuesta por informe de interrupcion");
+//		ELIMINAR logeo en informe interrupcion
+//		loggear_trace("Recibi respuesta por informe de interrupcion");
 
 		resultado_t resultado = *chorro_de_respuesta;
 
@@ -463,7 +466,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 
 		if (resultado != COMPLETADO_OK)
 		{
-			loggear_warning("No se pudo completar el informe de interrupcion");
+			loggear_warning(
+				"No se pudo completar el informe de interrupcion\n");
 			return FALLO_INFORME_A_KERNEL;
 		}
 
@@ -472,7 +476,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return OK;
 	}
 
-	loggear_trace("Preparando mensaje para informar al kernel un resultado");
+	loggear_trace("Informo al kernel un resultado [PID: %d, Resultado: %d",
+		tcb.pid, res);
 
 	pedido_con_resultado_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = TOMA_RESULTADO;
@@ -483,8 +488,9 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
-	loggear_trace("PID TCB %d -- TID TCB %d", tcb.pid, tcb.tid);
-	loggear_trace("Resultado %d", res);
+//	ELIMINAR logeo en informar resultado
+//	loggear_trace("PID TCB %d -- TID TCB %d", tcb.pid, tcb.tid);
+//	loggear_trace("Resultado %d", res);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
@@ -495,7 +501,8 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	loggear_trace("Recibi respuesta por informe de resultado");
+//	ELIMINAR logeo en informar resultado
+//	loggear_trace("Recibi respuesta por informe de resultado");
 
 	resultado_t resultado = *chorro_de_respuesta;
 
@@ -508,7 +515,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		return FALLO_INFORME_A_KERNEL;
 	}
 
-	loggear_debug("Informe de resultado satisfactorio");
+	loggear_debug("Informe de resultado satisfactorio\n");
 
 	return OK;
 }
@@ -521,7 +528,8 @@ resultado_t _obtener(tcb_t* tcb, char* buffer, uint32_t bytes_a_leer)
 	if (!tcb->km)
 		pid_a_leer = tcb->pid;
 
-	loggear_trace("Modo kernel %d", tcb->km);
+//	ELIMINAR logeo en _obtener
+//	loggear_trace("Modo kernel %d", tcb->km);
 
 	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
@@ -541,8 +549,9 @@ resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 
 	instruccion[4] = '\0';
 
-	loggear_trace("Lectura de instruccion satisfactoria");
-	loggear_debug("Instruccion leida %s", instruccion);
+	loggear_trace("Lectura de instruccion satisfactoria: %s", instruccion);
+//	ELIMINAR logeo en leer proxima instruccion
+//	loggear_debug("Instruccion leida %s", instruccion);
 
 	return OK;
 }
@@ -554,8 +563,9 @@ resultado_t leer_registro(tcb_t* tcb, char* registro)
 	if (_obtener(tcb, registro, sizeof(char)) == FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
 
-	loggear_trace("Lectura de registro satisfactoria");
-	loggear_debug("Registro leido %c en bytes %x", *registro, *registro);
+	loggear_trace("Lectura de registro satisfactoria: %c", *registro);
+//	ELIMINAR logeo en leer registro
+//	loggear_debug("Registro leido %c", *registro);
 
 	return OK;
 }
@@ -576,8 +586,9 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 
 	free(buffer);
 
-	loggear_trace("Lectura de numero satisfactoria");
-	loggear_debug("Numero leido %d en bytes %x", *numero, *numero);
+	loggear_trace("Lectura de numero satisfactoria: %d", *numero);
+//	ELIMINAR logeo en leer numero
+//	loggear_debug("Numero leido %d", *numero);
 
 	return OK;
 }
@@ -585,10 +596,9 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {
-	loggear_debug("Comunico entrada estandar");
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Cantidad de bytes a leer %d", bytes_a_leer);
-	loggear_trace("Tipo %d", identificador);
+	loggear_debug(
+		"Comunico entrada estandar [PID: %d, Cantidad de bytes a leer %d, Tipo: %d]",
+		tcb->pid, bytes_a_leer, identificador);
 
 	pedido_entrada_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = ENTRADA_ESTANDAR;
@@ -610,8 +620,6 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	if (recibir(kernel, &chorro_de_respuesta, &len_devolucion) == -1)
 		return FALLO_COMUNICACION;
 
-	loggear_trace("Recibi respuesta por entrada estandar");
-
 	respuesta_entrada_estandar_t* respuesta =
 		deserializar_respuesta_entrada_estandar_t(chorro_de_respuesta);
 
@@ -632,9 +640,8 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	free(respuesta);
 	free(respuesta->cadena);
 
-	loggear_debug("Entrada estandar satisfactoria");
-	loggear_trace("Entrada %s", buffer);
-	loggear_trace("Tamaño %d", *bytes_leidos);
+	loggear_debug("Entrada estandar satisfactoria [Entrada %s, Tamaño %d]",
+		buffer, *bytes_leidos);
 
 	return OK;
 }
@@ -642,12 +649,9 @@ resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	char* buffer, idetificador_tipo_t identificador)
 {
-	loggear_debug("Comunico salida estandar");
-	loggear_trace("PID %d", tcb->pid);
-	int32_t d;
-	memcpy(&d, buffer, 4);
-	loggear_trace("Cadena a imprimir %d", d);
-	loggear_trace("Tipo %d", identificador);
+	loggear_debug(
+		"Comunico salida estandar [PID: %d, Cadena a imprimir %s, Tipo %d]",
+		tcb->pid, buffer, identificador);
 
 	pedido_salida_estandar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = SALIDA_ESTANDAR;
@@ -669,8 +673,6 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_trace("Recibi respuesta por salida estandar");
-
 	resultado_t resultado = *chorro_de_respuesta;
 
 	free(chorro_de_envio);
@@ -689,8 +691,7 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 
 resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid)
 {
-	loggear_debug("Comunico nuevo tcb");
-	loggear_trace("PID nuevo tcb %d", nuevo_tcb);
+	loggear_debug("Comunico nuevo tcb [PID %d]", nuevo_tcb->pid);
 
 	pedido_crear_hilo_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = CREAR_HILO;
@@ -708,9 +709,8 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid)
 		return FALLO_COMUNICACION;
 	}
 
-	loggear_trace("Recibi respuesta por nuevo tcb");
-
-	respuesta_crear_hilo_t* respuesta = deserializar_respuesta_crear_hilo_t(chorro_de_respuesta);
+	respuesta_crear_hilo_t* respuesta = deserializar_respuesta_crear_hilo_t(
+		chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
@@ -726,16 +726,16 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid)
 
 	free(respuesta);
 
-	loggear_debug("Comunicacion nuevo tcb satisfactorio");
+	loggear_debug("Comunicacion nuevo tcb satisfactorio [Nuevo tid: %d]",
+		*nuevo_tid);
 
 	return OK;
 }
 
 resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 {
-	loggear_debug("Comunico join");
-	loggear_trace("TID llamador %d", tid_llamador);
-	loggear_trace("TID esperador %d", tid_esperador);
+	loggear_debug("Comunico join [TID llamador: %d, TID esperador %d]",
+		tid_llamador, tid_esperador);
 
 	pedido_join_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = JOIN;
@@ -753,8 +753,6 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 		free(chorro_de_respuesta);
 		return FALLO_COMUNICACION;
 	}
-
-	loggear_trace("Recibi respuesta por join");
 
 	resultado_t resultado = *chorro_de_respuesta;
 
@@ -774,9 +772,8 @@ resultado_t comunicar_join(uint32_t tid_llamador, uint32_t tid_esperador)
 
 resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 {
-	loggear_debug("Comunico bloquear");
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Id del recurso %d", id_recurso);
+	loggear_debug("Comunico bloquear [PID: %d, ID del recurso %d]", tcb->pid,
+		id_recurso);
 
 	pedido_bloquear_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = BLOQUEAR;
@@ -794,8 +791,6 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 		free(chorro_de_respuesta);
 		return FALLO_COMUNICACION;
 	}
-
-	loggear_trace("Recibi respuesta por bloqueo");
 
 	resultado_t resultado = *chorro_de_respuesta;
 
@@ -815,9 +810,8 @@ resultado_t comunicar_bloquear(tcb_t* tcb, uint32_t id_recurso)
 
 resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 {
-	loggear_debug("Comunico despertar");
-	loggear_trace("PID %d", tcb->pid);
-	loggear_trace("Id del recurso %d", id_recurso);
+	loggear_debug("Comunico despertar [PID: %d, ID del recurso: %d]", tcb->pid,
+		id_recurso);
 
 	pedido_despertar_t cuerpo_del_mensaje;
 	cuerpo_del_mensaje.flag = DESPERTAR;
@@ -834,8 +828,6 @@ resultado_t comunicar_despertar(tcb_t* tcb, uint32_t id_recurso)
 		free(chorro_de_respuesta);
 		return FALLO_COMUNICACION;
 	}
-
-	loggear_trace("Recibi respuesta por despertar");
 
 	resultado_t resultado = *chorro_de_respuesta;
 
