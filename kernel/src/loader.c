@@ -18,6 +18,8 @@
 
 #include "memoria.h"
 
+#include "loggear.h"
+
 uint32_t PID_GLOBAL = 1;
 pthread_mutex_t MUTEX_PID = PTHREAD_MUTEX_INITIALIZER;
 
@@ -118,6 +120,8 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 	{
 		return -1;
 	}
+
+	loggear_conexion_consola(pid);
 
 	// Agregamos el TCB a rdy
 	agregar_a_ready(tcb);

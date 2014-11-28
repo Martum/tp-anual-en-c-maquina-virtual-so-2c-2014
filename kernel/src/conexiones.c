@@ -225,8 +225,6 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	loggear_conexion_consola((uint32_t)pid);
-
 	return 0;
 }
 
