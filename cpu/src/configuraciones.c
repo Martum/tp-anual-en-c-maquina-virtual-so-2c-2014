@@ -21,7 +21,7 @@ resultado_t cargar_configuraciones()
 		return FALLO_CARGA_DE_CONFIGURACIONES;
 	}
 
-	loggear_info("Configuraciones cargadas con exito");
+	loggear_info("Configuraciones cargadas con exito\n");
 
 	return OK;
 }

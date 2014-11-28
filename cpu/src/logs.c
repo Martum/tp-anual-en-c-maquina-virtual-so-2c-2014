@@ -19,16 +19,16 @@ void empezar_loggeo()
 
 	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_TRACE);
 
-	loggear_info("Empiezo el loggeo");
+	loggear_info("Empiezo el loggeo\n");
 }
 
 void finalizar_loggeo()
 {
 	fclose(fp);
 
-	log_destroy(logger);
-
 	loggear_info("Finalizo el loggeo");
+
+	log_destroy(logger);
 }
 
 void loggear_trace(const char* format, ...)
