@@ -396,7 +396,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 		printf("");
 		bloquear_exit();
 
-		printf("- Pasamos el bloqueo con codigo %d\n", cod_op);
+		printf("- Codigo de operacion %d\n", cod_op);
 		printf("");
 		switch (cod_op) {
 
@@ -538,6 +538,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					despertar(pedido_despertar->identificador_de_recurso);
 
 				_enviar_completadook(conexion_cpu->socket);
+
 				free(pedido_despertar);
 				break;
 

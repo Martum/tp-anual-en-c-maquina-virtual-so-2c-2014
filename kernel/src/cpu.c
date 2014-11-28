@@ -345,8 +345,12 @@ void bloquear(uint32_t recurso) {
 
 void despertar(uint32_t recurso) {
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
-	quitar_de_block_recurso(tcb);
-	agregar_a_ready(tcb);
+
+	if(tcb != NULL)
+	{
+		quitar_de_block_recurso(tcb);
+		agregar_a_ready(tcb);
+	}
 }
 
 respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
