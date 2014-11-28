@@ -59,5 +59,8 @@ void loggear_desconexion_cpu(uint32_t id)
 
 void loggear_estado_de_hilos()
 {
+	// Lista de tcb_con_cola_t
 	//t_list* lista_tcbs = get_todos_los_tcbs();
+
+	// TODO: Crear una nueva lista con todos los t_hilo
 }
