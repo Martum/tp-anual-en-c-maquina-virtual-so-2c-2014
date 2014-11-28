@@ -68,7 +68,7 @@ uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int
 	//Calculo el tamanio real
 		uint32_t tamanio_aux;
 		tamanio_aux= *tamanio;
-		int aux = ((max_modificable+1)-desplazamiento-*(tamanio));
+		int aux = ((max_modificable+1)-desplazamiento+1-*(tamanio));
 		if(aux<0)
 			{
 				tamanio_aux= (max_modificable+1)-desplazamiento;

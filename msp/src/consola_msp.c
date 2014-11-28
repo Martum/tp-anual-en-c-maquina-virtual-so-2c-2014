@@ -248,12 +248,22 @@ void escribir_memo(uint32_t pid, direccion direccion_virtual,
 	free(resultado);
 }
 
+void imprimir_por_pantalla_stream(char* texto_leido, uint32_t tamanio){
+	printf("Texto leido: ");
+	int i;
+	for(i=0; i<tamanio; i++){
+		printf("%c", *(texto_leido+i));
+	}
+	printf("\n\n");
+}
+
 void leer_memo(uint32_t pid, direccion direccion_virtual, uint32_t tamanio){
 	resultado_t* resultado = malloc(sizeof(resultado_t));
 	char* texto_leido = leer_memoria(pid, direccion_virtual, tamanio, resultado);
 
 	if(*(resultado)==RESULTADO_OK){
-		printf("Texto leido: %s \n\n", texto_leido);
+		imprimir_por_pantalla_stream(texto_leido, tamanio);
+		//printf("Texto leido: %s \n\n", texto_leido);
 	}else if(*(resultado)==SEGMENTATION_FAULT){
 		printf("ERROR Violacion de segmento \n\n");
 	}

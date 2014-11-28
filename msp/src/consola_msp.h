@@ -83,3 +83,4 @@ void* escuchar_consola_msp(void*);
 void _dar_instrucciones_por_consola();
 bool _matcheo_cadena_con_funcion(char*);
 bool _hay_parametro(char* param);
+void imprimir_por_pantalla_stream(char*, uint32_t);

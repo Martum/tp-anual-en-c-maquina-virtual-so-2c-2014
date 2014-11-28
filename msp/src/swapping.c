@@ -59,7 +59,7 @@ marco_t* liberar_un_marco()
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
 
-	loggear_trace("Swap out pagina %d del segmento %d del proceso %d.", pagina_a_liberar->id, segmento_contenedor->id, marco_a_liberar->id_proceso);
+
 
 	return marco_a_liberar;
 }
@@ -181,6 +181,8 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	free(path);
 
 	disminuyo_cantidad_archivos_swap();
+
+	loggear_trace("Swap out pagina %d del segmento %d del proceso %d.", id_pagina, id_segmento, pid);
 }
 
 
