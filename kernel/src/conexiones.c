@@ -119,7 +119,9 @@ void remover_y_eliminar_conexion_cpu(uint32_t cpu_id)
 		return ((conexion_cpu_t*) elemento)->id == cpu_id;
 	}
 
+	pthread_mutex_lock(&MUTEX_CONEXIONES_CPU);
 	conexion_cpu_t* conn = list_remove_by_condition(CONEXIONES_CPU, _cpu_por_id);
+	pthread_mutex_unlock(&MUTEX_CONEXIONES_CPU);
 
 	cerrar_liberar(conn->socket);
 	free(conn);
