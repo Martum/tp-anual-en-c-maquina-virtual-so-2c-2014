@@ -115,67 +115,67 @@ resultado_t obtener_valor_del_registro(tcb_t* tcb, char registro,
 {
 	if ('A' == registro)
 	{
-		loggear_debug("Valor del registro A es %d", tcb->a);
+		loggear_debug("Obtengo valor del registro A es %d", tcb->a);
 		*numero = tcb->a;
 		return OK;
 	}
 	if ('B' == registro)
 	{
-		loggear_debug("Valor del registro B es %d", tcb->b);
+		loggear_debug("Obtengo valor del registro B es %d", tcb->b);
 		*numero = tcb->b;
 		return OK;
 	}
 	if ('C' == registro)
 	{
-		loggear_debug("Valor del registro C es %d", tcb->c);
+		loggear_debug("Obtengo valor del registro C es %d", tcb->c);
 		*numero = tcb->c;
 		return OK;
 	}
 	if ('D' == registro)
 	{
-		loggear_debug("Valor del registro D es %d", tcb->d);
+		loggear_debug("Obtengo valor del registro D es %d", tcb->d);
 		*numero = tcb->d;
 		return OK;
 	}
 	if ('E' == registro)
 	{
-		loggear_debug("Valor del registro E es %d", tcb->e);
+		loggear_debug("Obtengo valor del registro E es %d", tcb->e);
 		*numero = tcb->e;
 		return OK;
 	}
 	if ('M' == registro)
 	{
-		loggear_debug("Valor del registro M es %d", tcb->base_codigo);
+		loggear_debug("Obtengo valor del registro M es %d", tcb->base_codigo);
 		*numero = tcb->base_codigo;
 		return OK;
 	}
 	if ('P' == registro)
 	{
-		loggear_debug("Valor del registro P es %d", tcb->pc);
+		loggear_debug("Obtengo valor del registro P es %d", tcb->pc);
 		*numero = tcb->pc;
 		return OK;
 	}
 	if ('X' == registro)
 	{
-		loggear_debug("Valor del registro X es %d", tcb->base_stack);
+		loggear_debug("Obtengo valor del registro X es %d", tcb->base_stack);
 		*numero = tcb->base_stack;
 		return OK;
 	}
 	if ('S' == registro)
 	{
-		loggear_debug("Valor del registro S es %d", tcb->cursor_stack);
+		loggear_debug("Obtengo valor del registro S es %d", tcb->cursor_stack);
 		*numero = tcb->cursor_stack;
 		return OK;
 	}
 	if ('K' == registro)
 	{
-		loggear_debug("Valor del registro K es %d", tcb->km);
+		loggear_debug("Obtengo valor del registro K es %d", tcb->km);
 		*numero = tcb->km;
 		return OK;
 	}
 	if ('I' == registro)
 	{
-		loggear_debug("Valor del registro I es %d", tcb->pid);
+		loggear_debug("Obtengo valor del registro I es %d", tcb->pid);
 		*numero = tcb->pid;
 		return OK;
 	}
@@ -216,13 +216,13 @@ direccion obtener_base_de_codigo(tcb_t* tcb)
 
 int32_t obtener_valor_registro_a(tcb_t* tcb)
 {
-	loggear_debug("Valor del registro A es %d", tcb->a);
+	loggear_debug("Obtengo valor del registro A es %d", tcb->a);
 	return tcb->a;
 }
 
 int32_t obtener_valor_registro_b(tcb_t* tcb)
 {
-	loggear_debug("Valor del registro B es %d", tcb->b);
+	loggear_debug("Obtengo valor del registro B es %d", tcb->b);
 	return tcb->b;
 }
 
@@ -230,6 +230,7 @@ resultado_t mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
 {
 	loggear_debug("Muevo cursor del stack, %x -> %x", tcb->cursor_stack,
 		tcb->cursor_stack + cantidad_de_bytes);
+
 	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes)
 	{
 		loggear_warning("La cantidad de bytes a mover sobrepasa la base");

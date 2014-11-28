@@ -94,7 +94,7 @@ int32_t main(int32_t argc, char** argv)
 
 			resultado = ejecutar_siguiente_instruccion(&tcb);
 
-			loggear_trace("Resultado de la ejecucion: %d\n", resultado);
+			loggear_debug("Resultado de la ejecucion: %d\n", resultado);
 
 			quantum--;
 		}
