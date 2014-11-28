@@ -687,8 +687,6 @@ resultado_t push(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-//	dividir_en_bytes(valor_a_pushear, bytes);
-
 	memcpy(bytes, &valor_a_pushear, 4);
 
 	return _push(tcb, cantidad_de_bytes, bytes);
@@ -736,8 +734,6 @@ resultado_t take(tcb_t* tcb)
 
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
-
-//	unir_bytes(&valor_a_popeado, bytes);
 
 	memcpy(&valor_a_popeado, bytes, 4);
 
@@ -828,16 +824,11 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 	if (comunicar_entrada_estandar(tcb, 0, &cantidad_de_bytes_leidos, buffer,
 		ENTERO) != OK)
 	{
+		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-//	numero_ingresado = malloc(sizeof(cantidad_de_bytes_leidos));
-
 	memcpy(numero_ingresado, buffer, cantidad_de_bytes_leidos);
-
-//	*numero_ingresado = atoi(buffer);
-
-//	unir_bytes(numero_ingresado, buffer);
 
 	free(buffer);
 
@@ -938,20 +929,13 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
-//	char buffer[3];
-//
-//	dividir_en_bytes(numero, buffer);
-
-	char* buffer = malloc(sizeof(int32_t));
+	char buffer[4];
 	memcpy(buffer, &numero, sizeof(int32_t));
 
 	if (comunicar_salida_estandar(tcb, 4, buffer, ENTERO) != OK)
 	{
-		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
-
-	free(buffer);
 
 	return OK;
 }
@@ -1113,7 +1097,8 @@ resultado_t crea(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-//	direccion nuevo_tid;
+	uint32_t nuevo_tid;
+
 //	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
@@ -1135,10 +1120,12 @@ resultado_t crea(tcb_t* tcb)
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	if (comunicar_nuevo_tcb(tcb) != OK)
+	if (comunicar_nuevo_tcb(tcb, &nuevo_tid) != OK)
 	{
 		return ERROR_EN_EJECUCION;
 	}
+
+	actualizar_registro_a(tcb, nuevo_tid);
 
 	return OK;
 }
@@ -1272,9 +1259,14 @@ void inicializar_dic_de_instrucciones()
 
 void liberar_dic_de_instrucciones()
 {
-	loggear_trace("Intento liberar el diccionario de instrucciones");
-	dictionary_destroy(dic_instrucciones);
-	loggear_info("Diccionario de instrucciones liberado correctamente");
+	if (dic_instrucciones != NULL)
+	{
+		loggear_trace("Intento liberar el diccionario de instrucciones");
+
+		dictionary_destroy(dic_instrucciones);
+
+		loggear_info("Diccionario de instrucciones liberado correctamente");
+	}
 }
 
 resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)

@@ -733,7 +733,8 @@ char* serializar_pedido_salida_estandar_t(pedido_salida_estandar_t* pedido)
 	memcpy(bytes + offset, &pedido->pid, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, &pedido->identificador_de_tipo, sizeof(idetificador_tipo_t));
+	memcpy(bytes + offset, &pedido->identificador_de_tipo,
+		sizeof(idetificador_tipo_t));
 
 	offset += sizeof(idetificador_tipo_t);
 	memcpy(bytes + offset, &pedido->tamanio, sizeof(uint32_t));
@@ -755,7 +756,8 @@ pedido_salida_estandar_t* deserializar_pedido_salida_estandar_t(char* chorro)
 	memcpy(&pedido->pid, chorro + offset, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(&pedido->identificador_de_tipo, chorro + offset, sizeof(idetificador_tipo_t));
+	memcpy(&pedido->identificador_de_tipo, chorro + offset,
+		sizeof(idetificador_tipo_t));
 
 	offset += sizeof(idetificador_tipo_t);
 	memcpy(&pedido->tamanio, chorro + offset, sizeof(uint32_t));
@@ -1027,3 +1029,49 @@ uint32_t tamanio_respuesta_entrada_estandar_t_serializado(uint32_t tamanio)
 }
 
 // FIN DE RESPUESTA DE ENTRADA ESTANDAR
+
+// COMIENZO DE RESPUESTA DE CREAR HILO
+
+char* serializar_respuesta_crear_hilo_t(respuesta_crear_hilo_t* pedido)
+{
+	char* bytes = malloc(tamanio_respuesta_crear_hilo_t_serializado());
+
+	uint32_t offset = 0;
+	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(bytes + offset, &pedido->resultado, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(bytes + offset, &pedido->nuevo_tid, sizeof(uint32_t));
+
+	return bytes;
+}
+
+respuesta_crear_hilo_t* deserializar_respuesta_crear_hilo_t(char* chorro)
+{
+	respuesta_crear_hilo_t* respuesta = malloc(sizeof(respuesta_crear_hilo_t));
+
+	uint32_t offset = 0;
+	memcpy(&respuesta->flag, chorro + offset, sizeof(flag_t));
+
+	offset += sizeof(flag_t);
+	memcpy(&respuesta->resultado, chorro + offset, sizeof(resultado_t));
+
+	offset += sizeof(resultado_t);
+	memcpy(&respuesta->nuevo_tid, chorro + offset, sizeof(uint32_t));
+
+	return respuesta;
+}
+
+uint32_t tamanio_respuesta_crear_hilo_t_serializado()
+{
+	uint32_t t = 0;
+	t += sizeof(flag_t);
+	t += sizeof(resultado_t);
+	t += sizeof(uint32_t);
+
+	return t;
+}
+
+// FIN DE RESPUESTA DE CREAR HILO

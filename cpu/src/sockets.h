@@ -45,21 +45,21 @@ resultado_t conectar_con_kernel();
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectar_memoria();
+void desconectar_memoria();
 
 /*
  * @DESC: Cierra el puerto con kernel y le mando un mensaje de desconexion
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectar_kernel();
+void desconectar_kernel();
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectarse();
+void desconectarse();
 
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento
@@ -156,7 +156,7 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
  * 		OK si pudo completar la operacion satisfactoriamente
  * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
  */
-resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid);
 
 /*
  * @DESC: 	Le manda al kernel un mensaje para que bloquee un hilo hasta que otro se ejecute
