@@ -71,6 +71,10 @@ int main(void) {
 
 	// Esperamos a que ambos terminen
 	pthread_join(conexiones_procesos_thread, NULL);
+
+	printf("Termino el hilo de procesos");
+	exit(-1);
+
 	pthread_join(conexiones_cpus_thread, NULL);
 
 	printf("Me fui \\o/");

@@ -88,7 +88,6 @@ void inicializar_listas_estados_tcb()
 void agregar_a_ready(tcb_t* tcb) {
 	list_add(READY_COLA[!tcb->km], tcb);
 	planificar();
-	// TODO: Llamar al planificador acá? Revisar en qué lugares se llama esta función.
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
 
@@ -190,7 +189,6 @@ void agregar_a_cola_recurso(uint32_t recurso_int, tcb_t* tcb)
 	free(recurso);
 }
 
-// TODO: Recibe TCB y no hace nada con eso??
 void quitar_de_syscalls_cola(tcb_t* tcb) {
 	queue_pop(SYSCALLS_COLA);
 }
@@ -520,7 +518,7 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 			}
 			else
 			{// Ya se esta ejecutando
-				set_enviar_a_rdy(false);
+				eliminar_conclusion_tcb();
 			}
 		}
 	}
@@ -528,7 +526,6 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 
 void eliminar_tcbs_en_exit(uint32_t pid)
 {
-	// TODO: Hacer esta funcion
 	bool _buscar_por_pid(void* elemento)
 	{
 		return ((exit_t*)elemento)->pid == pid;
@@ -552,6 +549,12 @@ void remover_de_exec_a_exit(uint32_t pid)
 	{
 		return ((tcb_t*) elemento)->pid == pid &&
 				!((tcb_t*) elemento)->km;
+	}	//TODO: Creo que si es TCB KM hay que sacarlo igual, pero no ponerlo en exit
+
+	bool _buscar_por_pid_y_km(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid &&
+				((tcb_t*) elemento)->km;
 	}
 
 	uint32_t cantidad = list_count_satisfying(EXEC_COLA, _buscar_por_pid_no_km);
@@ -569,7 +572,6 @@ void remover_de_exec_a_exit(uint32_t pid)
 
 bool proceso_muriendo(uint32_t pid)
 {
-	// TODO: Hacer esta funcion
 	bool _buscar_por_pid(void* elemento)
 	{
 		return ((exit_t*)elemento)->pid == pid;
