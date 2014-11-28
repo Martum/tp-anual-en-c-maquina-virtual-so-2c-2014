@@ -45,21 +45,21 @@ resultado_t conectar_con_kernel();
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectar_memoria();
+void desconectar_memoria();
 
 /*
  * @DESC: Cierra el puerto con kernel y le mando un mensaje de desconexion
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectar_kernel();
+void desconectar_kernel();
 
 /*
  * @DESC: Cierra los puertos de memoria y kernel
  * @RETURNS:
  * 		OK siempre
  */
-resultado_t desconectarse();
+void desconectarse();
 
 /*
  * @DESC: Le pide a memoria que cree un nuevo segmento

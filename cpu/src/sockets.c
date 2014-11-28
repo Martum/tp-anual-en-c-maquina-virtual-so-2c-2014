@@ -58,7 +58,7 @@ resultado_t _mandar_soy_cpu_a_kernel()
 	char* chorro_de_envio = serializar_pedido_t(&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(tamanio_pedido_t_serializado());
 
-	loggear_trace("Me preparo para enviar y recibir SOY_CPU");
+	loggear_trace("Envio SOY_CPU a kernel");
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_t_serializado(), chorro_de_respuesta)
@@ -82,10 +82,6 @@ resultado_t _mandar_soy_cpu_a_kernel()
 		free(respuesta);
 		return FALLO_COMUNICACION;
 	}
-
-	loggear_trace("Respuesta recibida correcta");
-
-	loggear_trace("Comunicacion con kernel realizada con exito");
 
 	free(respuesta);
 
@@ -119,71 +115,66 @@ resultado_t conectar_con_memoria()
 	return OK;
 }
 
-resultado_t _mandar_desconexion_cpu_a_memoria()
+void _mandar_desconexion_cpu(sock_t* socket)
 {
-	char* chorro_a_enviar = malloc(sizeof(resultado_t));
-	uint32_t tamanio = sizeof(resultado_t);
 	resultado_t resultado = DESCONEXION_CPU;
+	uint32_t tamanio = sizeof(resultado_t);
+	char* chorro_a_enviar = malloc(tamanio);
 
 	memcpy(chorro_a_enviar, &resultado, tamanio);
 
-	loggear_trace("Me preparo para enviar DESCONEXION_CPU a memoria");
-
-	enviar(memoria, chorro_a_enviar, &tamanio);
-
-	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
+	enviar(socket, chorro_a_enviar, &tamanio);
 
 	free(chorro_a_enviar);
-
-	return OK;
 }
 
-resultado_t _mandar_desconexion_cpu_a_kernel()
+void _mandar_desconexion_cpu_a_memoria()
 {
-	char* chorro_a_enviar = malloc(sizeof(resultado_t));
-	uint32_t tamanio = sizeof(resultado_t);
-	resultado_t resultado = DESCONEXION_CPU;
+	loggear_trace("Envio DESCONEXION_CPU a memoria");
 
-	memcpy(chorro_a_enviar, &resultado, tamanio);
-
-	loggear_trace("Me preparo para enviar DESCONEXION_CPU a kernel");
-
-	enviar(kernel, chorro_a_enviar, &tamanio);
+	_mandar_desconexion_cpu(memoria);
 
 	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
-
-	free(chorro_a_enviar);
-
-	return OK;
 }
 
-resultado_t desconectar_memoria()
+void _mandar_desconexion_cpu_a_kernel()
+{
+	loggear_trace("Envio DESCONEXION_CPU a kernel");
+
+	_mandar_desconexion_cpu(kernel);
+
+	loggear_trace("Envio de mensaje de DESCONEXION_CPU realizado con exito");
+}
+
+void desconectar_memoria()
 {
 	loggear_trace("Intento desconectarme de memoria");
-	_mandar_desconexion_cpu_a_memoria();
-	cerrar_liberar(memoria);
-	loggear_info("Desconexion de memoria realizada con exito");
 
-	return OK;
+	_mandar_desconexion_cpu_a_memoria();
+
+	cerrar_liberar(memoria);
+
+	loggear_info("Desconexion de memoria realizada con exito");
 }
 
-resultado_t desconectar_kernel()
+void desconectar_kernel()
 {
 	loggear_trace("Intento desconectarme de kernel");
-	_mandar_desconexion_cpu_a_kernel();
-	cerrar_liberar(kernel);
-	loggear_info("Desconexion de kernel realizada con exito");
 
-	return OK;
+	_mandar_desconexion_cpu_a_kernel();
+
+	cerrar_liberar(kernel);
+
+	loggear_info("Desconexion de kernel realizada con exito");
 }
 
-resultado_t desconectarse()
+void desconectarse()
 {
-	desconectar_memoria();
-	// DESCOMENTAR (solo comentado para pruebas de memoria)
-//	desconectar_kernel();
+	if (memoria != NULL)
+		desconectar_memoria();
 
-	return OK;
+	if (kernel != NULL)
+		desconectar_kernel();
 }
 
 resultado_t crear_segmento(direccion pid, uint32_t tamanio,

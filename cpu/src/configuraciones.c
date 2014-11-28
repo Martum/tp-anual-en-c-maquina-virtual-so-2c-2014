@@ -28,9 +28,14 @@ resultado_t cargar_configuraciones()
 
 void liberar_configuraciones()
 {
-	loggear_trace("Intento liberar las configuraciones");
-	config_destroy(configs_cpu);
-	loggear_info("Configuraciones liberadas con exito");
+	if (configs_cpu != NULL )
+	{
+		loggear_trace("Intento liberar las configuraciones");
+
+		config_destroy(configs_cpu);
+
+		loggear_info("Configuraciones liberadas con exito");
+	}
 }
 
 char* ip_kernel()

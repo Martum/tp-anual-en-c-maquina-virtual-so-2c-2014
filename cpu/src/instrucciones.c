@@ -1256,9 +1256,14 @@ void inicializar_dic_de_instrucciones()
 
 void liberar_dic_de_instrucciones()
 {
-	loggear_trace("Intento liberar el diccionario de instrucciones");
-	dictionary_destroy(dic_instrucciones);
-	loggear_info("Diccionario de instrucciones liberado correctamente");
+	if (dic_instrucciones != NULL)
+	{
+		loggear_trace("Intento liberar el diccionario de instrucciones");
+
+		dictionary_destroy(dic_instrucciones);
+
+		loggear_info("Diccionario de instrucciones liberado correctamente");
+	}
 }
 
 resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
