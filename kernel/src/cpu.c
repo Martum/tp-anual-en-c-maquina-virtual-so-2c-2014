@@ -200,31 +200,6 @@ int crear_hilo(tcb_t* tcb) {
 
 
 
-resultado_t crea(tcb_t* tcb)
-{
-
-	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
-	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
-	copiar_tcb(nuevo_tcb, tcb);
-	nuevo_tcb->tid = nuevo_tid;
-	nuevo_tcb->pc = tcb->b;
-	nuevo_tcb->km = 0;
-	tcb->a = nuevo_tcb->tid;
-
-	/*
-	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
-		return ERROR_EN_EJECUCION;
-
-	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
-		return ERROR_EN_EJECUCION;
-
-	if (comunicar_nuevo_tcb(tcb) != OK)
-	{
-		return ERROR_EN_EJECUCION;
-	}
-	 */
-	return OK;
-}
 
 /*
  * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
@@ -244,25 +219,36 @@ resultado_t _crear_stack(tcb_t* tcb)
 	return OK;
 }
 
- ELIMINAR clonar stack (ya no hace falta)
+resultado_t _mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
+{
+	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes) {
+		return EXCEPCION_POR_POSICION_DE_STACK_INVALIDA;
+	}
+
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes;
+
+	return OK;
+}
+
+
 /*
  * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
  */
 resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 {
-	uint32_t ocupacion_stack = obtener_ocupacion_stack(tcb);
+	uint32_t cantidad_bytes_ocupado_stack = tcb->base_stack - tcb->cursor_stack;
 
-	char* buffer = malloc(ocupacion_stack);
+	char* buffer = malloc(cantidad_bytes_ocupado_stack);
 
-	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
+	if (leer_de_memoria(tcb->pid, tcb->base_stack, cantidad_bytes_ocupado_stack, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	if (escribir_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
+			buffer, cantidad_bytes_ocupado_stack) == -1)
 	{
 		free(buffer);
 		return ERROR_EN_EJECUCION;
@@ -270,12 +256,14 @@ resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
 
 	free(buffer);
 
-	if (mover_cursor_stack(tcb, ocupacion_stack)
+
+	if (_mover_cursor_stack(tcb, cantidad_bytes_ocupado_stack)
 		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
 		return ERROR_EN_EJECUCION;
 
 	return OK;
 }
+
 
 
 /*// NO GO
@@ -357,6 +345,38 @@ void despertar(uint32_t recurso) {
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
 	quitar_de_block_recurso(tcb);
 	agregar_a_ready(tcb);
+}
+
+
+respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
+	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
+	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
+	copiar_tcb(nuevo_tcb, tcb);
+	nuevo_tcb->tid = nuevo_tid;
+	nuevo_tcb->pc = tcb->b;
+	nuevo_tcb->km = 0;
+	tcb->a = nuevo_tcb->tid;
+
+	respuesta_crear_hilo_t* rta_crea;
+	rta_crea->nuevo_tid = nuevo_tid;
+
+	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
+		rta_crea->resultado =  ERROR_EN_EJECUCION;
+		return rta_crea;
+
+	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+		rta_crea->resultado =  ERROR_EN_EJECUCION;
+		return rta_crea;
+
+	agregar_a_ready(nuevo_tcb);
+
+	return rta_crea;
+}
+
+void crea(tcb_t* tcb)
+{
+	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
+	enviar_respuesta_crea_a_cpu();
 }
 
 void interrupcion(tcb_t* tcb, direccion dir) {
