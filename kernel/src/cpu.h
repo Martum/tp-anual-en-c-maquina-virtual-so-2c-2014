@@ -146,6 +146,6 @@ void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id
 segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid);
 
 // Instruccion CREA. Crea un nuevo hilo en base al que recibe. Duplica el stack.
-void crea(tcb_t* tcb);
+void crea(tcb_t* tcb, uint32_t* cpu_id);
 
 #endif /* SERVICIOSACPU_H_ */

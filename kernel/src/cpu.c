@@ -374,15 +374,26 @@ respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
 	return rta_crea;
 }
 
-void enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta){
+void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t* cpu_id){
+
 	rta->flag = CREAR_HILO;
-	char * rta_serializada = malloc(tamanio_)
+
+	uint32_t tamanio = tamanio_respuesta_crear_hilo_t_serializado();
+	char * rta_serializada = malloc(tamanio);
+	rta_serializada = serializar_respuesta_crear_hilo_t(rta);
+
+	free(rta);
+
+	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
+	enviar(socket, rta_serializada, &tamanio);
+
+	free(rta_serializada);
 }
 
-void crea(tcb_t* tcb)
+void crea(tcb_t* tcb, uint32_t* cpu_id)
 {
 	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
-	enviar_respuesta_crea_a_cpu(rta_crea);
+	_enviar_respuesta_crea_a_cpu(rta_crea, cpu_id);
 }
 
 void interrupcion(tcb_t* tcb, direccion dir) {
