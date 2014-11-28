@@ -95,18 +95,17 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 	return aux;
 }
 
-void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas, uint8_t max_modificable)
+void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas, uint8_t max_modificable, uint32_t*cantidad_escrito_acumulada)
 {
 	uint32_t tamanio_aux = _calcular_tamanio_real(tamanio, desplazamiento, mas_paginas, max_modificable);
 
 	int i;
 	for(i=0;i<tamanio_aux;i++)
 	{
-		char caracter = *((*bytes_a_escribir)+i);
-
+		char caracter = *((*bytes_a_escribir)+i+(*cantidad_escrito_acumulada));
 		*((*marco)->datos+i+desplazamiento)=caracter;
-
 	}
+	(*cantidad_escrito_acumulada)+=i;
 }
 
 void liberar_marcos_proceso(uint32_t pid)

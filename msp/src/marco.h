@@ -33,7 +33,7 @@ char* leer_marco(char* datos_marco, uint16_t desplazamiento, uint32_t * tamanio,
 //GUARDA QUE PUEDE LLEGAR A TENER ALTOS BUGS
 //Toma los bytes_a_escribir y los inserta en datos_marco a partir del desplazamiento.
 //Modifica tamanio para saber claramente cuanto tamaño queda escribir.
-void escribir_marco(marco_t* * datos_marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas, uint8_t max_modificable);
+void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamanio, char* * bytes_a_escribir, int * mas_paginas, uint8_t max_modificable, uint32_t*cantidad_escrito_acumulada);
 
 //Funcion auxiliar. Calcula el tamanio que realmente voy a usar, no el total.
 uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
