@@ -10,6 +10,7 @@
 #include "consola.h"
 #include "cpu.h"
 #include "memoria.h"
+#include "configuraciones.h"
 
 uint32_t ID_CPU_GLOBAL = 1;
 
@@ -225,6 +226,56 @@ resultado_t crea(tcb_t* tcb)
 	return OK;
 }
 
+/*
+ * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
+ */
+resultado_t _crear_stack(tcb_t* tcb)
+{
+	uint32_t tamano_stack = tamanio_stack();
+
+	direccion nueva_base_stack;
+
+	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
+		== FALLO_CREACION_DE_SEGMENTO)
+		return ERROR_EN_EJECUCION;
+
+	tcb->base_stack = nueva_base_stack;
+
+	return OK;
+}
+
+ ELIMINAR clonar stack (ya no hace falta)
+/*
+ * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+ */
+resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
+{
+	uint32_t ocupacion_stack = obtener_ocupacion_stack(tcb);
+
+	char* buffer = malloc(ocupacion_stack);
+
+	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
+		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
+	{
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	free(buffer);
+
+	if (mover_cursor_stack(tcb, ocupacion_stack)
+		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
+}
 
 
 /*// NO GO
