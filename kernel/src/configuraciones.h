@@ -46,5 +46,7 @@ char* syscalls();
  */
 uint32_t tamanio_stack();
 
+char* ruta_logeo();
+
 
 #endif /* CONFIGURACIONES_H_ */

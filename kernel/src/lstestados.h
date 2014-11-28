@@ -9,8 +9,10 @@
 #define LSTESTADOS_H_
 
 #include <commons/collections/queue.h>
+#include <commons/collections/list.h>
 #include <hu4sockets/tcb.h>
 #include <stdint.h>
+#include "loggear.h"
 
 
 typedef struct ejecutando {
@@ -265,5 +267,7 @@ void remover_de_exec_a_exit(uint32_t pid);
  * @RETURNS: True si el proceso esta muriendo; False caso contrario
  */
 bool proceso_muriendo(uint32_t pid);
+
+t_list* get_todos_los_tcbs();
 
 #endif /* LSTESTADOS_H_ */

@@ -650,3 +650,151 @@ bool proceso_muriendo(uint32_t pid)
 
 	return et != NULL && et->muere_proceso;
 }
+
+t_list* get_todos_los_tcbs_exec()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = ((ejecutando_t*)elemento)->tcb;
+		tcb_cola->cola = MEXEC;
+		list_add(lista, tcb_cola);
+	}
+
+	bloquear_exec();
+	list_iterate(EXEC_COLA, _agregar);
+	desbloquear_exec();
+
+	return lista;
+}
+
+t_list* get_todos_los_tcbs_rdy()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = elemento;
+		tcb_cola->cola = MREADY;
+		list_add(lista, tcb_cola);
+	}
+
+	bloquear_ready();
+	list_iterate(READY_COLA[0], _agregar);
+	list_iterate(READY_COLA[1], _agregar);
+	desbloquear_ready();
+
+	return lista;
+}
+
+t_list* get_todos_los_tcbs_block_join()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = ((esperando_join_t*)elemento)->tcb;
+		tcb_cola->cola = MBLOCK;
+		list_add(lista, tcb_cola);
+	}
+
+	list_iterate(BLOCK_JOIN, _agregar);
+
+	return lista;
+}
+
+t_list* get_todos_los_tcbs_block_espera_km()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = ((esperando_km_t*)elemento)->tcb;
+		tcb_cola->cola = MBLOCK;
+		list_add(lista, tcb_cola);
+	}
+
+	list_iterate(BLOCK_ESPERA_KM, _agregar);
+
+	return lista;
+}
+
+t_list* get_todos_los_tcbs_block_recurso()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = elemento;
+		tcb_cola->cola = MBLOCK;
+		list_add(lista, tcb_cola);
+	}
+
+	list_iterate(BLOCK_RECURSO, _agregar);
+
+	return lista;
+}
+
+t_list* get_todos_los_tcbs_exit()
+{
+	t_list* lista = list_create();
+
+	void _agregar(void* elemento)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = elemento;
+		tcb_cola->cola = MEXIT;
+		list_add(lista, tcb_cola);
+	}
+
+	void _iterar_exit(void* elemento)
+	{
+		exit_t* ext = elemento;
+
+		if(ext->lista_tcbs != NULL)
+			list_iterate(ext->lista_tcbs, _agregar);
+	}
+
+	list_iterate(EXIT_COLA, _iterar_exit);
+
+	return lista;
+}
+
+void unificar_listas_y_eliminar(t_list* principal, t_list* eliminable)
+{
+	list_add_all(principal, eliminable);
+	list_destroy(eliminable);
+}
+
+t_list* get_todos_los_tcbs()
+{
+	t_list* lista_principal = list_create();
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_exec());
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_rdy());
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_block_join());
+
+	if(get_bloqueado_conclusion_tcb() != NULL)
+	{
+		tcb_con_cola_t* tcb_cola = malloc(sizeof(tcb_con_cola_t));
+		tcb_cola->tcb = get_bloqueado_conclusion_tcb();
+		tcb_cola->cola = MBLOCK;
+		list_add(lista_principal, tcb_cola);
+	}
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_block_espera_km());
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_block_recurso());
+
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_exit());
+
+	return lista_principal;
+}

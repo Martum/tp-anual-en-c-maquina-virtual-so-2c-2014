@@ -46,3 +46,8 @@ char* syscalls()
 {
 	return config_get_string_value(configs_kernel, "SYSCALLS");
 }
+
+char* ruta_logeo()
+{
+	return config_get_string_value(configs_kernel, "RUTA_LOGEO");
+}

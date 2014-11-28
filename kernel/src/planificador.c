@@ -18,6 +18,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
+#include "loggear.h"
 
 // MUTEX para garantizar unicidad y atomicidad de planificar
 pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
@@ -97,6 +98,8 @@ void planificar() {
 			uint32_t* cpu_id = quitar_de_cpu_en_espera_de_tcb();
 			_enviar_tcb_a_cpu(tcb, cpu_id);
 			agregar_a_exec(tcb, *cpu_id);
+
+			loggear_estado_de_hilos();
 		}
 	}
 
@@ -189,6 +192,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	}
+
+	loggear_estado_de_hilos();
 }
 
 
@@ -211,6 +216,8 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconecta
 
 	if(tcb_adicional != NULL)
 		agregar_a_exit(tcb_adicional);
+
+	loggear_estado_de_hilos();
 
 	eliminar_tcbs_en_exit(pid);			// Eliminamos los TCBs definitivamente
 
