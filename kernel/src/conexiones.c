@@ -315,10 +315,12 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 	// Recibimos el mensaje y obtenemos el codigo operacion
 	int32_t resultado = recibir(conexion_proceso->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
+
 
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
+
+		flag_t cod_op = codigo_operacion(mensaje);
 
 		/* DEPRECADO POR USO DE STRUCTS CON FLAG_T ADENTRO
 		 *
@@ -355,13 +357,13 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 			default:
 				break;
 		}
+
+		free(mensaje);
 	}
 	/*else
 		_informar_mensaje_incompleto(conexion_proceso->socket);*/
 
 	// Liberamos el buffer
-	free(mensaje);
-
 }
 
 /**
@@ -377,7 +379,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	uint32_t len;
 
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
 
 	tcb_t* tcbKM = get_tcb_km();
 
@@ -389,6 +390,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 	if(resultado == 0)
 	{
+		flag_t cod_op = codigo_operacion(mensaje);
+
 		printf("-- Recibimos request de CPU %d\n", conexion_cpu->id);
 		printf("");
 		bloquear_exit();
@@ -396,124 +399,11 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 		printf("- Pasamos el bloqueo con codigo %d\n", cod_op);
 		printf("");
 		switch (cod_op) {
-			case SALIDA_ESTANDAR:
-				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
-
-				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
-
-
-				if(!proceso_muriendo(tcbKM->pid))
-				{
-					if(salida_estandar(pedido_salida) == 0)
-						_enviar_completadook(conexion_cpu->socket);
-					else
-					{
-						_informar_fallo_syscall(conexion_cpu->socket);
-					}
-				}
-				else
-				{
-					_enviar_completadook(conexion_cpu->socket);
-				}
-
-				free(pedido_salida->cadena_de_texto);
-				free(pedido_salida);
-				break;
-
-			case ENTRADA_ESTANDAR:
-				logear_instruccion_protegida("ENTRADA ESTANDAR", get_tcb_km());
-
-				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
-
-				if(!proceso_muriendo(tcbKM->pid))
-				{
-					if(enviar_entrada_estandar(pedido_entrada) == 0)
-					{
-
-					}
-					else
-					{
-						// TODO: Ver con Santi como informar Error
-						//_informar_fallo_syscall(conexion_cpu->socket);
-					}
-				}
-
-				free(pedido_entrada);
-				break;
-
-			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
-				logear_instruccion_protegida("BLOQUEAR", get_tcb_km());
-
-				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
-
-				// No usamos el TCB porque el que se esta bloqueando
-				// es el que esta esperando la conclusion del KM
-
-				if(!proceso_muriendo(tcbKM->pid))
-					bloquear(pedido_bloqueo->identificador_de_recurso);
-
-				_enviar_completadook(conexion_cpu->socket);
-
-				free(pedido_bloqueo->tcb);
-				free(pedido_bloqueo);
-				break;
-
-			case DESPERTAR:
-				logear_instruccion_protegida("DESPERTAR", get_tcb_km());
-
-				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
-
-
-				if(!proceso_muriendo(tcbKM->pid))
-					despertar(pedido_despertar->identificador_de_recurso);
-
-				_enviar_completadook(conexion_cpu->socket);
-
-				free(pedido_despertar);
-				break;
-
-			case INTERRUPCION:
-				;
-				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
-
-				logear_instruccion_protegida("INTERRUPCION", pedido_interrupcion->tcb);
-
-				if(!proceso_muriendo(pedido_interrupcion->tcb->pid))
-					interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
-
-				_enviar_completadook(conexion_cpu->socket);
-
-				// TODO: Aca habria que correr el planificador??
-
-				free(pedido_interrupcion->tcb);
-				free(pedido_interrupcion);
-				break;
-
-			case JOIN:
-				logear_instruccion_protegida("JOIN", get_tcb_km());
-
-				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
-
-
-				if(!proceso_muriendo(tcbKM->pid))
-					join(pedido_join->tid_llamador, pedido_join->tid_esperador);
-
-				_enviar_completadook(conexion_cpu->socket);
-
-				free(pedido_join);
-				break;
 
 			case MANDA_TCB:
 				printf("Pedido de TCB de CPU %d\n", conexion_cpu->id);
 				printf("");
 				pedir_tcb(conexion_cpu->id);
-				break;
-
-			case CREAR_HILO:
-				printf("Pedido de Crear_Hilo de CPU %d\n", conexion_cpu->id);
-				printf("");
-				pedido_crear_hilo_t* pedido_crea = deserializar_pedido_crear_hilo_t(mensaje);
-				crea(pedido_crea->tcb, conexion_cpu->id);
 				break;
 
 			case TOMA_RESULTADO:
@@ -544,6 +434,118 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_resultado);
 
 				planificar();
+				break;
+
+			case INTERRUPCION:
+				;
+				pedido_interrupcion_t* pedido_interrupcion = deserializar_pedido_interrupcion_t(mensaje);
+
+				logear_instruccion_protegida("INTERRUPCION", pedido_interrupcion->tcb);
+
+				if(!proceso_muriendo(pedido_interrupcion->tcb->pid))
+					interrupcion(pedido_interrupcion->tcb, pedido_interrupcion->direccion_de_memoria);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				// TODO: Aca habria que correr el planificador??
+
+				free(pedido_interrupcion->tcb);
+				free(pedido_interrupcion);
+				break;
+
+			case ENTRADA_ESTANDAR:
+				logear_instruccion_protegida("ENTRADA ESTANDAR", get_tcb_km());
+
+				pedido_entrada_estandar_t* pedido_entrada = deserializar_pedido_entrada_estandar_t(mensaje);
+
+				if(!proceso_muriendo(tcbKM->pid))
+				{
+					if(enviar_entrada_estandar(pedido_entrada) == 0)
+					{
+
+					}
+					else
+					{
+						// TODO: Ver con Santi como informar Error
+						//_informar_fallo_syscall(conexion_cpu->socket);
+					}
+				}
+
+				free(pedido_entrada);
+				break;
+
+			case SALIDA_ESTANDAR:
+				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
+
+				pedido_salida_estandar_t* pedido_salida = deserializar_pedido_salida_estandar_t(mensaje);
+
+
+				if(!proceso_muriendo(tcbKM->pid))
+				{
+					if(salida_estandar(pedido_salida) == 0)
+						_enviar_completadook(conexion_cpu->socket);
+					else
+					{
+						_informar_fallo_syscall(conexion_cpu->socket);
+					}
+				}
+				else
+				{
+					_enviar_completadook(conexion_cpu->socket);
+				}
+
+				free(pedido_salida->cadena_de_texto);
+				free(pedido_salida);
+				break;
+
+			case JOIN:
+				logear_instruccion_protegida("JOIN", get_tcb_km());
+
+				pedido_join_t* pedido_join = deserializar_pedido_join_t(mensaje);
+
+
+				if(!proceso_muriendo(tcbKM->pid))
+					join(pedido_join->tid_llamador, pedido_join->tid_esperador);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_join);
+				break;
+
+			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
+				logear_instruccion_protegida("BLOQUEAR", get_tcb_km());
+
+				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
+
+				// No usamos el TCB porque el que se esta bloqueando
+				// es el que esta esperando la conclusion del KM
+
+				if(!proceso_muriendo(tcbKM->pid))
+					bloquear(pedido_bloqueo->identificador_de_recurso);
+
+				_enviar_completadook(conexion_cpu->socket);
+
+				free(pedido_bloqueo->tcb);
+				free(pedido_bloqueo);
+				break;
+
+			case DESPERTAR:
+				logear_instruccion_protegida("DESPERTAR", get_tcb_km());
+
+				pedido_despertar_t* pedido_despertar = deserializar_pedido_despertar_t(mensaje);
+
+				if(!proceso_muriendo(tcbKM->pid))
+					despertar(pedido_despertar->identificador_de_recurso);
+
+				_enviar_completadook(conexion_cpu->socket);
+				free(pedido_despertar);
+				break;
+
+			case CREAR_HILO:
+				printf("Pedido de Crear_Hilo de CPU %d\n", conexion_cpu->id);
+				printf("");
+				pedido_crear_hilo_t* pedido_crea = deserializar_pedido_crear_hilo_t(mensaje);
+				crea(pedido_crea->tcb, conexion_cpu->id);
 				break;
 
 			case DESCONEXION_CPU:
@@ -694,6 +696,10 @@ void* escuchar_cpus(void* otro_ente)
 
 		// Seteamos el nuevo mayor (si es que hay)
 		mayor_fd = MAYOR_FD_CPU;
+
+		bloquear_exit();
+		planificar();
+		desbloquear_exit();
 	}
 
 	return NULL;
