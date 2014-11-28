@@ -52,7 +52,7 @@ bool excede_limite_segmento(proceso_msp_t* proceso, segmento_t* segmento, pagina
 	//Si no entra en una pagina, checkeo si hay otras paginas donde pueda entrar.
 	if((desplazamiento+tamanio)>((pagina->max_modificable)+1))
 	{
-		int tamanio_restante= (tamanio+desplazamiento-1)-((pagina->max_modificable)+1);
+		int tamanio_restante= (tamanio+desplazamiento)-((pagina->max_modificable)+1);
 		while(tamanio_restante>0)
 		{
 			/*Pregunto si hay otra pagina, y si la hay cambio el id por
