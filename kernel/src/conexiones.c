@@ -315,10 +315,12 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 	// Recibimos el mensaje y obtenemos el codigo operacion
 	int32_t resultado = recibir(conexion_proceso->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
+
 
 	if(resultado == 0)
 	{// Se recibio la totalidad de los bytes
+
+		flag_t cod_op = codigo_operacion(mensaje);
 
 		/* DEPRECADO POR USO DE STRUCTS CON FLAG_T ADENTRO
 		 *
@@ -355,13 +357,13 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 			default:
 				break;
 		}
+
+		free(mensaje);
 	}
 	/*else
 		_informar_mensaje_incompleto(conexion_proceso->socket);*/
 
 	// Liberamos el buffer
-	free(mensaje);
-
 }
 
 /**
@@ -377,7 +379,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	uint32_t len;
 
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
-	flag_t cod_op = codigo_operacion(mensaje);
 
 	tcb_t* tcbKM = get_tcb_km();
 
@@ -389,6 +390,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 	if(resultado == 0)
 	{
+		flag_t cod_op = codigo_operacion(mensaje);
+
 		printf("-- Recibimos request de CPU %d\n", conexion_cpu->id);
 		printf("");
 		bloquear_exit();
@@ -688,6 +691,10 @@ void* escuchar_cpus(void* otro_ente)
 
 		// Seteamos el nuevo mayor (si es que hay)
 		mayor_fd = MAYOR_FD_CPU;
+
+		bloquear_exit();
+		planificar();
+		desbloquear_exit();
 	}
 
 	return NULL;
