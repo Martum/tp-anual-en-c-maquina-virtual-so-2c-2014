@@ -10,6 +10,7 @@
 #include "consola.h"
 #include "cpu.h"
 #include "memoria.h"
+#include "configuraciones.h"
 
 uint32_t ID_CPU_GLOBAL = 1;
 
@@ -199,6 +200,74 @@ int crear_hilo(tcb_t* tcb) {
 	return -1;
 }
 
+
+
+
+/*
+ * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
+ */
+resultado_t _crear_stack(tcb_t* tcb)
+{
+	uint32_t tamano_stack = tamanio_stack();
+
+	direccion nueva_base_stack;
+
+	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
+		== FALLO_CREACION_DE_SEGMENTO)
+		return ERROR_EN_EJECUCION;
+
+	tcb->base_stack = nueva_base_stack;
+
+	return OK;
+}
+
+resultado_t _mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes)
+{
+	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes) {
+		return EXCEPCION_POR_POSICION_DE_STACK_INVALIDA;
+	}
+
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes;
+
+	return OK;
+}
+
+
+/*
+ * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+ */
+resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
+{
+	uint32_t cantidad_bytes_ocupado_stack = tcb->base_stack - tcb->cursor_stack;
+
+	char* buffer = malloc(cantidad_bytes_ocupado_stack);
+
+	if (leer_de_memoria(tcb->pid, tcb->base_stack, cantidad_bytes_ocupado_stack, buffer)
+		== FALLO_LECTURA_DE_MEMORIA)
+	{
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	if (escribir_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
+			buffer, cantidad_bytes_ocupado_stack) == -1)
+	{
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	free(buffer);
+
+
+	if (_mover_cursor_stack(tcb, cantidad_bytes_ocupado_stack)
+		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
+}
+
+
+
 /*// NO GO
  void enviar_entrada_estandar(uint32_t pid, uint16_t identificador_tipo){
  //REVISAR. Utilizar el enviar y recibir para evitar espera activa.
@@ -278,6 +347,54 @@ void despertar(uint32_t recurso) {
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
 	quitar_de_block_recurso(tcb);
 	agregar_a_ready(tcb);
+}
+
+respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
+	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
+	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
+	copiar_tcb(nuevo_tcb, tcb);
+	nuevo_tcb->tid = nuevo_tid;
+	nuevo_tcb->pc = tcb->b;
+	nuevo_tcb->km = 0;
+	tcb->a = nuevo_tcb->tid;
+
+	respuesta_crear_hilo_t* rta_crea = malloc(sizeof(rta_crea));
+	rta_crea->nuevo_tid = nuevo_tid;
+
+	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
+		rta_crea->resultado =  ERROR_EN_EJECUCION;
+		return rta_crea;
+
+	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
+		rta_crea->resultado =  ERROR_EN_EJECUCION;
+		return rta_crea;
+
+	agregar_a_ready(nuevo_tcb);
+	rta_crea->resultado = COMPLETADO_OK;
+
+	return rta_crea;
+}
+
+void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t cpu_id){
+
+	rta->flag = CREAR_HILO;
+
+	uint32_t tamanio = tamanio_respuesta_crear_hilo_t_serializado();
+	char * rta_serializada = malloc(tamanio);
+	rta_serializada = serializar_respuesta_crear_hilo_t(rta);
+
+	free(rta);
+
+	sock_t* socket = buscar_conexion_cpu_por_id(cpu_id);
+	enviar(socket, rta_serializada, &tamanio);
+
+	free(rta_serializada);
+}
+
+void crea(tcb_t* tcb, uint32_t cpu_id)
+{
+	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
+	_enviar_respuesta_crea_a_cpu(rta_crea, cpu_id);
 }
 
 void interrupcion(tcb_t* tcb, direccion dir) {

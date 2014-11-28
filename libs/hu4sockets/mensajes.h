@@ -43,6 +43,7 @@ typedef enum {
 	JOIN = 209,
 	BLOQUEAR = 210,
 	DESPERTAR = 211,
+	DESCONEXION_CPU = 212,
 
 	// Mensajes del Kernel al CPU: 251 -> 300
 	TOMA_TCB = 251,
