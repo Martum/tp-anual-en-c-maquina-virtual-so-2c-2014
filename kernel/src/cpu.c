@@ -347,7 +347,6 @@ void despertar(uint32_t recurso) {
 	agregar_a_ready(tcb);
 }
 
-
 respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
 	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
 	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
@@ -357,7 +356,7 @@ respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
 	nuevo_tcb->km = 0;
 	tcb->a = nuevo_tcb->tid;
 
-	respuesta_crear_hilo_t* rta_crea;
+	respuesta_crear_hilo_t* rta_crea = malloc(sizeof(rta_crea));
 	rta_crea->nuevo_tid = nuevo_tid;
 
 	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
@@ -373,10 +372,15 @@ respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb){
 	return rta_crea;
 }
 
+void enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta){
+	rta->flag = CREAR_HILO;
+	char * rta_serializada = malloc(tamanio_)
+}
+
 void crea(tcb_t* tcb)
 {
 	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
-	enviar_respuesta_crea_a_cpu();
+	enviar_respuesta_crea_a_cpu(rta_crea);
 }
 
 void interrupcion(tcb_t* tcb, direccion dir) {
