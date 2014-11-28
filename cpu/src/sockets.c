@@ -391,7 +391,6 @@ resultado_t escribir_en_memoria(direccion pid, direccion direccion,
 	return OK;
 }
 
-// TODO pensar si no conviene un COMPLETADO_OK
 resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 {
 	loggear_trace("Preparando mensaje para pedir TCB");
@@ -574,14 +573,17 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 {
 	loggear_debug("Leo numero");
 
-	char buffer[4];
+	char* buffer = malloc(sizeof(int32_t));
 
 	if (_obtener(tcb, buffer, sizeof(int32_t)) == FALLO_LECTURA_DE_MEMORIA)
+	{
+		free(buffer);
 		return FALLO_LECTURA_DE_MEMORIA;
+	}
 
 	memcpy(numero, buffer, sizeof(int32_t));
 
-//	unir_bytes(numero, buffer);
+	free(buffer);
 
 	loggear_trace("Lectura de numero satisfactoria");
 	loggear_debug("Numero leido %d en bytes %x", *numero, *numero);
@@ -589,7 +591,6 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	return OK;
 }
 
-// TODO ver el tema de como llega los bytes cuando son numeros
 resultado_t comunicar_entrada_estandar(tcb_t* tcb, uint32_t bytes_a_leer,
 	uint32_t* bytes_leidos, char* buffer, idetificador_tipo_t identificador)
 {

@@ -687,8 +687,6 @@ resultado_t push(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-//	dividir_en_bytes(valor_a_pushear, bytes);
-
 	memcpy(bytes, &valor_a_pushear, 4);
 
 	return _push(tcb, cantidad_de_bytes, bytes);
@@ -736,8 +734,6 @@ resultado_t take(tcb_t* tcb)
 
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
-
-//	unir_bytes(&valor_a_popeado, bytes);
 
 	memcpy(&valor_a_popeado, bytes, 4);
 
@@ -828,16 +824,11 @@ resultado_t _pedir_por_consola_numero(tcb_t* tcb, int32_t* numero_ingresado)
 	if (comunicar_entrada_estandar(tcb, 0, &cantidad_de_bytes_leidos, buffer,
 		ENTERO) != OK)
 	{
+		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
 
-//	numero_ingresado = malloc(sizeof(cantidad_de_bytes_leidos));
-
 	memcpy(numero_ingresado, buffer, cantidad_de_bytes_leidos);
-
-//	*numero_ingresado = atoi(buffer);
-
-//	unir_bytes(numero_ingresado, buffer);
 
 	free(buffer);
 
@@ -938,20 +929,13 @@ resultado_t innc(tcb_t* tcb)
  */
 resultado_t _imprimir_por_consola_numero(tcb_t* tcb, int32_t numero)
 {
-//	char buffer[3];
-//
-//	dividir_en_bytes(numero, buffer);
-
-	char* buffer = malloc(sizeof(int32_t));
+	char buffer[4];
 	memcpy(buffer, &numero, sizeof(int32_t));
 
 	if (comunicar_salida_estandar(tcb, 4, buffer, ENTERO) != OK)
 	{
-		free(buffer);
 		return ERROR_EN_EJECUCION;
 	}
-
-	free(buffer);
 
 	return OK;
 }
