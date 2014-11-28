@@ -364,7 +364,7 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 }
 
 /**
- * Aca se atiende todo lo que llega desde la CPU.
+ * Aca se atiende todos lo que llega desde la CPU.
  * Interfaz expuesta a la CPU.
  */
 void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
@@ -378,12 +378,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 	int32_t resultado = recibir(conexion_cpu->socket, &mensaje, &len);
 
 	tcb_t* tcbKM = get_tcb_km();
-
-	// TODO: IMPORTANTE: Cuando se recibe un TCB KM que termino de ejecutar,
-	// el TCB UM esta en la lista BLOCK_CONCLUSION_KM. Despues de copiar los
-	// registros del KM al UM, NO HAY QUE PONERLO DIRECTAMENTE EN RDY (al UM).
-	// Primero hay que verificar si no esta encolado en alguna lista de tipo BLOCK
-	// (hacer una funcion para esto). Si no esta en ninguna, ahi si se pone en RDY.
 
 	if(resultado == 0)
 	{
@@ -409,7 +403,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				if(!proceso_muriendo(pedido_resultado->tcb->pid))
 				{	// Recibimos el TCB y esta todos OK
-					printf("- Recibimos TCB con resultado %d\n", pedido_resultado->resultado);
+					printf("Recibimos TCB con resultado %d\n", pedido_resultado->resultado);
 					printf("");
 					recibir_tcb(pedido_resultado->resultado, pedido_resultado->tcb);
 				}
@@ -421,7 +415,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				}
 				else
 				{// Recibimos el TCB de un proceso muriendo
-					//TODO: Codificar esta parte.
 					// Creo que en este caso no hay que hacer nada
 				}
 
@@ -444,7 +437,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				_enviar_completadook(conexion_cpu->socket);
 
-				// TODO: Aca habria que correr el planificador??
 
 				free(pedido_interrupcion->tcb);
 				free(pedido_interrupcion);
@@ -463,7 +455,6 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 					}
 					else
 					{
-						// TODO: Ver con Santi como informar Error
 						//_informar_fallo_syscall(conexion_cpu->socket);
 					}
 				}
@@ -509,7 +500,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				free(pedido_join);
 				break;
 
-			case BLOQUEAR: // TODO: Ver con santi bien como funciona. Que es el TCB que se recibe?
+			case BLOQUEAR:
 				logear_instruccion_protegida("BLOQUEAR", get_tcb_km());
 
 				pedido_bloquear_t* pedido_bloqueo = deserializar_pedido_bloquear_t(mensaje);
@@ -629,7 +620,7 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 						}
 						else
 						{// Es CPU
-							//TODO: Aca el quehacer cuando la conexion es CPU
+							// Aca el quehacer cuando la conexion es CPU
 							_recalcular_mayor_fd(&MAYOR_FD_CPU, nueva_conexion->fd);
 						}
 					}
