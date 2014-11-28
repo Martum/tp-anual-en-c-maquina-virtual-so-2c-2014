@@ -417,9 +417,11 @@ void join(uint32_t llamador, uint32_t esperando_a) {
 	ej->tcb = get_bloqueado_conclusion_tcb();
 	ej->esperando_a = esperando_a;
 
-	agregar_a_block_join(ej);
-
-	set_enviar_a_rdy(false);
+	if(existe_tcb_que_no_termino(ej->tcb->pid, esperando_a))
+	{
+		agregar_a_block_join(ej);
+		set_enviar_a_rdy(false);
+	}
 }
 
 void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion) {

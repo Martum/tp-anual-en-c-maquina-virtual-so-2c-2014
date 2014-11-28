@@ -798,3 +798,24 @@ t_list* get_todos_los_tcbs()
 
 	return lista_principal;
 }
+
+
+
+bool existe_tcb_que_no_termino(uint32_t pid, uint32_t tid){
+
+	bool buscar(void* elemento){
+		tcb_con_cola_t* ele = (tcb_con_cola_t*)elemento;
+		if (ele->tcb->pid == pid && ele->tcb->tid == tid && ele->cola != MEXIT)
+			return	true;
+		return false;
+	}
+
+	t_list* lista = get_todos_los_tcbs();
+
+	bool existe = list_any_satisfy(lista, buscar);
+
+	list_iterate(lista, free);
+
+	return existe;
+
+}

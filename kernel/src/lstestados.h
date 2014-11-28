@@ -270,4 +270,9 @@ bool proceso_muriendo(uint32_t pid);
 
 t_list* get_todos_los_tcbs();
 
+/**
+ * Retorna
+ */
+bool existe_tcb_que_no_termino(uint32_t pid, uint32_t tid);
+
 #endif /* LSTESTADOS_H_ */
