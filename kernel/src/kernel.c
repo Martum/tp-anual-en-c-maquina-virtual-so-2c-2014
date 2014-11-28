@@ -20,6 +20,7 @@
 #include "syscalls.h"
 
 #include <hu4sockets/sockets.h>
+#include <ansisop-panel/panel/panel.h>
 
 #define FALLO_CONEXION_MEMORIA -2
 
@@ -31,6 +32,9 @@ int main(void) {
 	// - Levanta las configuraciones del archivo
 	cargar_configuraciones();
 	printf("- Cargadas las configuraciones\n");
+
+	cargar_loggeo();
+	printf("- Creado archivo de logeo\n");
 
 	// - Inicializa las listas del Planificador
 	inicializar_listas_estados_tcb();

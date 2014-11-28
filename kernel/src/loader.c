@@ -159,22 +159,3 @@ int32_t cargar_tcb_sin_codigo(tcb_t* tcb_padre, tcb_t* tcb_hijo)
 	return -1;
 
 }
-
-t_hilo* crear_t_hilo(tcb_t* tcb)
-{
-	t_hilo* hilot = malloc(sizeof(t_hilo));
-
-	hilot->pid = tcb->pid;
-	hilot->tid = tcb->tid;
-
-	return hilot;
-}
-
-void logear_instruccion_protegida(char* instruccion, tcb_t* tcb)
-{
-	t_hilo* hilot = crear_t_hilo(tcb);
-
-	instruccion_protegida(instruccion, hilot);
-
-	free(hilot);
-}

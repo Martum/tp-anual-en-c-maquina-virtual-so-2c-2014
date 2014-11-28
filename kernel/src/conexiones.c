@@ -19,8 +19,7 @@
 #include <sys/time.h>
 #include "cpu.h"
 #include "planificador.h"
-#include <ansisop-panel/panel/panel.h>
-#include <ansisop-panel/panel/kernel.h>
+#include "loggear.h"
 
 // Lista y mutex para conexiones de procesos
 pthread_mutex_t MUTEX_CONEXIONES_PROCESOS = PTHREAD_MUTEX_INITIALIZER;
@@ -90,6 +89,8 @@ void eliminar_conexion_proceso(sock_t* conexion)
 	FD_CLR(conexion->fd, &READFDS_PROCESOS);
 
 	pthread_mutex_unlock(&MUTEX_CONEXIONES_PROCESOS);
+
+	loggear_desconexion_consola(conexionp->pid);
 
 	cerrar_liberar(conexionp->socket);
 	free(conexionp);
@@ -224,7 +225,7 @@ int32_t _procesar_conexion_nuevo_programa(char* codigo_beso, uint32_t longitud, 
 	// Agregamos la conexion a la lista de procesos
 	_agregar_conexion_a_procesos(conexion, pid);
 
-	conexion_consola((uint32_t)pid);
+	loggear_conexion_consola((uint32_t)pid);
 
 	return 0;
 }
@@ -290,7 +291,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 			// Le damos la bienvenida
 			_dar_bienvenida(*nueva_conexion);
 
-			conexion_cpu(id_nuevo_cpu);
+			loggear_conexion_cpu(id_nuevo_cpu);
 			break;
 
 		default:
@@ -345,8 +346,6 @@ void _atender_socket_proceso(conexion_proceso_t* conexion_proceso)
 
 			case TERMINAR_CONEXION:
 				bloquear_exit();
-
-				desconexion_consola(conexion_proceso->pid);
 
 				mover_tcbs_a_exit(conexion_proceso->pid, false);
 				eliminar_conexion_proceso(conexion_proceso->socket);
@@ -550,7 +549,7 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case DESCONEXION_CPU:
-				desconexion_cpu(conexion_cpu->id);
+				loggear_desconexion_cpu(conexion_cpu->id);
 
 				quitar_cpu_de_lista_espera_tcb(conexion_cpu->id);
 				FD_CLR(conexion_cpu->socket->fd, &READFDS_CPUS);
