@@ -156,7 +156,7 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
  * 		OK si pudo completar la operacion satisfactoriamente
  * 		FALLO_COMUNICACION si hubo algun problema de comunicacion
  */
-resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb);
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid);
 
 /*
  * @DESC: 	Le manda al kernel un mensaje para que bloquee un hilo hasta que otro se ejecute

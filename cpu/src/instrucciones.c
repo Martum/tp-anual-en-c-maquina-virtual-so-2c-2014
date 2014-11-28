@@ -1097,7 +1097,8 @@ resultado_t crea(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 	}
 
-//	direccion nuevo_tid;
+	uint32_t nuevo_tid;
+
 //	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
@@ -1119,10 +1120,12 @@ resultado_t crea(tcb_t* tcb)
 //	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
 //		return ERROR_EN_EJECUCION;
 
-	if (comunicar_nuevo_tcb(tcb) != OK)
+	if (comunicar_nuevo_tcb(tcb, &nuevo_tid) != OK)
 	{
 		return ERROR_EN_EJECUCION;
 	}
+
+	actualizar_registro_a(tcb, nuevo_tid);
 
 	return OK;
 }

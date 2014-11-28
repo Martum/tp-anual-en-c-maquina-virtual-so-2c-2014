@@ -687,7 +687,7 @@ resultado_t comunicar_salida_estandar(tcb_t* tcb, uint32_t bytes_a_enviar,
 	return OK;
 }
 
-resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
+resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb, uint32_t* nuevo_tid)
 {
 	loggear_debug("Comunico nuevo tcb");
 	loggear_trace("PID nuevo tcb %d", nuevo_tcb);
@@ -697,7 +697,7 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 	cuerpo_del_mensaje.tcb = nuevo_tcb;
 
 	char* chorro_de_envio = serializar_pedido_crear_hilo_t(&cuerpo_del_mensaje);
-	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
+	char* chorro_de_respuesta = malloc(sizeof(respuesta_crear_hilo_t));
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_crear_hilo_t_serializado(), chorro_de_respuesta)
@@ -710,16 +710,21 @@ resultado_t comunicar_nuevo_tcb(tcb_t* nuevo_tcb)
 
 	loggear_trace("Recibi respuesta por nuevo tcb");
 
-	resultado_t resultado = *chorro_de_respuesta;
+	respuesta_crear_hilo_t* respuesta = deserializar_respuesta_crear_hilo_t(chorro_de_respuesta);
 
 	free(chorro_de_envio);
 	free(chorro_de_respuesta);
 
-	if (resultado != COMPLETADO_OK)
+	if (respuesta->resultado != COMPLETADO_OK)
 	{
+		free(respuesta);
 		loggear_warning("Nuevo tcb no se realizo correctamente");
 		return ERROR_EN_EJECUCION;
 	}
+
+	*nuevo_tid = respuesta->nuevo_tid;
+
+	free(respuesta);
 
 	loggear_debug("Comunicacion nuevo tcb satisfactorio");
 
