@@ -387,7 +387,12 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 	if(resultado == 0)
 	{
+		printf("-- Recibimos request de CPU %d\n", conexion_cpu->id);
+		printf("");
 		bloquear_exit();
+
+		printf("- Pasamos el bloqueo con codigo %d\n", cod_op);
+		printf("");
 		switch (cod_op) {
 			case SALIDA_ESTANDAR:
 				logear_instruccion_protegida("SALIDA ESTANDAR", get_tcb_km());
@@ -508,11 +513,13 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 
 				if(!proceso_muriendo(pedido_resultado->tcb->pid))
 				{	// Recibimos el TCB y esta todos OK
+					printf("- Recibimos TCB con resultado %d\n", pedido_resultado->resultado);
+					printf("");
 					recibir_tcb(pedido_resultado->resultado, pedido_resultado->tcb);
 				}
 				else if(pedido_resultado->tcb->km)
 				{	// Recibimos el TCB de un proceso muriendo, siendo este el TCB KM (hay que replanificar KM?)
-					//eliminar_conclusion_tcb();	// Creo que no va, porque ya lo elimino en otra instancia
+					//eliminar_conclusion_tcb();
 
 					replanificar_tcb_km();
 				}
@@ -562,9 +569,11 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 		}
 		desbloquear_exit();
-	}
+		printf("-- Terminamos request de CPU %d\n", conexion_cpu->id);
+		printf("");
 
-	free(mensaje);
+		free(mensaje);
+	}
 }
 
 // Corre en un THREAD

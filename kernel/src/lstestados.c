@@ -518,7 +518,7 @@ void remover_de_conclusion_km_a_exit(uint32_t pid)
 			}
 			else
 			{// Ya se esta ejecutando
-				set_enviar_a_rdy(false);
+				eliminar_conclusion_tcb();
 			}
 		}
 	}
@@ -550,6 +550,12 @@ void remover_de_exec_a_exit(uint32_t pid)
 		return ((tcb_t*) elemento)->pid == pid &&
 				!((tcb_t*) elemento)->km;
 	}	//TODO: Creo que si es TCB KM hay que sacarlo igual, pero no ponerlo en exit
+
+	bool _buscar_por_pid_y_km(void* elemento)
+	{
+		return ((tcb_t*) elemento)->pid == pid &&
+				((tcb_t*) elemento)->km;
+	}
 
 	uint32_t cantidad = list_count_satisfying(EXEC_COLA, _buscar_por_pid_no_km);
 

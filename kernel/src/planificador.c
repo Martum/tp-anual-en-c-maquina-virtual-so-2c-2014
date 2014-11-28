@@ -165,6 +165,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 				agregar_a_ready(tcb_posta);
 
 			eliminar_conclusion_tcb_sin_quitar_de_exec();
+
+			replanificar_tcb_km();
 		}
 		else
 		{
@@ -197,11 +199,11 @@ void mover_tcbs_a_exit_posta(uint32_t pid, tcb_t* tcb_adicional, bool desconecta
 
 	remover_de_ready_a_exit(pid);
 
-	remover_de_exec_a_exit(pid);	// TODO: Revisar esta funcion
+	remover_de_exec_a_exit(pid);
 
 	remover_de_esperando_km_a_exit(pid);
 
-	remover_de_conclusion_km_a_exit(pid);	// VER QUE ELIMINA Y QUE NO ESTA FUNCION -> LINEA 462 CONEXIONES.C
+	remover_de_conclusion_km_a_exit(pid);
 
 	remover_de_join_a_exit(pid);
 
