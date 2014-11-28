@@ -1068,7 +1068,6 @@ resultado_t outc(tcb_t* tcb)
 //}
 
 // ELIMINAR codigo innecesario de crea (ya no hace falta)
-// TODO terminar la instruccion crea
 /*
  * 	CREA
  *
@@ -1250,11 +1249,11 @@ void inicializar_dic_de_instrucciones()
 {
 	loggear_trace("Intento crear el diccionario de instrucciones");
 	dic_instrucciones = dictionary_create();
-	loggear_info("Creacion de diccionario con exito");
+	loggear_info("Creacion de diccionario con exito\n");
 
 	loggear_trace("Intento cargar el diccionario de instrucciones");
 	_cargar_diccionario_de_instrucciones(dic_instrucciones);
-	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones");
+	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones\n");
 }
 
 void liberar_dic_de_instrucciones()
@@ -1276,9 +1275,10 @@ resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
 	if (leer_proxima_instruccion(tcb, instruccion) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
+//	ELIMINAR logeo en ejecutar siguiente intruccion
+//	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
-	loggear_info("Ejecuto instruccion %s", instruccion);
+//	loggear_info("Ejecuto instruccion %s", instruccion);
 
 	return funcion(tcb);
 }

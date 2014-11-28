@@ -38,4 +38,5 @@ void escribir_marco(marco_t* * datos_marco, uint16_t desplazamiento, uint32_t * 
 //Funcion auxiliar. Calcula el tamanio que realmente voy a usar, no el total.
 uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
 
+void liberar_marcos_proceso(uint32_t pid);
 #endif /* MARCO_H_ */
