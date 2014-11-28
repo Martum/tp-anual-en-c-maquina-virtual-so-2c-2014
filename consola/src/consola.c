@@ -123,7 +123,8 @@ char* cargar_beso(char* path, uint32_t* len)
 
 	// Obtenemos el size del archivo
 	fseek(archivo, 0L, SEEK_END);
-	*len = ftell(archivo) - 1;
+	//*len = ftell(archivo) - 1;	//TODO: Linea de siempre
+	*len = ftell(archivo);
 	fseek(archivo, 0L, SEEK_SET);
 
 	// Alocamos espacio suficiente
