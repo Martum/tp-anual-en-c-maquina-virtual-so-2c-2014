@@ -104,28 +104,29 @@ void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio,
 	free(rta_serializada);
 }
 
-void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
+void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id)
+{
 	direccion* dir = malloc(sizeof(direccion));
 	uint32_t tid = get_tcb_km()->tid;
 
 	uint32_t tamanio_rta = tamanio_respuesta_de_crear_segmento_t_serializado();
 	char * rta_serializada = malloc(tamanio_rta);
-	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio,
-			dir);
+	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio, dir);
 
-	respuesta_de_crear_segmento_t* rta_deserializada =
-			deserializar_respuesta_de_crear_segmento_t(rta_serializada);
+	respuesta_de_crear_segmento_t* rta_deserializada = deserializar_respuesta_de_crear_segmento_t(rta_serializada);
 
 	// TODO: REVISAR QUE LA REPSUESTA CORRECTA SEA RESULTADO_OK
 	if (rta_deserializada->resultado == RESULTADO_OK) {
 		segmentos_por_hilo_t* segmentos = find_segmento_de_hilo(pid, tid);
+
 		if (segmentos == NULL ) {
-			segmentos_por_hilo_t* segmentos = malloc(
-					sizeof(segmentos_por_hilo_t));
+			segmentos = malloc(sizeof(segmentos_por_hilo_t));
+
 			segmentos->pid = pid;
 			segmentos->tid = tid;
 			segmentos->segmentos = list_create();
 		}
+
 		list_add(segmentos->segmentos, dir);
 	}
 
