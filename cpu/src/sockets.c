@@ -117,8 +117,8 @@ resultado_t conectar_con_memoria()
 
 void _mandar_desconexion_cpu(sock_t* socket)
 {
-	resultado_t resultado = DESCONEXION_CPU;
-	uint32_t tamanio = sizeof(resultado_t);
+	flag_t resultado = DESCONEXION_CPU;
+	uint32_t tamanio = sizeof(flag_t);
 	char* chorro_a_enviar = malloc(tamanio);
 
 	memcpy(chorro_a_enviar, &resultado, tamanio);
