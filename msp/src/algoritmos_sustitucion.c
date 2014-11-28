@@ -70,7 +70,7 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	*id_pagina_a_swappear = pag->id;
 
 	free(paginas_con_marco);
-	free(pag);
+	//free(pag);
 
 	return retorno;
 }
