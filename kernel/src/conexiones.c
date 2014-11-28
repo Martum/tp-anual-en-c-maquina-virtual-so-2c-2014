@@ -542,8 +542,8 @@ void _atender_socket_cpu(conexion_cpu_t* conexion_cpu)
 				break;
 
 			case CREAR_HILO:
-				printf("Pedido de Crear_Hilo de CPU %d\n", conexion_cpu->id);
-				printf("");
+				logear_instruccion_protegida("CREAR HILO", get_tcb_km());
+
 				pedido_crear_hilo_t* pedido_crea = deserializar_pedido_crear_hilo_t(mensaje);
 				crea(pedido_crea->tcb, conexion_cpu->id);
 				break;

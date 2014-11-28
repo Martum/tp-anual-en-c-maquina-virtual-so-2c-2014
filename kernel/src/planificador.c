@@ -18,6 +18,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
+#include "loggear.h"
 
 // MUTEX para garantizar unicidad y atomicidad de planificar
 pthread_mutex_t PLANIFICANDO = PTHREAD_MUTEX_INITIALIZER;
@@ -189,6 +190,8 @@ void recibir_tcb(resultado_t resultado, tcb_t* tcb) {
 		break;
 
 	}
+
+	loggear_estado_de_hilos();
 }
 
 

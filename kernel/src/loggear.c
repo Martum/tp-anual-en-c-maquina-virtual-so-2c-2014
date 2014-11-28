@@ -10,6 +10,8 @@
 #include <ansisop-panel/panel/panel.h>
 #include <ansisop-panel/panel/kernel.h>
 #include <hu4sockets/tcb.h>
+#include <stdlib.h>
+#include <commons/collections/list.h>
 
 void cargar_loggeo()
 {
@@ -53,4 +55,9 @@ void loggear_conexion_cpu(uint32_t id)
 void loggear_desconexion_cpu(uint32_t id)
 {
 	desconexion_cpu(id);
+}
+
+void loggear_estado_de_hilos()
+{
+	//t_list* lista_tcbs = get_todos_los_tcbs();
 }
