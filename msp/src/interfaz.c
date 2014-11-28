@@ -216,10 +216,12 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		int mas_paginas = 1;
 		marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
+
+		uint32_t cantidad_escrito_acumulada = 0;
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
-			escribir_marco(&marco, desplazamiento,&tamanio, &bytes_a_escribir, &mas_paginas, (pagina->max_modificable));
+			escribir_marco(&marco, desplazamiento,&tamanio, &bytes_a_escribir, &mas_paginas, (pagina->max_modificable), &cantidad_escrito_acumulada);
 
 			//Aunque haya o no más paginas, despues de una lectura no va a haber más desplazamiento.
 			desplazamiento=0;
