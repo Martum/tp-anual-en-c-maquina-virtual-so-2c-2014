@@ -10,26 +10,25 @@
 #include "consola.h"
 #include "cpu.h"
 #include "memoria.h"
+#include "configuraciones.h"
 
 uint32_t ID_CPU_GLOBAL = 1;
 
 // lista de segmentos por hilo (struct: pid, tid, lista de direcciones(segmentos))
 t_list* SEGMENTOS_POR_HILO = NULL;
 
-void inicializar_lista_segmentos_por_hilo()
-{
+void inicializar_lista_segmentos_por_hilo() {
 	SEGMENTOS_POR_HILO = list_create();
 }
 
-void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos)
-{
+void agregar_segmentos_por_hilo(segmentos_por_hilo_t* segmentos) {
 	list_add(SEGMENTOS_POR_HILO, segmentos);
 }
 
 // TODO: recordar hacer malloc para las direcciones cuando las cree.
 void quitar_segmento_de_hilo(uint32_t pid, uint32_t tid, direccion dir_virtual) {
 
-	segmentos_por_hilo_t* segmentos_hilo = find_segmento_de_hilo(pid,tid);
+	segmentos_por_hilo_t* segmentos_hilo = find_segmento_de_hilo(pid, tid);
 
 	bool _segmentoQueQuiero(void* elemento) {
 		return *((direccion*) elemento) == dir_virtual;
@@ -50,30 +49,27 @@ segmentos_por_hilo_t* find_segmento_de_hilo(uint32_t pid, uint32_t tid) {
 	return list_find(SEGMENTOS_POR_HILO, _elementoConListaDeSegmentos);
 }
 
-void destruir_segmentos(t_list* lista, uint32_t pid)
-{
-	void _eliminar(void* elemento)
-	{
-		destruir_segmento(pid, *((direccion*)elemento));
+void destruir_segmentos(t_list* lista, uint32_t pid) {
+	void _eliminar(void* elemento) {
+		destruir_segmento(pid, *((direccion*) elemento));
 		free(elemento);
 	}
 
 	list_clean_and_destroy_elements(lista, _eliminar);
 }
 
-void destruir_segmentos_de_proceso(uint32_t pid)
-{
-	bool _coincide_pid(void* elemento)
-	{
+void destruir_segmentos_de_proceso(uint32_t pid) {
+	bool _coincide_pid(void* elemento) {
 		return ((segmentos_por_hilo_t*) elemento)->pid == pid;
 	}
 
-	uint32_t cantidad = list_count_satisfying(SEGMENTOS_POR_HILO, _coincide_pid);
+	uint32_t cantidad = list_count_satisfying(SEGMENTOS_POR_HILO,
+			_coincide_pid);
 
 	int i;
-	for(i = 0; i < cantidad; i++)
-	{
-		segmentos_por_hilo_t* seg = list_remove_by_condition(SEGMENTOS_POR_HILO, _coincide_pid);
+	for (i = 0; i < cantidad; i++) {
+		segmentos_por_hilo_t* seg = list_remove_by_condition(SEGMENTOS_POR_HILO,
+				_coincide_pid);
 
 		destruir_segmentos(seg->segmentos, pid);
 
@@ -82,18 +78,16 @@ void destruir_segmentos_de_proceso(uint32_t pid)
 	}
 }
 
-void destruir_segmentos_de_hilo(uint32_t pid, uint32_t tid)
-{
-	bool _coincide_pid_tid(void* elemento)
-	{
+void destruir_segmentos_de_hilo(uint32_t pid, uint32_t tid) {
+	bool _coincide_pid_tid(void* elemento) {
 		return ((segmentos_por_hilo_t*) elemento)->pid == pid
 				&& ((segmentos_por_hilo_t*) elemento)->tid == tid;
 	}
 
-	segmentos_por_hilo_t* segmentos = list_remove_by_condition(SEGMENTOS_POR_HILO, _coincide_pid_tid);
+	segmentos_por_hilo_t* segmentos = list_remove_by_condition(
+			SEGMENTOS_POR_HILO, _coincide_pid_tid);
 
-	if(segmentos != NULL)
-	{
+	if (segmentos != NULL ) {
 		destruir_segmentos(segmentos->segmentos, pid);
 		list_destroy(segmentos->segmentos);
 		free(segmentos);
@@ -101,7 +95,8 @@ void destruir_segmentos_de_hilo(uint32_t pid, uint32_t tid)
 
 }
 
-void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
+void _enviar_rta_crear_segmento_a_cpu(char* rta_serializada, uint32_t tamanio,
+		uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
 	enviar(socket, rta_serializada, &tamanio);
@@ -115,15 +110,18 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
 
 	uint32_t tamanio_rta = tamanio_respuesta_de_crear_segmento_t_serializado();
 	char * rta_serializada = malloc(tamanio_rta);
-	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio, dir);
+	rta_serializada = crear_segmento_retornando_rta_serializada(pid, tamanio,
+			dir);
 
-	respuesta_de_crear_segmento_t* rta_deserializada = deserializar_respuesta_de_crear_segmento_t(rta_serializada);
+	respuesta_de_crear_segmento_t* rta_deserializada =
+			deserializar_respuesta_de_crear_segmento_t(rta_serializada);
 
 	// TODO: REVISAR QUE LA REPSUESTA CORRECTA SEA RESULTADO_OK
 	if (rta_deserializada->resultado == RESULTADO_OK) {
-		segmentos_por_hilo_t* segmentos = find_segmento_de_hilo(pid,tid);
-		if (segmentos == NULL){
-			segmentos_por_hilo_t* segmentos = malloc(sizeof(segmentos_por_hilo_t));
+		segmentos_por_hilo_t* segmentos = find_segmento_de_hilo(pid, tid);
+		if (segmentos == NULL ) {
+			segmentos_por_hilo_t* segmentos = malloc(
+					sizeof(segmentos_por_hilo_t));
 			segmentos->pid = pid;
 			segmentos->tid = tid;
 			segmentos->segmentos = list_create();
@@ -134,7 +132,8 @@ void crear_segmento_cpu(uint32_t pid, uint32_t tamanio, uint32_t* cpu_id) {
 	_enviar_rta_crear_segmento_a_cpu(rta_serializada, tamanio_rta, cpu_id);
 }
 
-void _enviar_rta_destruir_segmento_a_cpu(char* rta_serializada, uint32_t tamanio, uint32_t* cpu_id) {
+void _enviar_rta_destruir_segmento_a_cpu(char* rta_serializada,
+		uint32_t tamanio, uint32_t* cpu_id) {
 
 	sock_t* socket = buscar_conexion_cpu_por_id(*cpu_id);
 	enviar(socket, rta_serializada, &tamanio);
@@ -142,13 +141,15 @@ void _enviar_rta_destruir_segmento_a_cpu(char* rta_serializada, uint32_t tamanio
 	free(rta_serializada);
 }
 
-void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual, uint32_t* cpu_id) {
+void destruir_segmento_cpu(uint32_t pid, direccion dir_virtual,
+		uint32_t* cpu_id) {
 	uint32_t tid = get_tcb_km()->tid;
-	quitar_segmento_de_hilo(pid,tid,dir_virtual);
+	quitar_segmento_de_hilo(pid, tid, dir_virtual);
 
 	uint32_t tamanio = tamanio_respuesta_t_serializado();
 	char* rta_serializada = malloc(tamanio);
-	rta_serializada = destruir_segmento_retornando_rta_serializada(pid, dir_virtual);
+	rta_serializada = destruir_segmento_retornando_rta_serializada(pid,
+			dir_virtual);
 
 	_enviar_rta_destruir_segmento_a_cpu(rta_serializada, tamanio, cpu_id);
 }
@@ -191,12 +192,68 @@ int crear_hilo(tcb_t* tcb) {
 	tcb_t* tcb_hilo = crear_tcb(tcb->pid, dame_nuevo_tid(tcb->pid));
 
 	// Le asignamos la misma base_codigo y un nuevo base_stack
-	if (cargar_tcb_sin_codigo(tcb, tcb_hilo) != -1) {// Hay memoria, agregamos a RDY
+	if (cargar_tcb_sin_codigo(tcb, tcb_hilo) != -1) { // Hay memoria, agregamos a RDY
 		agregar_a_ready(tcb_hilo);
 		return 0;
 	}
 
 	return -1;
+}
+
+/*
+ * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
+ */
+resultado_t _crear_stack(tcb_t* tcb) {
+	uint32_t tamano_stack = tamanio_stack();
+
+	direccion nueva_base_stack;
+
+	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
+			== FALLO_CREACION_DE_SEGMENTO)
+		return ERROR_EN_EJECUCION;
+
+	tcb->base_stack = nueva_base_stack;
+
+	return OK;
+}
+
+resultado_t _mover_cursor_stack(tcb_t* tcb, int32_t cantidad_de_bytes) {
+	if (tcb->base_stack > tcb->cursor_stack + cantidad_de_bytes) {
+		return EXCEPCION_POR_POSICION_DE_STACK_INVALIDA;
+	}
+
+	tcb->cursor_stack = tcb->cursor_stack + cantidad_de_bytes;
+
+	return OK;
+}
+
+/*
+ * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
+ */
+resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb) {
+	uint32_t cantidad_bytes_ocupado_stack = tcb->base_stack - tcb->cursor_stack;
+
+	char* buffer = malloc(cantidad_bytes_ocupado_stack);
+
+	if (leer_de_memoria(tcb->pid, tcb->base_stack, cantidad_bytes_ocupado_stack,
+			buffer) == FALLO_LECTURA_DE_MEMORIA) {
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	if (escribir_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack, buffer,
+			cantidad_bytes_ocupado_stack) == -1) {
+		free(buffer);
+		return ERROR_EN_EJECUCION;
+	}
+
+	free(buffer);
+
+	if (_mover_cursor_stack(tcb, cantidad_bytes_ocupado_stack)
+			== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
+		return ERROR_EN_EJECUCION;
+
+	return OK;
 }
 
 /*// NO GO
@@ -278,6 +335,57 @@ void despertar(uint32_t recurso) {
 	tcb_t* tcb = quitar_primero_de_cola_recurso(recurso);
 	quitar_de_block_recurso(tcb);
 	agregar_a_ready(tcb);
+}
+
+respuesta_crear_hilo_t* _crear_hilo_desde_crea(tcb_t* tcb) {
+	direccion nuevo_tid = dame_nuevo_tid(tcb->pid);
+	tcb_t* nuevo_tcb = crear_tcb(tcb->pid, nuevo_tid);
+	copiar_tcb(nuevo_tcb, tcb);
+	nuevo_tcb->tid = nuevo_tid;
+	nuevo_tcb->pc = tcb->b;
+	nuevo_tcb->km = 0;
+
+	respuesta_crear_hilo_t* rta_crea = malloc(sizeof(rta_crea));
+	rta_crea->nuevo_tid = nuevo_tid;
+
+	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION) {
+		rta_crea->resultado = ERROR_EN_EJECUCION;
+		free(tcb);
+		return rta_crea;
+	}
+
+	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION) {
+		rta_crea->resultado = ERROR_EN_EJECUCION;
+		destruir_segmento(nuevo_tcb->pid, nuevo_tcb->base_stack);
+		free(nuevo_tcb);
+		return rta_crea;
+	}
+
+	agregar_a_ready(nuevo_tcb);
+	rta_crea->resultado = COMPLETADO_OK;
+
+	return rta_crea;
+}
+
+void _enviar_respuesta_crea_a_cpu(respuesta_crear_hilo_t* rta, uint32_t cpu_id) {
+
+	rta->flag = CREAR_HILO;
+
+	uint32_t tamanio = tamanio_respuesta_crear_hilo_t_serializado();
+	char * rta_serializada = malloc(tamanio);
+	rta_serializada = serializar_respuesta_crear_hilo_t(rta);
+
+	free(rta);
+
+	sock_t* socket = buscar_conexion_cpu_por_id(cpu_id);
+	enviar(socket, rta_serializada, &tamanio);
+
+	free(rta_serializada);
+}
+
+void crea(tcb_t* tcb, uint32_t cpu_id) {
+	respuesta_crear_hilo_t* rta_crea = _crear_hilo_desde_crea(tcb);
+	_enviar_respuesta_crea_a_cpu(rta_crea, cpu_id);
 }
 
 void interrupcion(tcb_t* tcb, direccion dir) {

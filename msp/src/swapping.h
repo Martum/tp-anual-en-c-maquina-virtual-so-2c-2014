@@ -34,5 +34,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid,uint16_t id_segmento);
 //Dado un pid, id_segmento e id_pagina, busca la pagina en disco y la lleva a memoria
 void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * id_pagina);
 
+char* generar_nombre_archivo_swap(uint32_t pid, uint16_t id_segmento, uint16_t id_pagina);
 
+void destruir_archivos_swapp_proceso(uint32_t pid, segmento_t* segmento);
 #endif /* SWAPPING_H_ */
