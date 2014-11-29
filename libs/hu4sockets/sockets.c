@@ -175,7 +175,12 @@ char* _serializar_cabecera(cabecera_t* cabecera)
 
 char* _crear_cabecera_serializada(uint32_t len)
 {
-	return _serializar_cabecera(_crear_cabecera(len));
+	cabecera_t* cabecera = _crear_cabecera(len);
+	char* cabecera_serializada =  _serializar_cabecera(cabecera);
+
+	free(cabecera);
+
+	return cabecera_serializada;
 }
 
 

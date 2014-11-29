@@ -105,8 +105,10 @@ char* serializar_respuesta_de_nuevo_tcb_t(
 	memcpy(bytes + offset, &rta_nuevo_tcb->quantum, sizeof(uint32_t));
 
 	offset += sizeof(uint32_t);
-	memcpy(bytes + offset, serializar_tcb(rta_nuevo_tcb->tcb),
-		tamanio_tcb_serializado());
+	char* tcb_serializado = serializar_tcb(rta_nuevo_tcb->tcb);
+	memcpy(bytes + offset, tcb_serializado, tamanio_tcb_serializado());
+
+	free(tcb_serializado);
 
 	return bytes;
 }
