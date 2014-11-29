@@ -126,7 +126,8 @@ resultado_t setm(tcb_t* tcb)
 	if (leer_registro(tcb, &registro2) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	ansisop_ejecucion_instruccion4("SETM", cantidad_de_bytes_a_copiar, registro1, registro2);
+	ansisop_ejecucion_instruccion4("SETM", cantidad_de_bytes_a_copiar,
+		registro1, registro2);
 
 	if (obtener_valor_del_registro(tcb, registro1, &valor_del_registro_1)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -333,7 +334,8 @@ resultado_t divr(tcb_t* tcb)
  * 			El byte es una letra de un registro.
  * 			Busca el valor del registro.
  */
-resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t), char* nombre)
+resultado_t _funcion_incr_decr(tcb_t* tcb, int32_t operacion(int32_t),
+	char* nombre)
 {
 	char registro;
 
@@ -516,7 +518,8 @@ resultado_t _goto(tcb_t* tcb)
  * 			Efectua condicion el valor del registro 'a'.
  * 			Actualiza el valor del pc con base de codigo + numero leido.
  */
-resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t), char* nombre)
+resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t),
+	char* nombre)
 {
 	int32_t offset;
 
@@ -745,6 +748,8 @@ resultado_t take(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	memcpy(&valor_a_popeado, bytes, 4);
+
+	loggear_trace("Numero: %d", valor_a_popeado);
 
 	if (actualizar_valor_del_registro(tcb, registro, valor_a_popeado)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -1186,12 +1191,13 @@ void inicializar_dic_de_instrucciones()
 
 	loggear_trace("Intento cargar el diccionario de instrucciones");
 	_cargar_diccionario_de_instrucciones(dic_instrucciones);
-	loggear_info("Cargadas todas las instrucciones en el dic de instrucciones\n");
+	loggear_info(
+		"Cargadas todas las instrucciones en el dic de instrucciones\n");
 }
 
 void liberar_dic_de_instrucciones()
 {
-	if (dic_instrucciones != NULL)
+	if (dic_instrucciones != NULL )
 	{
 		loggear_trace("Intento liberar el diccionario de instrucciones");
 
