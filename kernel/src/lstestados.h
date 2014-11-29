@@ -214,7 +214,7 @@ void notificar_join_finalizacion_hilo(tcb_t* que_termina);
 /**
  * Agrega un TCB a Exit
  */
-void agregar_a_exit(tcb_t* tcb);
+//void agregar_a_exit(tcb_t* tcb);
 
 /**
  * Saca de READY todos los Hilos con ese PID y los pone en EXIT

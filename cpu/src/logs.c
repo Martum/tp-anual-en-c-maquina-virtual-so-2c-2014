@@ -17,7 +17,7 @@ void empezar_loggeo()
 
 	truncate("logs_cpu.log", 0);
 
-	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_WARNING);
+	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_TRACE);
 
 	loggear_info("Empiezo el loggeo\n");
 }
