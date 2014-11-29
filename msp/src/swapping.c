@@ -55,11 +55,9 @@ marco_t* liberar_un_marco()
 	marco_t* marco_a_liberar= buscar_marco_segun_id(id_marco_a_liberar);
 	loggear_trace("Se libero el marco %d.", marco_a_liberar->id);
 
-	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_pag_swap, marco_a_liberar->id_proceso);
+	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_marco_a_liberar, marco_a_liberar->id_proceso);
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
-
-
 
 	return marco_a_liberar;
 }
@@ -80,24 +78,20 @@ uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap)
 	return id_marco;
 }
 
-void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint16_t id_pag_swap, uint32_t pid)
+void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint32_t id_marco_swap, uint32_t pid)
 {
-	/*
-	 * TODO Si esta cosa funciona soy un nuevo tipo de Dios
-	 *
-	 * Dado un segmento checkea si contiene la pagina
-	 */
-	bool _segmento_contiene_pagina(segmento_t* seg){
-			bool _es_pagina(pagina_t* pag)
-			{
-				return pag->id==id_pag_swap;
-			}
-			return list_any_satisfy(seg->paginas, (void*)_es_pagina);
-		}
 	proceso_msp_t* proceso_contenedor = buscar_proceso_segun_pid(pid);
-	(*segmento_contenedor)=(segmento_t*)list_find(proceso_contenedor->segmentos,(void*)_segmento_contiene_pagina);//TODO no lo encuentra, creo que porque no esta bien cargado desde interfaz
-
-	(*pagina_swap)=buscar_pagina_segun_id_en_lista_paginas(id_pag_swap, (*segmento_contenedor)->paginas);
+	int i, j;
+	for(i=0; i<list_size(proceso_contenedor->segmentos); i++){
+		segmento_t* segment = list_get(proceso_contenedor->segmentos, i);
+		for(j=0; j<list_size(segment->paginas); j++){
+			pagina_t* pagi = list_get(segment->paginas, j);
+			if(pagi->tiene_marco && pagi->marco == id_marco_swap){
+				(*pagina_swap) = pagi;
+				(*segmento_contenedor) = segment;
+			}
+		}
+	}
 
 }
 
@@ -123,7 +117,6 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 	char* string_a_escribir=marco->datos;
 
-
 	//Escribo en el archivo
 	int i;
 	for(i=0; i<256; i++){
@@ -131,14 +124,11 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 		fprintf(arch, "%c", caracter);
 	}
 	fflush(arch);
-//	txt_write_in_file(arch, string_a_escribir);
 
 	(*pagina)->en_disco=true;
-
 	(*pagina)->tiene_marco=false;
 
 	fclose(arch);
-//	txt_close_file(arch);
 
 	aumento_cantidad_archivos_swap();
 
@@ -150,7 +140,6 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 {
 	// ----Abro el archivo----
-
 	uint16_t id_pagina = (*pagina)->id;
 	//Convierte cada id a string y despues los concatena de 2 en 2
 	char *nombre_archivo=generar_nombre_archivo_swap(pid, id_segmento, id_pagina);
@@ -163,27 +152,27 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	//el nombre se compone de pid, idsegmento y id pagina
 	FILE* arch = fopen(path,"r");
 
-
 	// ----Le consigo un marco a la pagina----
 	marco_t* marco = buscar_marco_libre();
-	if(marco==NULL)
-	{
+
+	if(marco==NULL){
 		swap_in(pagina, id_segmento, pid);
-	}
-	else
-	{
+	}else{
 		(*pagina)->marco=marco->id;
 	}
+
 	//Ahora pagina es de su marco
 	(*pagina)->tiene_marco=true;
 	(*pagina)->en_disco=false;
+
 	//Ahora el marco es de su pagina
 	marco = buscar_marco_segun_id((*pagina)->marco);
 	marco->id_proceso=pid;
+	(*pagina)->marco=marco->id;
 	marco->ocupado=true;
 	fread(marco->datos,sizeof(char),256,arch);
-	// ----Finalizo----
 
+	// ----Finalizo----
 	remove(path);
 	free(path);
 
