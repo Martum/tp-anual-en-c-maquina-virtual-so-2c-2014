@@ -6,14 +6,14 @@
  */
 
 #include "ansisop.h"
+#include "configuraciones.h"
 
 t_registros_cpu registros;
 t_hilo tcb_actual;
 
 void empezar_ansisop()
 {
-	inicializar_panel(CPU,
-		"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/panel/");
+	inicializar_panel(CPU, );
 }
 
 void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
