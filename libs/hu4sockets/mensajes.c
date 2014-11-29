@@ -170,24 +170,23 @@ char* serializar_pedido_con_resultado_t(
 
 pedido_con_resultado_t* deserializar_pedido_con_resultado_t(char* chorro)
 {
-	pedido_con_resultado_t* pedido_con_resultado = malloc(
-		sizeof(pedido_con_resultado_t));
+	pedido_con_resultado_t* pedido_con_resultado = malloc(sizeof(pedido_con_resultado_t));
 
 	uint32_t offset = 0;
 	memcpy(&pedido_con_resultado->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
-	memcpy(&pedido_con_resultado->informacion, chorro + offset,
-		sizeof(int32_t));
+	memcpy(&pedido_con_resultado->informacion, chorro + offset, sizeof(int32_t));
 
 	offset += sizeof(int32_t);
-	memcpy(&pedido_con_resultado->resultado, chorro + offset,
-		sizeof(resultado_t));
+	memcpy(&pedido_con_resultado->resultado, chorro + offset, sizeof(resultado_t));
 
 	offset += sizeof(resultado_t);
 	pedido_con_resultado->tcb = malloc(sizeof(tcb_t));
-	memcpy(pedido_con_resultado->tcb, deserializar_tcb(chorro + offset),
-		sizeof(tcb_t));
+	tcb_t* tcb = deserializar_tcb(chorro + offset);
+	memcpy(pedido_con_resultado->tcb, tcb, sizeof(tcb_t));
+
+	free(tcb);
 
 	return pedido_con_resultado;
 }

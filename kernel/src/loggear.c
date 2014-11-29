@@ -118,4 +118,8 @@ void loggear_estado_de_hilos()
 	hilos(lista_t_hilos);
 
 	list_clean_and_destroy_elements(lista_t_hilos, free);
+
+	list_destroy(lista_t_hilos);
+
+	list_destroy(lista_tcbs);
 }
