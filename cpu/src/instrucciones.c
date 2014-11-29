@@ -746,6 +746,8 @@ resultado_t take(tcb_t* tcb)
 
 	memcpy(&valor_a_popeado, bytes, 4);
 
+	loggear_trace("Numero: %d", valor_a_popeado);
+
 	if (actualizar_valor_del_registro(tcb, registro, valor_a_popeado)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
