@@ -145,6 +145,7 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
+		ubico_al_principio(pagina);
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
@@ -216,7 +217,7 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		int mas_paginas = 1;
 		marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
-
+		ubico_al_principio(pagina);
 		uint32_t cantidad_escrito_acumulada = 0;
 		while((tamanio!=0)&&(mas_paginas))
 		{
