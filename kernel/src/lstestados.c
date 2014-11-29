@@ -175,10 +175,14 @@ tcb_t* quitar_de_exec(tcb_t* tcb) {
 	ejecutando_t* ejecutando = list_remove_by_condition(EXEC_COLA, _igual_pid_tid );
 	desbloquear_exec();
 
-	tcb_t* tcb_salida = ejecutando->tcb;
-	free(ejecutando);
+	if(ejecutando != NULL)
+	{
+		tcb_t* tcb_salida = ejecutando->tcb;
+		free(ejecutando);
+		return tcb_salida;
+	}
 
-	return tcb_salida;
+	return NULL;
 
 	//list_remove_and_destroy_by_condition(EXEC, _igual_pid_tid, destruir_ejecutando);
 }
@@ -356,7 +360,9 @@ void eliminar_conclusion_tcb_sin_quitar_de_exec()
 
 void eliminar_conclusion_tcb()
 {
-	free(get_conclusion_km_t());
+	if(get_conclusion_km_t() != NULL)
+		free(get_conclusion_km_t());
+
 	list_remove(BLOCK_CONCLUSION_KM, 0);
 
 	// Eliminamos el TCB KM de EXEC
