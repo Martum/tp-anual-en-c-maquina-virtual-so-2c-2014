@@ -88,7 +88,6 @@ uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 	pagina_t* pag = list_get(paginas_con_marco,list_size(paginas_con_marco)-1);
 	uint32_t resultado = pag->marco;
 
-	//TODO Checkear que esto no se borra con el free
 	*id_pagina_a_swappear=pag->id;
 
 	free(paginas_con_marco);

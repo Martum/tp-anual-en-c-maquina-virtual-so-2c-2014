@@ -26,7 +26,7 @@ marco_t* liberar_un_marco();
 //que lo contiene para liberarlo. Tambien devuelve el PID y el id_segmento de esa pagina
 uint32_t realizar_algoritmo_swapping(uint16_t * id_pagina_swap);
 
-void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint16_t id_pag_swap, uint32_t pid);
+void obtener_segmento_y_pagina(pagina_t* * pagina_swap,segmento_t* * segmento_contenedor, uint32_t id_marco_swap, uint32_t pid);
 
 // Mueve una pagina a disco
 void mover_a_disco(pagina_t* * pagina, uint32_t pid,uint16_t id_segmento);

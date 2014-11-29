@@ -1,12 +1,25 @@
+# Instala todo (incluido el ansisop)
+instalar: ansisop-instalar instalar-sin-ansisop
+
+# Instala solo nuestros programas
+instalar-sin-ansisop: hu4sockets-instalar kernel-instalar msp-instalar consola-instalar cpu-instalar
+
+desinstalar:  ansisop-desinstalar desinstalar-sin-ansisop
+
+desinstalar-sin-ansisop: kernel-desinstalar msp-desinstalar consola-desinstalar cpu-desinstalar hu4sockets-desinstalar
+
+
+
+
 kernel-instalar:
 	cd kernel/src && make instalar
 kernel-desinstalar:
 	cd kernel/src && make desinstalar
 
 
-memoria-instalar:
+msp-instalar:
 	cd msp/src && make instalar
-memoria-desinstalar:
+msp-desinstalar:
 	cd msp/src && make desinstalar
 
 

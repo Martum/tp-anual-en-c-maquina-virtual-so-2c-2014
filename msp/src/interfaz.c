@@ -139,7 +139,6 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 	int32_t tam_datos = 0;
 	if(hay_error)
 	{
-
 		*(resultado) = SEGMENTATION_FAULT;
 	}
 	else
@@ -189,16 +188,12 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 				pagina = pagina_siguiente;
 			}
 		}
-
-
 	}
-
 	return datos;
 }
 
 void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_escribir, uint32_t tamanio, resultado_t *resultado)
 {
-
 	//Estan inicializados con verdura para que no tire warnings
 	//En la siguiente funcion se le asignas los valores correctos
 	proceso_msp_t* proceso=NULL;
@@ -212,7 +207,6 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 	bool memoria_invalida = descomposicion_direccion_logica(direccion_logica,pid,&proceso,&segmento,&pagina,&desplazamiento);
 
 	bool hay_error = memoria_invalida || excede_limite_segmento(proceso, segmento, pagina, desplazamiento, tamanio);
-
 
 	if(hay_error)
 	{

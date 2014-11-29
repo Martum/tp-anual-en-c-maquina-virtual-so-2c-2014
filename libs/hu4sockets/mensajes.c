@@ -57,7 +57,7 @@ uint32_t tamanio_pedido_t_serializado()
 
 char* serializar_respuesta_t(respuesta_t* rta)
 {
-	char* bytes = malloc(tamanio_pedido_t_serializado());
+	char* bytes = malloc(tamanio_respuesta_t_serializado());
 
 	uint32_t offset = 0;
 	memcpy(bytes + offset, &rta->flag, sizeof(flag_t));
@@ -70,7 +70,7 @@ char* serializar_respuesta_t(respuesta_t* rta)
 
 respuesta_t* deserializar_respuesta_t(char* chorro)
 {
-	respuesta_t* rta = malloc(sizeof(pedido_t));
+	respuesta_t* rta = malloc(sizeof(respuesta_t));
 
 	uint32_t offset = 0;
 	memcpy(&rta->flag, chorro + offset, sizeof(flag_t));
