@@ -152,9 +152,9 @@ void agregar_a_exec(tcb_t* tcb, uint32_t cpu_id) {
 	desbloquear_exec();
 }
 
-void agregar_a_exit_cola(tcb_t* tcb) {
+/*void agregar_a_exit_cola(tcb_t* tcb) {
 	list_add(EXIT_COLA, tcb);
-}
+}*/
 
 void destruir_ejecutando(void* elemento)
 {
@@ -612,6 +612,7 @@ void eliminar_tcbs_en_exit(uint32_t pid)
 	destruir_segmento(pid, direccion_codigo);
 
 	list_destroy(et->lista_tcbs);
+	et->lista_tcbs = NULL;
 }
 
 void remover_de_exec_a_exit(uint32_t pid)
@@ -763,7 +764,7 @@ t_list* get_todos_los_tcbs_exit()
 	{
 		exit_t* ext = elemento;
 
-		if(ext != NULL && ext->lista_tcbs != NULL)
+		if(ext != NULL && ext->lista_tcbs != NULL && !list_is_empty(ext->lista_tcbs))
 			list_iterate(ext->lista_tcbs, _agregar);
 	}
 
@@ -800,7 +801,7 @@ t_list* get_todos_los_tcbs()
 
 	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_block_recurso());
 
-	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_exit());
+	unificar_listas_y_eliminar(lista_principal, get_todos_los_tcbs_exit());	// TODO: f
 
 	return lista_principal;
 }
