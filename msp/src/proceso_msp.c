@@ -96,13 +96,13 @@ void _destruye_pagina(pagina_t *pagina) {
 		return true;
 	}
 
+	// tengo que actualizar el id_en_indice de todas las otras paginas del sistema
+	actualizo_id_en_indice(pagina->id_en_indice);
+
 	// saco a la pagina de la lista indice de paginas
 	//lock_lista_indice_paginas();
 	list_remove_and_destroy_element(get_indice_paginas(),pagina->id_en_indice,(void*)_destruye_pagina_de_indice);
 	//unlock_lista_indice_paginas();
-
-	// tengo que actualizar el id_en_indice de todas las otras paginas del sistema
-	actualizo_id_en_indice(pagina->id_en_indice);
 }
 
 void _destruye_pagina_de_indice(pagina_t *pag) {
