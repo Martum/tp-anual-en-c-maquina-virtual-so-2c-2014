@@ -60,6 +60,4 @@ uint32_t puerto_msp();
  */
 uint32_t retardo();
 
-char* ruta_logeo();
-
 #endif /* CONFIGURACIONES_H_ */

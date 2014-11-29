@@ -48,11 +48,6 @@ char* ip_msp()
 	return config_get_string_value(configs_cpu, "IP_MSP");
 }
 
-char* ruta_logeo()
-{
-	return config_get_string_value(configs_cpu, "RUTA_LOGEO");
-}
-
 uint32_t puerto_kernel()
 {
 	return config_get_int_value(configs_cpu, "PUERTO_KERNEL");
