@@ -1,0 +1,3 @@
+#!/bin/bash
+
+(chmod +x setear-variables && ./setear-variables && cd msp/src && ./msp)
