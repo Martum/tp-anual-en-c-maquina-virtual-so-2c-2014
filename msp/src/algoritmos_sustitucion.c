@@ -43,7 +43,7 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 		pag = list_get(paginas_con_marco, puntero_clock);
 		if(pag->bit_referencia == 1){
 			pag->bit_referencia = 0;
-			list_replace(paginas_con_marco, puntero_clock, pag);
+		//	list_replace(paginas_con_marco, puntero_clock, pag);
 		}else{
 			retorno = pag->marco;
 			encontro = true;
@@ -58,7 +58,7 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 			pag = list_get(paginas_con_marco, puntero_clock);
 			if(pag->bit_referencia == 1){
 				pag->bit_referencia = 0;
-				list_replace(paginas_con_marco,puntero_clock,pag);
+		//		list_replace(paginas_con_marco,puntero_clock,pag);
 			}else{
 				retorno = pag->marco;
 			}
@@ -70,7 +70,6 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	*id_pagina_a_swappear = pag->id;
 
 	free(paginas_con_marco);
-	//free(pag);
 
 	return retorno;
 }
@@ -89,11 +88,9 @@ uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 	pagina_t* pag = list_get(paginas_con_marco,list_size(paginas_con_marco)-1);
 	uint32_t resultado = pag->marco;
 
-
 	//TODO Checkear que esto no se borra con el free
 	*id_pagina_a_swappear=pag->id;
 
-	//free(pag);
 	free(paginas_con_marco);
 
 	return resultado;

@@ -69,6 +69,10 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		return proceso->pid==pid;
 	}
 
+	void _destruyo_proc(proceso_msp_t* proceso){
+		free(proceso);
+	}
+
 	void _destruyo_proceso(proceso_msp_t* proceso, direccion base, bool* ok)
 	{
 		int i;
@@ -80,7 +84,8 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		(*ok) = quitar_segmento(proceso, base);
 		list_destroy(proceso->segmentos);
 		liberar_marcos_proceso(proceso->pid);
-		free(proceso);
+
+		list_remove_and_destroy_by_condition(get_lista_procesos(), (void*) _es_proceso, (void*) _destruyo_proc);
 	}
 
 	bool ok;
@@ -91,7 +96,8 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 
 		if(list_size(proceso->segmentos)==1)
 		{
-			proceso_msp_t* proc = list_get(get_lista_procesos(),(proceso->pid)-1);
+			proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
+			//proceso_msp_t* proc = list_get(get_lista_procesos(),(proceso->pid)-1);
 			_destruyo_proceso(proc, base, &ok);
 		}
 		else
@@ -145,7 +151,11 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
-		ubico_al_principio(pagina);
+
+		if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
+			ubico_al_principio(pagina);
+		}
+
 		while((tamanio!=0)&&(mas_paginas))
 		{
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
@@ -217,7 +227,11 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		int mas_paginas = 1;
 		marco = buscar_marco_segun_id(pagina->marco);
 		set_bit_referencia(pagina);
-		ubico_al_principio(pagina);
+
+		if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
+			ubico_al_principio(pagina);
+		}
+
 		uint32_t cantidad_escrito_acumulada = 0;
 		while((tamanio!=0)&&(mas_paginas))
 		{
