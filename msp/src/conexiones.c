@@ -83,24 +83,32 @@ void* _atiendo_hilo_conexion(void* conexion){
 		recibir(conexion, &msg, &len);
 		flag_t codop = codigo_operacion(msg);
 
-		lock_mutex_pedido_msp();
+
 
 		switch(codop){
 
 		case CREA_UN_SEGMENTO:
+			lock_mutex_pedido_msp();
 			_atiendo_crear_segmento(conexion,msg);
+			unlock_mutex_pedido_msp();
 			break;
 
 		case DESTRUI_SEGMENTO:
+			lock_mutex_pedido_msp();
 			_atiendo_destruir_segmento(conexion, msg);
+			unlock_mutex_pedido_msp();
 			break;
 
 		case LEE_DE_MEMORIA:
+			lock_mutex_pedido_msp();
 			_atiendo_leer_memoria(conexion, msg);
+			unlock_mutex_pedido_msp();
 			break;
 
 		case ESCRIBI_EN_MEMORIA:
+			lock_mutex_pedido_msp();
 			_atiendo_escribir_memoria(conexion, msg);
+			unlock_mutex_pedido_msp();
 			break;
 
 		case DESCONEXION_CPU:
@@ -111,7 +119,7 @@ void* _atiendo_hilo_conexion(void* conexion){
 		default:
 			break;
 		}
-		unlock_mutex_pedido_msp();
+
 	}
 }
 

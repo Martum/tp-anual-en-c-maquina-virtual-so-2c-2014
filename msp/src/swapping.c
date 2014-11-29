@@ -109,21 +109,14 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
-	FILE* arch = fopen(path, "a");
+	FILE* arch = fopen(path, "w");
 	free(path);
 
 	marco_t* marco= buscar_marco_segun_id((*pagina)->marco);
 	//Preparo el string que voy a escribir
 
-	char* string_a_escribir=marco->datos;
-
 	//Escribo en el archivo
-	int i;
-	for(i=0; i<256; i++){
-		char caracter = *(string_a_escribir+i);
-		fprintf(arch, "%c", caracter);
-	}
-	fflush(arch);
+	fwrite(marco->datos, sizeof(char), 256, arch);
 
 	(*pagina)->en_disco=true;
 	(*pagina)->tiene_marco=false;
