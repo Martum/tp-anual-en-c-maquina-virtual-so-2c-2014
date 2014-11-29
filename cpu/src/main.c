@@ -85,10 +85,6 @@ int32_t main(int32_t argc, char** argv)
 		while ((quantum > 0 || tcb.km) && resultado == OK)
 		{
 			loggear_debug("Ejecuto instruccion nueva instruccion [Quantum: %d, Modo kernel: %d]", quantum, tcb.km);
-//			ELIMINAR logeo en main
-//			loggear_trace("Me preparo para ejecutar otra instruccion.");
-//			loggear_trace("Quantum restante %d", quantum);
-//			loggear_trace("Modo kernel %d", tcb.km);
 
 			usleep(retardo() * 1000);
 

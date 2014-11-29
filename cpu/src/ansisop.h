@@ -35,7 +35,11 @@ void ansisop_cambio_registro_b(int32_t nuevo_valor);
 void ansisop_cambio_registro_c(int32_t nuevo_valor);
 void ansisop_cambio_registro_d(int32_t nuevo_valor);
 void ansisop_cambio_registro_e(int32_t nuevo_valor);
+void ansisop_cambio_registro_m(direccion nuevo_valor);
 void ansisop_cambio_registro_pc(direccion nuevo_valor);
+void ansisop_cambio_registro_x(direccion nuevo_valor);
 void ansisop_cambio_registro_cursor(direccion nuevo_valor);
+void ansisop_cambio_registro_i(uint32_t nuevo_valor);
+void ansisop_cambio_registro_k(bool nuevo_valor);
 
 #endif /* ANSISOP_H_ */
