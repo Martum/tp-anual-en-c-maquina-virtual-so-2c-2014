@@ -13,14 +13,14 @@ t_hilo tcb_actual;
 void empezar_ansisop()
 {
 	inicializar_panel(CPU,
-		"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/panel");
+		"/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/panel/");
 }
 
 void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
 {
 	tcb_actual.pid = tcb.pid;
 	tcb_actual.tid = tcb.tid;
-	tcb_actual.kernel_mode = !tcb.km;
+	tcb_actual.kernel_mode = tcb.km;
 	tcb_actual.base_stack = tcb.base_stack;
 	tcb_actual.cursor_stack = tcb.cursor_stack;
 	tcb_actual.segmento_codigo = tcb.base_codigo;
@@ -67,7 +67,6 @@ void ansisop_ejecucion_instruccion4(instruccion_t instruccion,
 {
 	t_list* parametros = list_create();
 	char* numero = string_itoa(param_numero);
-	list_add(parametros, numero);
 	char* registro1 = malloc(sizeof(char) + 1);
 	*(registro1) = param_registro1;
 	*(registro1 + 1) = '\0';

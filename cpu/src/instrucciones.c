@@ -111,7 +111,8 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
 resultado_t setm(tcb_t* tcb)
 {
 	char registro1, registro2;
-	direccion hacia, desde;
+//	direccion hacia, desde;
+	direccion hacia;
 	int32_t valor_del_registro_1, valor_del_registro_2;
 	int32_t cantidad_de_bytes_a_copiar;
 
@@ -136,9 +137,17 @@ resultado_t setm(tcb_t* tcb)
 		return ERROR_EN_EJECUCION;
 
 	hacia = valor_del_registro_1;
-	desde = valor_del_registro_2;
+//	desde = valor_del_registro_2;
 
-	return _copiar_valores(cantidad_de_bytes_a_copiar, hacia, desde, tcb);
+	char* b = malloc(sizeof(char) * cantidad_de_bytes_a_copiar);
+	memcpy(b, &valor_del_registro_2, cantidad_de_bytes_a_copiar);
+
+	escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes_a_copiar, b);
+
+	free(b);
+
+	return OK;
+//	return _copiar_valores(cantidad_de_bytes_a_copiar, hacia, desde, tcb);
 }
 
 /*
@@ -1013,61 +1022,6 @@ resultado_t outc(tcb_t* tcb)
 		cantidad_de_bytes_de_la_cadena);
 }
 
-// ELIMINAR crear stack (ya no hace falta)
-///*
-// * 	@DESC:	Crea un stack para el nuevo_tcb y se lo asigna
-// */
-//resultado_t _crear_stack(tcb_t* tcb)
-//{
-//	uint32_t tamano_stack;
-//
-//	pedir_al_kernel_tamanio_stack(&tamano_stack);
-//
-//	direccion nueva_base_stack;
-//
-//	if (crear_segmento(tcb->pid, tamano_stack, &nueva_base_stack)
-//		== FALLO_CREACION_DE_SEGMENTO)
-//		return ERROR_EN_EJECUCION;
-//
-//	actualizar_base_del_stack(tcb, nueva_base_stack);
-//
-//	return OK;
-//}
-
-// ELIMINAR clonar stack (ya no hace falta)
-///*
-// * 	@DESC:	Copia todos los valores del stack del tcb al nuevo_tcb, actualizado los punteros.
-// */
-//resultado_t _clonar_stack(tcb_t* nuevo_tcb, tcb_t* tcb)
-//{
-//	uint32_t ocupacion_stack = obtener_ocupacion_stack(tcb);
-//
-//	char* buffer = malloc(ocupacion_stack);
-//
-//	if (leer_de_memoria(tcb->pid, tcb->base_stack, ocupacion_stack, buffer)
-//		== FALLO_LECTURA_DE_MEMORIA)
-//	{
-//		free(buffer);
-//		return ERROR_EN_EJECUCION;
-//	}
-//
-//	if (escribir_en_memoria(nuevo_tcb->pid, nuevo_tcb->base_stack,
-//		ocupacion_stack, buffer) == FALLO_ESCRITURA_EN_MEMORIA)
-//	{
-//		free(buffer);
-//		return ERROR_EN_EJECUCION;
-//	}
-//
-//	free(buffer);
-//
-//	if (mover_cursor_stack(tcb, ocupacion_stack)
-//		== EXCEPCION_POR_POSICION_DE_STACK_INVALIDA)
-//		return ERROR_EN_EJECUCION;
-//
-//	return OK;
-//}
-
-// ELIMINAR codigo innecesario de crea (ya no hace falta)
 /*
  * 	CREA
  *
@@ -1097,27 +1051,6 @@ resultado_t crea(tcb_t* tcb)
 	}
 
 	uint32_t nuevo_tid;
-
-//	if (_obtener_nuevo_tid(tcb, &nuevo_tid) == ERROR_EN_EJECUCION)
-//		return ERROR_EN_EJECUCION;
-
-//	tcb_t* nuevo_tcb = crear_tcb();
-
-//	clonar_tcb(nuevo_tcb, tcb);
-
-//	direccion nuevo_pc = obtener_valor_registro_b(tcb);
-//
-//	actualizar_pc(nuevo_tcb, nuevo_pc);
-//	actualizar_tid(nuevo_tcb, nuevo_tid);
-//	actualizar_km(nuevo_tcb, false);
-
-//	actualizar_registro_a(tcb, nuevo_tid);
-
-//	if (_crear_stack(nuevo_tcb) == ERROR_EN_EJECUCION)
-//		return ERROR_EN_EJECUCION;
-
-//	if (_clonar_stack(nuevo_tcb, tcb) == ERROR_EN_EJECUCION)
-//		return ERROR_EN_EJECUCION;
 
 	if (comunicar_nuevo_tcb(tcb, &nuevo_tid) != OK)
 	{
