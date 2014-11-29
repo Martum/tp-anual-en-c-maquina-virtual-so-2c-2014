@@ -13,7 +13,6 @@
 *.so
 *.so.*
 *.dylib
-*.d
 
 # Executables
 *.exe

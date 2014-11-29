@@ -763,7 +763,7 @@ t_list* get_todos_los_tcbs_exit()
 	{
 		exit_t* ext = elemento;
 
-		if(ext->lista_tcbs != NULL)
+		if(ext != NULL && ext->lista_tcbs != NULL)
 			list_iterate(ext->lista_tcbs, _agregar);
 	}
 
