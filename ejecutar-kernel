@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DIRECTORIO=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIRECTORIO/libs/hu4sockets
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIRECTORIO/libs/ansisop-panel/Release
+
+(cd kernel/src && ./kernel)
