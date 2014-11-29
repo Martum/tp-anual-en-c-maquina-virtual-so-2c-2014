@@ -1,9 +1,14 @@
 #ifndef PANEL_H_
 #define PANEL_H_
 
+	#include <stdio.h>
+	#include <stdlib.h>
 	#include <stdint.h>
 	#include <stdbool.h>
-	#include "collections/list.h"
+	#include <string.h>
+	#include "commons/collections/list.h"
+	#include "commons/string.h"
+	#include "commons/log.h"
 
 	typedef enum { KERNEL, CPU } t_tipo_proceso;
 	typedef enum { NEW, READY, EXEC, BLOCK, EXIT } t_cola;
@@ -20,6 +25,8 @@
 		int32_t registros[5];
 		t_cola cola;
 	} t_hilo;
+
+	t_log* log;
 
 	/*
 	 * Las funciones declaradas en los headers panel.h, cpu.h,

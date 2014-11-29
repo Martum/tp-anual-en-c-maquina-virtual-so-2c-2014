@@ -6,14 +6,14 @@ LDFLAGS = -shared # linking flags
 RM = rm -f # rm command
 TARGET_LIB = libtarget.so # target lib
  
-SRCS = main.c src1.c src2.c # source files
+SRCS = mensajes.c resultados.c sockets.c tcb.c # source files
 OBJS = $(SRCS:.c=.o)
  
  .PHONY: instalar
 instalar: ${TARGET_LIB}
  
 $(TARGET_LIB): $(OBJS)
-	$(CC) ${LDFLAGS} -o $@ $^
+	$(CC) ${LDFLAGS} -o libhu4sockets $^
  
 $(SRCS:.c=.d):%.d:%.c
 	$(CC) $(CFLAGS) -MM $< >$@

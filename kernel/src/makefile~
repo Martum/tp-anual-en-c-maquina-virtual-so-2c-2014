@@ -1,0 +1,16 @@
+-include ../../fuentes.mk
+
+CC := gcc
+
+ARCHIVOS := conexiones.o configuraciones.o consola.o cpu.o kernel.o loader.o loggear.o lstestados.o memoria.o planificador.o syscalls.o
+NOMBREFINAL := kernel
+LIBRERIAS := -lcommons -lpthread -lhu4sockets -lansisop-panel
+
+instalar: $(ARCHIVOS)
+	$(CC) -o $(NOMBREFINAL) $(ARCHIVOS) -I$(LIBH4S) -I$(LIBCOMM) -I$(LIBAS) -L$(LIBH4SEXEC) -L$(LIBCOMMEXEC) -L$(LIBASEXEC) $(LIBRERIAS)
+
+%.o:%.c
+	$(CC) -c "$<" -I$(LIBH4S) -I$(LIBCOMM) -o "$@" $(LIBRERIAS)
+
+desinstalar:
+	rm -rf $(NOMBREFINAL) $(ARCHIVOS)

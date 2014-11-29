@@ -1,27 +1,35 @@
 kernel-instalar:
-	cd kernel && make instalar
+	cd kernel/src && make instalar
 kernel-desinstalar:
-	cd kernel && make desinstalar
+	cd kernel/src && make desinstalar
 
 
 memoria-instalar:
-	cd msp && make instalar
+	cd msp/src && make instalar
 memoria-desinstalar:
-	cd msp && make desinstalar
+	cd msp/src && make desinstalar
 
 
 consola-instalar:
-	cd consola && make instalar
+	cd consola/src && make instalar
 consola-desinstalar:
-	cd consola && make desinstalar
+	cd consola/src && make desinstalar
 
 
 cpu-instalar:
-	cd cpu && make instalar
+	cd cpu/src && make instalar
 cpu-desinstalar:
-	cd cpu && make desinstalar
+	cd cpu/src && make desinstalar
+
+
 
 hu4sockets-instalar:
 	cd libs/hu4sockets && make instalar
 hu4sockets-desinstalar:
 	cd libs/hu4sockets && make desinstalar
+
+
+ansisop-instalar:
+	cd libs/ansisop-panel/Release && make all
+ansisop-desinstalar:
+	cd libs/ansisop-panel/Release && make clean

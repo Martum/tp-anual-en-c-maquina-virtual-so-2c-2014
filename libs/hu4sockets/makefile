@@ -4,7 +4,7 @@ CC = gcc # C compiler
 CFLAGS = -fPIC -Wall -Wextra -O2 -g # C flags
 LDFLAGS = -shared # linking flags
 RM = rm -f # rm command
-TARGET_LIB = libtarget.so # target lib
+TARGET_LIB = libhu4sockets.so # target lib
  
 SRCS = mensajes.c resultados.c sockets.c tcb.c # source files
 OBJS = $(SRCS:.c=.o)
