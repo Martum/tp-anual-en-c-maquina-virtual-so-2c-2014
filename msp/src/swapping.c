@@ -115,7 +115,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 	//crea un archivo y lo guarda en una carpeta interna.
 	//el nombre se compone de pid, idsegmento y id pagina
-	FILE* arch = txt_open_for_append(path);
+	FILE* arch = fopen(path, "a");
 	free(path);
 
 	marco_t* marco= buscar_marco_segun_id((*pagina)->marco);
@@ -125,13 +125,20 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 
 
 	//Escribo en el archivo
-	txt_write_in_file(arch, string_a_escribir);
+	int i;
+	for(i=0; i<256; i++){
+		char caracter = *(string_a_escribir+i);
+		fprintf(arch, "%c", caracter);
+	}
+	fflush(arch);
+//	txt_write_in_file(arch, string_a_escribir);
 
 	(*pagina)->en_disco=true;
 
 	(*pagina)->tiene_marco=false;
 
-	txt_close_file(arch);
+	fclose(arch);
+//	txt_close_file(arch);
 
 	aumento_cantidad_archivos_swap();
 
@@ -174,7 +181,7 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 	marco = buscar_marco_segun_id((*pagina)->marco);
 	marco->id_proceso=pid;
 	marco->ocupado=true;
-	fgets(marco->datos,256,arch);
+	fread(marco->datos,sizeof(char),256,arch);
 	// ----Finalizo----
 
 	remove(path);

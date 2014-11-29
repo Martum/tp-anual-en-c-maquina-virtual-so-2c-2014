@@ -93,7 +93,7 @@ uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
 	//TODO Checkear que esto no se borra con el free
 	*id_pagina_a_swappear=pag->id;
 
-	free(pag);
+	//free(pag);
 	free(paginas_con_marco);
 
 	return resultado;
