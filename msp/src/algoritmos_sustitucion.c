@@ -24,7 +24,7 @@ void setear_puntero_clock(){
 }
 
 uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
-	uint32_t retorno=-1;
+	int32_t retorno=-1;
 	bool encontro = false;
 
 	// filtro a las paginas segun las que tienen marco
@@ -43,12 +43,11 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 		pag = list_get(paginas_con_marco, puntero_clock);
 		if(pag->bit_referencia == 1){
 			pag->bit_referencia = 0;
-		//	list_replace(paginas_con_marco, puntero_clock, pag);
+			puntero_clock++;
 		}else{
 			retorno = pag->marco;
 			encontro = true;
 		}
-		puntero_clock++;
 	}
 
 	if(!encontro){
@@ -58,11 +57,10 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 			pag = list_get(paginas_con_marco, puntero_clock);
 			if(pag->bit_referencia == 1){
 				pag->bit_referencia = 0;
-		//		list_replace(paginas_con_marco,puntero_clock,pag);
+				puntero_clock++;
 			}else{
 				retorno = pag->marco;
 			}
-			puntero_clock++;
 		}
 	}
 
@@ -71,7 +69,7 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 
 	free(paginas_con_marco);
 
-	return retorno;
+	return (uint32_t)retorno;
 }
 
 uint32_t algoritmo_lru(uint16_t * id_pagina_a_swappear){
