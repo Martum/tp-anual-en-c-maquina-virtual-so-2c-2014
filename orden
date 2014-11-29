@@ -1,0 +1,9 @@
+- Instalar commons
+- Instalar ansisop-panel
+- Instalar hu4sockets
+- Instalar el programa deseado
+
+
+
+En el ejecutable poner:
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/libs/hu4sockets

@@ -3,6 +3,9 @@
 
 	#include "panel.h"
 
+	t_list* kernel_cpus_conectadas;
+	t_list* kernel_consolas_conectadas;
+
 	/**
 	* Debe invocarse tras conectarse una CPU.
 	*

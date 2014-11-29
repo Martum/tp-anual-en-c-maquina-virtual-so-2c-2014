@@ -1,5 +1,13 @@
 DIR_INICIO := $(shell cd ../.. && pwd)
-LIBAS := $(DIR_INICIO)/
+
+# ANSISOP-PANEL
+LIBAS := $(DIR_INICIO)/libs
+LIBASEXEC := $(DIR_INICIO)/libs/ansisop-panel/Release
+
+# COMMONS
 LIBCOMM := $(DIR_INICIO)/
-LIBS := $(DIR_INICIO)/libs
-LIBH4S := $(DIR_INICIO)/libs/hu4sockets
+LIBCOMMEXEC := $(DIR_INICIO)/
+
+# HU4SOCKETS
+LIBH4S := $(DIR_INICIO)/libs
+LIBH4SEXEC := $(LIBH4S)/hu4sockets

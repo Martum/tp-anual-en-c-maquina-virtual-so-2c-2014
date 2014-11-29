@@ -2,11 +2,14 @@
 
 CC := gcc
 
-instalar: configuraciones.o consola.o
-	$(CC) -o consola consola.o configuraciones.o -I$(LIBS) -I$(LIBCOMM) -L$(LIBH4S) -L$(LIBCOMM) -lcommons -lpthread -lhu4sockets
+ARCHIVOS := configuraciones.o consola.o
+NOMBREFINAL := consola
+
+instalar: $(ARCHIVOS)
+	$(CC) -o $(NOMBREFINAL) $(ARCHIVOS) -I$(LIBH4S) -I$(LIBCOMM) -L$(LIBH4SEXEC) -L$(LIBCOMMEXEC) -lcommons -lpthread -lhu4sockets
 
 %.o:%.c
-	$(CC) -c "$<" -I$(LIBS) -I$(LIBCOMM) -o "$@" -lcommons -lpthread -lhu4sockets
+	$(CC) -c "$<" -I$(LIBH4S) -I$(LIBCOMM) -o "$@" -lcommons -lpthread -lhu4sockets
 
 desinstalar:
-	rm -rf consola configuraciones.o consola.o
+	rm -rf $(NOMBREFINAL) $(ARCHIVOS)
