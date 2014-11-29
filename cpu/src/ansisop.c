@@ -34,10 +34,16 @@ void ansisop_fin_tcb()
 	fin_ejecucion();
 }
 
+void liberar(void* a)
+{
+	free(a);
+}
+
 void ansisop_ejecucion_instruccion1(instruccion_t instruccion)
 {
 	t_list* parametros = list_create();
 	ejecucion_instruccion(instruccion, parametros);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
@@ -51,6 +57,9 @@ void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
 	list_add(parametros, numero);
 	list_add(parametros, registro);
 	ejecucion_instruccion(instruccion, parametros);
+	free(registro);
+	free(numero);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void ansisop_ejecucion_instruccion3(instruccion_t instruccion,
@@ -60,13 +69,15 @@ void ansisop_ejecucion_instruccion3(instruccion_t instruccion,
 	char* numero = string_itoa(param_numero);
 	list_add(parametros, numero);
 	ejecucion_instruccion(instruccion, parametros);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void ansisop_ejecucion_instruccion4(instruccion_t instruccion,
 	int32_t param_numero, char param_registro1, char param_registro2)
 {
 	t_list* parametros = list_create();
-	char* numero = string_itoa(param_numero);
+	char* numero = malloc(sizeof(char) * 4);
+	numero = string_itoa(param_numero);
 	char* registro1 = malloc(sizeof(char) + 1);
 	*(registro1) = param_registro1;
 	*(registro1 + 1) = '\0';
@@ -77,6 +88,7 @@ void ansisop_ejecucion_instruccion4(instruccion_t instruccion,
 	list_add(parametros, registro1);
 	list_add(parametros, registro2);
 	ejecucion_instruccion(instruccion, parametros);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void ansisop_ejecucion_instruccion5(instruccion_t instruccion,
@@ -88,6 +100,8 @@ void ansisop_ejecucion_instruccion5(instruccion_t instruccion,
 	*(registro + 1) = '\0';
 	list_add(parametros, registro);
 	ejecucion_instruccion(instruccion, parametros);
+	free(registro);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void ansisop_ejecucion_instruccion6(instruccion_t instruccion,
@@ -103,6 +117,9 @@ void ansisop_ejecucion_instruccion6(instruccion_t instruccion,
 	list_add(parametros, registro1);
 	list_add(parametros, registro2);
 	ejecucion_instruccion(instruccion, parametros);
+	free(registro1);
+	free(registro2);
+	list_destroy_and_destroy_elements(parametros, &liberar);
 }
 
 void _actualizar_registro(int32_t registro, int32_t nuevo_valor)

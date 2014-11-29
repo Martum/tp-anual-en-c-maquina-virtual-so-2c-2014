@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <ansisop-panel/panel/panel.h>
 #include <ansisop-panel/panel/cpu.h>
