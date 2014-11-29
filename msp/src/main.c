@@ -32,8 +32,8 @@ int main(void){
 
 	// Creo el directorio en_disco si no existe, alli se guardaran los archivos swap
 	struct stat info;
-	if( stat("../en_disco", &info ) != 0 ){
-		mkdir("../en_disco",0777);
+	if( stat("en_disco", &info ) != 0 ){
+		mkdir("en_disco",0777);
 	}
 
 	empezar_loggeo();
