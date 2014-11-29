@@ -11,9 +11,9 @@ memoria-desinstalar:
 
 
 consola-instalar:
-	cd consola && make instalar
+	cd consola/src && make instalar
 consola-desinstalar:
-	cd consola && make desinstalar
+	cd consola/src && make desinstalar
 
 
 cpu-instalar:

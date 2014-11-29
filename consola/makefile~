@@ -1,0 +1,12 @@
+-include ../sources.mk
+
+CC := gcc
+
+instalar: configuraciones.c consola.c
+	$(CC) -o consola consola.o configuraciones.o -I$(LIBH4S) -I$(LIBCOMM) -L$(LIB1H4S) -L$(LIBCOMM) -lcommons -lpthread -lhu4sockets
+
+%.o:%.c
+	$(CC) -c "$<" -I$(LIBH4S) -I$(LIBCOMM) -o "$@"
+
+desinstalar:
+	rm -rf consola.out

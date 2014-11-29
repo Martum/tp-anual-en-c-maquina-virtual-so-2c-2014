@@ -1,0 +1,4 @@
+DIR_INICIO := $(shell cd ../.. && pwd)
+LIBAS := $(DIR_INICIO)/
+LIBCOMM := $(DIR_INICIO)/
+LIBH4S := $(DIR_INICIO)/libs
