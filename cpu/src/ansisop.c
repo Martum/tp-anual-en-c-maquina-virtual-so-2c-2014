@@ -13,7 +13,7 @@ t_hilo tcb_actual;
 
 void empezar_ansisop()
 {
-	inicializar_panel(CPU, ruta_logeo());
+	inicializar_panel(CPU, "/home/utnso/workspace/tp/cpu/");
 }
 
 void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
