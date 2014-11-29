@@ -294,9 +294,6 @@ resultado_t leer_de_memoria(direccion pid, direccion direccion,
 		return FALLO_LECTURA_DE_MEMORIA;
 	}
 
-//	ELIMINAR logeo en leer de memoria
-//	loggear_trace("Recibi respuesta por lectura de memoria");
-
 	respuesta_de_leer_de_memoria_t* respuesta =
 		deserializar_respuesta_de_leer_de_memoria_t(chorro_de_respuesta);
 
@@ -390,9 +387,6 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 		return FALLO_PEDIDO_DE_TCB;
 	}
 
-//	ELIMINAR logeo en pedir tcb
-//	loggear_trace("Recibi respuesta por pedido de TCB");
-
 	respuesta_de_nuevo_tcb_t* respuesta = deserializar_respuesta_de_nuevo_tcb_t(
 		chorro_de_respuesta);
 
@@ -407,10 +401,6 @@ resultado_t pedir_tcb(tcb_t* tcb, int32_t* quantum)
 	loggear_debug("Pedido de TCB satisfactorio [PID: %d, TID %d, Quantum %d]\n",
 		tcb->pid, tcb->tid, *quantum);
 
-//	ELIMINAR logeo en pedir tcb
-//	loggear_trace("PID TCB %d -- TID TCB %d", tcb->pid, tcb->tid);
-//	loggear_trace("Quantum %d", *quantum);
-
 	return OK;
 }
 
@@ -418,14 +408,12 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 {
 	if (res == EXCEPCION_POR_INTERRUPCION)
 	{
-		loggear_trace("Informo a kernel interrupcion");
-
 		loggear_trace("Busco direccion de interrupcion");
 
 		int32_t direccion;
 		leer_numero(&tcb, &direccion);
 
-		loggear_debug("Direccion de interrupcion %d", direccion);
+		ansisop_ejecucion_instruccion3("INTE", direccion);
 
 		pedido_interrupcion_t cuerpo_del_mensaje;
 		cuerpo_del_mensaje.flag = INTERRUPCION;
@@ -444,9 +432,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 			free(chorro_de_respuesta);
 			return FALLO_INFORME_A_KERNEL;
 		}
-
-//		ELIMINAR logeo en informe interrupcion
-//		loggear_trace("Recibi respuesta por informe de interrupcion");
 
 		resultado_t resultado = *chorro_de_respuesta;
 
@@ -477,9 +462,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		&cuerpo_del_mensaje);
 	char* chorro_de_respuesta = malloc(sizeof(resultado_t));
 
-//	ELIMINAR logeo en informar resultado
-//	loggear_trace("PID TCB %d -- TID TCB %d", tcb.pid, tcb.tid);
-//	loggear_trace("Resultado %d", res);
 
 	if (_enviar_y_recibir(kernel, chorro_de_envio,
 		tamanio_pedido_con_resultado_t_serializado(), chorro_de_respuesta)
@@ -489,9 +471,6 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		free(chorro_de_respuesta);
 		return FALLO_INFORME_A_KERNEL;
 	}
-
-//	ELIMINAR logeo en informar resultado
-//	loggear_trace("Recibi respuesta por informe de resultado");
 
 	resultado_t resultado = *chorro_de_respuesta;
 
@@ -517,9 +496,6 @@ resultado_t _obtener(tcb_t* tcb, char* buffer, uint32_t bytes_a_leer)
 	if (!tcb->km)
 		pid_a_leer = tcb->pid;
 
-//	ELIMINAR logeo en _obtener
-//	loggear_trace("Modo kernel %d", tcb->km);
-
 	if (leer_de_memoria(pid_a_leer, tcb->pc, bytes_a_leer, buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return FALLO_LECTURA_DE_MEMORIA;
@@ -539,8 +515,6 @@ resultado_t leer_proxima_instruccion(tcb_t* tcb, instruccion_t instruccion)
 	instruccion[4] = '\0';
 
 	loggear_debug("Lectura de instruccion satisfactoria: %s", instruccion);
-//	ELIMINAR logeo en leer proxima instruccion
-//	loggear_debug("Instruccion leida %s", instruccion);
 
 	return OK;
 }
@@ -553,8 +527,6 @@ resultado_t leer_registro(tcb_t* tcb, char* registro)
 		return FALLO_LECTURA_DE_MEMORIA;
 
 	loggear_debug("Lectura de registro satisfactoria: %c", *registro);
-//	ELIMINAR logeo en leer registro
-//	loggear_debug("Registro leido %c", *registro);
 
 	return OK;
 }
@@ -576,8 +548,6 @@ resultado_t leer_numero(tcb_t* tcb, int32_t* numero)
 	free(buffer);
 
 	loggear_debug("Lectura de numero satisfactoria: %d", *numero);
-//	ELIMINAR logeo en leer numero
-//	loggear_debug("Numero leido %d", *numero);
 
 	return OK;
 }

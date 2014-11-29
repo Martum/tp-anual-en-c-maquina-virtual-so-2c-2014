@@ -136,14 +136,38 @@ void ansisop_cambio_registro_e(int32_t nuevo_valor)
 	_actualizar_registro(4, nuevo_valor);
 }
 
+void ansisop_cambio_registro_m(direccion nuevo_valor)
+{
+	registros.M = nuevo_valor;
+	cambio_registros(registros);
+}
+
 void ansisop_cambio_registro_pc(direccion nuevo_valor)
 {
 	registros.P = nuevo_valor;
 	cambio_registros(registros);
 }
 
+void ansisop_cambio_registro_x(direccion nuevo_valor)
+{
+	registros.X = nuevo_valor;
+	cambio_registros(registros);
+}
+
 void ansisop_cambio_registro_cursor(direccion nuevo_valor)
 {
 	registros.S = nuevo_valor;
+	cambio_registros(registros);
+}
+
+void ansisop_cambio_registro_k(bool nuevo_valor)
+{
+	registros.K = nuevo_valor;
+	cambio_registros(registros);
+}
+
+void ansisop_cambio_registro_i(uint32_t nuevo_valor)
+{
+	registros.P = nuevo_valor;
 	cambio_registros(registros);
 }

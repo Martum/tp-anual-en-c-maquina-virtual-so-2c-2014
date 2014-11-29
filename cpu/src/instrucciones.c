@@ -1208,10 +1208,7 @@ resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
 	if (leer_proxima_instruccion(tcb, instruccion) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-//	ELIMINAR logeo en ejecutar siguiente intruccion
-//	loggear_trace("Busco instruccion %s en dic de instrucciones", instruccion);
 	funcion = dictionary_get(dic_instrucciones, instruccion);
-//	loggear_info("Ejecuto instruccion %s", instruccion);
 
 	return funcion(tcb);
 }

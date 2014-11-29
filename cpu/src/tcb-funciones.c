@@ -60,7 +60,7 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	{
 		loggear_debug("Actualizo el valor del registro M, %d -> %d",
 			tcb->base_codigo, numero);
-		ansisop_cambio_registro_e(numero);
+		ansisop_cambio_registro_m(numero);
 		tcb->base_codigo = numero;
 		return OK;
 	}
@@ -76,7 +76,7 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	{
 		loggear_debug("Actualizo el valor del registro X, %d -> %d",
 			tcb->base_stack, numero);
-		ansisop_cambio_registro_e(numero);
+		ansisop_cambio_registro_x(numero);
 		tcb->base_stack = numero;
 		return OK;
 	}
@@ -92,7 +92,7 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	{
 		loggear_debug("Actualizo el valor del registro K, %d -> %d", tcb->km,
 			numero);
-		ansisop_cambio_registro_e(numero);
+		ansisop_cambio_registro_k(numero);
 		tcb->km = numero;
 		return OK;
 	}
@@ -100,7 +100,7 @@ resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	{
 		loggear_debug("Actualizo el valor del registro I, %d -> %d", tcb->pid,
 			numero);
-		ansisop_cambio_registro_e(numero);
+		ansisop_cambio_registro_i(numero);
 		tcb->pid = numero;
 		return OK;
 	}
