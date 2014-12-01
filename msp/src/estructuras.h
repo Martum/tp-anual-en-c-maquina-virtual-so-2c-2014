@@ -20,8 +20,8 @@ typedef struct pagina {
 	bool en_disco;
 	uint32_t marco;
 	uint64_t id_en_indice;
-	int bit_referencia;
 	uint8_t max_modificable;
+	int bit_referencia;
 } pagina_t;
 
 typedef struct segmento {

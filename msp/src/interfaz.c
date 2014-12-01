@@ -148,14 +148,15 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 		int mas_paginas = true;
 
 		marco_t* marco = buscar_marco_segun_id(pagina->marco);
-		set_bit_referencia(pagina);
-
-		if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
-			ubico_al_principio(pagina);
-		}
 
 		while((tamanio!=0)&&(mas_paginas))
 		{
+			set_bit_referencia(pagina);
+
+			if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
+				ubico_al_principio(pagina);
+			}
+
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo.
 			char* txt= leer_marco(marco->datos, desplazamiento,&tamanio, &mas_paginas, (pagina->max_modificable));
 			//TODO Cambiar esta funcion katinga por la de las commons
@@ -219,15 +220,16 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 		//Sin razon aparente anda mal con el tipo bool, asique tiro int
 		int mas_paginas = 1;
 		marco = buscar_marco_segun_id(pagina->marco);
-		set_bit_referencia(pagina);
-
-		if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
-			ubico_al_principio(pagina);
-		}
 
 		uint32_t cantidad_escrito_acumulada = 0;
 		while((tamanio!=0)&&(mas_paginas))
 		{
+			set_bit_referencia(pagina);
+
+			if(string_equals_ignore_case(algoritmo_sustitucion_de_paginas(), "LRU")){
+				ubico_al_principio(pagina);
+			}
+
 			//Esta funcion va cambiando el TAMANIO asique nunca va a volver a ser el mismo
 			escribir_marco(&marco, desplazamiento,&tamanio, &bytes_a_escribir, &mas_paginas, (pagina->max_modificable), &cantidad_escrito_acumulada);
 
