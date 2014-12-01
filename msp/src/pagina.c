@@ -65,25 +65,25 @@ void asignar_marco(pagina_t* * pagina, segmento_t** segmento, uint32_t pid){
 
 	//Si no hay ningun marco libre, swappeo
 	//Si hay un marco libre, se lo asigno a la pagina
-	if(marco == NULL)
-	{
-		swap_in(pagina, (*segmento)->id, pid);
-	}
-	else
-	{
-		(*pagina)->marco=marco->id;
-		(*pagina)->tiene_marco= true;
-		marco->id_proceso = pid;
-		marco->ocupado= true;
+	if((*pagina)->en_disco){
+		swap_out(pid, (*segmento)->id, pagina);
+	}else{
+		if(marco == NULL){
+			swap_in(pagina, (*segmento)->id, pid);
+		}else{
+			(*pagina)->marco=marco->id;
+			(*pagina)->tiene_marco= true;
+			marco->id_proceso = pid;
+			marco->ocupado= true;
 
-		loggear_trace("Se asigno el marco %d a la pagina %d del segmento %d del proceso %d.",
-				marco->id, (*pagina)->id, (*segmento)->id, pid);
+			loggear_trace("Se asigno el marco %d a la pagina %d del segmento %d del proceso %d.",
+					marco->id, (*pagina)->id, (*segmento)->id, pid);
 
-		if(cantidad_marcos_libre() == 0){
-			loggear_info("Espacio de memoria principal lleno");
+			if(cantidad_marcos_libre() == 0){
+				loggear_info("Espacio de memoria principal lleno");
+			}
 		}
 	}
-
 }
 
 bool hay_siguiente_pagina(uint16_t id_pagina, t_list* lista_paginas, pagina_t* * encontro_pagina)
