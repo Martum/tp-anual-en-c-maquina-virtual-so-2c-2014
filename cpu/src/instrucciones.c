@@ -1216,5 +1216,8 @@ resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
 
 	funcion = dictionary_get(dic_instrucciones, instruccion);
 
+	if (funcion == NULL)
+		return ERROR_EN_EJECUCION;
+
 	return funcion(tcb);
 }

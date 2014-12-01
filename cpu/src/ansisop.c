@@ -6,7 +6,6 @@
  */
 
 #include "ansisop.h"
-#include "configuraciones.h"
 
 t_registros_cpu registros;
 t_hilo tcb_actual;
@@ -26,6 +25,17 @@ void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
 	tcb_actual.segmento_codigo = tcb.base_codigo;
 	tcb_actual.segmento_codigo_size = tcb.tamanio_codigo;
 	tcb_actual.cola = EXEC;
+	registros.registros_programacion[0] = tcb.a;
+	registros.registros_programacion[1] = tcb.b;
+	registros.registros_programacion[2] = tcb.c;
+	registros.registros_programacion[3] = tcb.d;
+	registros.registros_programacion[4] = tcb.e;
+	registros.K = tcb.km;
+	registros.X = tcb.base_stack;
+	registros.S = tcb.cursor_stack;
+	registros.M = tcb.base_codigo;
+	registros.P = tcb.tamanio_codigo;
+	registros.I = tcb.pid;
 	comienzo_ejecucion(&tcb_actual, quantum);
 }
 
