@@ -246,7 +246,14 @@ tcb_t* quitar_primero_de_cola_recurso(uint32_t recurso_int)
 {
 	char* recurso = identificador_de_recurso(recurso_int);
 
-	tcb_t* tcb = list_get((t_list*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), 0);
+	// TODO: Modificado testeando (01/12/2014 16:49)
+	//tcb_t* tcb = list_get((t_list*)dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso), 0);
+
+	tcb_t* tcb = NULL;
+
+	t_list* lista = dictionary_get(DIC_COLAS_ESPERA_RECURSOS, recurso);
+	if(lista != NULL)
+		tcb = list_get(lista, 0);
 
 	free(recurso);
 	return tcb;
