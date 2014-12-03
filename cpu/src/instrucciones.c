@@ -45,7 +45,10 @@ resultado_t load(tcb_t* tcb)
  */
 resultado_t getm(tcb_t* tcb)
 {
+	char buffer;
 	char registro1, registro2;
+	int32_t valor_del_registro_2;
+	int32_t pid;
 
 	if (leer_registro(tcb, &registro1) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
@@ -55,15 +58,16 @@ resultado_t getm(tcb_t* tcb)
 
 	ansisop_ejecucion_instruccion6("GETM", registro1, registro2);
 
-	int32_t valor_del_registro_2;
-
 	if (obtener_valor_del_registro(tcb, registro2, &valor_del_registro_2)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	char buffer;
+	pid = tcb->pid;
 
-	if (leer_de_memoria(tcb->pid, valor_del_registro_2, sizeof(char), &buffer)
+	if (tcb->km)
+		pid = 1;
+
+	if (leer_de_memoria(pid, valor_del_registro_2, sizeof(char), &buffer)
 		== FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
@@ -115,6 +119,7 @@ resultado_t setm(tcb_t* tcb)
 	direccion hacia;
 	int32_t valor_del_registro_1, valor_del_registro_2;
 	int32_t cantidad_de_bytes_a_copiar;
+	int32_t pid;
 
 	if (leer_numero(tcb, &cantidad_de_bytes_a_copiar)
 		== FALLO_LECTURA_DE_MEMORIA)
@@ -137,18 +142,21 @@ resultado_t setm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
+	pid = tcb->pid;
+
+	if (tcb->km)
+		pid = 1;
+
 	hacia = valor_del_registro_1;
-//	desde = valor_del_registro_2;
 
 	char* b = malloc(sizeof(char) * cantidad_de_bytes_a_copiar);
 	memcpy(b, &valor_del_registro_2, cantidad_de_bytes_a_copiar);
 
-	escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes_a_copiar, b);
+	escribir_en_memoria(pid, hacia, cantidad_de_bytes_a_copiar, b);
 
 	free(b);
 
 	return OK;
-//	return _copiar_valores(cantidad_de_bytes_a_copiar, hacia, desde, tcb);
 }
 
 /*
@@ -1216,7 +1224,7 @@ resultado_t ejecutar_siguiente_instruccion(tcb_t* tcb)
 
 	funcion = dictionary_get(dic_instrucciones, instruccion);
 
-	if (funcion == NULL)
+	if (funcion == NULL )
 		return ERROR_EN_EJECUCION;
 
 	return funcion(tcb);
