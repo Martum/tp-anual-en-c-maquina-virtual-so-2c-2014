@@ -118,8 +118,8 @@ uint32_t cantidad_total_paginas(){
 	void _pagina(pagina_t* pag) {
 		cant_paginas++;
 	}
-	//lock_lista_marcos();
+	//sem
 	list_iterate(get_indice_paginas(), (void*) _pagina);
-	//unlock_lista_marcos();
+	//fin sem
 	return cant_paginas;
 }
