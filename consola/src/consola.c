@@ -78,22 +78,22 @@ int main(int argc, char **argv)
 	switch(e)
 	{
 		case BSIN_MEMORIA:
-			printf("No hay memoria disponible");
+			printf("No hay memoria disponible\n");
 			salida = -3;
 			break;
 
 		case BOTROS_ERRORES:
-			printf("Ocurrio un error desconocido");
+			printf("Ocurrio un error\n");
 			salida = -4;
 			break;
 
 		case BNO_SE_ENVIO_CODIGO:
-			printf("No se pudo enviar el codigo");
+			printf("No se pudo enviar el codigo\n");
 			salida = -5;
 			break;
 
 		case BMENSAJE_INCOMPLETO:
-			printf("No se recibio el mensaje completamente");
+			printf("No se recibio el mensaje completamente\n");
 			salida = -6; //TODO: Aca convendria reenviar...
 			break;
 

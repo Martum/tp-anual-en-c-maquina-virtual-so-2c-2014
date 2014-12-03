@@ -268,7 +268,7 @@ int32_t _procesar_nueva_conexion(sock_t* principal, sock_t** nueva_conexion)
 			// Procesamos el nuevo programa
 			if(_procesar_conexion_nuevo_programa(codigo_beso, len, *nueva_conexion) == -1)
 			{// Si no hay memoria, informamos y seteamos salida con -1
-				//_informar_no_hay_memoria(*nueva_conexion);
+				_informar_no_hay_memoria(*nueva_conexion);
 				salida = -1;
 			}
 			else
@@ -614,11 +614,12 @@ void* escuchar_conexiones_entrantes_y_procesos(void* un_ente)
 					if(i == principal->fd)
 					{// Es el socket principal, new connection knocking
 						sock_t* nueva_conexion = NULL;
-						if(_procesar_nueva_conexion(principal, &nueva_conexion) == 1)
+						int32_t salida = _procesar_nueva_conexion(principal, &nueva_conexion);
+						if(salida == 1)
 						{// Es programa y salio all ok
 							_recalcular_mayor_fd(&mayor_fd, nueva_conexion->fd);
 						}
-						else
+						else if(salida == 2)
 						{// Es CPU
 							// Aca el quehacer cuando la conexion es CPU
 							_recalcular_mayor_fd(&MAYOR_FD_CPU, nueva_conexion->fd);
