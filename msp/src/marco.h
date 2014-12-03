@@ -39,4 +39,6 @@ void escribir_marco(marco_t* * marco, uint16_t desplazamiento, uint32_t * tamani
 uint32_t _calcular_tamanio_real(uint32_t * tamanio, uint16_t desplazamiento, int * mas_paginas);
 
 void liberar_marcos_proceso(uint32_t pid);
+void liberar_memoria_marcos();
+
 #endif /* MARCO_H_ */

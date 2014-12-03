@@ -121,3 +121,14 @@ void liberar_marcos_proceso(uint32_t pid)
 	}
 }
 
+void liberar_memoria_marcos(){
+	int i;
+	while(list_size(get_lista_marcos())>0){
+		 i = list_size(get_lista_marcos()) - 1;
+		marco_t* m = list_get(get_lista_marcos(), i);
+		free(m->datos);
+		list_remove(get_lista_marcos(), i);
+		free(m);
+	}
+	list_destroy(get_lista_marcos());
+}

@@ -102,11 +102,24 @@ segmento_t* buscar_segmento_segun_id_en_lista_segmentos(uint16_t id_segmento, t_
 
 bool puedo_crear_paginas(uint32_t tamanio_en_bytes, uint32_t cant_paginas){
 
-	uint32_t cantidad_max_arch_swap = cantidad_swap() * 4096;
+	uint32_t cantidad_max_arch_swap = cantidad_swap() * 1024 * 1024 / 256;
 
-	uint32_t total_posible_almac_paginas = cantidad_marcos_libre()
+	uint32_t total_posible_almac_paginas = cantidad_memoria()*4
+											- cantidad_total_paginas()
 											+ cantidad_max_arch_swap
 											- get_cantidad_archivos_swap();
 
 	return cant_paginas <= total_posible_almac_paginas;
+}
+
+uint32_t cantidad_total_paginas(){
+	uint32_t cant_paginas = 0;
+
+	void _pagina(pagina_t* pag) {
+		cant_paginas++;
+	}
+	//sem
+	list_iterate(get_indice_paginas(), (void*) _pagina);
+	//fin sem
+	return cant_paginas;
 }
