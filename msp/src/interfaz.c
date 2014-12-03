@@ -97,7 +97,6 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		if(list_size(proceso->segmentos)==1)
 		{
 			proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
-			//proceso_msp_t* proc = list_get(get_lista_procesos(),(proceso->pid)-1);
 			_destruyo_proceso(proc, base, &ok);
 		}
 		else
