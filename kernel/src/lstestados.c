@@ -113,6 +113,8 @@ void agregar_a_ready(tcb_t* tcb) {
 	list_add(READY_COLA[!tcb->km], tcb);
 	desbloquear_ready();
 
+	loggear_estado_de_hilos();
+
 	planificar();
 	// Aca deberíamos llamar al planificador. No, no deberiamos. O quizas si, quien lo sabe...
 }
