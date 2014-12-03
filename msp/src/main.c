@@ -8,6 +8,7 @@
 #include <pthread.h>
 
 #include "main.h"
+#include "marco.h"
 #include "estructuras.h"
 #include "configuraciones.h"
 #include "consola_msp.h"
@@ -53,6 +54,6 @@ int main(void){
 
 	destruir_configuraciones();
 	finalizar_loggeo();
-
+	liberar_memoria_marcos();
 	return 0;
 }
