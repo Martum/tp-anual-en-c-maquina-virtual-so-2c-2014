@@ -290,6 +290,11 @@ tcb_t* quitar_de_ready(){
 char* identificador_de_recurso(uint32_t identificador_int)
 {
 	char* identificador = malloc(12);
+
+	int i;
+	for(i=0;i<12;i++)
+		identificador[i] = '\0';
+
 	sprintf(identificador, "%d", identificador_int);
 
 	return identificador;
