@@ -10,6 +10,7 @@
 #include "lstestados.h"
 #include "memoria.h"
 #include <hu4sockets/resultados.h>
+#include "configuraciones.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,6 +50,13 @@ int32_t cargar_syscalls_a_memoria(char* path)
 		return -1;
 
 	free(syscalls);
+
+	if(crear_segmento(1, tamanio_stack(), &direccion) != 0)
+		return -1;
+
+	tcb_t* tcbkm = get_tcb_km();
+	tcbkm->base_stack = direccion;
+	tcbkm->cursor_stack = direccion;
 
 	return 0;
 }

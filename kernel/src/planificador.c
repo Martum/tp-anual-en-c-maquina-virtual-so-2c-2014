@@ -90,8 +90,6 @@ void pedir_tcb(uint32_t cpu_id) {
 void planificar() {
 	bloquear_planificar();
 
-	loggear_estado_de_hilos();
-
 	replanificar_tcb_km();
 
 	if (!list_is_empty(CPU_EN_ESPERA_DE_TCB)) {

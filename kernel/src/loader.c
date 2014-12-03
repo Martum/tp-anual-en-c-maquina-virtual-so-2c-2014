@@ -113,6 +113,7 @@ int32_t procesar_nuevo_programa(char* codigo_beso, uint32_t len)
 
 	tcb->base_stack = direccion_segmento_stack;
 	tcb->cursor_stack = direccion_segmento_stack;
+	inicializar_tcb(tcb);
 
 	// Escribimos en la memoria el codigo BESO
 	// No puede haber SEGMENTATION FAULT porque pedimos el Segmento con este LEN

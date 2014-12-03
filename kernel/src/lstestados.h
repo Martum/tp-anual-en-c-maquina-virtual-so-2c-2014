@@ -61,6 +61,11 @@ typedef struct conclusion_km {
 void inicializar_listas_estados_tcb();
 
 /**
+ * Inicializa los registros de programacion en 0
+ */
+void inicializar_tcb(tcb_t* tcb);
+
+/**
  * Agrega un TCB a la cola de Ready
  */
 void agregar_a_ready(tcb_t* tcb);

@@ -881,12 +881,13 @@ char* serializar_pedido_bloquear_t(pedido_bloquear_t* pedido)
 	memcpy(bytes + offset, &pedido->flag, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
-	memcpy(bytes + offset, serializar_tcb(pedido->tcb),
-		tamanio_tcb_serializado());
-
-	offset += tamanio_tcb_serializado();
 	memcpy(bytes + offset, &pedido->identificador_de_recurso, sizeof(uint32_t));
 
+	offset += sizeof(uint32_t);
+	char* tcb_serializado = serializar_tcb(pedido->tcb);
+	memcpy(bytes + offset, tcb_serializado,tamanio_tcb_serializado());
+
+	free(tcb_serializado);
 	return bytes;
 }
 
@@ -898,12 +899,11 @@ pedido_bloquear_t* deserializar_pedido_bloquear_t(char* chorro)
 	memcpy(&pedido->flag, chorro + offset, sizeof(flag_t));
 
 	offset += sizeof(flag_t);
+	memcpy(&pedido->identificador_de_recurso, chorro + offset, sizeof(uint32_t));
+
+	offset += sizeof(uint32_t);
 	pedido->tcb = malloc(sizeof(tcb_t));
 	memcpy(pedido->tcb, deserializar_tcb(chorro + offset), sizeof(tcb_t));
-
-	offset += sizeof(tcb_t);
-	memcpy(&pedido->identificador_de_recurso, chorro + offset,
-		sizeof(uint32_t));
 
 	return pedido;
 }

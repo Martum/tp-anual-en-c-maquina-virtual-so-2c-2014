@@ -41,17 +41,18 @@ direccion crear_segmento(uint32_t pid, uint32_t tamanio_en_bytes, resultado_t *r
 
 	bool hay_memoria = puedo_crear_paginas(tamanio_en_bytes, cant_paginas);
 
+	direccion direccion_virtual = 0;
+
 	if(hay_memoria){
 		*(resultado) = RESULTADO_OK;
+		// creo el segmento en la tabla de segmentos del proceso
+		segmento_t* segmento = crear_segmento_con_paginas(proceso, cant_paginas, tamanio_en_bytes);
+
+		// creo la direccion virtual base del segmento
+		direccion_virtual = direccion_virtual_base_de_segmento(segmento->id);
 	}else{
 		*(resultado) = ERROR_DE_MEMORIA_LLENA;
 	}
-
-	// creo el segmento en la tabla de segmentos del proceso
-	segmento_t* segmento = crear_segmento_con_paginas(proceso, cant_paginas, tamanio_en_bytes);
-
-	// creo la direccion virtual base del segmento
-	direccion direccion_virtual = direccion_virtual_base_de_segmento(segmento->id);
 
 	if(*(resultado)== RESULTADO_OK){
 		loggear_trace("Se creo el segmento correctamente para el proceso %d.", pid);
@@ -97,7 +98,6 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		if(list_size(proceso->segmentos)==1)
 		{
 			proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
-			//proceso_msp_t* proc = list_get(get_lista_procesos(),(proceso->pid)-1);
 			_destruyo_proceso(proc, base, &ok);
 		}
 		else
