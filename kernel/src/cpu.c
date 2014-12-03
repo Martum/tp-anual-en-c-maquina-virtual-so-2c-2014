@@ -432,7 +432,7 @@ void preparar_km_para_ejecutar(tcb_t* tcb, direccion direccion) {
 	copiar_registros_programacion(tcb_km, tcb);
 
 	tcb_km->pc = direccion;
-	tcb_km->cursor_stack = tcb->cursor_stack;
+	//tcb_km->cursor_stack = tcb->cursor_stack;
 
 	// Agregamos el TCB Usuario a block
 	agregar_a_block_conclusion_km(tcb);
