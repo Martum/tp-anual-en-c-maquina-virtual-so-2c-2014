@@ -82,6 +82,7 @@ void inicializar_listas_estados_tcb()
 	TCB_KM = malloc(sizeof(tcb_t));
 	TCB_KM->km = true;
 	TCB_KM->base_codigo = 0;
+	inicializar_tcb(TCB_KM);
 
 	READY_COLA[0] = list_create();
 	READY_COLA[1] = list_create();
@@ -105,6 +106,15 @@ void inicializar_listas_estados_tcb()
 	inicializar_lista_cpu_en_espera();
 
 	inicializar_lista_segmentos_por_hilo();
+}
+
+void inicializar_tcb(tcb_t* tcb)
+{
+	tcb->a = 0;
+	tcb->b = 0;
+	tcb->c = 0;
+	tcb->d = 0;
+	tcb->e = 0;
 }
 
 
@@ -628,14 +638,16 @@ void remover_de_exec_a_exit(uint32_t pid)
 {
 	bool _buscar_por_pid_no_km(void* elemento)
 	{
-		return ((tcb_t*) elemento)->pid == pid &&
-				!((tcb_t*) elemento)->km;
+		ejecutando_t* ejec = elemento;
+		return ejec->tcb->pid == pid &&
+				!ejec->tcb->km;
 	}	//TODO: Creo que si es TCB KM hay que sacarlo igual, pero no ponerlo en exit
 
 	bool _buscar_por_pid_y_km(void* elemento)
 	{
-		return ((tcb_t*) elemento)->pid == pid &&
-				((tcb_t*) elemento)->km;
+		ejecutando_t* ejec = elemento;
+		return ejec->tcb->pid == pid &&
+				ejec->tcb->km;
 	}
 
 	bloquear_exec();
