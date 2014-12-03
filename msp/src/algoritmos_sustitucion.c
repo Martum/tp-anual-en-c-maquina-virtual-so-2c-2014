@@ -32,6 +32,10 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 		return pagina->tiene_marco;
 	}
 
+	bool _busco_pagina(pagina_t* pagina){
+		return pagina->marco == puntero_clock;
+	}
+
 //	lock_lista_indice_paginas();
 	t_list* paginas_con_marco =	list_filter(get_indice_paginas(),(void*) _paginas_con_marco);
 //	unlock_lista_indice_paginas();
@@ -39,32 +43,40 @@ uint32_t algoritmo_clock(uint16_t * id_pagina_a_swappear){
 	// itero las paginas
 	pagina_t* pag = NULL;
 
-	while((puntero_clock < list_size(paginas_con_marco)) && (retorno == -1)){
-		pag = list_get(paginas_con_marco, puntero_clock);
+	while(!encontro){
+		pag = list_find(paginas_con_marco, (void*) _busco_pagina);
+
 		if(pag->bit_referencia == 1){
 			pag->bit_referencia = 0;
-			puntero_clock++;
 		}else{
 			retorno = pag->marco;
 			encontro = true;
 		}
+
+		if(puntero_clock == list_size(paginas_con_marco) - 1){
+			puntero_clock = 0;
+		}else{
+			puntero_clock++;
+		}
+
 	}
 
-	if(!encontro){
+/*	if(!encontro){
 		puntero_clock = 0;
 
 		while((puntero_clock<list_size(paginas_con_marco)) && (retorno == -1)){
-			pag = list_get(paginas_con_marco, puntero_clock);
+			pag = list_find(paginas_con_marco, (void*) _busco_pagina);
+			// pag = list_get(paginas_con_marco, puntero_clock);
 			if(pag->bit_referencia == 1){
 				pag->bit_referencia = 0;
 				puntero_clock++;
 			}else{
 				retorno = pag->marco;
+				puntero_clock++;
 			}
 		}
-	}
+	}*/
 
-	//TODO Checkear que esto no se borra con el free
 	*id_pagina_a_swappear = pag->id;
 
 	free(paginas_con_marco);
