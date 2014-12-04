@@ -76,7 +76,6 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 
 	void _destruyo_proceso(proceso_msp_t* proceso, direccion base, bool* ok)
 	{
-	//	segmento_t* segmento=list_get(proceso->segmentos, 0);
 		(*ok) = quitar_segmento(proceso, base);
 		list_destroy(proceso->segmentos);
 		liberar_marcos_proceso(proceso->pid);

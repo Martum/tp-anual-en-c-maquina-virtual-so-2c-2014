@@ -28,7 +28,6 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 		// agregar log de las cosas que hago printf
 	}
 	list_iterate(proceso->segmentos, (void*) _lista_segmentos);
-	printf("\n");
 }
 
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
@@ -68,6 +67,7 @@ void liberar_marcos_proceso_segmento(proceso_msp_t* proceso, segmento_t* segment
 				pagina_t* pag = list_get(segmento->paginas, j);
 				if(pag->tiene_marco && pag->marco == marco->id){
 					marco->ocupado = false;
+					loggear_trace("Se libero el marco %d.", marco->id);
 				}
 			}
 		}
@@ -108,7 +108,7 @@ void _destruye_pagina(pagina_t *pagina) {
 	if(pagina->tiene_marco){
 		marco_t* m = buscar_marco_segun_id(pagina->marco);
 		m->ocupado = false;
-		loggear_trace("Se libero el marco %d.", m->id);
+		//loggear_trace("Se libero el marco %d.", m->id);
 	}
 	bool _is_pagina(pagina_t *pagina){
 		return true;
