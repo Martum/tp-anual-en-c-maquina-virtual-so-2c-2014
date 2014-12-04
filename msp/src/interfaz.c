@@ -180,6 +180,10 @@ char* leer_memoria(uint32_t pid, direccion direccion_logica, uint32_t tamanio,re
 			hay_siguiente_pagina(id_pagina_siguiente, segmento->paginas,&pagina_siguiente);
 			if((pagina_siguiente!=NULL) && mas_paginas)
 			{
+				if((pagina_siguiente)->en_disco)
+				{
+					swap_out((proceso)->pid, (segmento)->id,&pagina_siguiente);
+				}
 				if(!(pagina_siguiente->tiene_marco))
 				{
 					asignar_marco(&pagina_siguiente, &segmento, pid);
@@ -241,6 +245,10 @@ void escribir_memoria(uint32_t pid, direccion direccion_logica,char* bytes_a_esc
 			hay_siguiente_pagina(id_pagina,segmento->paginas,&pagina_siguiente);
 			if((pagina_siguiente!=NULL) && mas_paginas)
 			{
+				if((pagina_siguiente)->en_disco)
+				{
+					swap_out((proceso)->pid, (segmento)->id,&pagina_siguiente);
+				}
 				if(!(pagina_siguiente->tiene_marco))
 				{
 					asignar_marco(&pagina_siguiente, &segmento, pid);
