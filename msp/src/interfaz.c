@@ -76,16 +76,10 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 
 	void _destruyo_proceso(proceso_msp_t* proceso, direccion base, bool* ok)
 	{
-		int i;
-		for(i=0; i<list_size(proceso->segmentos); i++)
-		{
-			segmento_t* segmento=list_get(proceso->segmentos, i);
-			destruir_archivos_swapp_proceso(pid, segmento);
-		}
+		segmento_t* segmento=list_get(proceso->segmentos, 0);
 		(*ok) = quitar_segmento(proceso, base);
 		list_destroy(proceso->segmentos);
 		liberar_marcos_proceso(proceso->pid);
-
 		list_remove_and_destroy_by_condition(get_lista_procesos(), (void*) _es_proceso, (void*) _destruyo_proc);
 	}
 
@@ -95,16 +89,12 @@ void destruir_segmento(uint32_t pid, direccion base, resultado_t *resultado){
 		// busco el proceso pid
 		proceso_msp_t* proceso = buscar_proceso_segun_pid(pid);
 
-		if(list_size(proceso->segmentos)==1)
-		{
+		if(list_size(proceso->segmentos)==1){
 			proceso_msp_t* proc = list_find(get_lista_procesos(), (void*) _es_proceso);
 			_destruyo_proceso(proc, base, &ok);
-		}
-		else
-		{
+		}else{
 			ok = quitar_segmento(proceso,base);
 		}
-
 	}else{
 		ok = false;
 	}
