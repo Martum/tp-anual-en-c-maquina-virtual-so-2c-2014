@@ -13,6 +13,7 @@
 #include <commons/collections/list.h>
 #include "configuraciones.h"
 #include "estructuras.h"
+#include "swapping.h"
 #include "marco.h"
 #include "semaforos.h"
 #include "logs.h"
