@@ -20,8 +20,8 @@
 
 #include "hu4sockets/tcb.h"
 
-#include "definiciones.h"
 #include "configuraciones.h"
+#include "instrucciones.h"
 
 void empezar_ansisop();
 void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum);

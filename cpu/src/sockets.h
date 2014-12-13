@@ -17,7 +17,7 @@
 #include "hu4sockets/sockets.h"
 
 #include "configuraciones.h"
-#include "definiciones.h"
+#include "instrucciones.h"
 #include "logs.h"
 #include "operaciones-con-bits.h"
 #include "tcb-funciones.h"

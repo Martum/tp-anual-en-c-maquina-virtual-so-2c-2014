@@ -14,6 +14,8 @@
 #include "commons/log.h"
 #include "commons/string.h"
 
+#include <stdbool.h>
+
 void empezar_loggeo();
 
 void finalizar_loggeo();

@@ -8,10 +8,11 @@
 #ifndef INSTRUCCIONES_H_
 #define INSTRUCCIONES_H_
 
+typedef char instruccion_t[5];
+
 #include <commons/collections/dictionary.h>
 
 #include "ansisop.h"
-#include "definiciones.h"
 #include "operaciones-con-bits.h"
 #include "sockets.h"
 #include "tcb-funciones.h"
