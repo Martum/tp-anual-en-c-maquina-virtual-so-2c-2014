@@ -15,27 +15,32 @@ void empezar_ansisop()
 	inicializar_panel(CPU, "");
 }
 
+void _cargar_tcb_actual(t_hilo* tcb_actual, const tcb_t* tcb)
+{
+	tcb_actual->pid = tcb->pid;
+	tcb_actual->tid = tcb->tid;
+	tcb_actual->kernel_mode = tcb->km;
+}
+
+void _cargar_registros(t_registros_cpu* registros, const tcb_t* tcb)
+{
+	registros->registros_programacion[0] = tcb->a;
+	registros->registros_programacion[1] = tcb->b;
+	registros->registros_programacion[2] = tcb->c;
+	registros->registros_programacion[3] = tcb->d;
+	registros->registros_programacion[4] = tcb->e;
+	registros->K = tcb->km;
+	registros->X = tcb->base_stack;
+	registros->S = tcb->cursor_stack;
+	registros->M = tcb->base_codigo;
+	registros->P = tcb->tamanio_codigo;
+	registros->I = tcb->pid;
+}
+
 void ansisop_comienzo_tcb(tcb_t tcb, int32_t quantum)
 {
-	tcb_actual.pid = tcb.pid;
-	tcb_actual.tid = tcb.tid;
-	tcb_actual.kernel_mode = tcb.km;
-	tcb_actual.base_stack = tcb.base_stack;
-	tcb_actual.cursor_stack = tcb.cursor_stack;
-	tcb_actual.segmento_codigo = tcb.base_codigo;
-	tcb_actual.segmento_codigo_size = tcb.tamanio_codigo;
-	tcb_actual.cola = EXEC;
-	registros.registros_programacion[0] = tcb.a;
-	registros.registros_programacion[1] = tcb.b;
-	registros.registros_programacion[2] = tcb.c;
-	registros.registros_programacion[3] = tcb.d;
-	registros.registros_programacion[4] = tcb.e;
-	registros.K = tcb.km;
-	registros.X = tcb.base_stack;
-	registros.S = tcb.cursor_stack;
-	registros.M = tcb.base_codigo;
-	registros.P = tcb.tamanio_codigo;
-	registros.I = tcb.pid;
+	_cargar_tcb_actual(&tcb_actual, &tcb);
+	_cargar_registros(&registros, &tcb);
 	comienzo_ejecucion(&tcb_actual, quantum);
 }
 
@@ -44,9 +49,29 @@ void ansisop_fin_tcb()
 	fin_ejecucion();
 }
 
+void _agregar_registro_a_parametros(t_list* parametros, char param_registro)
+{
+	char* registro = malloc(sizeof(char) + 1);
+	*(registro) = param_registro;
+	*(registro + 1) = '\0';
+	list_add(parametros, registro);
+}
+
+void _agregar_numero_a_parametros(t_list* parametros, int32_t param_numero)
+{
+	char* numero = string_itoa(param_numero);
+	list_add(parametros, numero);
+}
+
+void _free_parametro(void* elemento)
+{
+	free(elemento);
+}
+
 void ansisop_ejecucion_instruccion1(instruccion_t instruccion)
 {
 	t_list* parametros = list_create();
+
 	ejecucion_instruccion(instruccion, parametros);
 }
 
@@ -54,73 +79,65 @@ void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
 	int32_t param_numero, char param_registro)
 {
 	t_list* parametros = list_create();
-	char* numero = string_itoa(param_numero);
-	char* registro = malloc(sizeof(char) + 1);
-	*(registro) = param_registro;
-	*(registro + 1) = '\0';
-	list_add(parametros, numero);
-	list_add(parametros, registro);
+	_agregar_numero_a_parametros(parametros, param_numero);
+	_agregar_registro_a_parametros(parametros, param_registro);
+
 	ejecucion_instruccion(instruccion, parametros);
+
+	list_clean_and_destroy_elements(parametros, _free_parametro);
 }
 
 void ansisop_ejecucion_instruccion3(instruccion_t instruccion,
 	int32_t param_numero)
 {
 	t_list* parametros = list_create();
-	char* numero = string_itoa(param_numero);
-	list_add(parametros, numero);
+	_agregar_numero_a_parametros(parametros, param_numero);
+
 	ejecucion_instruccion(instruccion, parametros);
+
+	list_clean_and_destroy_elements(parametros, _free_parametro);
 }
 
 void ansisop_ejecucion_instruccion4(instruccion_t instruccion,
 	int32_t param_numero, char param_registro1, char param_registro2)
 {
 	t_list* parametros = list_create();
-	char* numero = malloc(sizeof(char) * 4);
-	numero = string_itoa(param_numero);
-	char* registro1 = malloc(sizeof(char) + 1);
-	*(registro1) = param_registro1;
-	*(registro1 + 1) = '\0';
-	char* registro2 = malloc(sizeof(char) + 1);
-	*(registro2) = param_registro2;
-	*(registro2 + 1) = '\0';
-	list_add(parametros, numero);
-	list_add(parametros, registro1);
-	list_add(parametros, registro2);
+	_agregar_numero_a_parametros(parametros, param_numero);
+	_agregar_registro_a_parametros(parametros, param_registro1);
+	_agregar_registro_a_parametros(parametros, param_registro2);
+
 	ejecucion_instruccion(instruccion, parametros);
+
+	list_clean_and_destroy_elements(parametros, _free_parametro);
 }
 
 void ansisop_ejecucion_instruccion5(instruccion_t instruccion,
 	char param_registro)
 {
 	t_list* parametros = list_create();
-	char* registro = malloc(sizeof(char) + 1);
-	*(registro) = param_registro;
-	*(registro + 1) = '\0';
-	list_add(parametros, registro);
+	_agregar_registro_a_parametros(parametros, param_registro);
+
 	ejecucion_instruccion(instruccion, parametros);
+
+	list_clean_and_destroy_elements(parametros, _free_parametro);
 }
 
 void ansisop_ejecucion_instruccion6(instruccion_t instruccion,
 	char param_registro1, char param_registro2)
 {
 	t_list* parametros = list_create();
-	char* registro1 = malloc(sizeof(char) + 1);
-	*(registro1) = param_registro1;
-	*(registro1 + 1) = '\0';
-	char* registro2 = malloc(sizeof(char) + 1);
-	*(registro2) = param_registro2;
-	*(registro2 + 1) = '\0';
-	list_add(parametros, registro1);
-	list_add(parametros, registro2);
+	_agregar_registro_a_parametros(parametros, param_registro1);
+	_agregar_registro_a_parametros(parametros, param_registro2);
+
 	ejecucion_instruccion(instruccion, parametros);
-	free(registro1);
-	free(registro2);
+
+	list_clean_and_destroy_elements(parametros, _free_parametro);
 }
 
 void _actualizar_registro(int32_t registro, int32_t nuevo_valor)
 {
 	registros.registros_programacion[registro] = nuevo_valor;
+
 	cambio_registros(registros);
 }
 

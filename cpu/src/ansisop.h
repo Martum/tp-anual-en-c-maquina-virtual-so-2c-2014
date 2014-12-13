@@ -8,12 +8,12 @@
 #ifndef ANSISOP_H_
 #define ANSISOP_H_
 
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include <ansisop-panel/panel/panel.h>
 #include <ansisop-panel/panel/cpu.h>
+#include <ansisop-panel/panel/panel.h>
 
 #include "commons/collections/list.h"
 #include "commons/string.h"
