@@ -13,11 +13,11 @@ t_log* logger;
 
 void empezar_loggeo()
 {
-	fp = fopen("logs_cpu.log", "w");
+	fp = fopen("logs_cpu.log", "");
 
 	truncate("logs_cpu.log", 0);
 
-	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_TRACE);
+	logger = log_create("logs_cpu.log", "CPU", true, LOG_LEVEL_WARNING);
 
 	loggear_info("Empiezo el loggeo\n");
 }
