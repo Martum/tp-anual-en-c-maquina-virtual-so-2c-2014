@@ -115,11 +115,14 @@ bool puedo_crear_paginas(uint32_t tamanio_en_bytes, uint32_t cant_paginas){
 uint32_t cantidad_total_paginas(){
 	uint32_t cant_paginas = 0;
 
-	void _pagina(pagina_t* pag) {
-		cant_paginas++;
+	int i, j;
+	for(i=0; i<list_size(get_lista_procesos()); i++){
+		proceso_msp_t* proc = list_get(get_lista_procesos(), i);
+		for(j=0; j<list_size(proc->segmentos); j++){
+			segmento_t* seg = list_get(proc->segmentos, j);
+			cant_paginas += list_size(seg->paginas);
+		}
 	}
-	//sem
-	list_iterate(get_indice_paginas(), (void*) _pagina);
-	//fin sem
+
 	return cant_paginas;
 }

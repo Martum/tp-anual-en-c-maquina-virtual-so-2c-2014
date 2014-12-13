@@ -13,6 +13,7 @@
 #include <commons/collections/list.h>
 #include "configuraciones.h"
 #include "estructuras.h"
+#include "swapping.h"
 #include "marco.h"
 #include "semaforos.h"
 #include "logs.h"
@@ -27,7 +28,6 @@ void listar_segmentos_de_un_proceso(proceso_msp_t *proceso){
 		// agregar log de las cosas que hago printf
 	}
 	list_iterate(proceso->segmentos, (void*) _lista_segmentos);
-	printf("\n");
 }
 
 proceso_msp_t* crear_proceso_msp(uint32_t un_pid){
@@ -57,6 +57,23 @@ proceso_msp_t* buscar_proceso_segun_pid(uint32_t pid){
 	return proc;
 }
 
+void liberar_marcos_proceso_segmento(proceso_msp_t* proceso, segmento_t* segmento){
+	int i;
+	for(i=0;i<list_size(get_lista_marcos());i++){
+		marco_t* marco=list_get(get_lista_marcos(),i);
+		if(marco->id_proceso==proceso->pid){
+			int j;
+			for(j=0; j<list_size(segmento->paginas); j++){
+				pagina_t* pag = list_get(segmento->paginas, j);
+				if(pag->tiene_marco && pag->marco == marco->id){
+					marco->ocupado = false;
+					loggear_trace("Se libero el marco %d.", marco->id);
+				}
+			}
+		}
+	}
+}
+
 bool quitar_segmento(proceso_msp_t *proceso, direccion base){
 	bool puedo_quitar_segmento;
 
@@ -64,10 +81,19 @@ bool quitar_segmento(proceso_msp_t *proceso, direccion base){
 		return direccion_virtual_base_de_segmento(s->id) == base;
 	}
 
+	void _destruye_segmento(segmento_t *segmento){
+		destruir_archivos_swapp_proceso(proceso->pid, segmento);
+		liberar_marcos_proceso_segmento(proceso, segmento);
+		bool _is_pagina(pagina_t *pagina) {
+			return true;
+		}
+		list_remove_and_destroy_by_condition(segmento->paginas, (void*)_is_pagina,(void*)_destruye_pagina);
+		free(segmento);
+	}
+
 	// me fijo si encuentro el segmento
 	if(list_any_satisfy(proceso->segmentos, (void*) _encuentro_segmento_con_base)){
 		puedo_quitar_segmento = true;
-
 		// remuevo los que cumplen la condicion
 		list_remove_and_destroy_by_condition(proceso->segmentos, (void*) _encuentro_segmento_con_base, (void*)_destruye_segmento);
 	}else{
@@ -77,20 +103,12 @@ bool quitar_segmento(proceso_msp_t *proceso, direccion base){
 	return puedo_quitar_segmento;
 }
 
-void _destruye_segmento(segmento_t *segmento){
-	bool _is_pagina(pagina_t *pagina) {
-		return true;
-	}
-	list_remove_and_destroy_by_condition(segmento->paginas, (void*)_is_pagina,(void*)_destruye_pagina);
-	free(segmento);
-}
-
 void _destruye_pagina(pagina_t *pagina) {
 	// marco como desocupado su marco si es que tiene
 	if(pagina->tiene_marco){
 		marco_t* m = buscar_marco_segun_id(pagina->marco);
 		m->ocupado = false;
-		loggear_trace("Se libero el marco %d.", m->id);
+		//loggear_trace("Se libero el marco %d.", m->id);
 	}
 	bool _is_pagina(pagina_t *pagina){
 		return true;

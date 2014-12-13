@@ -23,7 +23,6 @@
 #include <commons/string.h>
 
 
-
 void swap_in(pagina_t* * pagina, uint32_t id_segmento, uint32_t pid)
 {
 	marco_t* marco = liberar_un_marco();
@@ -34,8 +33,6 @@ void swap_in(pagina_t* * pagina, uint32_t id_segmento, uint32_t pid)
 	marco->id_proceso = pid;
 	marco->ocupado=true;
 
-	loggear_trace("Swap in pagina %d del segmento %d del proceso %d en marco %d.",
-			(*pagina)->id, id_segmento, marco->id_proceso, marco->id);
 	loggear_trace("Se asigno el marco %d al proceso %d.", marco->id, marco->id_proceso);
 
 	if(cantidad_marcos_libre() == 0){
@@ -58,6 +55,9 @@ marco_t* liberar_un_marco()
 	obtener_segmento_y_pagina(&pagina_a_liberar, &segmento_contenedor, id_marco_a_liberar, marco_a_liberar->id_proceso);
 
 	mover_a_disco(&pagina_a_liberar, marco_a_liberar->id_proceso, segmento_contenedor->id);
+
+	loggear_trace("Va a disco pagina %d del segmento %d del proceso %d.",
+			pagina_a_liberar->id, segmento_contenedor->id, marco_a_liberar->id_proceso);
 
 	return marco_a_liberar;
 }
@@ -126,7 +126,7 @@ void mover_a_disco(pagina_t* * pagina, uint32_t pid, uint16_t id_segmento)
 	aumento_cantidad_archivos_swap();
 
 	if(get_cantidad_archivos_swap() == cantidad_swap() * 4096){
-		loggear_info("Espacio de swap lleno");
+		loggear_info("Espacio de swap lleno.");
 	}
 }
 
@@ -171,7 +171,8 @@ void swap_out(uint32_t pid, uint16_t id_segmento, pagina_t* * pagina)
 
 	disminuyo_cantidad_archivos_swap();
 
-	loggear_trace("Swap out pagina %d del segmento %d del proceso %d.", id_pagina, id_segmento, pid);
+	loggear_trace("Va a memoria pagina %d del segmento %d del proceso %d en marco %d.",
+			(*pagina)->id, id_segmento, marco->id_proceso, marco->id);
 }
 
 
