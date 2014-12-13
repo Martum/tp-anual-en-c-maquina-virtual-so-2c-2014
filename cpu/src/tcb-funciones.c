@@ -12,7 +12,6 @@ bool es_tcb_kernel(tcb_t* tcb)
 	return tcb->km;
 }
 
-// TODO cambiar los ansisop_cambio_registro_e(numero)
 resultado_t actualizar_valor_del_registro(tcb_t* tcb, char registro,
 	int32_t numero)
 {

@@ -13,7 +13,6 @@ typedef char instruccion_t[5];
 #include <commons/collections/dictionary.h>
 
 #include "ansisop.h"
-#include "operaciones-con-bits.h"
 #include "sockets.h"
 #include "tcb-funciones.h"
 

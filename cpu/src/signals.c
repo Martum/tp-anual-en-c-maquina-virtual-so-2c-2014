@@ -17,13 +17,7 @@ void atrapar_interrupcion(int sig)
 	exit(0);
 }
 
-void fallo_memoria(int sig)
-{
-
-}
-
 void escuchar_signals()
 {
 	signal(SIGINT, atrapar_interrupcion);
-	signal(SIGUSR1, fallo_memoria);
 }

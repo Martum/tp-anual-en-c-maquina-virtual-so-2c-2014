@@ -11,8 +11,6 @@ t_dictionary* dic_instrucciones;
 
 resultado_t (*funcion)(tcb_t*) = NULL;
 
-bool instruccion_leida = true;
-
 /*
  * 	LOAD [Registro], [Numero]
  *
@@ -84,24 +82,20 @@ resultado_t getm(tcb_t* tcb)
  * 	@DESC: 	Escribe en memoria en direccion hacia tantos bytes como cantidad_de_bytes.
  * 			Los bytes los lee de la direccion desde.
  */
-resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
-	direccion desde, tcb_t* tcb)
+resultado_t _copiar_bytes_a_memoria(tcb_t* tcb, direccion direccion,
+	int32_t bytes, int32_t cantidad_de_bytes)
 {
-	char* buffer = malloc(cantidad_de_bytes);
+	int32_t pid = tcb->pid;
 
-	if (leer_de_memoria(tcb->pid, desde, cantidad_de_bytes, buffer)
-		== FALLO_LECTURA_DE_MEMORIA)
-	{
-		free(buffer);
-		return ERROR_EN_EJECUCION;
-	}
+	if (tcb->km)
+		pid = 1;
 
-	if (escribir_en_memoria(tcb->pid, hacia, cantidad_de_bytes, buffer)
-		== FALLO_ESCRITURA_EN_MEMORIA)
-	{
-		free(buffer);
-		return ERROR_EN_EJECUCION;
-	}
+	char* buffer = malloc(sizeof(char) * cantidad_de_bytes);
+	memcpy(buffer, &bytes, cantidad_de_bytes);
+
+	escribir_en_memoria(pid, direccion, cantidad_de_bytes, buffer);
+
+	free(buffer);
 
 	return OK;
 }
@@ -115,11 +109,8 @@ resultado_t _copiar_valores(int32_t cantidad_de_bytes, direccion hacia,
 resultado_t setm(tcb_t* tcb)
 {
 	char registro1, registro2;
-//	direccion hacia, desde;
-	direccion hacia;
 	int32_t valor_del_registro_1, valor_del_registro_2;
 	int32_t cantidad_de_bytes_a_copiar;
-	int32_t pid;
 
 	if (leer_numero(tcb, &cantidad_de_bytes_a_copiar)
 		== FALLO_LECTURA_DE_MEMORIA)
@@ -142,19 +133,8 @@ resultado_t setm(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	pid = tcb->pid;
-
-	if (tcb->km)
-		pid = 1;
-
-	hacia = valor_del_registro_1;
-
-	char* b = malloc(sizeof(char) * cantidad_de_bytes_a_copiar);
-	memcpy(b, &valor_del_registro_2, cantidad_de_bytes_a_copiar);
-
-	escribir_en_memoria(pid, hacia, cantidad_de_bytes_a_copiar, b);
-
-	free(b);
+	_copiar_bytes_a_memoria(tcb, valor_del_registro_1, valor_del_registro_2,
+		cantidad_de_bytes_a_copiar);
 
 	return OK;
 }
@@ -602,6 +582,22 @@ resultado_t inte(tcb_t* tcb)
 }
 
 /*
+ * 	@DESC: Desplaza bits_a_desplazar bits en valor
+ * 		Si numero es negativo, para la izquierda
+ * 		Si numero es positivo, para la derecha (0 es positivo)
+ */
+void _desplazar_bits(int32_t bits_a_desplazar, int32_t* valor)
+{
+	if (bits_a_desplazar > 0)
+	{
+		*valor = *valor >> bits_a_desplazar;
+	} else
+	{
+		*valor = *valor << abs(bits_a_desplazar);
+	}
+}
+
+/*
  * 	SHIF [Número], [Registro]
  *
  * 	Desplaza los bits del registro, tantas veces como se indique en el número.
@@ -626,7 +622,7 @@ resultado_t shif(tcb_t* tcb)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
-	desplazar_bits(bits_a_desplazar, &valor_de_registro);
+	_desplazar_bits(bits_a_desplazar, &valor_de_registro);
 
 	actualizar_valor_del_registro(tcb, registro, valor_de_registro);
 
@@ -738,7 +734,7 @@ resultado_t take(tcb_t* tcb)
 {
 	char bytes[4];
 	char registro;
-	int32_t valor_a_popeado;
+	int32_t valor_popeado;
 	int32_t cantidad_de_bytes;
 
 	if (leer_numero(tcb, &cantidad_de_bytes) == FALLO_LECTURA_DE_MEMORIA)
@@ -755,11 +751,9 @@ resultado_t take(tcb_t* tcb)
 	if (_pop(tcb, cantidad_de_bytes, bytes) == ERROR_EN_EJECUCION)
 		return ERROR_EN_EJECUCION;
 
-	memcpy(&valor_a_popeado, bytes, 4);
+	memcpy(&valor_popeado, bytes, 4);
 
-	loggear_trace("Numero: %d", valor_a_popeado);
-
-	if (actualizar_valor_del_registro(tcb, registro, valor_a_popeado)
+	if (actualizar_valor_del_registro(tcb, registro, valor_popeado)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
 		return ERROR_EN_EJECUCION;
 
@@ -870,16 +864,12 @@ resultado_t innn(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("INNN");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t numero_ingresado;
 
 	if (_pedir_por_consola_numero(tcb, &numero_ingresado) != OK)
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	actualizar_registro_a(tcb, numero_ingresado);
 
@@ -934,9 +924,7 @@ resultado_t innc(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("INNC");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t direccion_de_nueva_cadena = obtener_valor_registro_a(tcb);
 
@@ -973,9 +961,7 @@ resultado_t outn(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("OUTN");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t numero_a_enviar = obtener_valor_registro_a(tcb);
 
@@ -1024,9 +1010,7 @@ resultado_t outc(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("OUTC");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t direccion_de_la_cadena = obtener_valor_registro_a(tcb);
 	int32_t cantidad_de_bytes_de_la_cadena = obtener_valor_registro_b(tcb);
@@ -1059,16 +1043,12 @@ resultado_t crea(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("CREA");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	uint32_t nuevo_tid;
 
 	if (comunicar_nuevo_tcb(tcb, &nuevo_tid) != OK)
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	actualizar_registro_a(tcb, nuevo_tid);
 
@@ -1087,16 +1067,12 @@ resultado_t join(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("JOIN");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t identificador_almacenado_en_a = obtener_valor_registro_a(tcb);
 
 	if (comunicar_join(tcb->tid, identificador_almacenado_en_a) != OK)
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	return OK;
 }
@@ -1114,16 +1090,12 @@ resultado_t blok(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("BLOK");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
 	if (comunicar_bloquear(tcb, id_recurso_almacenado_en_b) != OK)
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	return OK;
 }
@@ -1140,16 +1112,12 @@ resultado_t wake(tcb_t* tcb)
 	ansisop_ejecucion_instruccion1("WAKE");
 
 	if (!es_tcb_kernel(tcb))
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	int32_t id_recurso_almacenado_en_b = obtener_valor_registro_b(tcb);
 
 	if (comunicar_despertar(tcb, id_recurso_almacenado_en_b) != OK)
-	{
 		return ERROR_EN_EJECUCION;
-	}
 
 	return OK;
 }
@@ -1194,11 +1162,15 @@ void _cargar_diccionario_de_instrucciones(t_dictionary* dic)
 void inicializar_dic_de_instrucciones()
 {
 	loggear_trace("Intento crear el diccionario de instrucciones");
+
 	dic_instrucciones = dictionary_create();
+
 	loggear_info("Creacion de diccionario con exito\n");
 
 	loggear_trace("Intento cargar el diccionario de instrucciones");
+
 	_cargar_diccionario_de_instrucciones(dic_instrucciones);
+
 	loggear_info(
 		"Cargadas todas las instrucciones en el dic de instrucciones\n");
 }

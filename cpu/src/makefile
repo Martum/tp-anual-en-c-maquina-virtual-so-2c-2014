@@ -2,7 +2,7 @@
 
 CC := gcc
 
-ARCHIVOS := ansisop.o configuraciones.o instrucciones.o logs.o main.o operaciones-con-bits.o signals.o sockets.o tcb-funciones.o
+ARCHIVOS := ansisop.o configuraciones.o instrucciones.o logs.o main.o signals.o sockets.o tcb-funciones.o
 NOMBREFINAL := cpu
 LIBRERIAS := -lcommons -lhu4sockets -lansisop-panel
 
