@@ -28,3 +28,6 @@
 # Loggeo del CPU
 cpu/logs/*
 *.log
+
+#Tilde files
+*~
