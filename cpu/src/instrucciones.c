@@ -7,7 +7,7 @@
 
 #include "instrucciones.h"
 
-t_dictionary* dic_instrucciones;
+t_dictionary* dic_instrucciones = NULL;
 
 resultado_t (*funcion)(tcb_t*) = NULL;
 
