@@ -72,12 +72,6 @@ int32_t main(int32_t argc, char** argv)
 			return 0;
 		}
 
-		if ((quantum <= 0) && !tcb.km)
-		{
-			loggear_warning("Se recibio un quantum %d menor a 0", quantum);
-			resultado = ERROR_EN_EJECUCION;
-		}
-
 		ansisop_comienzo_tcb(tcb, quantum);
 
 		resultado = OK;
