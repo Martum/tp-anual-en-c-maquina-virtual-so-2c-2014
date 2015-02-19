@@ -10,7 +10,7 @@
 <h2>Instalacion del TP</h2>
 
 <ul>
-  <li>https://github.com/santiagopereztorre/tp-anual-en-c-maquina-virtual-so-2c-2014 tp-2014</li>
+  <li>git clone https://github.com/santiagopereztorre/tp-anual-en-c-maquina-virtual-so-2c-2014 tp-2014</li>
   <li>cd tp-2014</li>
   <li>make instalar</li>
   <li>chmod +x ./ejecutar-msp</li>
