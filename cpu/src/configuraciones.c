@@ -7,7 +7,7 @@
 
 #include "configuraciones.h"
 
-t_config* configs_cpu;
+t_config* configs_cpu = NULL;
 
 resultado_t cargar_configuraciones()
 {
@@ -17,7 +17,7 @@ resultado_t cargar_configuraciones()
 
 	if (config_keys_amount(configs_cpu) == 0)
 	{
-		loggear_info("No hay ninguna key que leer");
+		configs_cpu = NULL;
 		return FALLO_CARGA_DE_CONFIGURACIONES;
 	}
 

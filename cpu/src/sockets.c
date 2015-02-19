@@ -9,8 +9,8 @@
 
 #define PID_KERNEL 1;
 
-sock_t* memoria;
-sock_t* kernel;
+sock_t* memoria = NULL;
+sock_t* kernel = NULL;
 
 resultado_t _enviar_y_recibir(sock_t* socket, char* chorro_a_enviar,
 	uint32_t len_a_enviar, char* respuesta)
@@ -41,7 +41,7 @@ resultado_t _conectar(sock_t** socket, char* ip, uint32_t puerto)
 
 	if (conectar(*socket) == -1)
 	{
-		loggear_warning("No pudo conectarse a ip: %s y puerto: %d", ip, puerto);
+		*socket = NULL;
 		return FALLO_CONEXION;
 	}
 
@@ -413,7 +413,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		int32_t direccion;
 		leer_numero(&tcb, &direccion);
 
-		ansisop_ejecucion_instruccion3("INTE", direccion);
+		ansisop_ejecucion_instruccion2("INTE", direccion);
 
 		pedido_interrupcion_t cuerpo_del_mensaje;
 		cuerpo_del_mensaje.flag = INTERRUPCION;
