@@ -413,7 +413,7 @@ resultado_t informar_a_kernel_de_finalizacion(tcb_t tcb, resultado_t res)
 		int32_t direccion;
 		leer_numero(&tcb, &direccion);
 
-		ansisop_ejecucion_instruccion3("INTE", direccion);
+		ansisop_ejecucion_instruccion2("INTE", direccion);
 
 		pedido_interrupcion_t cuerpo_del_mensaje;
 		cuerpo_del_mensaje.flag = INTERRUPCION;

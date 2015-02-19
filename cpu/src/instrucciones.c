@@ -27,7 +27,7 @@ resultado_t load(tcb_t* tcb)
 	if (leer_numero(tcb, &numero) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	ansisop_ejecucion_instruccion2("LOAD", numero, registro);
+	ansisop_ejecucion_instruccion3("LOAD", numero, registro);
 
 	if (actualizar_valor_del_registro(tcb, registro, numero)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -513,7 +513,7 @@ resultado_t _funcion_de_salto(tcb_t* tcb, int32_t condicion(int32_t),
 
 	leer_numero(tcb, &offset);
 
-	ansisop_ejecucion_instruccion3(nombre, offset);
+	ansisop_ejecucion_instruccion2(nombre, offset);
 
 	int32_t valor_del_registro_a = obtener_valor_registro_a(tcb);
 
@@ -616,7 +616,7 @@ resultado_t shif(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	ansisop_ejecucion_instruccion2("SHIF", bits_a_desplazar, registro);
+	ansisop_ejecucion_instruccion3("SHIF", bits_a_desplazar, registro);
 
 	if (obtener_valor_del_registro(tcb, registro, &valor_de_registro)
 		== EXCEPCION_NO_ENCONTRO_EL_REGISTRO)
@@ -694,7 +694,7 @@ resultado_t push(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	ansisop_ejecucion_instruccion2("PUSH", cantidad_de_bytes, registro);
+	ansisop_ejecucion_instruccion3("PUSH", cantidad_de_bytes, registro);
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;
@@ -743,7 +743,7 @@ resultado_t take(tcb_t* tcb)
 	if (leer_registro(tcb, &registro) == FALLO_LECTURA_DE_MEMORIA)
 		return ERROR_EN_EJECUCION;
 
-	ansisop_ejecucion_instruccion2("TAKE", cantidad_de_bytes, registro);
+	ansisop_ejecucion_instruccion3("TAKE", cantidad_de_bytes, registro);
 
 	if (cantidad_de_bytes > 4 || cantidad_de_bytes < 1)
 		return ERROR_EN_EJECUCION;

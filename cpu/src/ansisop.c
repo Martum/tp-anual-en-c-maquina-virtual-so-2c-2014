@@ -76,11 +76,10 @@ void ansisop_ejecucion_instruccion1(instruccion_t instruccion)
 }
 
 void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
-	int32_t param_numero, char param_registro)
+	int32_t param_numero)
 {
 	t_list* parametros = list_create();
 	_agregar_numero_a_parametros(parametros, param_numero);
-	_agregar_registro_a_parametros(parametros, param_registro);
 
 	ejecucion_instruccion(instruccion, parametros);
 
@@ -88,10 +87,11 @@ void ansisop_ejecucion_instruccion2(instruccion_t instruccion,
 }
 
 void ansisop_ejecucion_instruccion3(instruccion_t instruccion,
-	int32_t param_numero)
+	int32_t param_numero, char param_registro)
 {
 	t_list* parametros = list_create();
 	_agregar_numero_a_parametros(parametros, param_numero);
+	_agregar_registro_a_parametros(parametros, param_registro);
 
 	ejecucion_instruccion(instruccion, parametros);
 
