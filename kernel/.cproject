@@ -35,7 +35,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1178243936" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
 								<option id="gnu.c.link.option.libs.1359598757" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="hu4sockets"/>
-									<listOptionValue builtIn="false" value="ansisop-panel"/>
 									<listOptionValue builtIn="false" value="commons"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 								</option>
