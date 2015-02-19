@@ -16,7 +16,7 @@
 
 void cargar_loggeo()
 {
-	inicializar_panel(KERNEL, ruta_logeo());
+	inicializar_panel(KERNEL, "");
 }
 
 t_hilo* crear_t_hilo(tcb_t* tcb)
