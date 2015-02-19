@@ -30,7 +30,6 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.408570201" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.989366242" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1118128987" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ansisop-panel}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/src"/>
 									<listOptionValue builtIn="false" value="/home/utnso/workspace/tp-2014-2c-hardcodeameun4/cpu/tests"/>
@@ -39,14 +38,10 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.433315347" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
 								<option id="gnu.c.link.option.libs.874814367" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="ansisop-panel"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="hu4sockets"/>
-									<listOptionValue builtIn="false" value="commons"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="commons"/>
 								</option>
 								<option id="gnu.c.link.option.paths.1709630040" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ansisop-panel/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc}/tp-2014-2c-hardcodeameun4/libs/Debug&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc}/tp-2014-2c-hardcodeameun4/libs/ansisop-panel/Release&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets/Debug}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1090533655" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
@@ -57,7 +52,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.483823861" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1231943084" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
 								<option id="gnu.both.asm.option.include.paths.527280008" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ansisop-panel}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.453525452" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
@@ -76,13 +70,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/hu4sockets"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/hu4sockets/Debug"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="hu4sockets" srcPrefixMapping="" srcRootPath=""/>
-					</externalSetting>
-				</externalSettings>
-				<externalSettings containerId="ansisop-panel;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
-					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/ansisop-panel"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/ansisop-panel/Debug"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="ansisop-panel" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>

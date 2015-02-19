@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>hu4sockets</project>
-		<project>ansisop-panel</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

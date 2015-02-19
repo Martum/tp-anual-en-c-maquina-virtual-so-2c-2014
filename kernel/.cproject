@@ -40,7 +40,7 @@
 								</option>
 								<option id="gnu.c.link.option.paths.88029943" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="/home/martin/workspace/so/tp-2014-2c-hardcodeameun4/libs/ansisop-panel/Release"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/hu4sockets/ansisop-panel}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.688456373" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
